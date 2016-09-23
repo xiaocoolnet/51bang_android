@@ -98,7 +98,7 @@ public class ReleaseActivity extends BaseActivity implements View.OnClickListene
     private final int  TAKE_PHOTO=2;
     private final int  RESULT_PHOTO=3;//裁剪后的头像
     private static final int MY_PERMISSIONS_REQUEST_READ_CONTACTS=4;
-    private  String type="";
+    private  String type="123";
     String a[]={"同城自取","送货上门","凭劵消费"};
 
     @Override
