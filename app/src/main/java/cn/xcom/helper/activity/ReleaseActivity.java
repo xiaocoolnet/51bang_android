@@ -98,6 +98,7 @@ public class ReleaseActivity extends BaseActivity implements View.OnClickListene
     private final int  TAKE_PHOTO=2;
     private final int  RESULT_PHOTO=3;//裁剪后的头像
     private static final int MY_PERMISSIONS_REQUEST_READ_CONTACTS=4;
+    private  String type="";
     String a[]={"同城自取","送货上门","凭劵消费"};
 
     @Override
@@ -109,6 +110,7 @@ public class ReleaseActivity extends BaseActivity implements View.OnClickListene
         initView();
 
         Intent intent=getIntent();
+         String type=intent.getStringExtra("id");
         String s1="";
         String s2=intent.getStringExtra("judge");
 //        String userid=intent.getStringExtra("userid");
@@ -189,8 +191,8 @@ public class ReleaseActivity extends BaseActivity implements View.OnClickListene
         final UserInfo info=new UserInfo();
          info.readData(context);
         Log.d("++++ciid", info.getUserId());
-        Intent intent=getIntent();
-        final String type=intent.getStringExtra("id");
+
+
 
         // validate
         final String goodNameString = goodName.getText().toString().trim();
@@ -241,7 +243,7 @@ public class ReleaseActivity extends BaseActivity implements View.OnClickListene
                         Toast.makeText(getApplication(),"网络错误，检查您的网络",Toast.LENGTH_SHORT).show();
                     }
                 });
-                request.putValue("userid","888");
+                request.putValue("userid",info.getUserId());
                 request.putValue("goodsname",goodNameString);
                 request.putValue("type",type);
                 request.putValue("price",price);
@@ -275,7 +277,7 @@ public class ReleaseActivity extends BaseActivity implements View.OnClickListene
                         Toast.makeText(getApplication(),"网络错误，检查您的网络",Toast.LENGTH_SHORT).show();
                     }
                 });
-                request.putValue("userid","610");
+                request.putValue("userid",info.getUserId());
                 request.putValue("goodsname",goodNameString);
                 request.putValue("type",type);
                 request.putValue("price",price);
