@@ -100,4 +100,8 @@ public interface NetConstant extends HelperConstant {
     *发布任务
      */
     public final static String RELEASE=NET_HOST_PREFIX+"a=PublishGoods&";
+    /*
+    *根据商品信息找出商家的信息
+     */
+    public final static String SHOPINFO=NET_HOST_PREFIX+"a=showshoppinginfo&";
 }

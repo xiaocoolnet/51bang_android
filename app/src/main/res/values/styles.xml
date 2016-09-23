@@ -7,7 +7,9 @@
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
     </style>
-
+    <style name="DialogBottomTheme" parent="DialogBaseTheme">
+        <item name="android:windowAnimationStyle">@style/WindowAnimBottomToTop</item>
+    </style>
     <style name="HomeButton">
         <item name="android:textSize">14.0dip</item>
         <item name="android:gravity">center_horizontal</item>
@@ -57,7 +59,13 @@
         <item name="android:textColor">#ffffff</item>
         <item name="android:textSize">12sp</item>
     </style>
-
+    <style name="DialogBaseTheme" parent="android:Theme.Holo.Light.Dialog.NoActionBar">
+        <item name="android:windowFrame">@null</item>
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:backgroundDimEnabled">true</item>
+    </style>
     <style name="RedPacketSponsorStyle">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
@@ -157,7 +165,12 @@
     </style>
     -->
 
-
+    <!-- dialog style -->
+    <style name="WindowAnimBottomToTop" parent="@android:style/Animation">
+        <item name="android:windowEnterAnimation">@anim/push_bottom_in</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowExitAnimation">@anim/push_bottom_out</item>
+    </style>
     <style name="MyDialogStyle">
         <item name="android:windowBackground">@android:color/transparent</item>
         <item name="android:windowFrame">@null</item>

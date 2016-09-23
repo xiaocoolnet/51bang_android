@@ -3,6 +3,7 @@
     <!--SplashActivity-->
     <string name="tv_splash_into">立即体验</string>
     <!--LoginActivity-->
+
     <string name="tv_login_title">51帮</string>
     <string name="tv_login_areaCode">＋86</string>
     <string name="tv_login_phone_hint">请输入手机号</string>
@@ -107,6 +108,8 @@
     <!--UpdateNameActivity-->
     <string name="tv_update_name_save">保存</string>
     <string name="et_update_name">请输入昵称</string>
+    <!--ShopReleaseActivity-->
+    <string name="shop_release">商家发布</string>
     <!--UpdatePhoneActivity-->
     <string name="tv_update_phone_title">修改手机</string>
     <string name="tv_update_phone_country_code">+86</string>
@@ -145,6 +148,7 @@
     <string name="tv_i_relsase_divide">分类</string>
     <string name="tv_i_relsase_price">价格</string>
     <string name="tv_i_relsase_printprice">请输入价格</string>
+    <string name="tv_i_relsase_choose">请选择</string>
     <string name="tv_i_relsase_oldprintprice">原价</string>
     <string name="tv_i_relsase_location">位置</string>
     <string name="tv_i_relsase_transport">配送方式</string>
