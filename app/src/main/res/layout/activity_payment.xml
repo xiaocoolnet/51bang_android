@@ -32,6 +32,7 @@
         </RelativeLayout>
     </RelativeLayout>
     <TextView
+        android:id="@+id/tv_price"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
@@ -62,12 +63,14 @@
             android:text="@string/tv_payment_zhifubao"
             android:textSize="15dp"/>
         <CheckBox
-            android:layout_width="40dip"
-            android:layout_height="match_parent"
             android:id="@+id/cb_payment_zhifubao"
-            android:gravity="center"
-            android:button="@mipmap/ic_xuanzetuoguan"
-            />
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:background="@drawable/checkbox_bg2"
+            android:layout_marginRight="10dp"
+            android:button="@null" />
 
     </LinearLayout>
     <View
@@ -89,12 +92,14 @@
             android:text="@string/tv_payment_weixin"
             android:textSize="15dp"/>
         <CheckBox
-            android:layout_width="40dip"
-            android:layout_height="match_parent"
             android:id="@+id/cb_payment_weixin"
-            android:gravity="center"
-            android:button="@mipmap/ic_xuanzetuoguan"
-            />
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:background="@drawable/checkbox_bg2"
+            android:layout_marginRight="10dp"
+            android:button="@null" />
     </LinearLayout>
     <View
         android:layout_width="fill_parent"
@@ -115,12 +120,14 @@
             android:text="@string/tv_payment_yinhangka"
             android:textSize="15dp"/>
         <CheckBox
-            android:layout_width="40dip"
-            android:layout_height="match_parent"
             android:id="@+id/cb_payment_yinhangka"
-            android:gravity="center"
-            android:button="@mipmap/ic_xuanzetuoguan"
-            />
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:background="@drawable/checkbox_bg2"
+            android:layout_marginRight="10dp"
+            android:button="@null" />
 
     </LinearLayout>
     <Button

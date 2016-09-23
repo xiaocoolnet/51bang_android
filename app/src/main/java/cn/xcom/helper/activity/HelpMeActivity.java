@@ -4,24 +4,35 @@ import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 
@@ -31,6 +42,7 @@ import org.json.JSONObject;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -44,7 +56,11 @@ import cn.xcom.helper.bean.UserInfo;
 import cn.xcom.helper.constant.NetConstant;
 import cn.xcom.helper.net.HelperAsyncHttpClient;
 import cn.xcom.helper.utils.LogUtils;
+import cn.xcom.helper.utils.SingleVolleyRequest;
+import cn.xcom.helper.utils.StringPostRequest;
+import cn.xcom.helper.utils.ToastUtil;
 import cn.xcom.helper.view.NoScrollGridView;
+import cn.xcom.helper.view.WheelView;
 import cz.msebera.android.httpclient.Header;
 
 /**
@@ -66,7 +82,8 @@ public class HelpMeActivity extends BaseActivity implements View.OnClickListener
     private UserInfo userInfo;
     private List<TaskType> selectList;
     private LinearLayout ll_time;
-    private String begintime;
+    private ScrollView bottom;
+    private String begintime = "";
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -80,6 +97,7 @@ public class HelpMeActivity extends BaseActivity implements View.OnClickListener
     }
 
     private void initView(){
+        bottom = (ScrollView) findViewById(R.id.bottom);
         ll_time = (LinearLayout) findViewById(R.id.ll_time);
         ll_time.setOnClickListener(this);
         rl_back= (RelativeLayout) findViewById(R.id.rl_help_me_back);
@@ -89,6 +107,23 @@ public class HelpMeActivity extends BaseActivity implements View.OnClickListener
         et_site_location= (EditText) findViewById(R.id.et_help_me_site_location);
         et_service_location= (EditText) findViewById(R.id.et_help_me_service_location);
         et_wages= (EditText) findViewById(R.id.et_help_me_wages);
+        //监听单价的变化
+        et_wages.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                tv_service_charge.setText("¥" + et_wages.getText());
+            }
+        });
         et_validity_period= (EditText) findViewById(R.id.et_help_me_validity_period);
         tv_time_unit= (TextView) findViewById(R.id.tv_help_me_time_unit);
         tv_time_unit.setOnClickListener(this);
@@ -136,7 +171,6 @@ public class HelpMeActivity extends BaseActivity implements View.OnClickListener
      * @return
      */
     private boolean check(String id){
-        boolean checked = false;
         for(int i=0;i<selectList.size();i++){
             if(selectList.get(i).getParent().equals(id)){
                 return true;
@@ -202,14 +236,139 @@ public class HelpMeActivity extends BaseActivity implements View.OnClickListener
                 showTimePicker();
                 break;
             case R.id.bt_help_me_submit:
-                startActivity(new Intent(mContext,UploadContractActivity.class));
+                submit();
                 break;
         }
 
     }
 
-    private void showTextPicker() {
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        HelperApplication.getInstance().getTaskTypes().clear();
+    }
 
+    /**
+     * 上传任务
+     */
+    private void submit() {
+        if(selectList.size()==0){
+            ToastUtil.showShort(mContext,"请选择分类");
+            return;
+        }
+        if(et_content.getText().toString().length()==0){
+            ToastUtil.showShort(mContext,"请输入任务描述");
+            return;
+        }
+        if(et_phone.getText().toString().length()==0){
+            ToastUtil.showShort(mContext,"请输入联系方式");
+            return;
+        }
+        if(et_wages.getText().toString().length()==0){
+            ToastUtil.showShort(mContext,"请输入工资");
+            return;
+        }
+        if(begintime.length()==0){
+            ToastUtil.showShort(mContext,"请选择有效时间");
+            return;
+        }
+        String url=NetConstant.PUBLISHTASK;
+        StringPostRequest request=new StringPostRequest(url, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String s) {
+                if (s!=null){
+                    try {
+                        JSONObject object = new JSONObject(s);
+                        String state=object.getString("status");
+                        if (state.equals("success")){
+                            String data=object.getString("data");
+                            HelperApplication.getInstance().getTaskTypes().clear();
+                            Log.d("发布任务", data);
+                            Toast.makeText(getApplication(), "发布成功", Toast.LENGTH_SHORT).show();
+                            Intent intent = new Intent(mContext, UploadContractActivity.class);
+                            intent.putExtra("price",et_wages.getText().toString());
+                            intent.putExtra("tradeNo",data);
+                            startActivity(intent);
+                        }else{
+                            HelperApplication.getInstance().getTaskTypes().clear();
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError volleyError) {
+                HelperApplication.getInstance().getTaskTypes().clear();
+                Toast.makeText(getApplication(),"网络错误，检查您的网络",Toast.LENGTH_SHORT).show();
+            }
+        });
+        request.putValue("userid",userInfo.getUserId());
+        request.putValue("description",et_content.getText().toString());
+        request.putValue("expirydate",begintime);
+        request.putValue("price",et_wages.getText().toString());
+        request.putValue("type",getSelectString());
+        SingleVolleyRequest.getInstance(getApplication()).addToRequestQueue(request);
+    }
+
+    /**
+     * 根据选择分类得到分类拼接字符串
+     * @return
+     */
+    private String getSelectString() {
+        String str = "";
+        for(int i=0;i<selectList.size()-1;i++){
+            str += selectList.get(i).getId() + "," ;
+        }
+        str += selectList.get(selectList.size()-1).getId();
+        return str;
+    }
+
+    /**
+     * 弹出计费方式选择框
+     */
+    private void showTextPicker() {
+        View layout = LayoutInflater.from(this).inflate(R.layout.popwindow_select_unit, null);
+        final PopupWindow popupWindow = new PopupWindow(layout, FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT);
+        popupWindow.setFocusable(true);
+        popupWindow.setOutsideTouchable(true);
+        popupWindow.setBackgroundDrawable(new BitmapDrawable());
+        popupWindow.showAtLocation(bottom, Gravity.BOTTOM, 0, 0);
+
+        // 设置背景颜色变暗
+        final WindowManager.LayoutParams lp = getWindow().getAttributes();
+        lp.alpha = 0.7f;
+        getWindow().setAttributes(lp);
+        //监听popwindow消失事件，取消遮盖层
+        popupWindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
+            @Override
+            public void onDismiss() {
+                lp.alpha = 1.0f;
+                getWindow().setAttributes(lp);
+            }
+        });
+        final WheelView wv = (WheelView) layout.findViewById(R.id.wheelView);
+        String[] PLANETS = new String[]{"按小时计费","按天计费","按月计费","按趟计费","按件计费","按重量计费"};
+        wv.setOffset(2);
+        wv.setItems(Arrays.asList(PLANETS));
+        wv.setSeletion(3);
+        TextView tv_quxiao = (TextView) layout.findViewById(R.id.tv_quxiao);
+        TextView tv_queding = (TextView) layout.findViewById(R.id.tv_queding);
+        tv_queding.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                tv_time_unit.setText(wv.getSeletedItem());
+                popupWindow.dismiss();
+            }
+        });
+        tv_quxiao.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                popupWindow.dismiss();
+            }
+        });
     }
 
     /**
@@ -246,6 +405,11 @@ public class HelpMeActivity extends BaseActivity implements View.OnClickListener
         dlg.show();
     }
 
+    /**
+     * 时间转时间戳
+     * @param time
+     * @return
+     */
     public String dataOne(String time) {
         SimpleDateFormat sdr = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss",
                 Locale.CHINA);
@@ -262,6 +426,9 @@ public class HelpMeActivity extends BaseActivity implements View.OnClickListener
         return times;
     }
 
+    /**
+     * 任务分类适配器
+     */
     public class HelpMeSkillAdapter extends BaseAdapter {
         private Context mContext;
         private ArrayList<SkillTagInfo> mSkillTagInfos;

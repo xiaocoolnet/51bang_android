@@ -23,13 +23,23 @@ public class UploadContractActivity extends BaseActivity implements View.OnClick
     private RelativeLayout rl_back;
     private ImageView iv_photo;
     private Button bt_skip,bt_upload;
+    private String price,tradeNumber;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_upload_contract);
         mContext=this;
+        getInfo();
         initView();
+    }
+
+    /**
+     * 获取上页传来的任务价格和订单号
+     */
+    private void getInfo() {
+        price = getIntent().getStringExtra("price");
+        tradeNumber = getIntent().getStringExtra("tradeNo");
     }
 
     private void initView(){
@@ -54,7 +64,10 @@ public class UploadContractActivity extends BaseActivity implements View.OnClick
                 Toast.makeText(mContext,"未开发",Toast.LENGTH_SHORT).show();
                 break;
             case R.id.bt_upload_contract_skip:
-                startActivity(new Intent(mContext,PaymentActivity.class));
+                Intent intent = new Intent(mContext, PaymentActivity.class);
+                intent.putExtra("price",price);
+                intent.putExtra("tradeNo",tradeNumber);
+                startActivity(intent);
                 break;
             case R.id.bt_upload_contract_upload:
                 Toast.makeText(mContext,"未开发",Toast.LENGTH_SHORT).show();
