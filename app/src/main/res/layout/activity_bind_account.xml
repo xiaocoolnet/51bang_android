@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorMainBackground">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="46dip" >
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:textSize="17dp"
+            android:text="@string/tv_bind_account_title"
+            android:textColor="@color/colorTextWhite"
+            android:background="@color/colorTheme"/>
+
+        <RelativeLayout
+            android:id="@+id/rl_bind_account_back"
+            android:layout_width="50dip"
+            android:layout_height="fill_parent"
+            android:gravity="center" >
+
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:contentDescription="@string/app_name"
+                android:src="@mipmap/ic_back_white_left" />
+        </RelativeLayout>
+    </RelativeLayout>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="30dip"
+        android:hint="@string/tv_bind_account_prompt"
+        android:gravity="center_vertical"
+        android:paddingLeft="15dp"
+        />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:background="@color/colorTextWhite">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="@string/tv_bind_account_account"
+            android:gravity="center_vertical"
+            android:paddingLeft="15dip"
+            android:textSize="15dp"/>
+        <EditText
+            android:id="@+id/et_bind_account_account"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1.0"
+            android:background="@null"
+            android:ems="10"
+            android:gravity="center_vertical"
+            android:hint="@string/et_bind_account_account"
+            android:inputType="textPersonName"
+            android:paddingLeft="25dip"
+            android:textSize="14dp" >
+        </EditText>
+    </LinearLayout>
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="1dip"
+        android:background="@color/colorLine" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:background="@color/colorTextWhite">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="@string/tv_bind_account_password"
+            android:gravity="center_vertical"
+            android:paddingLeft="15dip"
+            android:textSize="15dp"/>
+        <EditText
+            android:id="@+id/et_bind_account_password"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1.0"
+            android:background="@null"
+            android:ems="10"
+            android:gravity="center_vertical"
+            android:hint="@string/et_bind_account_password"
+            android:inputType="textPersonName"
+            android:paddingLeft="25dip"
+            android:textSize="14dp" >
+        </EditText>
+    </LinearLayout>
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="1dip"
+        android:background="@color/colorLine" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:background="@color/colorTextWhite">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="@string/tv_bind_account_name"
+            android:gravity="center_vertical"
+            android:paddingLeft="15dip"
+            android:textSize="15dp"/>
+        <EditText
+            android:id="@+id/et_bind_account_name"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1.0"
+            android:background="@null"
+            android:ems="10"
+            android:gravity="center_vertical"
+            android:hint="@string/et_bind_account_name"
+            android:inputType="textPersonName"
+            android:paddingLeft="25dip"
+            android:textSize="14dp" >
+        </EditText>
+    </LinearLayout>
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="1dip"
+        android:background="@color/colorLine" />
+
+    <Button
+        android:id="@+id/bt_bind_account_bind"
+        android:layout_width="match_parent"
+        android:layout_height="43dip"
+        android:layout_marginLeft="20dip"
+        android:layout_marginRight="20dip"
+        android:layout_marginTop="50dip"
+        android:layout_marginBottom="20dip"
+        android:background="@drawable/bt_login_click"
+        android:text="@string/bt_bind_account_bind"
+        android:textColor="@color/colorTextWhite"
+        android:textSize="16dp" />
+</LinearLayout>

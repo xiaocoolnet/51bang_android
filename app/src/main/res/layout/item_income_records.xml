@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="60dp"
+    android:padding="10dip"
+    android:background="@color/colorTextWhite">
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="0dip"
+        android:layout_weight="1.0"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="在线支付"
+            android:textSize="15dp"
+            android:id="@+id/tv_item_income_records_type" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="余额：1000.00"
+            android:textSize="12dp"
+            android:layout_marginTop="10dip"
+            android:id="@+id/tv_item_income_records_balance" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="100dp"
+        android:layout_height="match_parent"
+        >
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="2016-06-14"
+            android:textSize="11dp"
+            android:gravity="right"
+            android:id="@+id/tv_item_income_records_time" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="＋1000.00"
+            android:layout_marginTop="10dp"
+            android:gravity="right"
+            android:textSize="14dp"
+            android:id="@+id/tv_item_income_records_money" />
+    </LinearLayout>
+</LinearLayout>

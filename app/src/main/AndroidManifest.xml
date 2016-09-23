@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="cn.xcom.helper">
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="com.android.launcher.permission.READ_SETTINGS" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.GET_TASKS" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_SETTINGS" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.CALL_PHONE" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.ACCESS_LOCATION_EXTRA_COMMANDS" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.CAMERA" />
+
+    <application
+        android:name=".HelperApplication"
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_logo"
+        android:label="@string/app_name"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme">
+        <meta-data
+            android:name="com.baidu.lbsapi.API_KEY"
+            android:value="WZUcRBxRs696L2nh3GreHMIavIZUfQZH" />
+        <meta-data
+            android:name="EASEMOB_APPKEY"
+            android:value="19890328#51help" />
+        <!-- <service -->
+        <!-- android:name="com.hyphenate.chat.EMChatService" -->
+        <!-- android:exported="true"/> -->
+        <!-- <receiver -->
+        <!-- android:name="com.hyphenate.chat.EMMonitorReceiver"> -->
+        <!-- <intent-filter> -->
+        <!-- <action android:name="android.intent.action.PACKAGE_REMOVED"/> -->
+        <!-- <data android:scheme="package"/> -->
+        <!-- </intent-filter> -->
+        <!-- <intent-filter> -->
+        <!-- <action android:name="android.intent.action.BOOT_COMPLETED"/> -->
+        <!-- <action android:name="android.intent.action.USER_PRESENT"/> -->
+        <!-- </intent-filter> -->
+        <!-- </receiver> -->
+
+        <activity android:name=".activity.SplashActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".activity.LoginActivity"
+            android:windowSoftInputMode="adjustResize" />
+        <activity
+            android:name=".activity.RegisterActivity"
+            android:windowSoftInputMode="adjustResize" />
+        <activity android:name=".activity.HomeActivity" />
+        <activity
+            android:name=".activity.ResetPasswordActivity"
+            android:windowSoftInputMode="adjustResize" />
+        <activity android:name=".activity.CityPickerActivity" />
+        <activity android:name=".activity.AuthenticationListActivity" />
+        <activity android:name=".activity.AuthorizedActivity" />
+        <activity android:name=".activity.SetCityActivity" />
+        <activity android:name=".activity.SkillListActivity" />
+        <activity android:name=".activity.HelpMeActivity" />
+        <activity android:name=".activity.UploadContractActivity" />
+        <activity android:name=".activity.IHelpActivity" />
+        <activity android:name=".activity.SelectCityActivity" />
+        <activity android:name=".activity.PaymentActivity" />
+        <activity android:name=".activity.LocationActivity" />
+        <activity android:name=".activity.EditPersonalActivity" />
+        <activity android:name=".activity.UpdateNameActivity" />
+        <activity android:name=".activity.UpdatePhoneActivity" />
+        <activity android:name=".activity.WalletActivity" />
+        <activity android:name=".activity.PresentRecordActivity" />
+        <activity android:name=".activity.IncomeRecordsActivity" />
+        <activity android:name=".activity.BindAccountActivity" />
+        <activity android:name=".activity.WithdrawCashActivity" />
+        <activity android:name=".activity.SignActivity" />
+        <activity android:name=".activity.MessageActivity" />
+        <activity android:name=".activity.SystemMessageActivity" />
+        <activity android:name=".activity.UserMessageActivity" />
+        <activity android:name=".activity.BillActivity" />
+        <activity android:name=".activity.CouponActivity" />
+        <activity android:name=".activity.OrderActivity" />
+        <activity android:name=".activity.CollectionActivity" />
+        <activity android:name=".activity.ShoppingCartActivity" />
+        <activity android:name=".activity.AddressListActivity" />
+        <activity android:name=".activity.EditAddressActivity" />
+        <activity android:name=".activity.ShareActivity" />
+        <activity android:name=".activity.OrderTakingActivity" />
+        <activity android:name=".activity.InsureActivity" />
+        <activity android:name=".activity.MoreServiceActivity" />
+        <activity android:name=".activity.TrainingCourseActivity" />
+        <activity android:name=".activity.CommonProblemActivity" />
+        <activity android:name=".activity.LegalAgreementActivity" />
+        <activity
+            android:name=".wxapi.WXEntryActivity"
+            android:exported="true"
+            android:label="@string/app_name" />
+        <activity
+            android:name=".wxapi.WXPayEntryActivity"
+            android:exported="true"
+            android:label="@string/app_name"
+            android:launchMode="singleTop" />
+        <activity android:name=".activity.SaleDetailActivity" />
+        <activity android:name=".activity.ReleaseActivity" />
+        <activity android:name=".activity.ShopReleaseActivity" />
+
+        <activity
+
+            android:name=".activity.DivideActivity"></activity>
+        <activity android:name=".activity.SelectTaskTypeActivity"/>
+    </application>
+
+</manifest>

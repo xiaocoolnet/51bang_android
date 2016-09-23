@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="60dp"
+    android:padding="5dip"
+    android:background="@color/colorTextWhite">
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="0dip"
+        android:layout_weight="1.0"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="提现到支付宝"
+            android:textSize="14dp"
+            android:id="@+id/tv_item_present_record_type" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="123456789@qq.com"
+            android:textSize="12dp"
+            android:layout_marginTop="5dip"
+            android:id="@+id/tv_item_present_record_account" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="100dp"
+        android:layout_height="match_parent"
+        >
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="2016-06-14"
+            android:textSize="11dp"
+            android:gravity="right"
+            android:id="@+id/tv_item_present_record_time" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="1000.00"
+            android:layout_marginTop="5dp"
+            android:gravity="right"
+            android:textSize="14dp"
+            android:id="@+id/tv_item_present_record_money" />
+    </LinearLayout>
+</LinearLayout>
