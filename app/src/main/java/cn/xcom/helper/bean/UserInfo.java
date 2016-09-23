@@ -41,6 +41,7 @@ public class UserInfo implements Serializable {
     public void readData(Context context) {
         UserSp sp = new UserSp(context);
         sp.read(this);
+
     }
 
     public void writeData(Context context) {

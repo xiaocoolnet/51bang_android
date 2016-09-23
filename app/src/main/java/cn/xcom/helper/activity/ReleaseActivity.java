@@ -187,7 +187,8 @@ public class ReleaseActivity extends BaseActivity implements View.OnClickListene
     private void submit() {
 
         final UserInfo info=new UserInfo();
-
+         info.readData(context);
+        Log.d("++++ciid", info.getUserId());
         Intent intent=getIntent();
         final String type=intent.getStringExtra("id");
 
