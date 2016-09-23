@@ -9,7 +9,6 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -59,10 +58,11 @@ import cn.xcom.helper.entity.PhotoWithPath;
 
 import cn.xcom.helper.utils.DateUtil;
 import cn.xcom.helper.utils.GalleryFinalUtil;
-import cn.xcom.helper.utils.GetImageUtil;
+import cn.xcom.helper.utils.PicturePickerDialog;
 import cn.xcom.helper.utils.PushImage;
 import cn.xcom.helper.utils.PushImageUtil;
 import cn.xcom.helper.utils.SingleVolleyRequest;
+import cn.xcom.helper.utils.StringJoint;
 import cn.xcom.helper.utils.StringPostRequest;
 import cn.xcom.helper.utils.VolleyRequest;
 import cn.xcom.helper.utils.WheelView;
@@ -72,7 +72,8 @@ import cn.xcom.helper.utils.WheelView;
 public class ReleaseActivity extends BaseActivity implements View.OnClickListener {
     private Context context;
     private RelativeLayout rl_i_help_back;
-    private List<PhotoInfo> addImageList;//添加相册选取完返回的的list
+    private List<PhotoInfo> addImageList;
+    private List<String> nameList;//添加相册选取完返回的的list
     private ArrayList<PhotoWithPath> photoWithPaths;
     private EditText goodName;
     private EditText description;
@@ -98,7 +99,9 @@ public class ReleaseActivity extends BaseActivity implements View.OnClickListene
     private final int  TAKE_PHOTO=2;
     private final int  RESULT_PHOTO=3;//裁剪后的头像
     private static final int MY_PERMISSIONS_REQUEST_READ_CONTACTS=4;
-    private  String type="123";
+    String s2="";
+    private  String type="";
+    private int requestCode1;
     String a[]={"同城自取","送货上门","凭劵消费"};
 
     @Override
@@ -108,30 +111,25 @@ public class ReleaseActivity extends BaseActivity implements View.OnClickListene
         setContentView(R.layout.activity_release);
         context=this;
         initView();
-
-        Intent intent=getIntent();
-         String type=intent.getStringExtra("id");
-        String s1="";
-        String s2=intent.getStringExtra("judge");
-//        String userid=intent.getStringExtra("userid");
-//        Log.d("++++ciid",userid);
-        if (s2!=null&&s2.equals("返回")){
-            s1= intent.getStringExtra("dictionary");
-            ima_dismiss.setVisibility(View.INVISIBLE);
-            tv_divide.setText(s1);
-        }
-
+//        Intent intent=getIntent();
+//        String s2=intent.getStringExtra("judge");
+//        if (s2!=null&&s2.equals("返回")){
+//            s1= intent.getStringExtra("dictionary");
+//           // ima_dismiss.setVisibility(View.INVISIBLE);
+//            tv_divide.setText(s1);
+//        }
     }
     private void initView() {
         addImageList=new ArrayList();
+        nameList=new ArrayList<>();
         photoWithPaths = new ArrayList<>();
         galleryFinalUtil=new GalleryFinalUtil(9);
         rl_i_help_back = (RelativeLayout) findViewById(R.id.rl_i_help_back);
         rl_i_help_back.setOnClickListener(this);
         goodName = (EditText) findViewById(R.id.goodName);
         description = (EditText) findViewById(R.id.description);
-        ima_dismiss= (ImageView) findViewById(R.id.ima_dissmis);
-        ima_dismiss.setOnClickListener(this);
+       // ima_dismiss= (ImageView) findViewById(R.id.ima_dissmis);
+       // ima_dismiss.setOnClickListener(this);
         id_dismiss11= (ImageView) findViewById(R.id.id_dismiss11);
         tv_divide= (TextView) findViewById(R.id.text_divide);
         tv_divide.setOnClickListener(this);
@@ -167,30 +165,42 @@ public class ReleaseActivity extends BaseActivity implements View.OnClickListene
                 submit();
                 break;
             case R.id.tupian:
-                showActionSheet();
+                //showActionSheet();
+                showPicturePicker(v);
                 break;
             case R.id.rl_i_help_back:
                 backImage();
                 break;
-           case R.id.divide:
-               startActivity(new Intent(getBaseContext(), DivideActivity.class));
-               finish();
-                break;
             case R.id.text_divide:
-                startActivity(new Intent(getBaseContext(),DivideActivity.class));
-                finish();
+                requestCode1=6;
+                Intent intent=new Intent(ReleaseActivity.this, DivideActivity.class);
+                startActivityForResult(intent, requestCode1);
+               // finish();
                 break;
             case R.id.transport:
                 popoDialog(a);
                 break;
         }
     }
-       //提交发布
-    private void submit() {
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode1==6){
+            if (resultCode==6){
+                String  s1= data.getStringExtra("dictionary");
+                type=data.getStringExtra("id");
+                tv_divide.setText(s1);
+            }
+
+        }
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    //提交发布
+    private void submit() {
         final UserInfo info=new UserInfo();
          info.readData(context);
-        Log.d("++++ciid", info.getUserId());
+
 
 
 
@@ -224,16 +234,18 @@ public class ReleaseActivity extends BaseActivity implements View.OnClickListene
             return;
         }
        //先上传图片再发布
-        new PushImageUtil().setPushIamge(getApplication(), addImageList, new PushImage() {
+        new PushImageUtil().setPushIamge(getApplication(), addImageList,nameList, new PushImage() {
             @Override
             public void success(boolean state) {
+
                 Toast.makeText(getApplication(),"上传成功",Toast.LENGTH_SHORT).show();
+
                 //发布任务
                 String url=NetConstant.RELEASE;
                 StringPostRequest request=new StringPostRequest(url, new Response.Listener<String>() {
                     @Override
                     public void onResponse(String s) {
-                        Log.d("++++我的发布",s);
+                        Log.d("===我的发布",s);
                         Toast.makeText(getApplication(),"发布成功",Toast.LENGTH_SHORT).show();
 
                     }
@@ -243,7 +255,11 @@ public class ReleaseActivity extends BaseActivity implements View.OnClickListene
                         Toast.makeText(getApplication(),"网络错误，检查您的网络",Toast.LENGTH_SHORT).show();
                     }
                 });
+                String s= StringJoint.arrayJointchar(nameList,",");
+                Log.d("2222233",s+ "");
+                Log.d("2222233",nameList.size()+ "");
                 request.putValue("userid",info.getUserId());
+                request.putValue("picture",s);
                 request.putValue("goodsname",goodNameString);
                 request.putValue("type",type);
                 request.putValue("price",price);
@@ -253,7 +269,7 @@ public class ReleaseActivity extends BaseActivity implements View.OnClickListene
                 request.putValue("address","北京市朝阳区");
                 request.putValue("longitude",location);
                 request.putValue("latitude",location);
-                request.putValue("delivery",text_transport.toString().trim());
+                request.putValue("delivery",text_transport.getText().toString());
 
 
                 SingleVolleyRequest.getInstance(getApplication()).addToRequestQueue(request);
@@ -287,7 +303,7 @@ public class ReleaseActivity extends BaseActivity implements View.OnClickListene
                 request.putValue("address","北京市朝阳区");
                 request.putValue("longitude",location);
                 request.putValue("latitude",location);
-                request.putValue("delivery",text_transport.toString().trim());
+                request.putValue("delivery",text_transport.getText().toString());
 
 
                 SingleVolleyRequest.getInstance(getApplication()).addToRequestQueue(request);
@@ -297,94 +313,37 @@ public class ReleaseActivity extends BaseActivity implements View.OnClickListene
 
 
     }
-    //向服务器上传图片,以文件的形式
-    public void updatePhoto(File f){
-        List<Part> list=new ArrayList<Part>();
-        try {
-            list.add(new FilePart("upfile",f));
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-        String url1= NetConstant.NET_UPLOAD_IMG;
-        VolleyRequest request=new VolleyRequest(url1, list.toArray(new Part[list.size()]),new Response.Listener<String>() {
+
+
+
+
+
+    public void showPicturePicker(View view){
+        PicturePickerDialog picturePickerDialog = new PicturePickerDialog(this);
+        picturePickerDialog.show(new PicturePickerDialog.PicturePickerCallBack() {
             @Override
-            public void onResponse(String s) {
-                Log.d("+++头像上传", s);
-                Toast.makeText(getBaseContext(),"头像上传成功",Toast.LENGTH_SHORT).show();
+            public void onPhotoClick() {
+
+                Toast.makeText(context,"拍 照",Toast.LENGTH_SHORT).show();
+                //获取拍照权限
+                if (galleryFinalUtil.openCamera(ReleaseActivity.this, (ArrayList<PhotoInfo>) addImageList, REQUEST_CODE_CAMERA, mOnHanlderResultCallback)) {
+                    return;
+                } else {
+                    String[] perms = {"android.permission.CAMERA"};
+                    int permsRequestCode = 200;
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                        requestPermissions(perms, permsRequestCode);
+                    }
+                }
             }
-        }, new Response.ErrorListener() {
+
             @Override
-            public void onErrorResponse(VolleyError volleyError) {
-                Toast.makeText(getBaseContext(),"头像上传失败",Toast.LENGTH_SHORT).show();
+            public void onAlbumClick() {
+                galleryFinalUtil.openAblum(ReleaseActivity.this, (ArrayList<PhotoInfo>) addImageList, REQUEST_CODE_GALLERY, mOnHanlderResultCallback);
+
+                Toast.makeText(context,"相册选择",Toast.LENGTH_SHORT).show();
             }
         });
-
-        SingleVolleyRequest.getInstance(this).addToRequestQueue(request);
-    }
-
-
-//    @Override
-//    protected void onActivityResult(int requestCode,
-//                                    int resultCode, Intent data) {
-//        super.onActivityResult(requestCode, resultCode, data);
-//        if (resultCode!= RESULT_OK){
-//            return;
-//        }
-//        if (requestCode==TAKE_PHOTO){
-//           startPhoneZoom(data.getData());
-//        }
-//        else if (requestCode==PHONE_PHOTO){
-//            String state = Environment.getExternalStorageState();
-//            if (state.equals(Environment.MEDIA_MOUNTED)) {
-//                File path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM);
-//                File tempFile = new File(path, "51head.jpg");
-//                startPhoneZoom(Uri.fromFile(tempFile));
-//            } else {
-//                Toast.makeText(getApplicationContext(), "未找到存储卡，无法存储照片！", Toast.LENGTH_SHORT).show();
-//            }
-//        }
-//        //裁剪返回位图
-//        else if(requestCode==RESULT_PHOTO){
-//            if (data!=null) {
-//                Bundle bundle = data.getExtras();
-//                if (bundle != null) {
-//                    Bitmap bitmap = bundle.getParcelable("data");
-//                     addImageList.add(bitmap);
-//                    Log.d("+++集合大小", addImageList.size() + "");
-//                    convertBitmap(bitmap);
-//                    gridViewAdapter =new GridViewAdapter(getBaseContext(),addImageList);
-//                    gridView.setAdapter(gridViewAdapter);
-//                    gridViewAdapter.notifyDataSetChanged();
-//
-//
-//                }
-//            }
-//        }
-//
-//    }
-
-    public void convertBitmap(Bitmap bitmap){
-        File appDir = new File(Environment.getExternalStorageDirectory(), "51helper");
-        if (!appDir.exists()) {
-            appDir.mkdir();
-        }
-        Random random=new Random();
-        String fileName ="yyy"+ random.nextInt(10000)+System.currentTimeMillis() + ".jpg";
-        File file = new File(appDir, fileName);
-        try {
-            FileOutputStream fos = new FileOutputStream(file);
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos);
-            fos.flush();
-            fos.close();
-            String s= DateUtil.getDateToString(System.currentTimeMillis());
-            Log.d("+++当前时间", s);
-            Log.d("+++文件名", fileName);
-            updatePhoto(file);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
     /**
      * 弹出选择框
@@ -523,7 +482,8 @@ public class ReleaseActivity extends BaseActivity implements View.OnClickListene
             @Override
             public void onSelected(int selectedIndex, String item) {
                 id_dismiss11.setVisibility(View.INVISIBLE);
-                text_transport.setText(item);
+                text_transport.setText(item.toString().trim());
+
             }
         });
         // 展示弹出框

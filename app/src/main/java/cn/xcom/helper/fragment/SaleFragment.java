@@ -3,8 +3,9 @@ package cn.xcom.helper.fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-
+import android.os.Handler;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,6 +25,8 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
+
+
 
 import cn.xcom.helper.R;
 import cn.xcom.helper.activity.ReleaseActivity;
@@ -49,17 +52,71 @@ public class SaleFragment extends Fragment implements View.OnClickListener {
     private RelativeLayout rl_classification, rl_release;
     private ListView listView, lv_group;
     private View view;
+    private SwipeRefreshLayout swipeRefreshLayout;
     private List<Front> addlist = new ArrayList<>();
     private SaleAdapter saleAdapter;
     private GroupAdapter groupAdapter;
     private List <DictionaryList>addAllList=new ArrayList<>();
-
-
+    private Handler handler=new Handler();
+    private Runnable runnable=new Runnable() {
+        @Override
+        public void run() {
+          swipeRefreshLayout.setRefreshing(false);
+        }
+    };
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,  Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_sale, container, false);
         listView = (ListView) view.findViewById(R.id.lv_fragment_listView);
+        swipeRefreshLayout= (SwipeRefreshLayout) view.findViewById(R.id.swipeRefresh);
+        swipeRefreshLayout.setProgressBackgroundColorSchemeResource(R.color.colorTheme);
+        //swip.setProgressBackgroundColorSchemeColor(getResources().getColor(R.color.colorPrimary));
+        swipeRefreshLayout.setSize(SwipeRefreshLayout.LARGE);
+        swipeRefreshLayout.setColorSchemeColors(getResources().getColor(R.color.colorTextWhite));
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+             @Override
+             public void onRefresh() {
+                 handler.removeCallbacks(runnable);
+                 handler.postDelayed(runnable, 1000);
+                 String url = NetConstant.GOODSLIST;
+                 StringPostRequest request = new StringPostRequest(url, new Response.Listener<String>() {
+                     @Override
+                     public void onResponse(String s) {
+                         try {
+
+                             Log.d("=====显示111",""+s);
+                             JSONObject jsonObject = new JSONObject(s);
+                             String state = jsonObject.getString("status");
+                             if (state.equals("success")) {
+                                 String jsonObject1 = jsonObject.getString("data");
+                                 Gson gson = new Gson();
+                                 addlist = gson.fromJson(jsonObject1,
+                                         new TypeToken<ArrayList<Front>>() {
+                                         }.getType());
+                                 Log.e("========fragment", "" + addlist.size());
+                                 saleAdapter = new SaleAdapter(addlist, mContext);
+                                 listView.setAdapter(saleAdapter);
+                                 saleAdapter.notifyDataSetChanged();
+                                 ToastUtils.showToast(mContext, "刷新成功");
+
+
+                             }
+
+                         } catch (JSONException e) {
+                             e.printStackTrace();
+                         }
+
+                     }
+                 }, new Response.ErrorListener() {
+                     @Override
+                     public void onErrorResponse(VolleyError volleyError) {
+                         ToastUtils.showToast(mContext, "网络连接错误，请检查您的网络");
+                     }
+                 });
+                 SingleVolleyRequest.getInstance(getContext()).addToRequestQueue(request);
+             }
+         });
         String url = NetConstant.GOODSLIST;
         StringPostRequest request = new StringPostRequest(url, new Response.Listener<String>() {
             @Override
@@ -213,27 +270,27 @@ public class SaleFragment extends Fragment implements View.OnClickListener {
            public void onItemClick(AdapterView<?> adapterView, View view,
                                    int position, long id) {
 
-              DictionaryList dictionaryList=addAllList.get(position);
-                if (dictionaryList.getName().equals("全部")){
+               DictionaryList dictionaryList = addAllList.get(position);
+               if (dictionaryList.getName().equals("全部")) {
                    aList.addAll(addlist);
-                }else{
-                    for (int i=0;i<addlist.size();i++){
-                        Front front = addlist.get(i);
-                        if (dictionaryList.getId().equals(front.getType())){
-                            Log.d("=== 数据",front.getId());
-                            aList.add(front);
-                        }else if (dictionaryList.getName().equals("其他")&&front.getType().length()<=0){
-                            Log.d("=== 其他",front.getType().toString());
-                            aList.add(front);
-                        }
+               } else {
+                   for (int i = 0; i < addlist.size(); i++) {
+                       Front front = addlist.get(i);
+                       if (dictionaryList.getId().equals(front.getType())) {
+                           Log.d("=== 数据", front.getId());
+                           aList.add(front);
+                       } else if (dictionaryList.getName().equals("其他") && front.getType().length() <= 0) {
+                           Log.d("=== 其他", front.getType().toString());
+                           aList.add(front);
+                       }
 // else if (!front.getType().contains(dictionaryList.getId())){
 //                            Toast.makeText(getContext(),
 //                                    "您需要的还未上架，请等待....", Toast.LENGTH_SHORT)
 //                                    .show();
 //                        }
 
-                    }
-                }
+                   }
+               }
 
                saleAdapter = new SaleAdapter(aList, mContext);
                listView.setAdapter(saleAdapter);
@@ -249,5 +306,8 @@ public class SaleFragment extends Fragment implements View.OnClickListener {
            }
        });
    }
+
+
+
 
 }

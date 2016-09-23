@@ -96,8 +96,8 @@ public interface NetConstant extends HelperConstant {
      获取字典
      */
     public final static String DICTIONARYS_LIST=NET_HOST_PREFIX+"a=getDictionaryList&";
-    /**
-     * 发布特卖
+    /*
+    *发布任务
      */
     public final static String RELEASE=NET_HOST_PREFIX+"a=PublishGoods&";
 
@@ -110,4 +110,8 @@ public interface NetConstant extends HelperConstant {
      * 更新任务支付状态
      */
     public final static String UPDATETASKPAY = NET_HOST_PREFIX+"a=UpdataTaskPaySuccess&";
+    /*
+    *根据商品信息找出商家的信息
+     */
+    public final static String SHOPINFO=NET_HOST_PREFIX+"a=showshoppinginfo&";
 }

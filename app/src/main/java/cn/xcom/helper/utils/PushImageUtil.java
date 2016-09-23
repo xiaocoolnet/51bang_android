@@ -14,8 +14,6 @@ import com.android.internal.http.multipart.Part;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 
-import org.apache.http.NameValuePair;
-import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -52,9 +50,12 @@ public class PushImageUtil {
     private List<PhotoInfo> photoWithPaths;
     private boolean isOk;
     private PushImage pushIamge;
+    private List<String> arrayList=new ArrayList<>();
 
-    public void setPushIamge(Context context,List<PhotoInfo> p,PushImage pushIamge) {
+
+    public void setPushIamge(Context context,List<PhotoInfo> p,List<String> list,PushImage pushIamge) {
         this.photoWithPaths = p;
+        this.arrayList=list;
         this.mContext = context;
         this.pushIamge = pushIamge;
         if (photoWithPaths.size()>0){
@@ -73,6 +74,8 @@ public class PushImageUtil {
                     if (msg.obj != null) {
                       if (JsonResult.JSONparser(mContext, String.valueOf((JSONObject)msg.obj))){
                           imgNums = 1;
+//                          arrayList=JsonResult.JsonParser((String) msg.obj);
+//                          imageReturn.setData(arrayList.get(0).toString());
                           if (imgNums < photoWithPaths.size()) {
                               pushImage(photoWithPaths.get(imgNums),ADD_IMG_KEY2);
                           }else {
@@ -89,6 +92,8 @@ public class PushImageUtil {
                     if (msg.obj != null) {
                         if (JsonResult.JSONparser(mContext, String.valueOf((JSONObject)msg.obj))){
                             imgNums = 2;
+//                            arrayList=JsonResult.JsonParser((String) msg.obj);
+//                            imageReturn.setData(arrayList.get(0).toString());
                             if (imgNums < photoWithPaths.size()) {
                                 pushImage(photoWithPaths.get(imgNums),ADD_IMG_KEY3);
 
@@ -250,13 +255,24 @@ public class PushImageUtil {
                             JSONObject obj = new JSONObject(s);
                             msg.what = KEY;
                             msg.obj = obj;
+                            Log.d("===图片张数",imgNums+"");
+//                            String state=obj.getString("success");
+//                            if (state.equals("success")){
+//                                String data=obj.getString("data");
+//                                Gson gson=new Gson();
+//                                arrayList=gson.fromJson(data,
+//                                        new TypeToken<ArrayList<ImageReturn>>() {
+//                                        }.getType());
+//                                Log.d("===图片名称",arrayList.get(0)+"");
+//
+//                            }
                             key=KEY;
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }finally {
                             handler.sendMessage(msg);
                         }
-                        Log.d("+++头像上传", s);
+                        Log.d("===  头像上传", s);
 
                     }
                 }, new Response.ErrorListener() {
@@ -278,19 +294,17 @@ public class PushImageUtil {
         }
         Random random=new Random();
         String fileName ="yyy"+ random.nextInt(10000)+System.currentTimeMillis() + ".jpg";
-
+        arrayList.add(fileName);
+        Log.d("5555777",fileName);
         File file = new File(appDir, fileName);
         try {
             FileOutputStream fos = new FileOutputStream(file);
             bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos);
             fos.flush();
             fos.close();
-            updatePhoto(file,addImgKey);
-            ArrayList<String> arrayList=new ArrayList<>();
-              //  Log.d("====图片集合key",key+"");
-                arrayList.add(fileName);
-            Log.d("====图片集合jjj", addImgKey + "");
-            Log.d("====图片集合", arrayList.size() + "");
+            updatePhoto(file, addImgKey);
+
+
 
         } catch (FileNotFoundException e) {
             e.printStackTrace();

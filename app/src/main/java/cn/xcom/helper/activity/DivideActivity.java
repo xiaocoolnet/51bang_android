@@ -34,6 +34,7 @@ public class DivideActivity extends BaseActivity implements View.OnClickListener
     private RelativeLayout rl_i_help_back;
     private DivideAdapter divideAdapter;
     private List<DictionaryList>groups;
+    private int resultCode=6;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -80,12 +81,11 @@ public class DivideActivity extends BaseActivity implements View.OnClickListener
                 String s=groups.get(position).getName();
                 String id1=groups.get(position).getId();
                 Log.d("=====字典的名字", s);
-                Intent intent=new Intent(getBaseContext(), ReleaseActivity.class);
-                intent.putExtra("judge","返回");
+                Intent intent=new Intent(DivideActivity.this, ReleaseActivity.class);
                 intent.putExtra("dictionary", s);
                 intent.putExtra("id", id1);
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                startActivity(intent);
+               // intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                setResult(resultCode, intent);
                 finish();
             }
         });
