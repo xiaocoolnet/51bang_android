@@ -110,6 +110,8 @@ public interface NetConstant extends HelperConstant {
      * 更新任务支付状态
      */
     public final static String UPDATETASKPAY = NET_HOST_PREFIX+"a=UpdataTaskPaySuccess&";
+
+
     /*
     *根据商品信息找出商家的信息
      */
