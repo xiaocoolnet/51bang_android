@@ -1,5 +1,5 @@
 apply plugin: 'com.android.application'
-
+apply plugin: 'com.neenbedankt.android-apt'//增加这一句
 android {
 //    signingConfigs {
 //
@@ -78,4 +78,7 @@ dependencies {
     //    compile files('build/intermediates/exploded-aar/com.facebook.fresco/imagepipeline-base/0.9.0/jars/classes.jar')
     //    compile files('build/intermediates/exploded-aar/org.xutils/xutils/3.1.22/jars/classes.jar')
     compile files('libs/alipaySdk-20160825.jar')
+    compile 'de.hdodenhof:circleimageview:2.1.0'
+    compile 'com.jakewharton:butterknife:8.4.0'
+    apt 'com.jakewharton:butterknife-compiler:8.4.0'
 }

@@ -119,11 +119,10 @@
         <activity android:name=".activity.SaleDetailActivity" />
         <activity android:name=".activity.ReleaseActivity" />
         <activity android:name=".activity.ShopReleaseActivity" />
-
-        <activity
-
-            android:name=".activity.DivideActivity"></activity>
-        <activity android:name=".activity.SelectTaskTypeActivity"/>
+        <activity android:name=".activity.DivideActivity" />
+        <activity android:name=".activity.SelectTaskTypeActivity" />
+        <activity android:name=".activity.GrabTaskActivity" />
+        <activity android:name=".activity.TaskDetailActivity"></activity>
     </application>
 
 </manifest>
