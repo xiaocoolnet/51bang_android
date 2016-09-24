@@ -114,6 +114,13 @@ public interface NetConstant extends HelperConstant {
 
     /*
     *根据商品信息找出商家的信息
+     */
+    public final static String SHOPINFO=NET_HOST_PREFIX+"a=showshoppinginfo&";
+
+    /*
+    *根据地点获取抢单列表
+     */
+    public final static String GETTASKLIST=NET_HOST_PREFIX+"a=getTaskListByCity&";
     */
     public final static String SHOP_INFO=NET_HOST_PREFIX+"a=showshoppinginfo&";
 
