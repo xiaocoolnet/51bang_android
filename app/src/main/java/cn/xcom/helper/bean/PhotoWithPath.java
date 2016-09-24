@@ -1,4 +1,4 @@
-package cn.xcom.helper.entity;
+package cn.xcom.helper.bean;
 
 import java.io.Serializable;
 

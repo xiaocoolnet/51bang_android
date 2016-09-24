@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Random;
 
 import cn.finalteam.galleryfinal.model.PhotoInfo;
-import cn.xcom.helper.entity.PhotoWithPath;
+import cn.xcom.helper.bean.PhotoWithPath;
 
 
 /**

@@ -1,19 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context="cn.xcom.helper.activity.SaleDetailActivity">
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/sv"
-        android:scrollbars="none" >
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+
 
     <TextView
         android:layout_width="match_parent"
@@ -34,7 +27,16 @@
                 android:src="@mipmap/ic_back_white_left"
                 />
         </RelativeLayout>
-
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/sv"
+        android:layout_weight="1"
+        android:scrollbars="none" >
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
    <android.support.v4.view.ViewPager
       android:layout_width="match_parent"
       android:layout_height="160dp"
@@ -46,6 +48,7 @@
         android:text="自助烤肉都来吃啊、、、、、、"
         android:layout_marginTop="5dp"
         android:layout_marginLeft="10dp"
+        android:textColor="@color/colorTextSale"
         android:textSize="22sp"
         android:id="@+id/tvContent"/>
     <View
@@ -63,8 +66,8 @@
         android:textSize="24sp"/>
     <View
         android:layout_width="match_parent"
-        android:layout_height="10dp"
-        android:layout_marginTop="5dp"
+        android:layout_height="6dp"
+        android:layout_marginTop="3dp"
         android:background="#f4f3f3"></View>
     <LinearLayout
         android:layout_width="wrap_content"
@@ -84,6 +87,7 @@
             android:layout_height="wrap_content"
             android:src="@mipmap/ic_locate"
             android:layout_marginLeft="10dp"
+            android:id="@+id/ic_locate"
             android:layout_marginTop="5dp"/>
         <LinearLayout
             android:layout_width="wrap_content"
@@ -94,14 +98,15 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="烟台市"
+            android:textColor="@color/colorTextSale"
             android:textSize="22sp"/>
             <TextView
                 android:id="@+id/adress"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="芝罘区上尧鲁东大学南校区"
-                android:textSize="22sp"
-                android:textColor="#948888"/>
+                android:textColor="@color/colorTextSale"
+                android:textSize="22sp" />
         </LinearLayout>
 
     </LinearLayout>
@@ -122,13 +127,14 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="1.3km"/>
+                android:text="1.3km"
+                android:textColor="@color/colorTextSale"/>
         </LinearLayout>
     </LinearLayout>
     <View
         android:layout_width="match_parent"
-        android:layout_height="10dp"
-        android:layout_marginTop="5dp"
+        android:layout_height="6dp"
+        android:layout_marginTop="3dp"
         android:background="#f4f3f3"></View>
     <LinearLayout
         android:layout_width="match_parent"
@@ -141,6 +147,7 @@
             android:layout_height="wrap_content"
             android:text="商家发布"
             android:layout_marginLeft="10dp"
+            android:textColor="@color/colorTextSale"
             android:textSize="22sp"/>
         <ImageView
             android:layout_width="20dp"
@@ -150,47 +157,50 @@
     </LinearLayout>
     <View
         android:layout_width="match_parent"
-        android:layout_height="3dp"
+        android:layout_height="1dp"
         android:layout_marginTop="5dp"
         android:background="#f4f3f3"></View>
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:layout_marginTop="180dp"
+        android:layout_marginTop="190dp"
         android:background="#f4f3f3"></View>
-
-    <LinearLayout
-        android:layout_width="300dp"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-        <TextView
+        </LinearLayout>
+    </ScrollView>
+        <RelativeLayout
             android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+        <TextView
+            android:layout_width="200dp"
             android:layout_height="wrap_content"
             android:text="价格：￥38.90"
             android:id="@+id/tvprice"
             android:layout_marginLeft="10dp"
             android:textColor="@color/msg_red"
-            android:layout_marginTop="10dp"
-            android:textSize="22sp"/>
 
-    </LinearLayout>
+            android:textSize="22sp"/>
+        </RelativeLayout>
         <RelativeLayout
             android:layout_width="80dp"
             android:layout_height="40dp"
             android:background="@color/colorHelpMe"
-            android:layout_marginLeft="280dp"
-            android:layout_marginTop="-32dp"
+            android:layout_alignParentRight="true"
             android:id="@+id/buy">
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="18dp"
-                android:layout_marginTop="3dp"
-                android:gravity="center"
                 android:text="购买"
+
                 android:textSize="24sp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginTop="6dp"
                 android:textColor="#ffffff"/>
         </RelativeLayout>
-    </LinearLayout>
-    </ScrollView>
+        </RelativeLayout>
+
+
+
 </LinearLayout>

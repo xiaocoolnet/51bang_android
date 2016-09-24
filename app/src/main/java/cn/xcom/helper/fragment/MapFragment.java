@@ -30,6 +30,7 @@ import java.util.List;
 import cn.xcom.helper.R;
 import cn.xcom.helper.activity.AuthenticationListActivity;
 import cn.xcom.helper.activity.CityPickerActivity;
+import cn.xcom.helper.activity.ConvenienceActivity;
 import cn.xcom.helper.activity.HelpMeActivity;
 import cn.xcom.helper.activity.IHelpActivity;
 
@@ -120,7 +121,7 @@ public class MapFragment extends Fragment implements View.OnClickListener{
                 startActivity(new Intent(mContext, HelpMeActivity.class));
                 break;
             case R.id.tv_fragment_map_city_interaction:
-                Toast.makeText(mContext,"未开发",Toast.LENGTH_SHORT).show();
+                startActivity(new Intent(mContext, ConvenienceActivity.class));
                 break;
         }
 

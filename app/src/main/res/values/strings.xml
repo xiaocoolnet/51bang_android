@@ -55,6 +55,10 @@
     <string name="tv_fragment_map_I_help">我帮</string>
     <string name="tv_fragment_map_help_me">帮我</string>
     <string name="tv_fragment_map_city_interaction">便民圈</string>
+    <!--ConvenienceActivity-->
+    <string name="cnnvenience">便民圈</string>
+    <string name="cnnvenience_release">发布</string>
+    <string name="cnnvenience_deliver">点击此处可以进行快递查询</string>
     <!--CityPickerActivity-->
     <string name="select_city">选择城市</string>
     <string name="hot_city">热门城市</string>

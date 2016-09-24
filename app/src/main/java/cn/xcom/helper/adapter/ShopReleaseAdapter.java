@@ -15,8 +15,10 @@ import java.util.List;
 
 import cn.xcom.helper.R;
 import cn.xcom.helper.activity.SaleDetailActivity;
+import cn.xcom.helper.activity.ShopActivity;
+import cn.xcom.helper.bean.Front;
 import cn.xcom.helper.constant.NetConstant;
-import cn.xcom.helper.entity.Front;
+
 import cn.xcom.helper.utils.MyImageLoader;
 
 /**
@@ -86,9 +88,9 @@ public class ShopReleaseAdapter extends BaseAdapter {
         convertView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent=new Intent(context,SaleDetailActivity.class);
+                Intent intent=new Intent(context,ShopActivity.class);
                 Bundle bundle=new Bundle();
-                bundle.putSerializable("item", addList.get(position));
+                bundle.putSerializable("item1", addList.get(position));
                 Log.i("---", addList.size() + "");
                 intent.putExtras(bundle);
                 // intent.putExtra("item",bundle);

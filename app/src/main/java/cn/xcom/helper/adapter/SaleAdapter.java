@@ -15,8 +15,9 @@ import java.io.Serializable;
 import java.util.List;
 import cn.xcom.helper.R;
 import cn.xcom.helper.activity.SaleDetailActivity;
+import cn.xcom.helper.bean.Front;
 import cn.xcom.helper.constant.NetConstant;
-import cn.xcom.helper.entity.Front;
+
 import cn.xcom.helper.utils.MyImageLoader;
 
 /**
@@ -77,13 +78,13 @@ public class SaleAdapter extends BaseAdapter{
             }else if (front.getPicturelist().size()==0){
                 MyImageLoader.display(NetConstant.NET_DISPLAY_IMG, viewHolder.imageView);
             }
+              front.getId();
             viewHolder.textView1.setText(front.getGoodsname());
             viewHolder.textView2.setText(front.getDescription());
             viewHolder.textView3.setText("￥"+front.getPrice());
             viewHolder.textView4.setText(front.getOprice());
             viewHolder.textView5.setText("已售"+front.getSellnumber());
         //对cinvertview进行监听
-
             convertView.setOnClickListener(new View.OnClickListener() {
             @Override
               public void onClick(View v) {

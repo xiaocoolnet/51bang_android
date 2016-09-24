@@ -51,10 +51,11 @@ import cn.finalteam.galleryfinal.model.PhotoInfo;
 import cn.xcom.helper.R;
 import cn.xcom.helper.adapter.ChoosePhotoListAdapter;
 import cn.xcom.helper.adapter.GridViewAdapter;
+import cn.xcom.helper.bean.PhotoWithPath;
 import cn.xcom.helper.bean.UserInfo;
 import cn.xcom.helper.constant.NetConstant;
 
-import cn.xcom.helper.entity.PhotoWithPath;
+
 
 import cn.xcom.helper.utils.DateUtil;
 import cn.xcom.helper.utils.GalleryFinalUtil;

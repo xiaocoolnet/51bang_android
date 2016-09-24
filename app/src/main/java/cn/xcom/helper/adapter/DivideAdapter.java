@@ -14,7 +14,8 @@ import java.util.List;
 
 import cn.xcom.helper.R;
 import cn.xcom.helper.activity.ReleaseActivity;
-import cn.xcom.helper.entity.DictionaryList;
+import cn.xcom.helper.bean.DictionaryList;
+
 
 /**
  * Created by 尉鑫鑫 on 2016/9/20.

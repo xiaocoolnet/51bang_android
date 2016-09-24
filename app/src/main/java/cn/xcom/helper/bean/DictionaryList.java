@@ -1,4 +1,4 @@
-package cn.xcom.helper.entity;
+package cn.xcom.helper.bean;
 
 /**
  * Created by 尉鑫鑫 on 2016/9/18.

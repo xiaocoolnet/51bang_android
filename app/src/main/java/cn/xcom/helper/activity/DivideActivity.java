@@ -24,8 +24,9 @@ import java.util.List;
 import cn.xcom.helper.R;
 import cn.xcom.helper.adapter.DivideAdapter;
 import cn.xcom.helper.adapter.GroupAdapter;
+import cn.xcom.helper.bean.DictionaryList;
 import cn.xcom.helper.constant.NetConstant;
-import cn.xcom.helper.entity.DictionaryList;
+
 import cn.xcom.helper.utils.SingleVolleyRequest;
 import cn.xcom.helper.utils.StringPostRequest;
 

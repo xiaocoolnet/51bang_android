@@ -32,9 +32,10 @@ import cn.xcom.helper.R;
 import cn.xcom.helper.activity.ReleaseActivity;
 import cn.xcom.helper.adapter.GroupAdapter;
 import cn.xcom.helper.adapter.SaleAdapter;
+import cn.xcom.helper.bean.DictionaryList;
+import cn.xcom.helper.bean.Front;
 import cn.xcom.helper.constant.NetConstant;
-import cn.xcom.helper.entity.DictionaryList;
-import cn.xcom.helper.entity.Front;
+
 import cn.xcom.helper.utils.SingleVolleyRequest;
 import cn.xcom.helper.utils.StringPostRequest;
 import cn.xcom.helper.utils.ToastUtils;
@@ -214,7 +215,7 @@ public class SaleFragment extends Fragment implements View.OnClickListener {
                         if (state.equals("success")){
                             String jsonObject1 = jsonObject.getString("data");
                             Gson gson = new Gson();
-                          List<DictionaryList>  groups=gson.fromJson(jsonObject1,
+                           List<DictionaryList>  groups=gson.fromJson(jsonObject1,
                                     new TypeToken<ArrayList<DictionaryList>>() {
                                     }.getType());
                             addAllList.addAll(groups);

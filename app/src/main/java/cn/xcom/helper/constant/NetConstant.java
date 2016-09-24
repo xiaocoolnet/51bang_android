@@ -114,6 +114,18 @@ public interface NetConstant extends HelperConstant {
 
     /*
     *根据商品信息找出商家的信息
-     */
-    public final static String SHOPINFO=NET_HOST_PREFIX+"a=showshoppinginfo&";
+    */
+    public final static String SHOP_INFO=NET_HOST_PREFIX+"a=showshoppinginfo&";
+
+
+    /*
+    *根据商家的ID找出该商家发布的全部商品
+    */
+    public final static  String SHOP_GOOD=NET_HOST_PREFIX+"a=getMyshoppinglist&";
+
+
+    /*
+    *便民圈接口
+    */
+    public final static String CONVENIENCE=NET_HOST_PREFIX+"a=getbbspostlist&";
 }

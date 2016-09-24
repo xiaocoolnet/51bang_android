@@ -1,10 +1,6 @@
-package cn.xcom.helper.entity;
-
-import android.os.Parcel;
-import android.os.Parcelable;
+package cn.xcom.helper.bean;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -161,13 +157,7 @@ public class Front implements Serializable {
     public List<PicturelistBean> getPicturelist() {
        return picturelist;
     }
-//    public List<PicturelistBean>   getPicture(){
-//        List<PicturelistBean> list=new ArrayList<>();
-//          for (PicturelistBean p:picturelist){
-//              list.add(p);
-//          }
-//        return list;
-//    }
+
     public void setPicturelist(List<PicturelistBean> picturelist) {
         this.picturelist = picturelist;
     }
