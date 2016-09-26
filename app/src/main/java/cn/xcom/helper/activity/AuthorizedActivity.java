@@ -150,7 +150,7 @@ public class AuthorizedActivity extends BaseActivity implements View.OnClickList
                 showPickDialog();
                 break;
             case R.id.bt_authorized_next:
-                startActivity(new Intent(mContext,SkillListActivity.class));
+                startActivity(new Intent(mContext,SelectTypeActivity.class));
                 break;
         }
 

@@ -122,6 +122,7 @@ public class ViewHolder {
     }
 
 
+
     /*public ViewHolder setItemImages(final Context mContext,int oneview,int gridview, final ArrayList<String> images){
         ImageView view = getView(oneview);
         NoScrollGridView gv = getView(gridview);

@@ -36,4 +36,6 @@
     <color name="common_text">#656869</color>
     <color name="common_blue">#2d99fe</color>
 
+    <color name="navpage">#FFE1E8EB</color>
+
 </resources>

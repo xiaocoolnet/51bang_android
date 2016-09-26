@@ -51,7 +51,7 @@ public class BuyFragment extends Fragment implements View.OnClickListener{
     private SwipeRefreshLayout srl_task;
     private ListView lv_task;
     private SwitchButton sb_change;
-    private boolean isChecked = true;
+    private boolean isChecked = false;
     private List<TaskInfo> taskInfos;
     private CommonAdapter<TaskInfo> adapter;
     @Nullable

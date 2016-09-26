@@ -122,11 +122,14 @@
         <activity android:name=".activity.DivideActivity" />
         <activity android:name=".activity.SelectTaskTypeActivity" />
         <activity android:name=".activity.GrabTaskActivity" />
-        <activity android:name=".activity.TaskDetailActivity"></activity>
-        <activity android:name=".activity.DivideActivity" />
-        <activity android:name=".activity.SelectTaskTypeActivity" />
+        <activity android:name=".activity.TaskDetailActivity" />
         <activity android:name=".activity.ShopActivity" />
-        <activity android:name=".activity.ConvenienceActivity"></activity>
+        <activity android:name=".activity.ConvenienceActivity" />
+        <activity
+            android:name=".WXpay.WXPayEntryActivity"
+            android:exported="true"
+            android:launchMode="singleTop" />
+        <activity android:name=".activity.SelectTypeActivity"></activity>
     </application>
 
 </manifest>
