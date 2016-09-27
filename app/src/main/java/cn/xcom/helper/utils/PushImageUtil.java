@@ -256,17 +256,6 @@ public class PushImageUtil {
                             msg.what = KEY;
                             msg.obj = obj;
                             Log.d("===图片张数",imgNums+"");
-//                            String state=obj.getString("success");
-//                            if (state.equals("success")){
-//                                String data=obj.getString("data");
-//                                Gson gson=new Gson();
-//                                arrayList=gson.fromJson(data,
-//                                        new TypeToken<ArrayList<ImageReturn>>() {
-//                                        }.getType());
-//                                Log.d("===图片名称",arrayList.get(0)+"");
-//
-//                            }
-                            key=KEY;
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }finally {
@@ -281,7 +270,6 @@ public class PushImageUtil {
 
                     }
                 });
-
                 SingleVolleyRequest.getInstance(mContext).addToRequestQueue(request);
             }
         }.start();
@@ -303,15 +291,13 @@ public class PushImageUtil {
             fos.flush();
             fos.close();
             updatePhoto(file, addImgKey);
-
-
-
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
+    //将图片路径转换为bitmap格式
     public Bitmap convertToBitmap(String path, int w, int h) {
         BitmapFactory.Options opts = new BitmapFactory.Options();
         // 设置为ture只获取图片大小

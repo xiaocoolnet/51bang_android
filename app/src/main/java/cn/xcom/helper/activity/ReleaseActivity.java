@@ -21,6 +21,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.GridView;
@@ -30,21 +31,15 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.android.internal.http.multipart.FilePart;
-import com.android.internal.http.multipart.Part;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.baoyz.actionsheet.ActionSheet;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Random;
 
 import cn.finalteam.galleryfinal.GalleryFinal;
 import cn.finalteam.galleryfinal.model.PhotoInfo;
@@ -54,10 +49,6 @@ import cn.xcom.helper.adapter.GridViewAdapter;
 import cn.xcom.helper.bean.PhotoWithPath;
 import cn.xcom.helper.bean.UserInfo;
 import cn.xcom.helper.constant.NetConstant;
-
-
-
-import cn.xcom.helper.utils.DateUtil;
 import cn.xcom.helper.utils.GalleryFinalUtil;
 import cn.xcom.helper.utils.PicturePickerDialog;
 import cn.xcom.helper.utils.PushImage;
@@ -65,7 +56,6 @@ import cn.xcom.helper.utils.PushImageUtil;
 import cn.xcom.helper.utils.SingleVolleyRequest;
 import cn.xcom.helper.utils.StringJoint;
 import cn.xcom.helper.utils.StringPostRequest;
-import cn.xcom.helper.utils.VolleyRequest;
 import cn.xcom.helper.utils.WheelView;
 
 
@@ -109,6 +99,8 @@ public class ReleaseActivity extends BaseActivity implements View.OnClickListene
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
+        getWindow().setSoftInputMode(
+                WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         setContentView(R.layout.activity_release);
         context=this;
         initView();
@@ -199,12 +191,9 @@ public class ReleaseActivity extends BaseActivity implements View.OnClickListene
 
     //提交发布
     private void submit() {
+        //得到用户的wuserid
         final UserInfo info=new UserInfo();
          info.readData(context);
-
-
-
-
         // validate
         final String goodNameString = goodName.getText().toString().trim();
         if (TextUtils.isEmpty(goodNameString)) {

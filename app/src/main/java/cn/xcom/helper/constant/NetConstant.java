@@ -135,4 +135,13 @@ public interface NetConstant extends HelperConstant {
     *便民圈接口
     */
     public final static String CONVENIENCE=NET_HOST_PREFIX+"a=getbbspostlist&";
+
+    /*
+ 快递查询
+  */
+    public static final String DELIEVER="http://m.kuaidi100.com/index_all.html";
+    /*
+     发布便民圈信息
+     */
+    public static final String CONVENIENCE_RELEASE=NET_HOST_PREFIX+"a=addbbsposts&";
 }

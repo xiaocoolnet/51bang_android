@@ -1,6 +1,8 @@
 package cn.xcom.helper.utils;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.Locale;
 
 /**
@@ -27,6 +29,13 @@ public class TimeUtils {
         return fromateTimeShow(getNowTime(), fromateType);
     }
 
+    /*时间戳转换成字符窜*/
+    public static String getDateToString(long time) {
+        SimpleDateFormat sf;
+        Date d = new Date(time);
+        sf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        return sf.format(d);
+        }
     /**
      * 格式化时间
      *
@@ -36,9 +45,10 @@ public class TimeUtils {
      *            格式
      * @return 格式化后的时间
      */
+
     public static String fromateTimeShow(long time, String fType) {
-        java.util.Date date = new java.util.Date(time);
-        java.text.SimpleDateFormat format = new java.text.SimpleDateFormat(fType, Locale.getDefault());
+        Date date = new Date(time);
+        SimpleDateFormat format = new SimpleDateFormat(fType, Locale.getDefault());
         return format.format(date);
     }
 

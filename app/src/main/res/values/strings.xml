@@ -303,4 +303,10 @@
     <string name="title_activity_sale_de">saleDeActivity</string>
     <string name="title_activity_divid">DividActivity</string>
 
+    <!--ReleaseConvenienceActivity-->
+    <string name="tv_i_convenience_releasepeople">发布便民信息</string>
+    <string name="tv_i_convenience_release">发布</string>
+    <string name="tv_i_convenience_hint">禁止发布黄，赌，毒，违反国家法律的言论和图片。</string>
+    <string name="tv_i_convenience_phone">联系电话</string>
+
 </resources>

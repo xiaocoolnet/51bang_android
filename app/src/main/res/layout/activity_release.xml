@@ -4,7 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="cn.xcom.helper.activity.ReleaseActivity">
+    tools:context="cn.xcom.helper.activity.ReleaseActivity"
+     >
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="46dip" >
@@ -32,6 +33,17 @@
                 android:src="@mipmap/ic_back_white_left" />
         </RelativeLayout>
     </RelativeLayout>
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:id="@+id/sv"
+        android:scrollbars="none"
+       >
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
     <EditText
         android:id="@+id/goodName"
         android:layout_width="match_parent"
@@ -54,30 +66,34 @@
         android:gravity="top"
         android:background="@null"/>
 
-    <LinearLayout
-        android:id="@+id/image_linearLayout"
-        android:layout_width="match_parent"
-        android:layout_height="60dip"
-        android:orientation="horizontal">
-        <GridView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/gridview"
-             android:horizontalSpacing="5dp"
-            android:numColumns="6">
 
-        </GridView>
-    </LinearLayout>
     <ImageView
         android:id="@+id/tupian"
         android:layout_width="20dp"
         android:layout_height="20dp"
         android:layout_marginLeft="10dip"
         android:src="@mipmap/ic_tupian"/>
+            <LinearLayout
+                android:id="@+id/image_linearLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <cn.xcom.helper.utils.NoScrollGridView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/gridview"
+                    android:horizontalSpacing="5dp"
+                    android:numColumns="3">
+
+                </cn.xcom.helper.utils.NoScrollGridView>
+
+            </LinearLayout>
     <View
         android:layout_width="match_parent"
         android:layout_height="5dp"
         android:background="#e4e0e0"></View>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="45dp"
@@ -261,15 +277,18 @@
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="#e4e0e0"></View>
+
     <Button
         android:id="@+id/bt_login_release"
         android:layout_width="match_parent"
         android:layout_height="43dip"
         android:layout_marginLeft="20dip"
         android:layout_marginRight="20dip"
-        android:layout_marginTop="15dip"
+        android:layout_marginTop="50dp"
         android:text="@string/tv_i_relsase_release"
         android:textSize="16dp"
         android:textColor="@color/colorTextWhite"
         android:background="@drawable/bt_login_click"/>
+        </LinearLayout>
+    </ScrollView>
 </LinearLayout>

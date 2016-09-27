@@ -1,7 +1,6 @@
 package cn.xcom.helper.adapter;
 
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,7 +9,6 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import cn.finalteam.galleryfinal.model.PhotoInfo;
 import cn.xcom.helper.R;
@@ -60,8 +58,8 @@ public class GridViewAdapter extends BaseAdapter {
         }
 
         if (position+1<=i){
-            Log.d("======hahaaaa",list.size() + "");
             MyImageLoader.display("file:/" + list.get(position).getPhotoPath(), viewHolder.imageView1);
+            Log.d("======path", list.get(position).getPhotoPath() + "");
        }
         return convertView;
     }
