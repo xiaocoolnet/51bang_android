@@ -144,4 +144,9 @@ public interface NetConstant extends HelperConstant {
      发布便民圈信息
      */
     public static final String CONVENIENCE_RELEASE=NET_HOST_PREFIX+"a=addbbsposts&";
+
+    /*
+   删除商品
+   */
+    public static final String DELETE_GOOD=NET_HOST_PREFIX+"a=DeleteGoods&";
 }

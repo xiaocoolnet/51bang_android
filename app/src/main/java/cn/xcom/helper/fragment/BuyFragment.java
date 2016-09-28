@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 
 import com.google.gson.Gson;
@@ -27,6 +28,7 @@ import java.util.List;
 
 import cn.xcom.helper.R;
 import cn.xcom.helper.activity.AuthorizedActivity;
+import cn.xcom.helper.activity.MyTaskActivity;
 import cn.xcom.helper.activity.TaskDetailActivity;
 import cn.xcom.helper.bean.TaskInfo;
 import cn.xcom.helper.bean.UserInfo;
@@ -48,10 +50,11 @@ public class BuyFragment extends Fragment implements View.OnClickListener{
     private Button bt_authorized;
     private UserInfo userInfo;
     private SwitchButton sb;
+    private LinearLayout ll_task;
     private SwipeRefreshLayout srl_task;
     private ListView lv_task;
     private SwitchButton sb_change;
-    private boolean isChecked = false;
+    private boolean isChecked = true;
     private List<TaskInfo> taskInfos;
     private CommonAdapter<TaskInfo> adapter;
     @Nullable
@@ -76,6 +79,8 @@ public class BuyFragment extends Fragment implements View.OnClickListener{
     private void initView(){
         userInfo=new UserInfo(mContext);
         if(isChecked){
+            ll_task = (LinearLayout) getView().findViewById(R.id.ll_task);
+            ll_task.setOnClickListener(this);
             srl_task = (SwipeRefreshLayout) getView().findViewById(R.id.grab_task_srl);
             lv_task = (ListView) getView().findViewById(R.id.grab_task_list);
             sb_change = (SwitchButton) getView().findViewById(R.id.sb_fragment_buy);
@@ -224,6 +229,8 @@ public class BuyFragment extends Fragment implements View.OnClickListener{
             case R.id.bt_fragment_buy_authorized:
                 startActivity(new Intent(mContext, AuthorizedActivity.class));
                 break;
+            case R.id.ll_task:
+                startActivity(new Intent(mContext, MyTaskActivity.class));
         }
 
     }

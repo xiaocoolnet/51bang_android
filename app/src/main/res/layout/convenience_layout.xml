@@ -11,8 +11,8 @@
          >
          <cn.xcom.helper.utils.RoundImageView
              android:id="@+id/convenience_photo"
-             android:layout_width="70dp"
-             android:layout_height="70dp"
+             android:layout_width="60dp"
+             android:layout_height="60dp"
              android:layout_marginLeft="10dp"
              android:src="@mipmap/morenimage"/>
          <LinearLayout

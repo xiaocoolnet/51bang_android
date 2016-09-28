@@ -49,7 +49,6 @@ public class PicturePickerDialog extends Dialog implements View.OnClickListener 
 
     public interface PicturePickerCallBack {
         void onPhotoClick();
-
         void onAlbumClick();
     }
 

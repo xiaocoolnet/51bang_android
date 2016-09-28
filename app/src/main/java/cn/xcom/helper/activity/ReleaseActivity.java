@@ -89,6 +89,7 @@ public class ReleaseActivity extends BaseActivity implements View.OnClickListene
     private final int  PHONE_PHOTO=1;
     private final int  TAKE_PHOTO=2;
     private final int  RESULT_PHOTO=3;//裁剪后的头像
+    private View view_line;
     private static final int MY_PERMISSIONS_REQUEST_READ_CONTACTS=4;
     String s2="";
     private  String type="";
@@ -121,6 +122,7 @@ public class ReleaseActivity extends BaseActivity implements View.OnClickListene
         rl_i_help_back.setOnClickListener(this);
         goodName = (EditText) findViewById(R.id.goodName);
         description = (EditText) findViewById(R.id.description);
+        view_line=findViewById(R.id.view_line);
        // ima_dismiss= (ImageView) findViewById(R.id.ima_dissmis);
        // ima_dismiss.setOnClickListener(this);
         id_dismiss11= (ImageView) findViewById(R.id.id_dismiss11);
@@ -139,8 +141,8 @@ public class ReleaseActivity extends BaseActivity implements View.OnClickListene
         ed_price = (EditText) findViewById(R.id.ed_price);
         ed_oldprice = (EditText) findViewById(R.id.ed_oldprice);
         location = (LinearLayout) findViewById(R.id.location);
-        image_linearLayout= (LinearLayout) findViewById(R.id.image_linearLayout);
-        image_linearLayout.setOnClickListener(this);
+//        image_linearLayout= (LinearLayout) findViewById(R.id.image_linearLayout);
+//        image_linearLayout.setOnClickListener(this);
         transport = (LinearLayout) findViewById(R.id.transport);
         transport.setOnClickListener(this);
         telephone = (TextView) findViewById(R.id.telephone);
@@ -313,7 +315,6 @@ public class ReleaseActivity extends BaseActivity implements View.OnClickListene
         picturePickerDialog.show(new PicturePickerDialog.PicturePickerCallBack() {
             @Override
             public void onPhotoClick() {
-
                 Toast.makeText(context,"拍 照",Toast.LENGTH_SHORT).show();
                 //获取拍照权限
                 if (galleryFinalUtil.openCamera(ReleaseActivity.this, (ArrayList<PhotoInfo>) addImageList, REQUEST_CODE_CAMERA, mOnHanlderResultCallback)) {
@@ -330,7 +331,6 @@ public class ReleaseActivity extends BaseActivity implements View.OnClickListene
             @Override
             public void onAlbumClick() {
                 galleryFinalUtil.openAblum(ReleaseActivity.this, (ArrayList<PhotoInfo>) addImageList, REQUEST_CODE_GALLERY, mOnHanlderResultCallback);
-
                 Toast.makeText(context,"相册选择",Toast.LENGTH_SHORT).show();
             }
         });
@@ -391,6 +391,7 @@ public class ReleaseActivity extends BaseActivity implements View.OnClickListene
                 Log.d("======haha", addImageList.size() + "");
                 gridViewAdapter = new GridViewAdapter(ReleaseActivity.this, (ArrayList<PhotoInfo>) addImageList);
                 gridView.setAdapter(gridViewAdapter);
+                view_line.setVisibility(View.VISIBLE);
 
             }
         }

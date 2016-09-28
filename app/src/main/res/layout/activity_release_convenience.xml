@@ -65,6 +65,13 @@
         android:scaleType="fitXY"
         android:src="@mipmap/ease_record_animate_01"/>
     </LinearLayout>
+    <View
+        android:id="@+id/view_line"
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:background="#e4e0e0"
+        android:layout_marginTop="5dp"
+        android:visibility="gone"/>
     <LinearLayout
         android:id="@+id/image_linearLayout"
         android:layout_width="match_parent"
@@ -73,9 +80,10 @@
         android:layout_marginTop="5dp">
         <cn.xcom.helper.utils.NoScrollGridView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:id="@+id/gridview"
             android:layout_marginLeft="10dp"
+            android:verticalSpacing="5dp"
             android:horizontalSpacing="5dp"
             android:numColumns="3">
         </cn.xcom.helper.utils.NoScrollGridView>
@@ -90,6 +98,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@color/colorTheme"
+        android:visibility="gone"
 
         />
 

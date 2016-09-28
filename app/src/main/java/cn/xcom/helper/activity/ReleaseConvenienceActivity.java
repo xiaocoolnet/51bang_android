@@ -48,6 +48,7 @@ public class ReleaseConvenienceActivity extends BaseActivity implements View.OnC
     private ImageView tupian;
     private Button voice_button;
     private ImageView voice;
+    private View view_line;
     private GalleryFinalUtil galleryFinalUtil;
     private GridViewAdapter gridViewAdapter;
     private final int REQUEST_CODE_CAMERA = 1000;
@@ -72,6 +73,7 @@ public class ReleaseConvenienceActivity extends BaseActivity implements View.OnC
         galleryFinalUtil = new GalleryFinalUtil(9);
         back = (RelativeLayout) findViewById(R.id.back);
         back.setOnClickListener(this);
+        view_line=findViewById(R.id.view_line);
         cnnvenience_release = (TextView) findViewById(R.id.cnnvenience_release);
         cnnvenience_release.setOnClickListener(this);
         voice_button= (Button) findViewById(R.id.voice_button);
@@ -205,7 +207,10 @@ public class ReleaseConvenienceActivity extends BaseActivity implements View.OnC
                 Log.d("======haha", addImageList.size() + "");
                 gridViewAdapter = new GridViewAdapter(ReleaseConvenienceActivity.this, (ArrayList<PhotoInfo>) addImageList);
                 gridview.setAdapter(gridViewAdapter);
+                view_line.setVisibility(View.VISIBLE);
 
+            }else{
+                view_line.setVisibility(View.INVISIBLE);
             }
         }
         @Override

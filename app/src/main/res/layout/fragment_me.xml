@@ -72,9 +72,23 @@
                 android:layout_width="103dip"
                 android:layout_height="31dip"
                 android:layout_alignParentRight="true"
-                android:layout_marginTop="45dip"
+                android:layout_marginTop="25dip"
                 android:text="@string/tv_fragment_me_real_name"
                 android:textSize="14dip"
+                android:gravity="center_vertical"
+                android:textColor="@color/colorTextWhite"
+                android:drawableLeft="@mipmap/ic_me_real_name"
+                android:paddingLeft="10dip"
+                android:drawablePadding="10dip"
+                android:background="@drawable/tv_fragment_me_real_name"/>
+            <TextView
+                android:id="@+id/tv_fragment_me_real_baoxian"
+                android:layout_width="103dip"
+                android:layout_height="31dip"
+                android:layout_alignParentRight="true"
+                android:text="@string/tv_fragment_me_real_baoxian"
+                android:textSize="14dip"
+                android:layout_marginTop="60dp"
                 android:gravity="center_vertical"
                 android:textColor="@color/colorTextWhite"
                 android:drawableLeft="@mipmap/ic_me_real_name"
@@ -144,13 +158,7 @@
                 android:drawablePadding="10dip"
                 android:background="@color/colorTextWhite"/>
         </LinearLayout>
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="30dip"
-            android:hint="@string/tv_fragment_me_buy"
-            android:gravity="center_vertical"
-            android:paddingLeft="10dp"
-            />
+
         <TextView
             android:id="@+id/tv_fragment_me_bill"
             android:layout_width="match_parent"
@@ -174,7 +182,7 @@
             android:background="@color/colorTextWhite"
             android:drawableLeft="@mipmap/ic_me_coupon"
             android:drawablePadding="10dip"
-            android:text="@string/tv_fragment_me_coupon"
+            android:text="@string/tv_fragment_me_order"
             android:textSize="14dip"
             />
         <TextView
@@ -186,7 +194,7 @@
             android:gravity="center_vertical"
             android:drawableLeft="@mipmap/ic_me_order"
             android:paddingLeft="10dip"
-            android:text="@string/tv_fragment_me_order"
+            android:text="@string/tv_fragment_me_release"
             android:drawablePadding="10dip"
             android:textSize="14dip"
             />
@@ -217,7 +225,7 @@
             android:textSize="14dip"
             />
         <TextView
-            android:id="@+id/tv_fragment_me_address"
+            android:id="@+id/tv_fragment_me_share2"
             android:layout_width="match_parent"
             android:layout_height="46dip"
             android:layout_marginTop="1dip"
@@ -225,12 +233,12 @@
             android:gravity="center_vertical"
             android:drawableLeft="@mipmap/ic_me_address"
             android:paddingLeft="10dip"
-            android:text="@string/tv_fragment_me_address"
+            android:text="@string/tv_fragment_me_share"
             android:drawablePadding="10dip"
             android:textSize="14dip"
             />
         <TextView
-            android:id="@+id/tv_fragment_me_share"
+            android:id="@+id/tv_fragment_me_shopBuy"
             android:layout_width="match_parent"
             android:layout_height="46dip"
             android:layout_marginTop="1dip"
@@ -238,7 +246,7 @@
             android:gravity="center_vertical"
             android:drawableLeft="@mipmap/ic_me_share"
             android:paddingLeft="10dip"
-            android:text="@string/tv_fragment_me_share"
+            android:text="@string/tv_fragment_me_order_shop"
             android:drawablePadding="10dip"
             android:textSize="14dip"
             />
@@ -263,7 +271,20 @@
             android:textSize="14dip"
             />
         <TextView
-            android:id="@+id/tv_fragment_me_insure"
+        android:id="@+id/tv_fragment_me_insure"
+        android:layout_width="match_parent"
+        android:layout_height="46dip"
+        android:layout_marginTop="1dip"
+        android:background="@color/colorTextWhite"
+        android:gravity="center_vertical"
+        android:drawableLeft="@mipmap/ic_me_insure"
+        android:paddingLeft="10dip"
+        android:text="@string/tv_fragment_me_insure"
+        android:drawablePadding="10dip"
+        android:textSize="14dip"
+        />
+        <TextView
+            android:id="@+id/tv_fragment_me_adress"
             android:layout_width="match_parent"
             android:layout_height="46dip"
             android:layout_marginTop="1dip"
@@ -271,7 +292,7 @@
             android:gravity="center_vertical"
             android:drawableLeft="@mipmap/ic_me_insure"
             android:paddingLeft="10dip"
-            android:text="@string/tv_fragment_me_insure"
+            android:text="@string/tv_fragment_me_address"
             android:drawablePadding="10dip"
             android:textSize="14dip"
             />

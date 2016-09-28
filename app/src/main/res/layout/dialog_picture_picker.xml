@@ -22,7 +22,7 @@
                 android:layout_height="45dp"
                 android:background="@drawable/dialog_top_selector"
                 android:text="相机"
-                android:textColor="@color/common_text"
+                android:textColor="@color/common_blue"
                 android:textSize="17sp" />
 
             <View
@@ -36,7 +36,7 @@
                 android:layout_height="45dp"
                 android:background="@drawable/dialog_bottom_selector"
                 android:text="相册"
-                android:textColor="@color/common_text"
+                android:textColor="@color/common_blue"
                 android:textSize="17sp" />
         </LinearLayout>
 

@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical">
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="46dip" >
@@ -13,12 +14,12 @@
             android:layout_height="match_parent"
             android:gravity="center"
             android:textSize="17dp"
-            android:text="@string/tv_order_title"
+            android:text="我的任务"
             android:textColor="@color/colorTextWhite"
             android:background="@color/colorTheme"/>
 
         <RelativeLayout
-            android:id="@+id/rl_order_back"
+            android:id="@+id/rl_back"
             android:layout_width="50dip"
             android:layout_height="fill_parent"
             android:gravity="center" >
@@ -30,15 +31,19 @@
                 android:src="@mipmap/ic_back_white_left" />
         </RelativeLayout>
     </RelativeLayout>
-    <android.support.v4.widget.SwipeRefreshLayout
+    <com.lzy.widget.tab.PagerSlidingTabStrip
+        android:id="@+id/task_tab"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/swiperefresh">
-    <ListView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/mine_listView">
+        android:layout_height="50dp"
+        android:textColor="@color/colorTheme"
+        android:textSize="16sp"
+        app:pstsDividerColor="#05c0ab"
+        app:pstsIndicatorColor="#05c0ab"
+        app:pstsIndicatorHeight="4dp"
+        app:pstsShouldExpand="true"/>
 
-    </ListView>
-    </android.support.v4.widget.SwipeRefreshLayout>
+    <android.support.v4.view.ViewPager
+        android:id="@+id/task_viewpager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
 </LinearLayout>

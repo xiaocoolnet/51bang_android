@@ -35,7 +35,7 @@ import cn.xcom.helper.activity.MessageActivity;
 import cn.xcom.helper.activity.MoreServiceActivity;
 import cn.xcom.helper.activity.OrderActivity;
 import cn.xcom.helper.activity.OrderTakingActivity;
-import cn.xcom.helper.activity.ShareActivity;
+import cn.xcom.helper.activity.ShopBuyActivity;
 import cn.xcom.helper.activity.ShoppingCartActivity;
 import cn.xcom.helper.activity.SignActivity;
 import cn.xcom.helper.activity.WalletActivity;
@@ -56,8 +56,8 @@ public class MeFragment extends Fragment implements View.OnClickListener{
     private CircleImageView iv_head;
     private ImageView iv_gender;
     private TextView tv_name,tv_phone,tv_realName,tv_wallet,tv_sign,tv_message,
-            tv_bill,tv_coupon,tv_order,tv_collection,tv_shoppingCart,tv_address,tv_share,tv_orderTaking,
-            tv_insure,tv_moreService;
+            tv_bill,tv_coupon,tv_order,tv_collection,tv_shoppingCart,tv_share2,tv_shopBuy,tv_orderTaking,
+            tv_insure,tv_moreService,tv_adress;
     private ImageLoader imageLoader=ImageLoader.getInstance();
     private DisplayImageOptions options;
     private UserInfo userInfo;
@@ -101,10 +101,10 @@ public class MeFragment extends Fragment implements View.OnClickListener{
         tv_collection.setOnClickListener(this);
         tv_shoppingCart= (TextView) getView().findViewById(R.id.tv_fragment_me_shopping_cart);
         tv_shoppingCart.setOnClickListener(this);
-        tv_address= (TextView) getView().findViewById(R.id.tv_fragment_me_address);
-        tv_address.setOnClickListener(this);
-        tv_share= (TextView) getView().findViewById(R.id.tv_fragment_me_share);
-        tv_share.setOnClickListener(this);
+        tv_share2= (TextView) getView().findViewById(R.id.tv_fragment_me_share2);
+        tv_share2.setOnClickListener(this);
+        tv_shopBuy= (TextView) getView().findViewById(R.id.tv_fragment_me_shopBuy);
+        tv_shopBuy.setOnClickListener(this);
         tv_orderTaking= (TextView) getView().findViewById(R.id.tv_fragment_me_order_taking);
         tv_orderTaking.setOnClickListener(this);
         tv_insure= (TextView) getView().findViewById(R.id.tv_fragment_me_insure);
@@ -113,6 +113,8 @@ public class MeFragment extends Fragment implements View.OnClickListener{
         ll_serviceConsulting.setOnClickListener(this);
         tv_moreService= (TextView) getView().findViewById(R.id.tv_fragment_me_more_service);
         tv_moreService.setOnClickListener(this);
+        tv_adress= (TextView) getView().findViewById(R.id.tv_fragment_me_adress);
+        tv_adress.setOnClickListener(this);
         userInfo=new UserInfo(mContext);
         options=new DisplayImageOptions.Builder()
                 .bitmapConfig(Bitmap.Config.RGB_565)
@@ -213,11 +215,11 @@ public class MeFragment extends Fragment implements View.OnClickListener{
             case R.id.tv_fragment_me_shopping_cart:
                 startActivity(new Intent(mContext, ShoppingCartActivity.class));
                 break;
-            case R.id.tv_fragment_me_address:
+            case R.id.tv_fragment_me_adress:
                 startActivity(new Intent(mContext, AddressListActivity.class));
                 break;
-            case R.id.tv_fragment_me_share:
-                startActivity(new Intent(mContext, ShareActivity.class));
+            case R.id.tv_fragment_me_shopBuy:
+                startActivity(new Intent(mContext, ShopBuyActivity.class));
                 break;
             case R.id.tv_fragment_me_order_taking:
                 startActivity(new Intent(mContext, OrderTakingActivity.class));
@@ -233,6 +235,8 @@ public class MeFragment extends Fragment implements View.OnClickListener{
                 break;
             case R.id.tv_fragment_me_more_service:
                 startActivity(new Intent(mContext, MoreServiceActivity.class));
+                break;
+            case R.id. tv_fragment_me_share2:
                 break;
         }
 

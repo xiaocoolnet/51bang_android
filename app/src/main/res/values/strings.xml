@@ -91,9 +91,7 @@
     <string name="tv_fragment_me_coupon">我的优惠券</string>
     <string name="tv_fragment_me_order">我的订单</string>
     <string name="tv_fragment_me_collection">我的收藏</string>
-    <string name="tv_fragment_me_shopping_cart">我的购物车</string>
     <string name="tv_fragment_me_address">我的地址</string>
-    <string name="tv_fragment_me_share">分享送红包</string>
     <string name="tv_fragment_me_sale">我的卖家</string>
     <string name="tv_fragment_me_order_taking">我的接单</string>
     <string name="tv_fragment_me_insure">我要投保</string>
@@ -308,5 +306,12 @@
     <string name="tv_i_convenience_release">发布</string>
     <string name="tv_i_convenience_hint">禁止发布黄，赌，毒，违反国家法律的言论和图片。</string>
     <string name="tv_i_convenience_phone">联系电话</string>
+
+    <string name="tv_fragment_me_shopping_cart">卷码验证</string>
+    <string name="tv_fragment_me_release">我的发布</string>
+    <string name="tv_fragment_me_share">分享二维码</string>
+    <string name="tv_fragment_me_order_shop">商户订单</string>
+    <string name="tv_fragment_me_real_baoxian">保险认证</string>
+    <!--MeFragment-->
 
 </resources>
