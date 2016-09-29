@@ -164,7 +164,6 @@ public interface NetConstant extends HelperConstant {
     抢单
      */
     public static final String GRAB_TASK = NET_HOST_PREFIX + "a=ApplyTask&";
-    public static final String DELETE_GOOD=NET_HOST_PREFIX+"a=DeleteGoods&";
     /*
    *更新任务
    */
