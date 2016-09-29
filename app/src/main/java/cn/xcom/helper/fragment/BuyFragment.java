@@ -13,6 +13,7 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -101,6 +102,8 @@ public class BuyFragment extends Fragment implements View.OnClickListener{
                     Bundle bundle = new Bundle();
                     bundle.putSerializable("taskInfo",taskInfos.get(position));
                     intent.putExtras(bundle);
+                    //抢单列表
+                    intent.putExtra("type","1");
                     mContext.startActivity(intent);
                 }
             });
@@ -172,7 +175,7 @@ public class BuyFragment extends Fragment implements View.OnClickListener{
      * @param holder
      * @param taskInfo
      */
-    private void setItem(ViewHolder holder, TaskInfo taskInfo) {
+    private void setItem(ViewHolder holder, final TaskInfo taskInfo) {
         holder.setText(R.id.tv_name,taskInfo.getName())
                 .setText(R.id.tv_task_name,taskInfo.getDescription())
                 .setTimeText(R.id.tv_task_time,taskInfo.getTime())
@@ -180,11 +183,47 @@ public class BuyFragment extends Fragment implements View.OnClickListener{
                 .setText(R.id.tv_type_name,taskInfo.getTypename())
                 .setText(R.id.tv_address1,taskInfo.getAddress())
                 .setText(R.id.tv_address2,taskInfo.getSaddress())
-                .setText(R.id.tv_price,taskInfo.getPrice());
-        holder.getView(R.id.tv_btn_grab).setOnClickListener(new View.OnClickListener() {
+                .setText(R.id.tv_btn_grab,taskInfo.getState().equals("1")?"抢单":"已被抢")
+                .setText(R.id.tv_price, taskInfo.getPrice());
+        TextView btn_grab = holder.getView(R.id.tv_btn_grab);
+        if(taskInfo.getState().equals("1")){
+            btn_grab.setClickable(true);
+            btn_grab.setText("抢单");
+            btn_grab.setTextColor(getResources().getColor(R.color.colorTheme));
+            btn_grab.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    updateState(taskInfo.getId());
+                }
+            });
+        }else{
+            btn_grab.setClickable(false);
+            btn_grab.setText("已被抢");
+            btn_grab.setTextColor(getResources().getColor(R.color.holo_red_light));
+        }
+    }
+
+    /**
+     * 抢单
+     * @param id
+     */
+    private void updateState(String id) {
+        RequestParams params=new RequestParams();
+        params.put("userid", userInfo.getUserId());
+        params.put("taskid",id);
+        HelperAsyncHttpClient.get(NetConstant.GRAB_TASK, params, new JsonHttpResponseHandler() {
             @Override
-            public void onClick(View v) {
-                ToastUtil.showShort(mContext,"我是按钮");
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                super.onSuccess(statusCode, headers, response);
+                if (response.optString("status").equals("success")) {
+                    ToastUtil.showShort(mContext,"抢单");
+                    getData();
+                }
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                super.onFailure(statusCode, headers, responseString, throwable);
             }
         });
     }

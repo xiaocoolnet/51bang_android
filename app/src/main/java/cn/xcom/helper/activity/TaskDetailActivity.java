@@ -8,13 +8,17 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import cn.xcom.helper.R;
+import cn.xcom.helper.adapter.ImgGridAdapter;
 import cn.xcom.helper.bean.TaskInfo;
+import cn.xcom.helper.bean.TaskItemInfo;
+import cn.xcom.helper.utils.NoScrollGridView;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class TaskDetailActivity extends BaseActivity {
@@ -39,8 +43,13 @@ public class TaskDetailActivity extends BaseActivity {
     TextView tvAddress;
     @BindView(R.id.tv_time)
     TextView tvTime;
+    @BindView(R.id.item_sn_gridpic)
+    NoScrollGridView itemSnGridpic;
     private Context context;
     private TaskInfo taskInfo;
+    private TaskItemInfo taskItemInfo;
+    private String type;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,6 +58,8 @@ public class TaskDetailActivity extends BaseActivity {
         ButterKnife.bind(this);
         context = this;
         taskInfo = (TaskInfo) getIntent().getSerializableExtra("taskInfo");
+        taskItemInfo = (TaskItemInfo) getIntent().getSerializableExtra("taskItemInfo");
+        type = getIntent().getStringExtra("type");
         setData();
     }
 
@@ -56,14 +67,43 @@ public class TaskDetailActivity extends BaseActivity {
      * 为view设置数据
      */
     private void setData() {
-        tvName.setText(taskInfo.getName());
-        tvTradeNo.setText(taskInfo.getOrder_num());
-        tvTradeName.setText(taskInfo.getDescription());
-        tvPrice.setText(taskInfo.getPrice());
-        tvAddress.setText(taskInfo.getAddress());
-        Date date = new Date();
-        date.setTime(Long.parseLong(taskInfo.getExpirydate())*1000);
-        tvTime.setText(new SimpleDateFormat("MM月dd日  HH:mm").format(date));
+        if (type.equals("1")) {
+            tvName.setText(taskInfo.getName());
+            tvTradeNo.setText(taskInfo.getOrder_num());
+            tvTradeName.setText(taskInfo.getDescription());
+            tvPrice.setText(taskInfo.getPrice());
+            tvAddress.setText(taskInfo.getAddress());
+            Date date = new Date();
+            date.setTime(Long.parseLong(taskInfo.getExpirydate()) * 1000);
+            tvTime.setText(new SimpleDateFormat("MM月dd日  HH:mm").format(date));
+            //获取图片字符串数组
+            ArrayList<String> images = new ArrayList<>();
+            for (int i=0;i<taskInfo.getFiles().size();i++){
+                images.add(taskInfo.getFiles().get(i).getFile());
+            }
+            if(taskInfo.getFiles().size()>0){
+                itemSnGridpic.setVisibility(View.VISIBLE);
+                itemSnGridpic.setAdapter(new ImgGridAdapter(images, context));
+            }
+        } else if (type.equals("2")) {
+            tvName.setText(taskItemInfo.getName());
+            tvTradeNo.setText(taskItemInfo.getOrder_num());
+            tvTradeName.setText(taskItemInfo.getDescription());
+            tvPrice.setText(taskItemInfo.getPrice());
+            tvAddress.setText(taskItemInfo.getAddress());
+            Date date = new Date();
+            date.setTime(Long.parseLong(taskItemInfo.getExpirydate()) * 1000);
+            tvTime.setText(new SimpleDateFormat("MM月dd日  HH:mm").format(date));
+            //获取图片字符串数组
+            ArrayList<String> images = new ArrayList<>();
+            for (int i=0;i<taskItemInfo.getFiles().size();i++){
+                images.add(taskItemInfo.getFiles().get(i).getFile());
+            }
+            if(taskItemInfo.getFiles().size()>0){
+                itemSnGridpic.setVisibility(View.VISIBLE);
+                itemSnGridpic.setAdapter(new ImgGridAdapter(images, context));
+            }
+        }
     }
 
     @OnClick({R.id.rl_back, R.id.rl_dianhua, R.id.rl_xiaoxi})

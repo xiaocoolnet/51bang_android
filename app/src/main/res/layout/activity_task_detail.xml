@@ -112,7 +112,23 @@
             android:layout_centerVertical="true"
             android:layout_marginLeft="100dp"/>
     </RelativeLayout>
-
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/background_white">
+        <cn.xcom.helper.utils.NoScrollGridView
+            android:id="@+id/item_sn_gridpic"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:background="@color/background_white"
+            android:horizontalSpacing="10dp"
+            android:listSelector="@color/background_white"
+            android:numColumns="3"
+            android:stretchMode="columnWidth"
+            android:verticalSpacing="10dp"
+            android:visibility="gone" />
+    </RelativeLayout>
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="50dp"

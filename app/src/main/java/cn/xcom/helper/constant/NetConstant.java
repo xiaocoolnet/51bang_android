@@ -5,17 +5,17 @@ package cn.xcom.helper.constant;
  */
 public interface NetConstant extends HelperConstant {
     /**
-     *注册
+     * 注册
      */
-    public final static String NET_REGISTER=NET_HOST_PREFIX+"a=AppRegister&";
+    public final static String NET_REGISTER = NET_HOST_PREFIX + "a=AppRegister&";
     /**
      * 登录
      */
-    public final static String NET_LOGIN=NET_HOST_PREFIX+"a=applogin&";
+    public final static String NET_LOGIN = NET_HOST_PREFIX + "a=applogin&";
     /**
      * 验证用户是否注册
      */
-    public final static String NET_CHECK_PHONE=NET_HOST_PREFIX+"a=checkphone&";
+    public final static String NET_CHECK_PHONE = NET_HOST_PREFIX + "a=checkphone&";
     /**
      * 发送验证码
      */
@@ -23,11 +23,11 @@ public interface NetConstant extends HelperConstant {
     /**
      * 修改密码
      */
-    public final static String NET_RESET_PASSWORD=NET_HOST_PREFIX+"a=forgetpwd&";
+    public final static String NET_RESET_PASSWORD = NET_HOST_PREFIX + "a=forgetpwd&";
     /**
      * 获取个人资料
      */
-    public final static String NET_GET_USER_INFO=NET_HOST_PREFIX+"a=getuserinfo&";
+    public final static String NET_GET_USER_INFO = NET_HOST_PREFIX + "a=getuserinfo&";
     /**
      * 上传图片
      */
@@ -35,100 +35,105 @@ public interface NetConstant extends HelperConstant {
     /**
      * 图片路径
      */
-    public final static String NET_DISPLAY_IMG="http://www.my51bang.com/uploads/images/";
+    public final static String NET_DISPLAY_IMG = "http://www.my51bang.com/uploads/images/";
     /**
      * 修改头像
      */
-    public final static  String NET_UPDATE_HEAD=NET_HOST_PREFIX+"a=UpdateUserAvatar&";
+    public final static String NET_UPDATE_HEAD = NET_HOST_PREFIX + "a=UpdateUserAvatar&";
     /**
      * 修改性别
      */
-    public final static String NET_UPDATE_GENDER=NET_HOST_PREFIX+"a=UpdateUserSex&";
+    public final static String NET_UPDATE_GENDER = NET_HOST_PREFIX + "a=UpdateUserSex&";
     /**
      * 修改城市
      */
-    public final static String NET_UPDATE_CITY=NET_HOST_PREFIX+"a=UpdateUserCity&";
+    public final static String NET_UPDATE_CITY = NET_HOST_PREFIX + "a=UpdateUserCity&";
     /**
      * 修改姓名
      */
-    public final static String NET_UPDATE_NAME=NET_HOST_PREFIX+"a=UpdateUserName&";
+    public final static String NET_UPDATE_NAME = NET_HOST_PREFIX + "a=UpdateUserName&";
     /**
      * 通过用户编号获取身份认证状态
      */
-    public final static String NET_GET_IDENTITY=NET_HOST_PREFIX+"a=getAuthRecord&";
+    public final static String NET_GET_IDENTITY = NET_HOST_PREFIX + "a=getAuthRecord&";
     /**
      * 身份认证
      */
-    public final static String NET_IDENTITY_AUTHENTICATION=NET_HOST_PREFIX+"a=Authentication&";
+    public final static String NET_IDENTITY_AUTHENTICATION = NET_HOST_PREFIX + "a=Authentication&";
     /**
      * 获取任务分类列表
      */
-    public final static String NET_GET_TASKLIST=NET_HOST_PREFIX+"a=getTaskTypeList&";
+    public final static String NET_GET_TASKLIST = NET_HOST_PREFIX + "a=getTaskTypeList&";
     /**
      * 获取我的今天是否签到
      */
-    public final static String NET_GET_SIGN_STATE=NET_HOST_PREFIX+"a=GetMySignLog";
+    public final static String NET_GET_SIGN_STATE = NET_HOST_PREFIX + "a=GetMySignLog";
     /**
      * 签到
      */
-    public final static String NET_TO_SIGN=NET_HOST_PREFIX+"a=SignDay";
+    public final static String NET_TO_SIGN = NET_HOST_PREFIX + "a=SignDay";
     /**
      * 获取我的钱包
      */
-    public final static String NET_GET_WALLET=NET_HOST_PREFIX+"a=GetMyWallet";
+    public final static String NET_GET_WALLET = NET_HOST_PREFIX + "a=GetMyWallet";
     /**
-     *获取我的收支记录
+     * 获取我的收支记录
      */
-    public final static String NET_GET_WALLET_LOG=NET_HOST_PREFIX+"a=GetMyWalletLog";
+    public final static String NET_GET_WALLET_LOG = NET_HOST_PREFIX + "a=GetMyWalletLog";
     /**
-     *获取我的体现申请记录
+     * 获取我的体现申请记录
      */
-    public final static String NET_GET_WITHDRAW_LOG=NET_HOST_PREFIX+"a=GetMyWithdrawLog";
+    public final static String NET_GET_WITHDRAW_LOG = NET_HOST_PREFIX + "a=GetMyWithdrawLog";
     /**
      * 获取认证帮列表
      */
-    public final static String NET_GET_AUTHENTICATION_LIST=NET_HOST_PREFIX+"a=getAuthenticationUserList";
+    public final static String NET_GET_AUTHENTICATION_LIST = NET_HOST_PREFIX + "a=getAuthenticationUserList";
     /*
     获取商品信息
      */
-    public final static String  GOODSLIST=NET_HOST_PREFIX+"a=getshoppinglist";
+    public final static String GOODSLIST = NET_HOST_PREFIX + "a=getshoppinglist";
     /*
      获取字典
      */
-    public final static String DICTIONARYS_LIST=NET_HOST_PREFIX+"a=getDictionaryList&";
+    public final static String DICTIONARYS_LIST = NET_HOST_PREFIX + "a=getDictionaryList&";
     /*
     *发布任务
      */
-    public final static String RELEASE=NET_HOST_PREFIX+"a=PublishGoods&";
+    public final static String RELEASE = NET_HOST_PREFIX + "a=PublishGoods&";
 
     /**
      * 发布任务
      */
-    public final static String PUBLISHTASK = NET_HOST_PREFIX+"a=publishTask&";
+    public final static String PUBLISHTASK = NET_HOST_PREFIX + "a=publishTask&";
 
     /**
      * 更新任务支付状态
      */
-    public final static String UPDATETASKPAY = NET_HOST_PREFIX+"a=UpdataTaskPaySuccess&";
+    public final static String UPDATETASKPAY = NET_HOST_PREFIX + "a=UpdataTaskPaySuccess&";
 
 
     /*
     *根据商品信息找出商家的信息
      */
-    public final static String SHOPINFO=NET_HOST_PREFIX+"a=showshoppinginfo&";
+    public final static String SHOPINFO = NET_HOST_PREFIX + "a=showshoppinginfo&";
 
     /*
     *根据地点获取抢单列表
      */
-    public final static String GETTASKLIST=NET_HOST_PREFIX+"a=getTaskListByCity&";
+    public final static String GETTASKLIST = NET_HOST_PREFIX + "a=getTaskListByCity&";
 
-    public final static String SHOP_INFO=NET_HOST_PREFIX+"a=showshoppinginfo&";
+    public final static String SHOP_INFO = NET_HOST_PREFIX + "a=showshoppinginfo&";
 
 
     /*
     *根据商家的ID找出该商家发布的全部商品
     */
-    public final static  String SHOP_GOOD=NET_HOST_PREFIX+"a=getMyshoppinglist&";
+    public final static String SHOP_GOOD = NET_HOST_PREFIX + "a=getMyshoppinglist&";
+
+    /*
+    *我的任务
+    */
+    public final static String GET_MEY_TASK = NET_HOST_PREFIX + "a=getMyApplyTaskList&";
 
 
     /*
@@ -148,6 +153,17 @@ public interface NetConstant extends HelperConstant {
     /*
    删除商品
    */
+    public static final String DELETE_GOOD = NET_HOST_PREFIX + "a=DeleteGoods&";
+
+    /*
+   *更新任务状态
+   */
+    public static final String UPDATE_TASK_STATE = NET_HOST_PREFIX + "a=UpdataTaskState&";
+
+    /*
+    抢单
+     */
+    public static final String GRAB_TASK = NET_HOST_PREFIX + "a=ApplyTask&";
     public static final String DELETE_GOOD=NET_HOST_PREFIX+"a=DeleteGoods&";
     /*
    *更新任务

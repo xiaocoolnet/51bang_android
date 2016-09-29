@@ -134,8 +134,11 @@
         <activity android:name=".activity.ReleaseConvenienceActivity" />
         <activity android:name=".activity.SpaceImageDetailActivity" />
         <activity android:name=".activity.DeliverActivity" />
-        <activity android:name=".activity.MyTaskActivity"></activity>
+        <activity android:name=".activity.MyTaskActivity" />
         <activity android:name=".activity.ShopBuyActivity" />
+        <activity android:name=".activity.NoBeginTaskActivity" />
+        <activity android:name=".activity.InProgressTaskActivity"></activity>
+        <activity android:name=".activity.ImageDetailActivity"/>
     </application>
 
 </manifest>
