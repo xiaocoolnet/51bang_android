@@ -190,7 +190,8 @@ public class SaleFragment extends Fragment implements View.OnClickListener {
                 showWindow(v);
                 break;
             case R.id.rl_fragment_sale_release:
-               Intent intent=new Intent(getActivity(), ReleaseActivity.class);
+                Intent intent=new Intent(getActivity(), ReleaseActivity.class);
+                intent.putExtra("judge","我是fragemnt");
                 startActivity(intent);
                 break;
         }

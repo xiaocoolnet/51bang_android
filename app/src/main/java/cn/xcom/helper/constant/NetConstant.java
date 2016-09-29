@@ -149,4 +149,29 @@ public interface NetConstant extends HelperConstant {
    删除商品
    */
     public static final String DELETE_GOOD=NET_HOST_PREFIX+"a=DeleteGoods&";
+    /*
+   *更新任务
+   */
+    public final static String UPDATA=NET_HOST_PREFIX+"a=UpdateGoodsInfo&";
+    /*
+  *更新图片
+  */
+    public final static String UPDATA_PICTURE=NET_HOST_PREFIX+"a=UpdateGoodsPicture&";
+    /*
+    产品收藏
+     */
+    public final static String GOOD_COLLECTION=NET_HOST_PREFIX+"a=addfavorite&";
+    /*
+   产品是否收藏
+    */
+    public final static String GOOD_IS_COLLECTION=NET_HOST_PREFIX+"a=CheckHadFavorite&";
+
+    /*
+   取消收藏
+   */
+    public final static String GOOD_CANCLE_COLLECTION=NET_HOST_PREFIX+"a=cancelfavorite&";
+    /*
+    收藏列表
+     */
+    public final static String HAS_COLLECTION=NET_HOST_PREFIX+"a=getfavoritelist&";
 }

@@ -4,8 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="100dp">
   <ImageView
-      android:layout_width="100dp"
-      android:layout_height="80dp"
+      android:layout_width="80dp"
+      android:layout_height="70dp"
       android:layout_gravity="center"
       android:id="@+id/mine_image"
       android:scaleType="fitXY"/>
@@ -43,39 +43,50 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="￥45.5"
-                android:layout_marginTop="10dp"
+
                 android:layout_marginLeft="5dp"
                 android:textColor="@color/price"
                 android:textSize="18sp"/>
     </LinearLayout>
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom">
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="编辑"
         android:id="@+id/mine_editor"
         android:textSize="20sp"
-        android:layout_gravity="bottom"
-        android:layout_marginBottom="-15dp"
-
-
         android:textColor="@color/common_blue"/>
+       />
+    </RelativeLayout>
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom">
+
     <TextView
         android:id="@+id/mine_delete"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="删除"
         android:textSize="20sp"
-        android:layout_marginBottom="-15dp"
-        android:layout_gravity="bottom"
+
         android:layout_marginLeft="15dp"
         android:textColor="@color/common_blue"/>
+    </RelativeLayout>
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom">
     <TextView
         android:id="@+id/mine_saled"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="已售null"
         android:textSize="20sp"
-        android:layout_gravity="bottom"
         android:layout_marginLeft="15dp"
        />
+    </RelativeLayout>
 </LinearLayout>

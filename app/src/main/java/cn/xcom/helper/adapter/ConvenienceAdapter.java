@@ -3,22 +3,21 @@ package cn.xcom.helper.adapter;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
-import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import cn.xcom.helper.R;
-import cn.xcom.helper.activity.SpaceImageDetailActivity;
 import cn.xcom.helper.bean.Convenience;
 import cn.xcom.helper.constant.NetConstant;
 import cn.xcom.helper.utils.MyImageLoader;
+import cn.xcom.helper.utils.NoScrollGridView;
 import cn.xcom.helper.utils.RoundImageView;
 import cn.xcom.helper.utils.TimeUtils;
 
@@ -27,7 +26,10 @@ import cn.xcom.helper.utils.TimeUtils;
  */
 public class ConvenienceAdapter extends BaseAdapter {
     private List<Convenience> list;
+    private List<String>addList;
     private Context context;
+    private ImageView imageView;
+    private ListGridview listGridview;
 
     public ConvenienceAdapter(List<Convenience> list, Context context) {
         this.list = list;
@@ -59,8 +61,9 @@ public class ConvenienceAdapter extends BaseAdapter {
             viewHolder.convenience_name = (TextView) convertView.findViewById(R.id.convenience_name);
             viewHolder.convenience_time = (TextView) convertView.findViewById(R.id.convenience_time);
             viewHolder.convenience_content = (TextView) convertView.findViewById(R.id.convenience_content);
-            viewHolder.convenience_image = (ImageView) convertView.findViewById(R.id.convenience_image);
+          //  viewHolder.convenience_image = (ImageView) convertView.findViewById(R.id.convenience_image);
             viewHolder.convenience_phone= (ImageView) convertView.findViewById(R.id.convenience_phone);
+            viewHolder.noScrollGridView= (NoScrollGridView) convertView.findViewById(R.id.gridview);
             convertView.setTag(viewHolder);
         }else {
            viewHolder= (ViewHolder) convertView.getTag();
@@ -70,34 +73,16 @@ public class ConvenienceAdapter extends BaseAdapter {
           viewHolder.convenience_name.setText(convenience.getName());
           viewHolder.convenience_time.setText(TimeUtils.getDateToString(convenience.getCreate_time()));
           viewHolder.convenience_content.setText(convenience.getContent());
+          addList=new ArrayList<>();
           if (convenience.getPic().size()>0){
-              MyImageLoader.display(NetConstant.NET_DISPLAY_IMG +convenience.getPic().get(0).getPictureurl(),viewHolder.convenience_image );
-          }else{
-              MyImageLoader.display(NetConstant.NET_DISPLAY_IMG , viewHolder.convenience_image);
-          }
-        final ViewHolder finalViewHolder = viewHolder;
-        //监听图片
-        viewHolder.convenience_image.setOnClickListener(new View.OnClickListener() {
-              @Override
-              public void onClick(View v) {
-                  if (convenience.getPic().size()==0){
-                      Toast.makeText(context, "暂无图片", Toast.LENGTH_SHORT).show();
-                  }else{
-                      Intent intent = new Intent(context, SpaceImageDetailActivity.class);
-                      Bundle bundle=new Bundle();
-                      bundle.putSerializable("list",list.get(position));
-                      intent.putExtras(bundle);
-                      int[] location = new int[2];
-                      intent.putExtra("locationX", location[1]);//必须
-                      intent.putExtra("locationY", location[0]);//必须
-                      intent.putExtra("width", finalViewHolder.convenience_image.getWidth());//必须
-                      intent.putExtra("height", finalViewHolder.convenience_image.getHeight());//必须
-                      context.startActivity(intent);
-                  }
-
-
+              for (int i=0;i<convenience.getPic().size();i++){
+                  addList.add(NetConstant.NET_DISPLAY_IMG +convenience.getPic().get(i).getPictureurl());
               }
-          });
+          }else{
+              addList.add(NetConstant.NET_DISPLAY_IMG );
+          }
+          listGridview=new ListGridview(context,addList);
+          viewHolder.noScrollGridView.setAdapter(listGridview);
         //监听打电话
         viewHolder.convenience_phone.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -118,6 +103,7 @@ public class ConvenienceAdapter extends BaseAdapter {
         public TextView convenience_content;
         public ImageView convenience_image;
         public ImageView convenience_phone;
+        public NoScrollGridView noScrollGridView;
 
 
 

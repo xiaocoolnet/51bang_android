@@ -261,7 +261,7 @@ public class PushImageUtil {
                         }finally {
                             handler.sendMessage(msg);
                         }
-                        Log.d("===  头像上传", s);
+                        Log.d("===  图片上传", s);
 
                     }
                 }, new Response.ErrorListener() {
@@ -283,7 +283,7 @@ public class PushImageUtil {
         Random random=new Random();
         String fileName ="yyy"+ random.nextInt(10000)+System.currentTimeMillis() + ".jpg";
         arrayList.add(fileName);
-        Log.d("5555777",fileName);
+        Log.d("5555777", arrayList.size()+"");
         File file = new File(appDir, fileName);
         try {
             FileOutputStream fos = new FileOutputStream(file);

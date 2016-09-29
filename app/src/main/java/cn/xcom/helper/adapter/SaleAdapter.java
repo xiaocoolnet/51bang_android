@@ -11,13 +11,12 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import java.io.Serializable;
 import java.util.List;
+
 import cn.xcom.helper.R;
 import cn.xcom.helper.activity.SaleDetailActivity;
 import cn.xcom.helper.bean.Front;
 import cn.xcom.helper.constant.NetConstant;
-
 import cn.xcom.helper.utils.MyImageLoader;
 
 /**
@@ -72,13 +71,13 @@ public class SaleAdapter extends BaseAdapter{
         }
             Front front=addList.get(position);
             Log.e("========shipeiqi", "" + addList.size());
+            Log.e("========shipeiqi8989", "" + front.getPicturelist().size());
             if (front.getPicturelist().size()>0) {
                 MyImageLoader.display(NetConstant.NET_DISPLAY_IMG +
                         front.getPicturelist().get(0).getFile(), viewHolder.imageView);
             }else if (front.getPicturelist().size()==0){
                 MyImageLoader.display(NetConstant.NET_DISPLAY_IMG, viewHolder.imageView);
             }
-              front.getId();
             viewHolder.textView1.setText(front.getGoodsname());
             viewHolder.textView2.setText(front.getDescription());
             viewHolder.textView3.setText("￥"+front.getPrice());
@@ -90,7 +89,7 @@ public class SaleAdapter extends BaseAdapter{
               public void onClick(View v) {
                  Intent intent=new Intent(context,SaleDetailActivity.class);
                  Bundle bundle=new Bundle();
-                 bundle.putSerializable("item", addList.get(position));
+                 bundle.putSerializable("item10", addList.get(position));
                  Log.i("---", addList.size() + "");
                  intent.putExtras(bundle);
                 // intent.putExtra("item",bundle);

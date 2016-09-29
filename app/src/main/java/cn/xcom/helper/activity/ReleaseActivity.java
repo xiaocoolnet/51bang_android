@@ -46,6 +46,7 @@ import cn.finalteam.galleryfinal.model.PhotoInfo;
 import cn.xcom.helper.R;
 import cn.xcom.helper.adapter.ChoosePhotoListAdapter;
 import cn.xcom.helper.adapter.GridViewAdapter;
+import cn.xcom.helper.bean.Front;
 import cn.xcom.helper.bean.PhotoWithPath;
 import cn.xcom.helper.bean.UserInfo;
 import cn.xcom.helper.constant.NetConstant;
@@ -91,9 +92,14 @@ public class ReleaseActivity extends BaseActivity implements View.OnClickListene
     private final int  RESULT_PHOTO=3;//裁剪后的头像
     private View view_line;
     private static final int MY_PERMISSIONS_REQUEST_READ_CONTACTS=4;
-    String s2="";
+    String s2=null;
+    private int M;
+    private Front front;
     private  String type="";
     private int requestCode1;
+
+    private UserInfo info=new UserInfo();
+
     String a[]={"同城自取","送货上门","凭劵消费"};
 
     @Override
@@ -105,15 +111,23 @@ public class ReleaseActivity extends BaseActivity implements View.OnClickListene
         setContentView(R.layout.activity_release);
         context=this;
         initView();
-//        Intent intent=getIntent();
-//        String s2=intent.getStringExtra("judge");
-//        if (s2!=null&&s2.equals("返回")){
-//            s1= intent.getStringExtra("dictionary");
-//           // ima_dismiss.setVisibility(View.INVISIBLE);
-//            tv_divide.setText(s1);
-//        }
+        Intent intent=getIntent();
+        s2=intent.getStringExtra("judge").toString();
+        Log.d("123s2",s2);
+        if (s2!=null&&s2.equals("我是order")){
+            M=1;
+            front= (Front) intent.getSerializableExtra("editor");
+            goodName.setText(front.getGoodsname());
+            Log.d("editor111", front.getGoodsname());
+            description.setText(front.getDescription());
+            bt_login_release.setText("完成");
+        }else{
+            M=2;
+        }
     }
+
     private void initView() {
+        info.readData(context);
         addImageList=new ArrayList();
         nameList=new ArrayList<>();
         photoWithPaths = new ArrayList<>();
@@ -157,7 +171,11 @@ public class ReleaseActivity extends BaseActivity implements View.OnClickListene
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.bt_login_release:
-                submit();
+                if (M==1){
+                    submitUpdata();
+                }else{
+                    submit();
+               }
                 break;
             case R.id.tupian:
                 //showActionSheet();
@@ -190,12 +208,113 @@ public class ReleaseActivity extends BaseActivity implements View.OnClickListene
         }
         super.onActivityResult(requestCode, resultCode, data);
     }
+    //更新发布
+    public void submitUpdata(){
+        // validate
+        final String goodNameString = goodName.getText().toString().trim();
+        if (TextUtils.isEmpty(goodNameString)) {
+            Toast.makeText(this, "goodNameString不能为空", Toast.LENGTH_SHORT).show();
+            return;
+        }
 
+        final String descriptionString = description.getText().toString().trim();
+        if (TextUtils.isEmpty(descriptionString)) {
+            Toast.makeText(this, "descriptionString不能为空", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        final String price = ed_price.getText().toString().trim();
+        if (TextUtils.isEmpty(price)) {
+            Toast.makeText(this, "price不能为空", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        final String oldprice = ed_oldprice.getText().toString().trim();
+        if (TextUtils.isEmpty(oldprice)) {
+            Toast.makeText(this, "oldprice不能为空", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        final String location = ed_location.getText().toString().trim();
+        if (TextUtils.isEmpty(oldprice)) {
+            Toast.makeText(this, "ed_location不能为空", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        //先上传图片再发布
+        new PushImageUtil().setPushIamge(getApplication(), addImageList, nameList, new PushImage() {
+            @Override
+            public void success(boolean state) {
+                //发布任务
+                String url = NetConstant.UPDATA;
+                StringPostRequest request = new StringPostRequest(url, new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String s) {
+                        Log.d("===更新发布", s);
+                        Toast.makeText(getApplication(), "更新成功", Toast.LENGTH_SHORT).show();
+
+                    }
+                }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError volleyError) {
+                        Toast.makeText(getApplication(), "网络错误，检查您的网络", Toast.LENGTH_SHORT).show();
+                    }
+                });
+                String s = StringJoint.arrayJointchar(nameList, ",");
+                Log.d("2222233", s + "");
+                Log.d("2222233", nameList.size() + "");
+                request.putValue("id", front.getId());
+                request.putValue("picture", s);
+                request.putValue("goodsname", goodNameString);
+                request.putValue("type", type);
+                request.putValue("price", price);
+                request.putValue("oprice", oldprice);
+                request.putValue("description", descriptionString);
+                request.putValue("unit", "个");
+                request.putValue("address", "北京市朝阳区");
+                request.putValue("longitude", location);
+                request.putValue("latitude", location);
+                request.putValue("delivery", text_transport.getText().toString());
+                SingleVolleyRequest.getInstance(getApplication()).addToRequestQueue(request);
+            }
+
+            @Override
+            public void error() {
+                String url = NetConstant.UPDATA;
+                StringPostRequest request = new StringPostRequest(url, new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String s) {
+                        Log.d("++++我的更新", s);
+                        Toast.makeText(getApplication(), "更新成功", Toast.LENGTH_SHORT).show();
+
+                    }
+                }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError volleyError) {
+                        Toast.makeText(getApplication(), "网络错误，检查您的网络", Toast.LENGTH_SHORT).show();
+                    }
+                });
+            //    request.putValue("userid", info.getUserId());
+                request.putValue("id", front.getId());
+                request.putValue("goodsname", goodNameString);
+                request.putValue("type", type);
+                request.putValue("price", price);
+                request.putValue("oprice", oldprice);
+                request.putValue("description", descriptionString);
+                request.putValue("unit", "个");
+                request.putValue("address", "北京市朝阳区");
+                request.putValue("longitude", location);
+                request.putValue("latitude", location);
+                request.putValue("delivery", text_transport.getText().toString());
+                SingleVolleyRequest.getInstance(getApplication()).addToRequestQueue(request);
+            }
+        });
+
+
+
+    }
     //提交发布
     private void submit() {
         //得到用户的wuserid
-        final UserInfo info=new UserInfo();
-         info.readData(context);
+
         // validate
         final String goodNameString = goodName.getText().toString().trim();
         if (TextUtils.isEmpty(goodNameString)) {
@@ -229,9 +348,6 @@ public class ReleaseActivity extends BaseActivity implements View.OnClickListene
         new PushImageUtil().setPushIamge(getApplication(), addImageList,nameList, new PushImage() {
             @Override
             public void success(boolean state) {
-
-                Toast.makeText(getApplication(),"上传成功",Toast.LENGTH_SHORT).show();
-
                 //发布任务
                 String url=NetConstant.RELEASE;
                 StringPostRequest request=new StringPostRequest(url, new Response.Listener<String>() {
@@ -262,15 +378,12 @@ public class ReleaseActivity extends BaseActivity implements View.OnClickListene
                 request.putValue("longitude",location);
                 request.putValue("latitude",location);
                 request.putValue("delivery",text_transport.getText().toString());
-
-
                 SingleVolleyRequest.getInstance(getApplication()).addToRequestQueue(request);
 
             }
 
             @Override
             public void error() {
-                Toast.makeText(getApplication(),"上传失败",Toast.LENGTH_SHORT).show();
                 String url=NetConstant.RELEASE;
                 StringPostRequest request=new StringPostRequest(url, new Response.Listener<String>() {
                     @Override
@@ -296,8 +409,6 @@ public class ReleaseActivity extends BaseActivity implements View.OnClickListene
                 request.putValue("longitude",location);
                 request.putValue("latitude",location);
                 request.putValue("delivery",text_transport.getText().toString());
-
-
                 SingleVolleyRequest.getInstance(getApplication()).addToRequestQueue(request);
             }
         });

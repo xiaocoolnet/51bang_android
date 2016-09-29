@@ -65,12 +65,29 @@
         android:textColor="@color/colorTextSale"
         android:layout_marginLeft="10dp"
         android:layout_marginTop="20dp"/>
-    <ImageView
-        android:id="@+id/convenience_image"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:src="@mipmap/aaa"
-        android:scaleType="fitXY"
-        android:layout_marginLeft="10dp"
-        android:layout_marginTop="10dp"/>
+    <!--<ImageView-->
+        <!--android:id="@+id/convenience_image"-->
+        <!--android:layout_width="100dp"-->
+        <!--android:layout_height="100dp"-->
+        <!--android:src="@mipmap/aaa"-->
+        <!--android:scaleType="fitXY"-->
+        <!--android:layout_marginLeft="10dp"-->
+        <!--android:layout_marginTop="10dp"/>-->
+    <LinearLayout
+        android:id="@+id/image_linearLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <cn.xcom.helper.utils.NoScrollGridView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/gridview"
+            android:verticalSpacing="5dp"
+            android:horizontalSpacing="5dp"
+            android:numColumns="3">
+
+        </cn.xcom.helper.utils.NoScrollGridView>
+
+    </LinearLayout>
 </LinearLayout>

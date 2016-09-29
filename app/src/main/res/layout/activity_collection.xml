@@ -28,11 +28,16 @@
                 android:src="@mipmap/ic_back_white_left" />
         </RelativeLayout>
     </RelativeLayout>
-    <com.jcodecraeer.xrecyclerview.XRecyclerView
-        android:id="@+id/lv_collection"
-        android:layout_width="fill_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1.0"/>
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/swif">
+    <ListView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/collection_listView">
+    </ListView>
+    </android.support.v4.widget.SwipeRefreshLayout>
 
 
 </LinearLayout>

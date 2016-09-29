@@ -248,7 +248,7 @@
     <!--CouponActivity-->
     <string name="tv_coupon_title">我的优惠券</string>
     <!--OrderActivity-->
-    <string name="tv_order_title">我的订单</string>
+    <string name="tv_order_title">我的发布</string>
     <!--CollectionActivity-->
     <string name="tv_collection_title">我的收藏</string>
     <!--ShoppingCartActivity-->

@@ -145,6 +145,7 @@ public class OrderActivity extends BaseActivity implements View.OnClickListener{
         request.putValue("userid", userid);
         SingleVolleyRequest.getInstance(mContext).addToRequestQueue(request);
     }
+    //适配器里面进行删除，编辑。
      class MineReleaseAdapter extends BaseAdapter {
         private Context context;
         private List<Front> addlist;
@@ -196,8 +197,8 @@ public class OrderActivity extends BaseActivity implements View.OnClickListener{
             }
             viewHolder.mine_title.setText(front.getGoodsname());
             viewHolder.mine_content.setText(front.getDescription());
-            viewHolder.mine_price.setText("￥"+front.getPrice());
-            viewHolder.mine_saled.setText("已售"+front.getSellnumber());
+            viewHolder.mine_price.setText("￥" + front.getPrice());
+            viewHolder.mine_saled.setText("已售" + front.getSellnumber());
             //删除
             viewHolder.mine_delete.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -232,6 +233,19 @@ public class OrderActivity extends BaseActivity implements View.OnClickListener{
                     request.putValue("id",front.getId());
                     Log.d("delete", front.getId());
                     SingleVolleyRequest.getInstance(context).addToRequestQueue(request);
+                }
+            });
+            //编辑
+            viewHolder.mine_editor.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent=new Intent(context,ReleaseActivity.class);
+                    Bundle bundle=new Bundle();
+                    bundle.putSerializable("editor",addlist.get(position));
+                    bundle.putString("judge","我是order");
+                    intent.putExtras(bundle);
+                    context.startActivity(intent);
+
                 }
             });
             convertView.setOnClickListener(new View.OnClickListener() {
