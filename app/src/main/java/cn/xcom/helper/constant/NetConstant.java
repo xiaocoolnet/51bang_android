@@ -189,4 +189,9 @@ public interface NetConstant extends HelperConstant {
     收藏列表
      */
     public final static String HAS_COLLECTION=NET_HOST_PREFIX+"a=getfavoritelist&";
+
+    /*
+    我的接单
+     */
+    public final static String GET_MY_TASK=NET_HOST_PREFIX+"a=getMyApplyTaskList&";
 }

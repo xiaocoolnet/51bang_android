@@ -116,6 +116,7 @@
     <orderEntry type="library" exported="" name="support-v4-23.4.0" level="project" />
     <orderEntry type="library" exported="" name="recyclerview-v7-23.4.0" level="project" />
     <orderEntry type="library" exported="" name="httpclient-4.3.6" level="project" />
+    <orderEntry type="library" exported="" name="jpush-android-2.1.9" level="project" />
     <orderEntry type="library" exported="" name="support-vector-drawable-23.4.0" level="project" />
     <orderEntry type="library" exported="" name="BaiduLBS_Android" level="project" />
     <orderEntry type="library" exported="" name="glide-3.6.1" level="project" />

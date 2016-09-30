@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import cn.jpush.android.api.JPushInterface;
 import cn.xcom.helper.bean.TaskType;
 import cn.xcom.helper.utils.ToolUtil;
 
@@ -43,6 +44,9 @@ public class HelperApplication  extends Application{
         mContext = this;
         instance = this;
         taskTypes = new ArrayList<>();
+
+        //初始化极光
+        setPush();
         //初始化地图
         SDKInitializer.initialize(mContext);
         //初始化ImageLoader
@@ -67,6 +71,11 @@ public class HelperApplication  extends Application{
 //                .build();
 //        themeConfig = theme;
 
+    }
+
+    private void setPush() {
+        JPushInterface.setDebugMode(true);
+        JPushInterface.init(this);
     }
     public static HelperApplication getInstance() {
         return instance;

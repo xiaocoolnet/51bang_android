@@ -19,6 +19,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
 
+import cn.jpush.android.api.JPushInterface;
 import cn.xcom.helper.R;
 import cn.xcom.helper.adapter.ViewPageAdapter;
 import cn.xcom.helper.bean.AppInfo;
@@ -59,6 +60,19 @@ public class SplashActivity extends BaseActivity  implements View.OnClickListene
             initLoding(view);
         }
     }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        JPushInterface.onResume(mContext);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        JPushInterface.onPause(mContext);
+    }
+
     private void initViewPager() {
         views = new ArrayList<ImageView>();
         LinearLayout.LayoutParams mParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
