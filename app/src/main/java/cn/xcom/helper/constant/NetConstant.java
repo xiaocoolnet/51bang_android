@@ -189,4 +189,20 @@ public interface NetConstant extends HelperConstant {
     收藏列表
      */
     public final static String HAS_COLLECTION=NET_HOST_PREFIX+"a=getfavoritelist&";
+    /*
+    添加用户地址
+     */
+    public final static String ADD_ADRESS=NET_HOST_PREFIX+"a=AddAddress&";
+    /*
+    获取用户地址列表
+     */
+    public final static String GET_ADRESS=NET_HOST_PREFIX+"a=GetMyAddressList&";
+    /*
+    修改用户地址
+     */
+    public final static String FIX_ADRESS=NET_HOST_PREFIX+"a=UpdateAddress&";
+    /*
+    删除用户地址
+     */
+    public final static String DELETE_ADRESS=NET_HOST_PREFIX+"a=DeleteAddress";
 }

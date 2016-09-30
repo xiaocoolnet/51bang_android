@@ -30,7 +30,7 @@
                 android:src="@mipmap/ic_back_white_left" />
         </RelativeLayout>
     </RelativeLayout>
-    <com.jcodecraeer.xrecyclerview.XRecyclerView
+    <ListView
         android:id="@+id/lv_address_list"
         android:layout_width="fill_parent"
         android:layout_height="0dp"

@@ -7,6 +7,7 @@ import android.support.annotation.Nullable;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
+import android.widget.ListView;
 import android.widget.RelativeLayout;
 
 import cn.xcom.helper.R;
@@ -19,6 +20,7 @@ public class AddressListActivity extends BaseActivity implements View.OnClickLis
     private Context mContext;
     private RelativeLayout rl_back;
     private Button bt_address;
+    private ListView lv_address_list;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -32,6 +34,7 @@ public class AddressListActivity extends BaseActivity implements View.OnClickLis
         rl_back.setOnClickListener(this);
         bt_address= (Button) findViewById(R.id.bt_address_list_add);
         bt_address.setOnClickListener(this);
+        lv_address_list= (ListView) findViewById(R.id.lv_address_list);
     }
 
     @Override
@@ -43,6 +46,7 @@ public class AddressListActivity extends BaseActivity implements View.OnClickLis
             case R.id.bt_address_list_add:
                 startActivity(new Intent(mContext,EditAddressActivity.class));
                 break;
+
         }
     }
 }

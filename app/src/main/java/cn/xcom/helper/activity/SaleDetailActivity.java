@@ -42,7 +42,7 @@ public class SaleDetailActivity extends BaseActivity implements View.OnClickList
     private ViewPager vp;
     private ImageView imageView,collect;
     private TextView tvContent,price,tvprice,adress;
-    private RelativeLayout backImage,release_collection;
+    private RelativeLayout backImage,release_collection,buy;
     private LinearLayout shopPublish;
     private List addViewList;//添加图片的list
     private ViewPageAdapter viewPageAdapter;
@@ -66,7 +66,6 @@ public class SaleDetailActivity extends BaseActivity implements View.OnClickList
         tvContent.setText(front.getDescription());
         price.setText("￥" + front.getPrice());
         tvprice.setText("￥" + front.getPrice());
-
         adress.setText(front.getAddress());
         Log.e("========shipeiqiwocao", "" + front.getPicturelist().size());
         if (front.getPicturelist().size()>0){
@@ -109,6 +108,8 @@ public class SaleDetailActivity extends BaseActivity implements View.OnClickList
         backImage.setOnClickListener(this);
         shopPublish= (LinearLayout) findViewById(R.id.shopPublish);
         shopPublish.setOnClickListener(this);
+        buy= (RelativeLayout) findViewById(R.id.buy);
+        buy.setOnClickListener(this);
     }
     //根据商品的id得到商家的id
     public void addGood(){
@@ -171,6 +172,12 @@ public class SaleDetailActivity extends BaseActivity implements View.OnClickList
                     collection();
                 }
                 break;
+            case R.id.buy:
+                Intent intent=new Intent(context,BuyActivity.class);
+                Bundle bundle=new Bundle();
+                bundle.putSerializable("price",front);
+                intent.putExtras(bundle);
+                startActivity(intent);
         }
     }
     //点击收藏商品
@@ -183,7 +190,7 @@ public class SaleDetailActivity extends BaseActivity implements View.OnClickList
                     JSONObject jsonObject=new JSONObject(s);
 
                     String status=jsonObject.getString("status");
-                    Log.d("shoucang",status);
+                    Log.d("yijingshoucang",status);
                     if (status.equals("success")){
                         flag=1;
                         collect.setImageResource(R.mipmap.yijingshoucang);
@@ -206,9 +213,14 @@ public class SaleDetailActivity extends BaseActivity implements View.OnClickList
 
             }
         });
-        request.putValue("userid",userInfo.getUserId());
+        request.putValue("userid", userInfo.getUserId());
         Log.d("shoucangid", userInfo.getUserId());
-        request.putValue("goodsid",front.getPicturelist().get(0).getGoodsid());
+        if (front.getPicturelist().size()==0){
+            request.putValue("goodsid","");
+        }else{
+            request.putValue("goodsid",front.getPicturelist().get(0).getGoodsid());
+        }
+      //  request.putValue("goodsid",front.getPicturelist().get(0).getGoodsid());
         request.putValue("type",front.getType());
         request.putValue("title", front.getGoodsname());
         request.putValue("description", front.getDescription());
@@ -328,7 +340,11 @@ public class SaleDetailActivity extends BaseActivity implements View.OnClickList
             }
         });
         request.putValue("userid", userInfo.getUserId());
-        request.putValue("goodsid", front.getPicturelist().get(0).getGoodsid());
+        if (front.getPicturelist().size()==0){
+            request.putValue("goodsid","");
+        }else {
+            request.putValue("goodsid", front.getPicturelist().get(0).getGoodsid());
+        }
         request.putValue("type", front.getType());
         SingleVolleyRequest.getInstance(context).addToRequestQueue(request);
     }

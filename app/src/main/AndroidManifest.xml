@@ -137,8 +137,9 @@
         <activity android:name=".activity.MyTaskActivity" />
         <activity android:name=".activity.ShopBuyActivity" />
         <activity android:name=".activity.NoBeginTaskActivity" />
-        <activity android:name=".activity.InProgressTaskActivity"></activity>
-        <activity android:name=".activity.ImageDetailActivity"/>
+        <activity android:name=".activity.InProgressTaskActivity" />
+        <activity android:name=".activity.ImageDetailActivity" />
+        <activity android:name=".activity.BuyActivity"></activity>
     </application>
 
 </manifest>
