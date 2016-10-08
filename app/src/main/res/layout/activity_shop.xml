@@ -56,14 +56,26 @@
                 android:layout_height="1dp"
                 android:layout_marginTop="5dp"
                 android:background="#faf3f3"></View>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="50dp">
             <TextView
                 android:id="@+id/price"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="￥38.90"
+                android:layout_gravity="center"
                 android:layout_marginLeft="10dp"
                 android:textColor="@color/msg_red"
                 android:textSize="24sp"/>
+                <ImageView
+                    android:id="@+id/collect"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:src="@mipmap/shoucang"
+                    android:layout_gravity="center"
+                    android:layout_marginLeft="240dp"/>
+            </LinearLayout>
             <View
                 android:layout_width="match_parent"
                 android:layout_height="6dp"

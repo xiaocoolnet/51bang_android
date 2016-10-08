@@ -65,7 +65,7 @@ public class ListGridview extends BaseAdapter{
             @Override
             public void onClick(View v) {
                     if (list.get(position)== NetConstant.NET_DISPLAY_IMG||list.get(position)==null){
-                        Toast.makeText(context,"暂无图片",Toast.LENGTH_LONG).show();
+                        Toast.makeText(context,"暂无图片",Toast.LENGTH_SHORT).show();
                         Log.d("=====null", list.get(position));
                     }else{
                         Log.d("=====ninini",list.get(position));

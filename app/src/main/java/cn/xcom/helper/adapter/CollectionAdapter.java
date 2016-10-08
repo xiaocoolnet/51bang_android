@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -59,6 +60,7 @@ public class CollectionAdapter extends BaseAdapter {
             viewHolder.textView1= (TextView) convertView.findViewById(R.id.title);
             viewHolder.textView2= (TextView) convertView.findViewById(R.id.content);
             viewHolder.textView3= (TextView) convertView.findViewById(R.id.price);
+            viewHolder.button= (Button) convertView.findViewById(R.id.havesell);
 
             convertView.setTag(viewHolder);
         }else {
@@ -73,8 +75,7 @@ public class CollectionAdapter extends BaseAdapter {
         viewHolder.textView2.setText(front.getDescription());
         viewHolder.textView3.setText("￥"+front.getPrice());
 
-        //对cinvertview进行监听
-//               convertView.setOnClickListener(new View.OnClickListener() {
+//        viewHolder.button.setOnClickListener(new View.OnClickListener() {
 //            @Override
 //            public void onClick(View v) {
 //                Intent intent=new Intent(context,SaleDetailActivity.class);
@@ -94,6 +95,7 @@ public class CollectionAdapter extends BaseAdapter {
     public class ViewHolder{
         private ImageView imageView;
         private TextView textView1,textView2,textView3,textView4,textView5;
+        private Button button;
 
     }
 }
