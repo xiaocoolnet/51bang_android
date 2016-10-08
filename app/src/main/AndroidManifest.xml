@@ -64,6 +64,15 @@
         <meta-data
             android:name="com.baidu.lbsapi.API_KEY"
             android:value="WZUcRBxRs696L2nh3GreHMIavIZUfQZH" />
+
+        <!--百度地图定位服务-->
+        <service
+            android:name="com.baidu.location.f"
+            android:enabled="true"
+            android:process=":remote">
+        </service>
+        <!--百度地图定位服务-->
+
         <meta-data
             android:name="EASEMOB_APPKEY"
             android:value="19890328#51help" />
@@ -168,8 +177,6 @@
         <activity android:name=".activity.InProgressTaskActivity" />
         <activity android:name=".activity.ImageDetailActivity" />
         <activity android:name=".activity.BuyActivity"></activity>
-        <activity android:name=".activity.InProgressTaskActivity"></activity>
-        <activity android:name=".activity.ImageDetailActivity"/>
 
 
 
@@ -265,7 +272,7 @@
 
         <!-- Required  . Enable it you can get statistics data with channel -->
         <meta-data android:name="JPUSH_CHANNEL" android:value="developer-default"/>
-        <meta-data android:name="JPUSH_APPKEY" android:value="06722b65599c39b7b63c28ec" /> <!--  </>值来自开发者平台取得的AppKey-->
+        <meta-data android:name="JPUSH_APPKEY" android:value="9d8ff2f94d6c180efb085b1a" /> <!--  </>值来自开发者平台取得的AppKey-->
         <!--极光推送-->
     </application>
 

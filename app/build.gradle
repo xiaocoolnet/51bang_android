@@ -1,21 +1,12 @@
 apply plugin: 'com.android.application'
 apply plugin: 'com.neenbedankt.android-apt'//增加这一句
 android {
-//    signingConfigs {
-//
-//        test {
-//            keyAlias 'test'
-//            keyPassword '890328'
-//            storeFile file('/Users/zhuchongkun/Desktop/helpertest.jks')
-//            storePassword '890328'
-//        }
-//        debug {
-//            keyAlias 'defult'
-//            keyPassword '890328'
-//            storeFile file('/Users/zhuchongkun/Desktop/helperdefult.jks')
-//            storePassword '890328'
-//        }
-//    }
+    signingConfigs {
+        // your debug keystore
+        debug{
+            storeFile file("C:/Users/Administrator.RL-20160728GMZX/.android/debug.keystore")
+        }
+    }
     compileSdkVersion 23
     buildToolsVersion "23.0.3"
     defaultConfig {
