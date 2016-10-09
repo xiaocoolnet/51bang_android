@@ -1,21 +1,7 @@
 apply plugin: 'com.android.application'
 apply plugin: 'com.neenbedankt.android-apt'//增加这一句
 android {
-//    signingConfigs {
-//
-//        test {
-//            keyAlias 'test'
-//            keyPassword '890328'
-//            storeFile file('/Users/zhuchongkun/Desktop/helpertest.jks')
-//            storePassword '890328'
-//        }
-//        debug {
-//            keyAlias 'defult'
-//            keyPassword '890328'
-//            storeFile file('/Users/zhuchongkun/Desktop/helperdefult.jks')
-//            storePassword '890328'
-//        }
-//    }
+
     compileSdkVersion 23
     buildToolsVersion "23.0.3"
     defaultConfig {
@@ -67,16 +53,7 @@ dependencies {
     compile 'cn.finalteam:galleryfinal:1.4.6'
     compile 'com.android.support:support-v4:23.1.1'
     compile 'com.baoyz.actionsheet:library:1.1.4'
-    // compile files('libs/xUtils-2.6.14.jar')
     compile 'com.squareup.picasso:picasso:2.5.2'
-    //    compile files('build/intermediates/exploded-aar/org.xutils/xutils/3.1.22/jars/classes.jar')
-    //    compile files('build/intermediates/exploded-aar/com.facebook.fresco/fbcore/0.9.0/jars/classes.jar')
-    //    compile files('build/intermediates/exploded-aar/com.facebook.fresco/imagepipeline/0.9.0/jars/classes.jar')
-    //    compile files('build/intermediates/exploded-aar/com.facebook.fresco/fresco/0.9.0/jars/classes.jar')
-    //    compile files('build/intermediates/exploded-aar/com.facebook.fresco/imagepipeline-base/0.9.0/jars/classes.jar')
-    //    compile files('build/intermediates/exploded-aar/com.facebook.fresco/imagepipeline/0.9.0/jars/classes.jar')
-    //    compile files('build/intermediates/exploded-aar/com.facebook.fresco/imagepipeline-base/0.9.0/jars/classes.jar')
-    //    compile files('build/intermediates/exploded-aar/org.xutils/xutils/3.1.22/jars/classes.jar')
     compile files('libs/alipaySdk-20160825.jar')
     compile 'de.hdodenhof:circleimageview:2.1.0'
     compile 'com.jakewharton:butterknife:8.4.0'
