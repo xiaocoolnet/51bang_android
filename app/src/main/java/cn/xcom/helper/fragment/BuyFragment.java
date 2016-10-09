@@ -28,6 +28,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import cn.xcom.helper.R;
+import cn.xcom.helper.activity.AddressDetailActivity;
 import cn.xcom.helper.activity.AuthorizedActivity;
 import cn.xcom.helper.activity.MyTaskActivity;
 import cn.xcom.helper.activity.TaskDetailActivity;
@@ -97,7 +98,6 @@ public class BuyFragment extends Fragment implements View.OnClickListener{
             lv_task.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    ToastUtil.showShort(mContext,"我是item");
                     Intent intent = new Intent(mContext, TaskDetailActivity.class);
                     Bundle bundle = new Bundle();
                     bundle.putSerializable("taskInfo",taskInfos.get(position));
@@ -134,7 +134,7 @@ public class BuyFragment extends Fragment implements View.OnClickListener{
                 public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                     super.onSuccess(statusCode, headers, response);
                     srl_task.setRefreshing(false);
-                    if(response.optString("status").equals("success")){
+                    if (response.optString("status").equals("success")) {
                         setAdapter(response);
                     }
                     LogUtils.e(TAG, response.toString());
@@ -200,6 +200,30 @@ public class BuyFragment extends Fragment implements View.OnClickListener{
             btn_grab.setClickable(false);
             btn_grab.setText("已被抢");
             btn_grab.setTextColor(getResources().getColor(R.color.holo_red_light));
+        }
+        //上门详细地址
+        if(taskInfo.getLongitude().length()>0&&taskInfo.getLatitude().length()>0){
+            holder.getView(R.id.ll_address).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(mContext, AddressDetailActivity.class);
+                    intent.putExtra("lon",taskInfo.getLongitude());
+                    intent.putExtra("lat",taskInfo.getLatitude());
+                    startActivity(intent);
+                }
+            });
+        }
+        //服务详细地址
+        if(taskInfo.getSlongitude().length()>0&&taskInfo.getSlatitude().length()>0){
+            holder.getView(R.id.ll_saddress).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(mContext, AddressDetailActivity.class);
+                    intent.putExtra("lon",taskInfo.getSlongitude());
+                    intent.putExtra("lat",taskInfo.getSlatitude());
+                    startActivity(intent);
+                }
+            });
         }
     }
 

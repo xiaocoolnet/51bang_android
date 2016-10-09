@@ -21,6 +21,7 @@ import com.baidu.location.LocationClientOption;
 import com.baidu.mapapi.map.BaiduMap;
 import com.baidu.mapapi.map.BitmapDescriptor;
 import com.baidu.mapapi.map.BitmapDescriptorFactory;
+import com.baidu.mapapi.map.InfoWindow;
 import com.baidu.mapapi.map.MapPoi;
 import com.baidu.mapapi.map.MapStatus;
 import com.baidu.mapapi.map.MapStatusUpdateFactory;
@@ -62,7 +63,7 @@ public class MapFragment extends Fragment implements View.OnClickListener{
      * 当前地点击点
      */
     private LatLng currentPt;
-    private Marker marker;
+    private Marker marker,marker2;
 
     @Nullable
     @Override
@@ -110,6 +111,7 @@ public class MapFragment extends Fragment implements View.OnClickListener{
                 if (marker != null) {
                     marker.remove();
                 }
+                mBaiduMap.clear();
                 currentPt = point;
                 updateMapState();
             }
@@ -145,7 +147,7 @@ public class MapFragment extends Fragment implements View.OnClickListener{
      * 构建坐标点
      * @param mPt
      */
-    public void createMarker(LatLng mPt){
+    public void createMarker(final LatLng mPt){
         //构建Marker图标
         BitmapDescriptor bitmap = BitmapDescriptorFactory
                 .fromResource(R.mipmap.ic_dingwei_shou);
@@ -156,6 +158,23 @@ public class MapFragment extends Fragment implements View.OnClickListener{
                 .draggable(true);  //设置手势拖拽
         //将marker添加到地图上
         marker = (Marker) (mBaiduMap.addOverlay(options));
+        mBaiduMap.setMapStatus(MapStatusUpdateFactory.newLatLng(mPt));
+        //创建InfoWindow展示的view
+        Button button = new Button(mContext);
+        button.setText("点击下单");
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(mContext,HelpMeActivity.class);
+                intent.putExtra("lat",mPt.latitude);
+                intent.putExtra("lon",mPt.longitude);
+                startActivity(intent);
+            }
+        });
+        //创建InfoWindow , 传入 view， 地理坐标， y 轴偏移量
+        InfoWindow mInfoWindow = new InfoWindow(button, mPt, -47);
+        //显示InfoWindow
+        mBaiduMap.showInfoWindow(mInfoWindow);
     }
 
     /**
@@ -262,6 +281,7 @@ public class MapFragment extends Fragment implements View.OnClickListener{
                 builder.target(ll).zoom(18.0f);
                 mBaiduMap.animateMapStatus(MapStatusUpdateFactory.newMapStatus(builder.build()));
             }
+            mLocClient.stop();
         }
 
         public void onReceivePoi(BDLocation poiLocation) {

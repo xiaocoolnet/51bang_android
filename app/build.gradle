@@ -1,6 +1,12 @@
 apply plugin: 'com.android.application'
 apply plugin: 'com.neenbedankt.android-apt'//增加这一句
 android {
+    /*signingConfigs {
+        // your debug keystore
+        debug{
+            storeFile file("C:/Users/Administrator.RL-20160728GMZX/.android/debug.keystore")
+        }
+    }*/
 //    signingConfigs {
 //        // your debug keystore
 //        debug{
