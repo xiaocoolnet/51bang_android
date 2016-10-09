@@ -56,6 +56,49 @@
                 android:textSize="15sp"
                 android:background="@color/colorTextWhite"/>
             <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/background_white">
+                <RelativeLayout
+                    android:id="@+id/rl_photo"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp">
+                    <ImageView
+                        android:layout_width="25dp"
+                        android:layout_height="25dp"
+                        android:src="@mipmap/ic_tupian"
+                        android:layout_centerInParent="true"/>
+                </RelativeLayout>
+                <RelativeLayout
+                    android:id="@+id/rl_voice"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp">
+                    <ImageView
+                        android:layout_width="25dp"
+                        android:layout_height="25dp"
+                        android:src="@mipmap/ic_yinpin"
+                        android:layout_centerInParent="true"/>
+                </RelativeLayout>
+            </LinearLayout>
+            <RelativeLayout
+                android:id="@+id/rl_grid_photo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="10dp"
+                android:layout_marginTop="1dp"
+                android:visibility="gone"
+                android:background="@color/background_white">
+                <cn.xcom.helper.view.NoScrollGridView
+                    android:id="@+id/addsn_pic_grid"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:horizontalSpacing="3dp"
+                    android:verticalSpacing="3dp"
+                    android:numColumns="4">
+                </cn.xcom.helper.view.NoScrollGridView>
+            </RelativeLayout>
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="46dip"
                 android:layout_marginTop="10dip"
