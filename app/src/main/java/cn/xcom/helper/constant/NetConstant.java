@@ -204,7 +204,7 @@ public interface NetConstant extends HelperConstant {
     /*
     删除用户地址
      */
-    public final static String DELETE_ADRESS=NET_HOST_PREFIX+"a=DeleteAddress";
+    public final static String DELETE_ADRESS=NET_HOST_PREFIX+"a=DeleteAddress&";
 
     /*
     我的接单

@@ -367,7 +367,7 @@ public class ReleaseActivity extends BaseActivity implements View.OnClickListene
                 Log.d("2222233",s+ "");
                 Log.d("2222233",nameList.size()+ "");
                 request.putValue("userid",info.getUserId());
-                request.putValue("picture",s);
+                request.putValue("picturelist",s);
                 request.putValue("goodsname",goodNameString);
                 request.putValue("type",type);
                 request.putValue("price",price);
