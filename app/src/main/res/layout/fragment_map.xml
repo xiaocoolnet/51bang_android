@@ -88,6 +88,11 @@
                     android:padding="10dip"
                     />
             </LinearLayout>
+    <Button
+        android:id="@+id/btn_location"
+        android:layout_width="100dp"
+        android:layout_height="50dp"
+        android:text="定位"/>
             <com.baidu.mapapi.map.MapView
                 android:id="@+id/mapView_fragment_map"
                 android:layout_width="match_parent"

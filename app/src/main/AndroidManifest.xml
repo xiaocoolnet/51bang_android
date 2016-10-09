@@ -81,6 +81,15 @@
         <meta-data
             android:name="com.baidu.lbsapi.API_KEY"
             android:value="WZUcRBxRs696L2nh3GreHMIavIZUfQZH" />
+
+        <!--百度地图定位服务-->
+        <service
+            android:name="com.baidu.location.f"
+            android:enabled="true"
+            android:process=":remote">
+        </service>
+        <!--百度地图定位服务-->
+
         <meta-data
             android:name="EASEMOB_APPKEY"
             android:value="19890328#51help" />
@@ -187,8 +196,6 @@
         <activity android:name=".activity.InProgressTaskActivity" />
         <activity android:name=".activity.ImageDetailActivity" />
         <activity android:name=".activity.BuyActivity"></activity>
-        <activity android:name=".activity.InProgressTaskActivity"></activity>
-        <activity android:name=".activity.ImageDetailActivity"/>
 
 
 
