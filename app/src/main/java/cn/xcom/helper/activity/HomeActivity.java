@@ -5,16 +5,28 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.loopj.android.http.JsonHttpResponseHandler;
+import com.loopj.android.http.RequestParams;
+
+import org.json.JSONObject;
+
 import cn.xcom.helper.R;
+import cn.xcom.helper.bean.UserInfo;
+import cn.xcom.helper.constant.HelperConstant;
+import cn.xcom.helper.constant.NetConstant;
 import cn.xcom.helper.fragment.BuyFragment;
 import cn.xcom.helper.fragment.MapFragment;
 import cn.xcom.helper.fragment.MeFragment;
 import cn.xcom.helper.fragment.SaleFragment;
+import cn.xcom.helper.net.HelperAsyncHttpClient;
+import cn.xcom.helper.utils.SPUtils;
+import cz.msebera.android.httpclient.Header;
 
 /**
  * Created by zhuchongkun on 16/5/27.
@@ -29,6 +41,7 @@ public class HomeActivity extends BaseActivity{
     private SaleFragment saleFragment;
     private MeFragment meFragment;
     private Fragment[] fragments;
+    private UserInfo userInfo;
 
     private int a=0;
     private int index;
@@ -39,6 +52,8 @@ public class HomeActivity extends BaseActivity{
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_home);
         mContext=this;
+        userInfo = new UserInfo(mContext);
+        userInfo.readData(mContext);
         initView();
         initFragment();
     }
@@ -125,6 +140,33 @@ public class HomeActivity extends BaseActivity{
         currentTanIndex=index;
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        getInsurance();
+    }
 
+    /**
+     * 获取保险认证
+     */
+    private void getInsurance() {
+        RequestParams params=new RequestParams();
+        params.put("userid",userInfo.getUserId());
+        HelperAsyncHttpClient.get(NetConstant.Check_Insurance, params, new JsonHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                super.onSuccess(statusCode, headers, response);
+                Log.e("认证",response.toString());
+                if(response.optString("status").equals("success")){
+                    SPUtils.put(mContext,HelperConstant.IS_INSURANCE,response.optString("data"));
+                }
+            }
 
+            @Override
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                super.onFailure(statusCode, headers, responseString, throwable);
+                Log.e("认证", responseString);
+            }
+        });
+    }
 }

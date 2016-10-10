@@ -4,6 +4,7 @@ package cn.xcom.helper.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.Window;
@@ -86,9 +87,10 @@ public class SetCityActivity extends WheelBaseActivity implements OnClickListene
 			break;
 		case R.id.bt_set_city_submit:
 			Intent intent = new Intent();
-			intent.putExtra("city", mCurrentProvice.getName());
+			intent.putExtra("city", mCurrentProvice.getName()+mCurrentCity.getName()+mCurrentDistrict.getName());
+			Log.e("city",mCurrentProvice.getName());
 			intent.putExtra("cityId", mCurrentDistrict.getId());
-			setResult(1, intent);
+			setResult(RESULT_OK, intent);
 			finish();
 			break;
 		}

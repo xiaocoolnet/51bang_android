@@ -20,7 +20,16 @@ public interface HelperConstant {
     /**
      * 接口前缀
      */
-    public static final String NET_HOST_PREFIX="http://www.my51bang.com/index.php?g=apps&m=index&";
+    public static final String NET_HOST_PREFIX = "http://www.my51bang.com/index.php?g=apps&m=index&";
 
+    /**
+     * 是否实名认证（1是,2否）
+     */
+    public static final String IS_HAD_AUTHENTICATION = "IS_HAD_AUTHENTICATION";
+
+    /**
+     * 是否保险认证（1-已认证， －1认证中， 0 未认证或认证失败）
+     */
+    public static final String IS_INSURANCE = "IS_INSURANCE";
 
 }

@@ -210,4 +210,14 @@ public interface NetConstant extends HelperConstant {
     我的接单
      */
     public final static String GET_MY_TASK=NET_HOST_PREFIX+"a=getMyApplyTaskList&";
+
+    /*
+    检查用户是否实名认证
+     */
+    public final static String Check_Had_Authentication=NET_HOST_PREFIX+"a=CheckHadAuthentication&";
+
+    /*
+    检查用户是否保险认证
+     */
+    public final static String Check_Insurance=NET_HOST_PREFIX+"a=CheckInsurance&";
 }

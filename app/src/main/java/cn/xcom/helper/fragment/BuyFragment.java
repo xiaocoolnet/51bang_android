@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -34,10 +35,12 @@ import cn.xcom.helper.activity.MyTaskActivity;
 import cn.xcom.helper.activity.TaskDetailActivity;
 import cn.xcom.helper.bean.TaskInfo;
 import cn.xcom.helper.bean.UserInfo;
+import cn.xcom.helper.constant.HelperConstant;
 import cn.xcom.helper.constant.NetConstant;
 import cn.xcom.helper.net.HelperAsyncHttpClient;
 import cn.xcom.helper.utils.CommonAdapter;
 import cn.xcom.helper.utils.LogUtils;
+import cn.xcom.helper.utils.SPUtils;
 import cn.xcom.helper.utils.ToastUtil;
 import cn.xcom.helper.utils.ViewHolder;
 import cz.msebera.android.httpclient.Header;
@@ -63,7 +66,8 @@ public class BuyFragment extends Fragment implements View.OnClickListener{
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = null;
-        if(isChecked){
+        Log.e("state",SPUtils.get(getActivity(), HelperConstant.IS_HAD_AUTHENTICATION,"").toString());
+        if(SPUtils.get(getActivity(), HelperConstant.IS_HAD_AUTHENTICATION,"").equals("0")){
             view = inflater.inflate(R.layout.activity_grab_task,container,false);
         }else{
             view = inflater.inflate(R.layout.fragment_buy,container,false);
@@ -80,7 +84,7 @@ public class BuyFragment extends Fragment implements View.OnClickListener{
     }
     private void initView(){
         userInfo=new UserInfo(mContext);
-        if(isChecked){
+        if(SPUtils.get(getActivity(), HelperConstant.IS_HAD_AUTHENTICATION,"").equals("0")){
             ll_task = (LinearLayout) getView().findViewById(R.id.ll_task);
             ll_task.setOnClickListener(this);
             srl_task = (SwipeRefreshLayout) getView().findViewById(R.id.grab_task_srl);
@@ -126,7 +130,7 @@ public class BuyFragment extends Fragment implements View.OnClickListener{
      * 加载数据
      */
     private void getData() {
-        if(isChecked){
+        if(SPUtils.get(getActivity(), HelperConstant.IS_HAD_AUTHENTICATION,"").equals("0")){
             RequestParams params=new RequestParams();
             params.put("userid",userInfo.getUserId());
             HelperAsyncHttpClient.get(NetConstant.GETTASKLIST, params, new JsonHttpResponseHandler() {
