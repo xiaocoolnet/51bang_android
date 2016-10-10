@@ -7,7 +7,7 @@
     <RelativeLayout
     android:layout_width="match_parent"
     android:layout_height="fill_parent"
-		android:background="@android:color/holo_red_light"
+		android:background="@color/colorTheme"
     >
 	<TextView 
 	    android:id="@+id/tv_tittle"
@@ -20,18 +20,18 @@
     	android:layout_alignBottom="@+id/btn_back"
     	android:layout_alignTop="@+id/btn_back"
     	android:textSize="16sp"
+		android:text="请选择"
     	android:textColor="#ffffff"
     	/>
 	<Button 
 	    android:id="@+id/btn_back"
-	    android:layout_width="wrap_content"
+	    android:layout_width="50dp"
     	android:layout_height="fill_parent"
     	android:text="返回"
-
     	android:textSize="16sp"
     	android:textColor="#ffffff"
-    	android:paddingLeft="4sp"
-		android:background="@android:color/holo_red_light"/>
+
+		android:background="@color/colorTheme"/>
 	<Button 
 	    android:id="@+id/btn_right"
 	    android:layout_width="wrap_content"
@@ -43,7 +43,7 @@
     	android:textColor="#ffffff"
     	android:paddingRight="8dp"
 		android:text=""
-		android:background="@android:color/holo_red_light"
+		android:background="@color/colorTheme"
     	/>
 	</RelativeLayout>
 </LinearLayout>

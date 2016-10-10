@@ -297,6 +297,7 @@
         <!-- </>值来自开发者平台取得的AppKey -->
         <!-- 极光推送 -->
         <activity android:name=".activity.AddressDetailActivity"></activity>
+
     </application>
 
 </manifest>

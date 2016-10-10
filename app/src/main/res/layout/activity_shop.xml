@@ -49,7 +49,7 @@
                 android:layout_marginTop="5dp"
                 android:layout_marginLeft="10dp"
                 android:textColor="@color/colorTextSale"
-                android:textSize="22sp"
+                android:textSize="16sp"
                 android:id="@+id/tvContent"/>
             <View
                 android:layout_width="match_parent"
@@ -58,7 +58,7 @@
                 android:background="#faf3f3"></View>
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="50dp">
+                android:layout_height="40dp">
             <TextView
                 android:id="@+id/price"
                 android:layout_width="wrap_content"
@@ -67,7 +67,7 @@
                 android:layout_gravity="center"
                 android:layout_marginLeft="10dp"
                 android:textColor="@color/msg_red"
-                android:textSize="24sp"/>
+                android:textSize="16sp"/>
                 <ImageView
                     android:id="@+id/collect"
                     android:layout_width="30dp"
@@ -87,7 +87,7 @@
                 android:orientation="horizontal">
                 <LinearLayout
                     android:layout_width="320dp"
-                    android:layout_height="50dp"
+                    android:layout_height="40dp"
                     android:orientation="horizontal">
                     <LinearLayout
                         android:layout_width="wrap_content"
@@ -109,7 +109,7 @@
                                 android:layout_height="wrap_content"
                                 android:text="烟台市"
                                 android:textColor="@color/colorTextSale"
-                                android:textSize="22sp"/>
+                                android:textSize="16sp"/>
 
 
                     </LinearLayout>
@@ -157,6 +157,7 @@
         android:layout_height="wrap_content"
         >
         <RelativeLayout
+           android:layout_marginTop="10dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
 
@@ -166,9 +167,10 @@
                 android:layout_height="wrap_content"
                 android:text="价格：￥38.90"
                 android:id="@+id/tvprice"
+
                 android:layout_marginLeft="10dp"
                 android:textColor="@color/msg_red"
-                android:textSize="22sp"/>
+                android:textSize="16sp"/>
         </RelativeLayout>
         <RelativeLayout
             android:layout_width="80dp"

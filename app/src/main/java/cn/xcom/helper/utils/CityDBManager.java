@@ -21,7 +21,7 @@ import cn.xcom.helper.R;
 public class CityDBManager {
 	private final int BUFFER_SIZE = 1024;
 	public static final String DB_NAME = "city.s3db";
-	public static final String PACKAGE_NAME = "cn.xcom.helper.utils";
+	public static final String PACKAGE_NAME = "cn.xcom.helper";
 	public static final String DB_PATH = "/data"
 			+ Environment.getDataDirectory().getAbsolutePath() + "/"
 			+ PACKAGE_NAME;
@@ -34,7 +34,7 @@ public class CityDBManager {
 	}
 
 	public void openDatabase() {
-		this.database = this.openDatabase(DB_PATH );
+		this.database = this.openDatabase(DB_PATH + "/" + DB_NAME );
 	}
 
 	public SQLiteDatabase getDatabase() {

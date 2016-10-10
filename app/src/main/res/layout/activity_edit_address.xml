@@ -138,38 +138,38 @@
             android:scaleType="center"/>
     </LinearLayout>
 
-    <View
-        android:layout_width="fill_parent"
-        android:layout_height="1dip"
-        android:background="@color/colorLine" />
-    <LinearLayout
-        android:id="@+id/ll_edit_address_street"
-        android:layout_width="match_parent"
-        android:layout_height="45dp"
-        android:background="@color/colorTextWhite">
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:text="@string/tv_edit_address_street"
-            android:gravity="center_vertical"
-            android:paddingLeft="10dip"
-            android:textSize="15dp"/>
-        <TextView
-            android:id="@+id/tv_edit_address_street"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1.0"
-            android:gravity="center_vertical|right"
-            android:hint="@string/tv_edit_address_street_text"
-            android:paddingRight="5dip"
-            android:textSize="14dp" />
-        <ImageView
-            android:layout_width="40dip"
-            android:layout_height="match_parent"
-            android:src="@mipmap/ic_arrow_right"
-            android:scaleType="center"/>
+    <!--<View-->
+        <!--android:layout_width="fill_parent"-->
+        <!--android:layout_height="1dip"-->
+        <!--android:background="@color/colorLine" />-->
+    <!--<LinearLayout-->
+        <!--android:id="@+id/ll_edit_address_street"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="45dp"-->
+        <!--android:background="@color/colorTextWhite">-->
+        <!--<TextView-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="match_parent"-->
+            <!--android:text="@string/tv_edit_address_street"-->
+            <!--android:gravity="center_vertical"-->
+            <!--android:paddingLeft="10dip"-->
+            <!--android:textSize="15dp"/>-->
+        <!--<TextView-->
+            <!--android:id="@+id/tv_edit_address_street"-->
+            <!--android:layout_width="0dp"-->
+            <!--android:layout_height="match_parent"-->
+            <!--android:layout_weight="1.0"-->
+            <!--android:gravity="center_vertical|right"-->
+            <!--android:hint="@string/tv_edit_address_street_text"-->
+            <!--android:paddingRight="5dip"-->
+            <!--android:textSize="14dp" />-->
+        <!--<ImageView-->
+            <!--android:layout_width="40dip"-->
+            <!--android:layout_height="match_parent"-->
+            <!--android:src="@mipmap/ic_arrow_right"-->
+            <!--android:scaleType="center"/>-->
 
-    </LinearLayout>
+    <!--</LinearLayout>-->
 
     <View
         android:layout_width="fill_parent"
@@ -187,5 +187,25 @@
         android:layout_width="fill_parent"
         android:layout_height="1dip"
         android:background="@color/colorLine" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:orientation="horizontal">
 
+        <CheckBox
+            android:id="@+id/cb_checked"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_gravity="center"
+            android:gravity="right"
+            android:background="@drawable/checkbox_bg2"
+            android:button="@null" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="默认地址"
+            android:layout_gravity="center"
+            android:textSize="16sp"/>
+
+    </LinearLayout>
 </LinearLayout>

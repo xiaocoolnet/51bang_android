@@ -5,6 +5,23 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context="cn.xcom.helper.activity.BuyActivity">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="46dp"
+            android:id="@+id/back"
+            android:background="@color/colorTheme"
+            >
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:src="@mipmap/ic_back_white_left"
+                android:layout_marginTop="10dp"
+                />
+        </RelativeLayout>
     <TextView
         android:layout_width="match_parent"
         android:layout_height="46dip"
@@ -13,49 +30,45 @@
         android:text="确认订单"
         android:textSize="17dp"
         android:textColor="@color/colorTextWhite"/>
-    <RelativeLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/back"
-        android:layout_marginTop="-35dp">
-        <ImageView
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:src="@mipmap/ic_back_white_left"
-            />
-    </RelativeLayout>
+    </LinearLayout>
 
-    <!--<ScrollView-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="match_parent"-->
-        <!--android:layout_marginTop="10dp"-->
-      <!-->-->
-        <LinearLayout
+    <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:layout_weight="1">
     <LinearLayout
         android:layout_marginTop="5dp"
         android:layout_width="match_parent"
-        android:layout_height="70dp"
+        android:layout_height="50dp"
         android:orientation="horizontal">
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_weight="0.7">
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="联系电话"
             android:textColor="@color/colorTextSale"
-            android:textSize="20sp"
+            android:textSize="16sp"
             android:layout_marginLeft="10dp"
             android:layout_gravity="center"/>
+        </RelativeLayout>
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.2"
+            android:layout_gravity="center">
         <TextView
             android:id="@+id/buy_phone"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="18865623000"
             android:textSize="20sp"
-            android:textColor="@color/colorTextSale"
-            android:layout_marginLeft="120dp"
-            android:layout_gravity="center"/>
+            android:textColor="@color/colorTextSale" />
+        </RelativeLayout>
     </LinearLayout>
     <View
         android:layout_width="match_parent"
@@ -63,25 +76,37 @@
         android:background="#ece6e6"/>
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="70dp"
+        android:layout_height="50dp"
         android:orientation="horizontal">
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.9"
+            android:layout_gravity="center">
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="单价"
             android:textColor="@color/colorTextSale"
-            android:textSize="20sp"
+            android:textSize="16sp"
             android:layout_gravity="center"
             android:layout_marginLeft="10dp"/>
+        </RelativeLayout>
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.5"
+            android:layout_gravity="center">
         <TextView
             android:id="@+id/buy_price"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="20sp"
+            android:textSize="16sp"
             android:text="￥0.01"
             android:textColor="@color/colorTextSale"
             android:layout_gravity="center"
             android:layout_marginLeft="200dp"/>
+        </RelativeLayout>
     </LinearLayout>
             <View
                 android:layout_width="match_parent"
@@ -89,18 +114,28 @@
                 android:background="#ece6e6"/>
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="70dp"
+        android:layout_height="50dp"
         android:orientation="horizontal">
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_weight="3">
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="数量"
             android:textColor="@color/colorTextSale"
-            android:textSize="20sp"
+            android:textSize="16sp"
             android:layout_gravity="center"
             android:layout_marginLeft="10dp"/>
+        </RelativeLayout>
+       <RelativeLayout
+           android:layout_width="wrap_content"
+           android:layout_height="wrap_content"
+           android:layout_weight="0.4"
+           android:layout_gravity="center">
         <Button
-            android:layout_marginLeft="200dp"
             android:id="@+id/btnDecrease"
             android:layout_width="30dp"
             android:layout_height="30dp"
@@ -113,6 +148,7 @@
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:minWidth="60dp"
+            android:layout_marginLeft="30dp"
             android:textColor="@color/colorTextSale"
             android:background="@null"
             android:inputType="number"
@@ -124,10 +160,11 @@
             android:id="@+id/btnIncrease"
             android:layout_width="30dp"
             android:layout_height="30dp"
+            android:layout_marginLeft="70dp"
             android:layout_gravity="center"
-
             android:background="@drawable/btn_amount"
             android:text="+"/>
+       </RelativeLayout>
     </LinearLayout>
             <View
                 android:layout_width="match_parent"
@@ -135,25 +172,37 @@
                 android:background="#ece6e6"/>
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="70dp"
+        android:layout_height="50dp"
         android:orientation="horizontal">
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_weight="0.9">
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="小计"
             android:textColor="@color/colorTextSale"
-            android:textSize="20sp"
+            android:textSize="16sp"
             android:layout_gravity="center"
             android:layout_marginLeft="10dp"/>
+        </RelativeLayout>
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_weight="0.5">
         <TextView
             android:id="@+id/buy_total"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="20sp"
+            android:textSize="16sp"
             android:text="0.01"
             android:textColor="#e6951b"
             android:layout_gravity="center"
             android:layout_marginLeft="200dp"/>
+        </RelativeLayout>
     </LinearLayout>
     <View
         android:layout_width="match_parent"
@@ -163,23 +212,35 @@
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:orientation="horizontal">
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.9"
+            android:layout_gravity="center">
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="使用方式"
             android:textColor="@color/colorTextSale"
-            android:textSize="20sp"
+            android:textSize="16sp"
             android:layout_gravity="center"
             android:layout_marginLeft="10dp"/>
+        </RelativeLayout>
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_weight="0.5">
         <TextView
            android:id="@+id/buy_deliver"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="20sp"
+            android:textSize="16sp"
             android:text="同城自取"
             android:textColor="@color/colorTextSale"
             android:layout_gravity="center"
             android:layout_marginLeft="160dp"/>
+        </RelativeLayout>
     </LinearLayout>
             <View
                 android:layout_width="match_parent"
@@ -194,7 +255,7 @@
             android:layout_height="wrap_content"
             android:text="买家留言"
             android:textColor="@color/colorTextSale"
-            android:textSize="20sp"
+            android:textSize="16sp"
             android:layout_gravity="center"
             android:layout_marginLeft="10dp"/>
         <EditText
@@ -213,52 +274,77 @@
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:orientation="horizontal">
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_weight="0.1">
         <TextView
             android:id="@+id/adress"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="地址："
             android:textColor="@color/colorTextSale"
-            android:textSize="20sp"
+            android:textSize="16sp"
             android:layout_gravity="center"
             android:layout_marginLeft="10dp"/>
+        </RelativeLayout>
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_weight="0.8">
+            <TextView
+                android:id="@+id/address_choose"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="16sp"
+                android:text="请选择地址"
+                android:textColor="@color/colorTextSale"/>
+        </RelativeLayout>
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_weight="0.1">
         <ImageView
             android:layout_width="20dp"
             android:layout_height="20dp"
-            android:layout_gravity="center"
-            android:layout_marginLeft="220dp"
             android:src="@mipmap/ic_arrow_right"/>
+        </RelativeLayout>
     </LinearLayout>
 
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="#ece6e6"/>
+
+        </LinearLayout>
+
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="50dp"
-        >
-    <RelativeLayout
-        android:id="@+id/buy_commit"
-        android:layout_width="100dp"
-        android:layout_height="40dp"
-        android:background="@color/colorHelpMe"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true">
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="提交订单"
-            android:textSize="20sp"
-            android:layout_marginLeft="10dp"
-            android:layout_marginTop="8dp"
-            android:gravity="bottom"
-            android:textColor="#ffffff"
-            />
-    </RelativeLayout>
-    </RelativeLayout>
-        </LinearLayout>
-    <!--</ScrollView>-->
+        android:background="#faf7f7"
 
+
+        >
+        <RelativeLayout
+            android:id="@+id/buy_commit"
+            android:layout_width="100dp"
+            android:layout_height="40dp"
+            android:background="@color/colorHelpMe"
+
+            android:layout_alignParentRight="true">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="提交订单"
+                android:textSize="20sp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="8dp"
+                android:gravity="center"
+                android:textColor="#ffffff"
+                />
+        </RelativeLayout>
+    </RelativeLayout>
 </LinearLayout>
