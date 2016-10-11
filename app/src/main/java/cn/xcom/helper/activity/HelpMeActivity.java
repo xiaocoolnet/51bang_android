@@ -101,10 +101,12 @@ public class HelpMeActivity extends BaseActivity implements View.OnClickListener
     private LinearLayout ll_time;
     private ScrollView bottom;
     private String begintime = "";
+
     private double lat;
     private double lon;
     GeoCoder mSearch = null; // 搜索模块，也可去掉地图模块独立使用
     private LatLng mLat;
+
     private RelativeLayout rl_photo,rl_voice,rl_grid_photo;
     private NoScrollGridView addsnPicGrid;
     private GalleryFinalUtil galleryFinalUtil;
@@ -113,6 +115,9 @@ public class HelpMeActivity extends BaseActivity implements View.OnClickListener
     private ArrayList<PhotoInfo> mPhotoList;
     private LocalImgGridAdapter localImgGridAdapter;
     private List<String> nameList;//添加相册选取完返回的的list
+
+    private double mSiteLat,mSiteLon,mServiceLat,mServiewLon;
+    private String mSiteName,mServiceName;
 
 
     @Override
@@ -280,9 +285,19 @@ public class HelpMeActivity extends BaseActivity implements View.OnClickListener
             case R.id.rl_help_me_back:
                 finish();
                 break;
+            //选择上门地址
             case R.id.iv_help_me_site_location:
+                Intent intent1 = new Intent(mContext,SelectMapPoiActivity.class);
+                intent1.putExtra("lat",lat);
+                intent1.putExtra("lon",lon);
+                startActivityForResult(intent1, 1);
                 break;
+            //选择服务地址
             case R.id.iv_help_me_service_location:
+                Intent intent2 = new Intent(mContext,SelectMapPoiActivity.class);
+                intent2.putExtra("lat",lat);
+                intent2.putExtra("lon",lon);
+                startActivityForResult(intent2, 2);
                 break;
             case R.id.tv_help_me_time_unit:
                 showTextPicker();
@@ -305,6 +320,30 @@ public class HelpMeActivity extends BaseActivity implements View.OnClickListener
 
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode!=RESULT_CANCELED){
+            switch (requestCode) {
+                case 1:
+                    if (data!=null){
+                        mSiteName = data.getStringExtra("siteName");
+                        mSiteLat = data.getDoubleExtra("siteLat", 0);
+                        mSiteLon = data.getDoubleExtra("siteLon",0);
+                        et_site_location.setText(mSiteName);
+                    }
+                    break;
+                case 2:
+                    if (data!=null){
+                        mServiceName = data.getStringExtra("siteName");
+                        mServiceLat = data.getDoubleExtra("siteLat", 0);
+                        mServiewLon = data.getDoubleExtra("siteLon",0);
+                        et_service_location.setText(mServiceName);
+                    }
+                    break;
+            }
+        }
+        super.onActivityResult(requestCode, resultCode, data);
+    }
 
     /**
      * 选择图片后 返回的图片数据
@@ -448,7 +487,7 @@ public class HelpMeActivity extends BaseActivity implements View.OnClickListener
                 request.putValue("price",et_wages.getText().toString());
                 request.putValue("type",getSelectString());
                 request.putValue("address",et_site_location.getText().toString());
-                request.putValue("longitude",lon+"");
+                request.putValue("longitude",lon + "");
                 request.putValue("latitude", lat + "");
                 SingleVolleyRequest.getInstance(getApplication()).addToRequestQueue(request);
 
@@ -588,7 +627,7 @@ public class HelpMeActivity extends BaseActivity implements View.OnClickListener
                     .show();
             return;
         }
-        String address = result.getAddress();
+        String address = result.getPoiList().get(0).name;
         et_service_location.setText(address);
         et_site_location.setText(address);
         /*mBaiduMap.addOverlay(new MarkerOptions().position(result.getLocation())

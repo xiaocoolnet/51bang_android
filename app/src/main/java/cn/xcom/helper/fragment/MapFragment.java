@@ -7,7 +7,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -22,7 +21,6 @@ import com.baidu.mapapi.map.BaiduMap;
 import com.baidu.mapapi.map.BitmapDescriptor;
 import com.baidu.mapapi.map.BitmapDescriptorFactory;
 import com.baidu.mapapi.map.InfoWindow;
-import com.baidu.mapapi.map.MapPoi;
 import com.baidu.mapapi.map.MapStatus;
 import com.baidu.mapapi.map.MapStatusUpdateFactory;
 import com.baidu.mapapi.map.MapView;
@@ -32,6 +30,11 @@ import com.baidu.mapapi.map.MyLocationConfiguration;
 import com.baidu.mapapi.map.MyLocationData;
 import com.baidu.mapapi.map.OverlayOptions;
 import com.baidu.mapapi.model.LatLng;
+import com.baidu.mapapi.search.geocode.GeoCodeResult;
+import com.baidu.mapapi.search.geocode.GeoCoder;
+import com.baidu.mapapi.search.geocode.OnGetGeoCoderResultListener;
+import com.baidu.mapapi.search.geocode.ReverseGeoCodeOption;
+import com.baidu.mapapi.search.geocode.ReverseGeoCodeResult;
 
 import cn.xcom.helper.R;
 import cn.xcom.helper.activity.AuthenticationListActivity;
@@ -44,7 +47,7 @@ import cn.xcom.helper.activity.IHelpActivity;
  * Created by zhuchongkun on 16/5/27.
  * 主页面——地图
  */
-public class MapFragment extends Fragment implements View.OnClickListener{
+public class MapFragment extends Fragment implements View.OnClickListener, OnGetGeoCoderResultListener {
     private  String TAG="MapFragment";
     private Context mContext;
     private RelativeLayout rl_location,rl_authentication_list;
@@ -58,12 +61,15 @@ public class MapFragment extends Fragment implements View.OnClickListener{
     BitmapDescriptor mCurrentMarker = null;
     boolean isFirstLoc = true; // 是否首次定位
     MyLocationData locData;
+    GeoCoder mSearch = null; // 搜索模块，也可去掉地图模块独立使用
 
     /**
      * 当前地点击点
      */
     private LatLng currentPt;
     private Marker marker,marker2;
+
+    private LatLng currentLocPt;
 
     @Nullable
     @Override
@@ -80,6 +86,9 @@ public class MapFragment extends Fragment implements View.OnClickListener{
         initLocation();
         initListener();
         Button button = (Button) getView().findViewById(R.id.btn_location);
+        // 初始化搜索模块，注册事件监听
+        mSearch = GeoCoder.newInstance();
+        mSearch.setOnGetGeoCodeResultListener(this);
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -94,60 +103,36 @@ public class MapFragment extends Fragment implements View.OnClickListener{
      * 对地图事件的消息响应
      */
     private void initListener() {
-        mBaiduMap.setOnMapTouchListener(new BaiduMap.OnMapTouchListener() {
-
+        mBaiduMap.setOnMapStatusChangeListener(new BaiduMap.OnMapStatusChangeListener() {
             @Override
-            public void onTouch(MotionEvent event) {
+            public void onMapStatusChangeStart(MapStatus mapStatus) {
 
             }
-        });
 
+            @Override
+            public void onMapStatusChange(MapStatus mapStatus) {
 
-        mBaiduMap.setOnMapClickListener(new BaiduMap.OnMapClickListener() {
-            /**
-             * 单击地图
-             */
-            public void onMapClick(LatLng point) {
+            }
+
+            @Override
+            public void onMapStatusChangeFinish(MapStatus mapStatus) {
+                currentPt = mBaiduMap.getMapStatus().target;
+                mSearch.reverseGeoCode(new ReverseGeoCodeOption()
+                        .location(currentPt));
+                Log.e("中心点", currentPt.latitude + "");
                 if (marker != null) {
                     marker.remove();
                 }
                 mBaiduMap.clear();
-                currentPt = point;
-                updateMapState();
-            }
-
-            /**
-             * 单击地图中的POI点
-             */
-            public boolean onMapPoiClick(MapPoi poi) {
-                currentPt = poi.getPosition();
-                updateMapState();
-                return false;
             }
         });
     }
-
-    /**
-     * 更新地图状态显示面板
-     */
-    private void updateMapState() {
-        String state = "";
-        if (currentPt == null) {
-            state = "点击、长按、双击地图以获取经纬度和地图状态";
-        } else {
-            state = String.format(",当前经度： %f 当前纬度：%f",
-                    currentPt.longitude, currentPt.latitude);
-        }
-        createMarker(currentPt);
-        Log.e("坐标",state);
-
-    }
-
     /**
      * 构建坐标点
      * @param mPt
+     * @param name
      */
-    public void createMarker(final LatLng mPt){
+    public void createMarker(final LatLng mPt, String name){
         //构建Marker图标
         BitmapDescriptor bitmap = BitmapDescriptorFactory
                 .fromResource(R.mipmap.ic_dingwei_shou);
@@ -158,10 +143,9 @@ public class MapFragment extends Fragment implements View.OnClickListener{
                 .draggable(true);  //设置手势拖拽
         //将marker添加到地图上
         marker = (Marker) (mBaiduMap.addOverlay(options));
-        mBaiduMap.setMapStatus(MapStatusUpdateFactory.newLatLng(mPt));
         //创建InfoWindow展示的view
         Button button = new Button(mContext);
-        button.setText("点击下单");
+        button.setText(name);
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -215,6 +199,7 @@ public class MapFragment extends Fragment implements View.OnClickListener{
     public void onResume() {
         super.onResume();
         mMapView.onResume();
+        initLocation();
     }
 
     @Override
@@ -256,6 +241,16 @@ public class MapFragment extends Fragment implements View.OnClickListener{
 
     }
 
+    @Override
+    public void onGetGeoCodeResult(GeoCodeResult geoCodeResult) {
+
+    }
+
+    @Override
+    public void onGetReverseGeoCodeResult(ReverseGeoCodeResult reverseGeoCodeResult) {
+        createMarker(reverseGeoCodeResult.getLocation(),reverseGeoCodeResult.getPoiList().get(0).name);
+    }
+
     /**
      * 定位SDK监听函数
      */
@@ -273,6 +268,7 @@ public class MapFragment extends Fragment implements View.OnClickListener{
                     .direction(100).latitude(location.getLatitude())
                     .longitude(location.getLongitude()).build();
             mBaiduMap.setMyLocationData(locData);
+            currentLocPt = new LatLng(location.getLatitude(),location.getLongitude());
             if (isFirstLoc) {
                 isFirstLoc = false;
                 LatLng ll = new LatLng(location.getLatitude(),
@@ -281,7 +277,6 @@ public class MapFragment extends Fragment implements View.OnClickListener{
                 builder.target(ll).zoom(18.0f);
                 mBaiduMap.animateMapStatus(MapStatusUpdateFactory.newMapStatus(builder.build()));
             }
-            mLocClient.stop();
         }
 
         public void onReceivePoi(BDLocation poiLocation) {

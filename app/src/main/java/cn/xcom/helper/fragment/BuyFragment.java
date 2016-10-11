@@ -67,7 +67,7 @@ public class BuyFragment extends Fragment implements View.OnClickListener{
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = null;
         Log.e("state",SPUtils.get(getActivity(), HelperConstant.IS_HAD_AUTHENTICATION,"").toString());
-        if(SPUtils.get(getActivity(), HelperConstant.IS_HAD_AUTHENTICATION,"").equals("0")){
+        if(SPUtils.get(getActivity(), HelperConstant.IS_HAD_AUTHENTICATION,"").equals("1")){
             view = inflater.inflate(R.layout.activity_grab_task,container,false);
         }else{
             view = inflater.inflate(R.layout.fragment_buy,container,false);
@@ -84,7 +84,7 @@ public class BuyFragment extends Fragment implements View.OnClickListener{
     }
     private void initView(){
         userInfo=new UserInfo(mContext);
-        if(SPUtils.get(getActivity(), HelperConstant.IS_HAD_AUTHENTICATION,"").equals("0")){
+        if(SPUtils.get(getActivity(), HelperConstant.IS_HAD_AUTHENTICATION,"").equals("1")){
             ll_task = (LinearLayout) getView().findViewById(R.id.ll_task);
             ll_task.setOnClickListener(this);
             srl_task = (SwipeRefreshLayout) getView().findViewById(R.id.grab_task_srl);
@@ -130,7 +130,7 @@ public class BuyFragment extends Fragment implements View.OnClickListener{
      * 加载数据
      */
     private void getData() {
-        if(SPUtils.get(getActivity(), HelperConstant.IS_HAD_AUTHENTICATION,"").equals("0")){
+        if(SPUtils.get(getActivity(), HelperConstant.IS_HAD_AUTHENTICATION,"").equals("1")){
             RequestParams params=new RequestParams();
             params.put("userid",userInfo.getUserId());
             HelperAsyncHttpClient.get(NetConstant.GETTASKLIST, params, new JsonHttpResponseHandler() {

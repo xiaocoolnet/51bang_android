@@ -79,7 +79,7 @@
         <service
             android:name="com.baidu.location.f"
             android:enabled="true"
-            android:process=":remote"></service>
+            android:process=":remote" />
         <!-- 百度地图定位服务 -->
 
         <meta-data
@@ -206,7 +206,7 @@
         <service
             android:name="cn.jpush.android.service.DownloadService"
             android:enabled="true"
-            android:exported="false"></service>
+            android:exported="false" />
 
         <!-- Required SDK 核心功能 -->
         <!-- 可配置android:process参数将PushService放在其他进程中 -->
@@ -296,8 +296,8 @@
             android:value="9d8ff2f94d6c180efb085b1a" />
         <!-- </>值来自开发者平台取得的AppKey -->
         <!-- 极光推送 -->
-        <activity android:name=".activity.AddressDetailActivity"></activity>
-
+        <activity android:name=".activity.AddressDetailActivity" />
+        <activity android:name=".activity.SelectMapPoiActivity"></activity>
     </application>
 
 </manifest>
