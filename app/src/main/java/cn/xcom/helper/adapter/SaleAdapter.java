@@ -2,6 +2,7 @@ package cn.xcom.helper.adapter;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Paint;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -82,6 +83,7 @@ public class SaleAdapter extends BaseAdapter{
             viewHolder.textView2.setText(front.getDescription());
             viewHolder.textView3.setText("￥"+front.getPrice());
             viewHolder.textView4.setText(front.getOprice());
+            viewHolder.textView4.getPaint().setFlags(Paint.STRIKE_THRU_TEXT_FLAG); //中划线
             viewHolder.textView5.setText("已售"+front.getSellnumber());
         //对cinvertview进行监听
             convertView.setOnClickListener(new View.OnClickListener() {

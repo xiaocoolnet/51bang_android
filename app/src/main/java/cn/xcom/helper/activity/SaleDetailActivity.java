@@ -9,7 +9,6 @@ import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -41,9 +40,9 @@ import cn.xcom.helper.utils.ToastUtils;
 public class SaleDetailActivity extends BaseActivity implements View.OnClickListener {
     private ViewPager vp;
     private ImageView imageView,collect;
-    private TextView tvContent,price,tvprice,adress;
-    private RelativeLayout backImage,release_collection,buy;
-    private LinearLayout shopPublish;
+    private TextView tvContent,price,tvprice,adress,buy;
+    private RelativeLayout backImage;
+    private RelativeLayout shopPublish;
     private List addViewList;//添加图片的list
     private ViewPageAdapter viewPageAdapter;
     private Front front;
@@ -73,13 +72,13 @@ public class SaleDetailActivity extends BaseActivity implements View.OnClickList
                 imageView=new ImageView(this);
                 MyImageLoader.display(NetConstant.NET_DISPLAY_IMG +front.getPicturelist().get(i).getFile(),
                         imageView);
-                imageView.setScaleType(ImageView.ScaleType.FIT_XY);
+                imageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
                 addViewList.add(imageView);
             }
         }else{
             imageView=new ImageView(this);
             MyImageLoader.display(NetConstant.NET_DISPLAY_IMG,imageView);
-            imageView.setScaleType(ImageView.ScaleType.FIT_XY);
+            imageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
             addViewList.add(imageView);
         }
         viewPageAdapter=new ViewPageAdapter(addViewList);
@@ -87,8 +86,8 @@ public class SaleDetailActivity extends BaseActivity implements View.OnClickList
         vp.setCurrentItem(0);
         collectionList();
         addGood();
-
   }
+
     //初始化控件
     public void initView(){
         context=this;
@@ -99,16 +98,15 @@ public class SaleDetailActivity extends BaseActivity implements View.OnClickList
         vp= (ViewPager) findViewById(R.id.vp);
         tvContent= (TextView) findViewById(R.id.tvContent);
         collect= (ImageView) findViewById(R.id.collect);
-        release_collection= (RelativeLayout) findViewById(R.id.release_collection);
-        release_collection.setOnClickListener(this);
+        collect.setOnClickListener(this);
         price= (TextView) findViewById(R.id.price);
         tvprice= (TextView) findViewById(R.id.tvprice);
         adress= (TextView) findViewById(R.id.adress);
         backImage= (RelativeLayout) findViewById(R.id.back);
         backImage.setOnClickListener(this);
-        shopPublish= (LinearLayout) findViewById(R.id.shopPublish);
+        shopPublish= (RelativeLayout) findViewById(R.id.shopPublish);
         shopPublish.setOnClickListener(this);
-        buy= (RelativeLayout) findViewById(R.id.buy);
+        buy= (TextView) findViewById(R.id.buy);
         buy.setOnClickListener(this);
     }
     //根据商品的id得到商家的id
@@ -165,7 +163,7 @@ public class SaleDetailActivity extends BaseActivity implements View.OnClickList
                 }
 
                 break;
-            case R.id.release_collection:
+            case R.id.collect:
                 if (flag==1){
                     cancleCollection();
                 }else if (flag==2){

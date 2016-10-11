@@ -149,7 +149,6 @@ public class OrderActivity extends BaseActivity implements View.OnClickListener{
      class MineReleaseAdapter extends BaseAdapter {
         private Context context;
         private List<Front> addlist;
-
         public MineReleaseAdapter(Context context, List<Front> addlist) {
             this.context = context;
             this.addlist = addlist;

@@ -1,257 +1,229 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context="cn.xcom.helper.activity.SaleDetailActivity">
 
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
+
         <RelativeLayout
+            android:id="@+id/back"
             android:layout_width="wrap_content"
             android:layout_height="46dp"
-            android:id="@+id/back"
-            android:background="@color/colorTheme"
-            >
+            android:background="@color/colorTheme">
+
             <ImageView
                 android:layout_width="20dp"
                 android:layout_height="20dp"
-                android:src="@mipmap/ic_back_white_left"
                 android:layout_marginTop="10dp"
-                />
+                android:src="@mipmap/ic_back_white_left" />
         </RelativeLayout>
+
         <TextView
             android:layout_width="match_parent"
             android:layout_height="46dip"
             android:background="@color/colorTheme"
             android:gravity="center"
             android:text="确认订单"
-            android:textSize="17dp"
-            android:textColor="@color/colorTextWhite"/>
+            android:textColor="@color/colorTextWhite"
+            android:textSize="17dp" />
     </LinearLayout>
 
     <ScrollView
+        android:id="@+id/sv"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/sv"
         android:layout_weight="1"
-        android:scrollbars="none"
-        android:layout_marginTop="15dp">
+        android:background="@color/divider"
+        android:scrollbars="none">
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical">
-   <android.support.v4.view.ViewPager
-      android:layout_width="match_parent"
-      android:layout_height="160dp"
+            android:orientation="vertical"
+            android:background="@color/background_white"
+            >
 
-      android:id="@+id/vp"></android.support.v4.view.ViewPager>
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="自助烤肉都来吃啊、、、、、、"
-        android:layout_marginTop="5dp"
-        android:layout_marginLeft="10dp"
-        android:textColor="@color/colorTextSale"
-        android:textSize="22sp"
-        android:id="@+id/tvContent"/>
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_marginTop="5dp"
-        android:background="#faf3f3"></View>
-            <LinearLayout
+            <android.support.v4.view.ViewPager
+                android:id="@+id/vp"
+                android:layout_width="match_parent"
+                android:layout_height="160dp"></android.support.v4.view.ViewPager>
+
+            <TextView
+                android:id="@+id/tvContent"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="5dp"
+                android:text="自助烤肉都来吃啊、、、、、、"
+                android:textColor="@color/colorTextSale"
+                android:textSize="18sp" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="5dp"
+                android:background="@color/divider"></View>
+
+            <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
                 >
-                <RelativeLayout
-                    android:layout_width="wrap_content"
+                <TextView
+                    android:id="@+id/price"
+                    android:layout_width="150dp"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_weight="0.5">
-            <TextView
-                android:id="@+id/price"
-                android:layout_width="150dp"
+                    android:layout_alignParentLeft="true"
+                    android:text="￥38.90"
+                    android:textColor="@color/msg_red"
+                    android:textSize="20sp" />
+
+                <ImageView
+                    android:id="@+id/collect"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_alignParentRight="true"
+                    android:src="@mipmap/shoucang" />
+
+            </RelativeLayout>
+
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="5dp"
+                android:layout_marginTop="5dp"
+                android:background="@color/divider"></View>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="￥38.90"
-                android:layout_marginLeft="10dp"
-                android:textColor="@color/msg_red"
-                android:textSize="24sp"/>
-                <RelativeLayout
+                android:padding="10dp">
+
+                <TextView
+                    android:id="@+id/tv_city_name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="160dp"
-                    android:layout_gravity="center"
-                    android:id="@+id/release_collection"
+                    android:text="烟台市"
+                    android:textColor="@color/colorTextSale"
+                    android:textSize="18sp"
+                    android:drawableLeft="@mipmap/ic_locate"
+                    android:drawablePadding="5dp"
+                    />
+
+                <TextView
+                    android:id="@+id/adress"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="芝罘区上尧鲁东大学南校区"
+                    android:layout_alignLeft="@id/tv_city_name"
+                    android:layout_below="@id/tv_city_name"
+                    android:textSize="16sp"
+                    android:layout_marginLeft="15dp"
+                    />
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_alignParentRight="true"
+                    android:orientation="vertical"
                     >
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="5dp"
+                        android:src="@drawable/ic_dianhua" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="1.3km"
+                        android:layout_marginTop="2dp" />
+
+                </LinearLayout>
+
+            </RelativeLayout>
+
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="6dp"
+                android:background="@color/divider"></View>
+
+
+            <RelativeLayout
+                android:id="@+id/shopPublish"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="10dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="商家发布"
+                    android:textColor="@color/colorTextSale"
+                    android:textSize="18sp" />
                 <ImageView
                     android:layout_width="20dp"
                     android:layout_height="20dp"
-                    android:id="@+id/collect"
-                    android:src="@mipmap/shoucang" />
-                </RelativeLayout>
-            </LinearLayout>
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="6dp"
-        android:layout_marginTop="3dp"
-        android:background="#f4f3f3"></View>
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
+                    android:src="@mipmap/ic_arrow_right"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    />
+
+            </RelativeLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/divider"></View>
+
+        </LinearLayout>
+    </ScrollView>
+
     <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_weight="0.8">
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="60dp"
-        android:orientation="horizontal"
         >
-        <ImageView
-            android:layout_width="20dp"
-            android:layout_height="wrap_content"
-            android:src="@mipmap/ic_locate"
-            android:layout_marginLeft="10dp"
-            android:id="@+id/ic_locate"
-            android:layout_marginTop="5dp"/>
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="60dp"
-            android:orientation="vertical"
-            android:id="@+id/location">
         <TextView
+            android:id="@+id/tvprice_"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="烟台市"
+            android:text="价格:"
             android:textColor="@color/colorTextSale"
-            android:textSize="18sp"/>
-            <TextView
-                android:id="@+id/adress"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="芝罘区上尧鲁东大学南校区"
-                android:textColor="@color/colorTextSale"
-                android:textSize="18sp" />
-        </LinearLayout>
-    </LinearLayout>
-    </RelativeLayout>
-        <RelativeLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="0.1">
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-
-            android:layout_marginTop="10dp"
-            android:id="@+id/callPhone">
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="5dp"
-                android:src="@mipmap/ic_me_customer_service_consulting"/>
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="1.3km"
-                android:textColor="@color/colorTextSale"/>
-        </LinearLayout>
-        </RelativeLayout>
-    </LinearLayout>
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="6dp"
-        android:layout_marginTop="3dp"
-        android:background="#f4f3f3"></View>
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:id="@+id/shopPublish"
-        android:layout_marginTop="10dp">
-        <RelativeLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_weight="0.75"
-           >
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="商家发布"
+            android:textSize="20sp"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
             android:layout_marginLeft="10dp"
-            android:textColor="@color/colorTextSale"
-            android:textSize="18sp"/>
-        </RelativeLayout>
-        <RelativeLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="0.1"
-            android:layout_gravity="center">
-        <ImageView
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:src="@mipmap/ic_arrow_right"
             />
-        </RelativeLayout>
-    </LinearLayout>
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_marginTop="5dp"
-        android:background="#f4f3f3"></View>
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_marginTop="190dp"
-        android:background="#f4f3f3"></View>
-        </LinearLayout>
-    </ScrollView>
-        <RelativeLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            >
-        <RelativeLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            >
         <TextView
-            android:layout_width="200dp"
-            android:layout_height="wrap_content"
-            android:text="价格：￥38.90"
             android:id="@+id/tvprice"
-            android:layout_marginLeft="10dp"
-            android:textColor="@color/msg_red"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="￥38.90"
+            android:textColor="@color/colorHelpMe"
+            android:textSize="20sp"
+            android:layout_toRightOf="@id/tvprice_"
+            android:layout_centerVertical="true"
+            />
 
-            android:textSize="20sp"/>
-        </RelativeLayout>
-        <RelativeLayout
-            android:layout_width="90dp"
-            android:layout_height="34dp"
-            android:background="@color/colorHelpMe"
+        <TextView
+            android:id="@+id/buy"
+            android:layout_width="100dp"
+            android:layout_height="50dp"
             android:layout_alignParentRight="true"
-            android:id="@+id/buy">
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="购买"
-                android:textSize="24sp"
-                android:layout_marginLeft="20dp"
-                android:layout_marginTop="2dp"
-                android:textColor="#ffffff"/>
-        </RelativeLayout>
-        </RelativeLayout>
-
+            android:background="@color/colorHelpMe"
+            android:text="购买"
+            android:textColor="#ffffff"
+            android:textSize="22sp"
+            android:gravity="center"
+            />
+    </RelativeLayout>
 
 
 </LinearLayout>
