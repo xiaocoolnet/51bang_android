@@ -60,7 +60,6 @@ import cn.xcom.helper.utils.StringPostRequest;
 import cn.xcom.helper.utils.WheelView;
 
 
-
 public class ReleaseActivity extends BaseActivity implements View.OnClickListener {
     private Context context;
     private RelativeLayout rl_i_help_back;
