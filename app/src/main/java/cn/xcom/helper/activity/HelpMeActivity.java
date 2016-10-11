@@ -588,13 +588,15 @@ public class HelpMeActivity extends BaseActivity implements View.OnClickListener
                     .show();
             return;
         }
-        et_service_location.setText(result.getAddress().toString());
-        et_site_location.setText(result.getAddress().toString());
+        String address = result.getAddress();
+        et_service_location.setText(address);
+        et_site_location.setText(address);
         /*mBaiduMap.addOverlay(new MarkerOptions().position(result.getLocation())
                 .icon(BitmapDescriptorFactory
                         .fromResource(R.drawable.icon_marka)));
         mBaiduMap.setMapStatus(MapStatusUpdateFactory.newLatLng(result
                 .getLocation()));*/
+
     }
 
     /**

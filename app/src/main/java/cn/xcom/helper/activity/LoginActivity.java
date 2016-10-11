@@ -22,11 +22,13 @@ import org.json.JSONObject;
 
 import cn.xcom.helper.R;
 import cn.xcom.helper.bean.UserInfo;
+import cn.xcom.helper.constant.HelperConstant;
 import cn.xcom.helper.constant.NetConstant;
 import cn.xcom.helper.fragment.MapFragment;
 import cn.xcom.helper.net.HelperAsyncHttpClient;
 import cn.xcom.helper.utils.LogUtils;
 import cn.xcom.helper.utils.RegexUtil;
+import cn.xcom.helper.utils.SPUtils;
 import cz.msebera.android.httpclient.Header;
 
 /**
@@ -127,15 +129,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
                                 userInfo.setUserPhone(jsonObject.getString("phone"));
                                 userInfo.setUserGender(jsonObject.getString("sex"));
                                 userInfo.writeData(mContext);
-                                Intent intent=new Intent(mContext,HomeActivity.class);
-//                                Bundle bundle=new Bundle();
-//                                bundle.putString("userid",userInfo.getUserId());
-//                                intent.putExtras(bundle);
-                                intent.putExtra("userid",userInfo.getUserId());
-
-                                Log.d("====登陆id", userInfo.getUserId());
-                                startActivity(intent);
-                                finish();
+                                getNameAuthentication(userInfo.getUserId());
                             }if(state.equals("error")){
                                 String data=response.getString("data");
                                 Toast.makeText(mContext,data,Toast.LENGTH_LONG).show();
@@ -150,6 +144,39 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
             public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
                 super.onFailure(statusCode, headers, responseString, throwable);
                 LogUtils.e(TAG,"--statusCode->"+statusCode+"==>"+responseString);
+            }
+        });
+    }
+
+
+    /**
+     * 获取实名认证
+     */
+    private void getNameAuthentication(final String userid) {
+        RequestParams params=new RequestParams();
+        params.put("userid",userid);
+        HelperAsyncHttpClient.get(NetConstant.Check_Had_Authentication, params, new JsonHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                super.onSuccess(statusCode, headers, response);
+                Log.e("认证",response.toString());
+                if(response.optString("status").equals("success")){
+                    SPUtils.put(mContext, HelperConstant.IS_HAD_AUTHENTICATION, "1");
+                }else{
+                    SPUtils.put(mContext, HelperConstant.IS_HAD_AUTHENTICATION,"0");
+                }
+                Intent intent=new Intent(mContext,HomeActivity.class);
+                intent.putExtra("userid",userid);
+
+                Log.d("====登陆id", userid);
+                startActivity(intent);
+                finish();
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                super.onFailure(statusCode, headers, responseString, throwable);
+                Log.e("认证", responseString);
             }
         });
     }
