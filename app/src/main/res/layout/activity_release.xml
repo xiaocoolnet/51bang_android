@@ -4,26 +4,26 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="cn.xcom.helper.activity.ReleaseActivity"
-     >
+    tools:context="cn.xcom.helper.activity.ReleaseActivity">
+
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="46dip" >
+        android:layout_height="46dip">
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:background="@color/colorTheme"
             android:gravity="center"
-            android:textSize="17dp"
             android:text="@string/tv_i_relsase_title"
             android:textColor="@color/colorTextWhite"
-            android:background="@color/colorTheme"/>
+            android:textSize="17dp" />
 
         <RelativeLayout
             android:id="@+id/rl_i_help_back"
             android:layout_width="50dip"
             android:layout_height="fill_parent"
-            android:gravity="center" >
+            android:gravity="center">
 
             <ImageView
                 android:layout_width="20dp"
@@ -33,54 +33,59 @@
                 android:src="@mipmap/ic_back_white_left" />
         </RelativeLayout>
     </RelativeLayout>
+
     <ScrollView
+        android:id="@+id/sv"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:id="@+id/sv"
-        android:scrollbars="none"
-       >
+        android:scrollbars="none">
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical">
-    <EditText
-        android:id="@+id/goodName"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:hint="@string/tv_i_relsase_good"
-        android:textSize="20sp"
-        android:layout_marginLeft="10dp"
-        android:background="@null"/>
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="5dp"
-        android:background="#e4e0e0"></View>
-    <EditText
-        android:id="@+id/description"
-        android:layout_width="match_parent"
-        android:layout_height="60dp"
-        android:hint="@string/tv_i_relsase_content"
-        android:textSize="20sp"
-        android:layout_marginLeft="10dp"
-        android:gravity="top"
-        android:background="@null"/>
+
+            <EditText
+                android:id="@+id/goodName"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginLeft="10dp"
+                android:background="@null"
+                android:hint="@string/tv_i_relsase_good"
+                android:textSize="20sp" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="5dp"
+                android:background="#e4e0e0"></View>
+
+            <EditText
+                android:id="@+id/description"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:padding="10dp"
+                android:background="@null"
+                android:gravity="top"
+                android:hint="@string/tv_i_relsase_content"
+                android:textSize="20sp" />
 
 
-    <ImageView
-        android:id="@+id/tupian"
-        android:layout_width="20dp"
-        android:layout_height="20dp"
-        android:layout_marginLeft="10dip"
-        android:src="@mipmap/ic_tupian"/>
+            <ImageView
+                android:id="@+id/tupian"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_marginLeft="10dip"
+                android:layout_marginBottom="5dp"
+                android:src="@mipmap/ic_tupian" />
 
             <View
                 android:id="@+id/view_line"
                 android:layout_width="match_parent"
                 android:layout_height="2dp"
                 android:background="#e4e0e0"
-                android:layout_marginTop="5dp"
-                android:visibility="gone"/>
+                android:visibility="gone" />
+
             <LinearLayout
                 android:id="@+id/image_linearLayout"
                 android:layout_width="match_parent"
@@ -88,217 +93,239 @@
                 android:orientation="horizontal">
 
                 <cn.xcom.helper.utils.NoScrollGridView
+                    android:id="@+id/gridview"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:id="@+id/gridview"
-                    android:verticalSpacing="5dp"
                     android:horizontalSpacing="5dp"
-                    android:numColumns="3">
+                    android:numColumns="3"
+                    android:verticalSpacing="5dp">
 
                 </cn.xcom.helper.utils.NoScrollGridView>
 
             </LinearLayout>
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="5dp"
-        android:background="#e4e0e0"></View>
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="5dp"
+                android:background="#e4e0e0"></View>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="45dp"
-        android:orientation="horizontal"
-        android:id="@+id/divide">
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/tv_i_relsase_divide"
-            android:layout_gravity="center"
-            android:layout_marginLeft="10dp"
-            android:textColor="#201717"
-            android:textSize="18sp"/>
-        <!--<ImageView-->
-            <!--android:id="@+id/ima_dissmis"-->
-            <!--android:layout_width="20dp"-->
-            <!--android:layout_height="20dp"-->
-            <!--android:layout_gravity="center"-->
-            <!--android:src="@mipmap/ic_arrow_right"-->
-            <!--android:layout_marginTop="5dp"-->
-            <!--android:layout_marginLeft="280dp"/>-->
-        <RelativeLayout
-            android:layout_width="150dp"
-            android:layout_height="45dp"
-            android:layout_marginLeft="180dp"
-            >
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/text_divide"
-            android:textSize="18sp"
-            android:text="@string/tv_i_relsase_choose"
-            android:layout_centerInParent="true"
-            />
-        </RelativeLayout>
-    </LinearLayout>
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="#e4e0e0"></View>
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="45dp"
-        android:orientation="horizontal">
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:textSize="18sp"
-            android:layout_marginLeft="10dp"
-            android:textColor="#201717"
-            android:text="@string/tv_i_relsase_price"/>
-        <EditText
-            android:id="@+id/ed_price"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:hint="@string/tv_i_relsase_printprice"
-            android:background="@null"
-            android:layout_marginLeft="220dp"
-            android:layout_gravity="center"
-            android:textColor="#a19e9e"/>
-    </LinearLayout>
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="#e4e0e0"></View>
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="45dp"
-        android:orientation="horizontal">
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:textSize="18sp"
-            android:textColor="#201717"
-            android:layout_marginLeft="10dp"
-            android:text="@string/tv_i_relsase_oldprintprice"/>
-        <EditText
-            android:id="@+id/ed_oldprice"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:hint="@string/tv_i_relsase_printprice"
-            android:background="@null"
-            android:layout_marginLeft="220dp"
-            android:layout_gravity="center"
-            android:textColor="#a19e9e"/>
-    </LinearLayout>
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="#e4e0e0"></View>
-    <LinearLayout
-        android:id="@+id/location"
-        android:layout_width="match_parent"
-        android:layout_height="45dp"
-        android:orientation="horizontal">
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/tv_i_relsase_location"
-            android:textSize="18sp"
-            android:layout_marginLeft="10dp"
-            android:textColor="#201717"
-            android:layout_gravity="center"/>
-        <EditText
-            android:id="@+id/ed_location"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:hint="请输入位置"
-            android:background="@null"
-            android:layout_marginLeft="220dp"
-            android:layout_gravity="center"/>
-    </LinearLayout>
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="#e4e0e0"></View>
-    <LinearLayout
-        android:id="@+id/transport"
-        android:layout_width="match_parent"
-        android:layout_height="45dp"
-        android:orientation="horizontal">
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/tv_i_relsase_transport"
-            android:textSize="18sp"
-            android:layout_marginLeft="10dp"
-            android:textColor="#201717"
-            android:layout_gravity="center"/>
-        <ImageView
-            android:id="@+id/id_dismiss11"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:src="@mipmap/ic_arrow_right"
-            android:layout_gravity="center"
-            android:layout_marginLeft="250dp"/>
-        <RelativeLayout
-            android:layout_width="100dp"
-            android:layout_height="45dp"
-            android:layout_marginLeft="-100dp">
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/text_transport"
-                android:textSize="18sp"
-                android:layout_centerInParent="true"
-                />
-        </RelativeLayout>
+            <LinearLayout
+                android:id="@+id/divide"
+                android:layout_width="match_parent"
+                android:layout_height="45dp"
+                android:orientation="horizontal">
 
-    </LinearLayout>
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="#e4e0e0"></View>
-    <LinearLayout
-        android:id="@+id/release"
-        android:layout_width="match_parent"
-        android:layout_height="45dp"
-        android:orientation="horizontal">
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/tv_i_relsase_contactPhone"
-            android:textSize="18sp"
-            android:textColor="#201717"
-            android:layout_marginLeft="10dp"
-            android:layout_gravity="center"/>
-       <TextView
-           android:id="@+id/telephone"
-           android:layout_width="wrap_content"
-           android:layout_height="wrap_content"
-           android:text="18865623775"
-           android:textColor="#201717"
-           android:layout_gravity="center"
-           android:textSize="18sp"
-           android:layout_marginLeft="180dp"/>
-    </LinearLayout>
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="#e4e0e0"></View>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginLeft="10dp"
+                    android:text="@string/tv_i_relsase_divide"
+                    android:textColor="#201717"
+                    android:textSize="18sp" />
+                <!--<ImageView-->
+                <!--android:id="@+id/ima_dissmis"-->
+                <!--android:layout_width="20dp"-->
+                <!--android:layout_height="20dp"-->
+                <!--android:layout_gravity="center"-->
+                <!--android:src="@mipmap/ic_arrow_right"-->
+                <!--android:layout_marginTop="5dp"-->
+                <!--android:layout_marginLeft="280dp"/>-->
+                <RelativeLayout
+                    android:layout_width="150dp"
+                    android:layout_height="45dp"
+                    android:layout_marginLeft="180dp">
 
-    <Button
-        android:id="@+id/bt_login_release"
-        android:layout_width="match_parent"
-        android:layout_height="43dip"
-        android:layout_marginLeft="20dip"
-        android:layout_marginRight="20dip"
-        android:layout_marginTop="50dp"
-        android:text="@string/tv_i_relsase_release"
-        android:textSize="16dp"
-        android:textColor="@color/colorTextWhite"
-        android:background="@drawable/bt_login_click"/>
+                    <TextView
+                        android:id="@+id/text_divide"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerInParent="true"
+                        android:text="@string/tv_i_relsase_choose"
+                        android:textSize="18sp" />
+                </RelativeLayout>
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#e4e0e0"></View>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="45dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginLeft="10dp"
+                    android:text="@string/tv_i_relsase_price"
+                    android:textColor="#201717"
+                    android:textSize="18sp" />
+
+                <EditText
+                    android:id="@+id/ed_price"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginLeft="220dp"
+                    android:background="@null"
+                    android:hint="@string/tv_i_relsase_printprice"
+                    android:textColor="#a19e9e" />
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#e4e0e0"></View>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="45dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginLeft="10dp"
+                    android:text="@string/tv_i_relsase_oldprintprice"
+                    android:textColor="#201717"
+                    android:textSize="18sp" />
+
+                <EditText
+                    android:id="@+id/ed_oldprice"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginLeft="220dp"
+                    android:background="@null"
+                    android:hint="@string/tv_i_relsase_printprice"
+                    android:textColor="#a19e9e" />
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#e4e0e0"></View>
+
+            <LinearLayout
+                android:id="@+id/location"
+                android:layout_width="match_parent"
+                android:layout_height="45dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginLeft="10dp"
+                    android:text="@string/tv_i_relsase_location"
+                    android:textColor="#201717"
+                    android:textSize="18sp" />
+
+                <EditText
+                    android:id="@+id/ed_location"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginLeft="220dp"
+                    android:background="@null"
+                    android:hint="请输入位置" />
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#e4e0e0"></View>
+
+            <LinearLayout
+                android:id="@+id/transport"
+                android:layout_width="match_parent"
+                android:layout_height="45dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginLeft="10dp"
+                    android:text="@string/tv_i_relsase_transport"
+                    android:textColor="#201717"
+                    android:textSize="18sp" />
+
+                <ImageView
+                    android:id="@+id/id_dismiss11"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_gravity="center"
+                    android:layout_marginLeft="250dp"
+                    android:src="@mipmap/ic_arrow_right" />
+
+                <RelativeLayout
+                    android:layout_width="100dp"
+                    android:layout_height="45dp"
+                    android:layout_marginLeft="-100dp">
+
+                    <TextView
+                        android:id="@+id/text_transport"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerInParent="true"
+                        android:textSize="18sp" />
+                </RelativeLayout>
+
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#e4e0e0"></View>
+
+            <LinearLayout
+                android:id="@+id/release"
+                android:layout_width="match_parent"
+                android:layout_height="45dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginLeft="10dp"
+                    android:text="@string/tv_i_relsase_contactPhone"
+                    android:textColor="#201717"
+                    android:textSize="18sp" />
+
+                <TextView
+                    android:id="@+id/telephone"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginLeft="180dp"
+                    android:text="18865623775"
+                    android:textColor="#201717"
+                    android:textSize="18sp" />
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#e4e0e0"></View>
+
+            <Button
+                android:id="@+id/bt_login_release"
+                android:layout_width="match_parent"
+                android:layout_height="43dip"
+                android:layout_marginLeft="20dip"
+                android:layout_marginRight="20dip"
+                android:layout_marginTop="50dp"
+                android:background="@drawable/bt_login_click"
+                android:text="@string/tv_i_relsase_release"
+                android:textColor="@color/colorTextWhite"
+                android:textSize="16dp" />
         </LinearLayout>
     </ScrollView>
 </LinearLayout>

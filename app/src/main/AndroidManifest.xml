@@ -188,6 +188,7 @@
         <activity android:name=".activity.InProgressTaskActivity" />
         <activity android:name=".activity.ImageDetailActivity" />
         <activity android:name=".activity.BuyActivity" />
+        <activity android:name=".activity.ChooseAccountActivity"/>
 
         <!-- 极光Required SDK核心功能 -->
         <activity

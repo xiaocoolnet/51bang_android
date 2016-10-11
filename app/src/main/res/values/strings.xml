@@ -207,9 +207,10 @@
     <string name="tv_wallet_month_income">本月收入</string>
     <string name="tv_wallet_all_singular_number">总接单数</string>
     <string name="tv_wallet_all_income">总收入</string>
-    <string name="tv_wallet_income_records">收入记录</string>
+    <string name="tv_wallet_income_records">收支记录</string>
     <string name="tv_wallet_present_records">提现记录</string>
     <string name="bt_wallet_present">提现</string>
+    <string name= "tv_wallet_warning">欲了解提现详解请点击此处</string>
     <!--PresentRecordActivity-->
     <string name="tv_present_record_title">提现记录</string>
     <!--IncomeRecordsActivity-->
@@ -229,6 +230,7 @@
     <string name="tv_withdraw_cash_money">转账金额</string>
     <string name="tv_withdraw_cash_account">转出账户</string>
     <string name="bt_withdraw_cash_present">提现</string>
+    <string name="choose_account">选择提现账户</string>
     <!--SignActivity-->
     <string name="tv_sign_title">我的积分</string>
     <string name="bt_sign_sign">签到</string>

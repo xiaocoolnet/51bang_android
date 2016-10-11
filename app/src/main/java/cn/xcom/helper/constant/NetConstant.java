@@ -81,9 +81,10 @@ public interface NetConstant extends HelperConstant {
      */
     public final static String NET_GET_WALLET_LOG = NET_HOST_PREFIX + "a=GetMyWalletLog";
     /**
-     * 获取我的体现申请记录
+     * 获取我的提现申请记录
      */
     public final static String NET_GET_WITHDRAW_LOG = NET_HOST_PREFIX + "a=GetMyWithdrawLog";
+
     /**
      * 获取认证帮列表
      */
@@ -220,4 +221,10 @@ public interface NetConstant extends HelperConstant {
     检查用户是否保险认证
      */
     public final static String Check_Insurance=NET_HOST_PREFIX+"a=CheckInsurance&";
+
+    /*
+    获取银行信息
+     */
+    public final static String GET_USER_BANK_INFO=NET_HOST_PREFIX+"a=GetUserBankInfo&";
+
 }
