@@ -225,6 +225,7 @@
     <string name="tv_bind_account_name">真实姓名&#160;&#160;&#160;&#160;</string>
     <string name="et_bind_account_name">输入您的姓名</string>
     <string name="bt_bind_account_bind">绑定</string>
+    <string name="bind_bank_account">绑定银行卡账户</string>
     <!--WithdrawCashActivity-->
     <string name="tv_withdraw_cash_title">提现</string>
     <string name="tv_withdraw_cash_money">转账金额</string>

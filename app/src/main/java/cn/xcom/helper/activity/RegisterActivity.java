@@ -64,7 +64,7 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
     private RelativeLayout rl_back;
     private CircleImageView iv_head;
     private int gender=1;
-    private EditText et_name,et_ID,et_address,et_phone,et_verification,et_password;
+    private EditText et_phone,et_verification,et_password;
     private TextView tv_getVerification;
     private ImageView iv_password;
     private Button bt_submit;
@@ -114,9 +114,9 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
         rb_male= (RadioButton) findViewById(R.id.radioButton_register_man);
         rb_female= (RadioButton) findViewById(R.id.radioButton_register_woman);
         rg_gender.setOnCheckedChangeListener(this);
-        et_name= (EditText) findViewById(R.id.et_register_name);
-        et_ID= (EditText) findViewById(R.id.et_register_ID);
-        et_address= (EditText) findViewById(R.id.et_register_address);
+//        et_name= (EditText) findViewById(R.id.et_register_name);
+//        et_ID= (EditText) findViewById(R.id.et_register_ID);
+//        et_address= (EditText) findViewById(R.id.et_register_address);
         et_phone= (EditText) findViewById(R.id.et_register_phone);
         et_verification= (EditText) findViewById(R.id.et_register_verification);
         et_password= (EditText) findViewById(R.id.et_register_password);
@@ -154,15 +154,15 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
         }else   if (userInfo.getUserGender().equals("1")) {
             rb_male.setChecked(true);
         }
-        if (!userInfo.getUserName().equals("")){
-            et_name.setText(userInfo.getUserName());
-        }
-        if (!userInfo.getUserID().equals("")){
-            et_ID.setText(userInfo.getUserID());
-        }
-        if (!userInfo.getUserAddress().equals("")){
-            et_address.setText(userInfo.getUserAddress());
-        }
+//        if (!userInfo.getUserName().equals("")){
+//            et_name.setText(userInfo.getUserName());
+//        }
+//        if (!userInfo.getUserID().equals("")){
+//            et_ID.setText(userInfo.getUserID());
+//        }
+//        if (!userInfo.getUserAddress().equals("")){
+//            et_address.setText(userInfo.getUserAddress());
+//        }
         if (!userInfo.getUserPhone().equals("")){
             et_phone.setText(userInfo.getUserPhone());
         }
@@ -177,9 +177,9 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
 
     private void saveDate(){
         userInfo.setUserGender(""+gender);
-        userInfo.setUserName(et_name.getText().toString().trim());
-        userInfo.setUserID(et_ID.getText().toString().trim());
-        userInfo.setUserAddress(et_address.getText().toString().trim());
+//        userInfo.setUserName(et_name.getText().toString().trim());
+//        userInfo.setUserID(et_ID.getText().toString().trim());
+//        userInfo.setUserAddress(et_address.getText().toString().trim());
         userInfo.setUserPhone(et_phone.getText().toString().trim());
         userInfo.writeData(mContext);
     }
@@ -521,31 +521,31 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
     private void toRegister(){
 //      http://bang.xiaocool.net/index.php?g=apps&m=index&a=AppRegister&name=我的昵称&avatar=1234.jpg&phone=18653503680&password=123456&code=2345&devicestate=1
         String phone=et_phone.getText().toString().trim();
-        String name=et_name.getText().toString().trim();
-        String ID=et_ID.getText().toString().trim();
-        String address=et_address.getText().toString().trim();
+//        String name=et_name.getText().toString().trim();
+//        String ID=et_ID.getText().toString().trim();
+//        String address=et_address.getText().toString().trim();
         String password=et_password.getText().toString().trim();
         String verification=et_verification.getText().toString().trim();
         if (userInfo.getUserImg().equals("")){
             Toast.makeText(mContext,"请添加头像！",Toast.LENGTH_LONG).show();
             return;
         }
-        if (!RegexUtil.IsChineseOrEnglish(name)){
-            Toast.makeText(mContext,"请正确填写姓名！",Toast.LENGTH_LONG).show();
-            return;
-        }
-        if (!RegexUtil.checkIdCard(ID)){
-            Toast.makeText(mContext,"请正确填写身份证号！",Toast.LENGTH_LONG).show();
-            return;
-        }
+//        if (!RegexUtil.IsChineseOrEnglish(name)){
+//            Toast.makeText(mContext,"请正确填写姓名！",Toast.LENGTH_LONG).show();
+//            return;
+//        }
+//        if (!RegexUtil.checkIdCard(ID)){
+//            Toast.makeText(mContext,"请正确填写身份证号！",Toast.LENGTH_LONG).show();
+//            return;
+//        }
         if (!RegexUtil.checkMobile(phone)){
             Toast.makeText(mContext,"请正确输入手机号！",Toast.LENGTH_LONG).show();
             return;
         }
-        if (address==null||address.length()<=0){
-            Toast.makeText(mContext,"请输入地址！",Toast.LENGTH_LONG).show();
-            return;
-        }
+//        if (address==null||address.length()<=0){
+//            Toast.makeText(mContext,"请输入地址！",Toast.LENGTH_LONG).show();
+//            return;
+//        }
         if (verification==null||verification.length()<=0){
             Toast.makeText(mContext,"请输入验证码！",Toast.LENGTH_LONG).show();
             return;
@@ -555,11 +555,11 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
             return;
         }
         RequestParams params=new RequestParams();
-        params.put("name",name);
+        params.put("name","");
         params.put("avatar",userInfo.getUserImg());
         params.put("phone",phone);
-        params.put("idcard",ID);
-        params.put("address",address);
+//        params.put("idcard",ID);
+//        params.put("address",address);
         params.put("password",password);
         params.put("code",verification);
         params.put("devicestate", HelperConstant.DEVICE_STATE);
