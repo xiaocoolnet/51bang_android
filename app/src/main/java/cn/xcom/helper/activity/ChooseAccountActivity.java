@@ -1,14 +1,15 @@
 package cn.xcom.helper.activity;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 
@@ -26,35 +27,36 @@ import cz.msebera.android.httpclient.Header;
  * Created by Administrator on 2016/10/11 0011.
  * 选择提现账户
  */
-public class ChooseAccountActivity extends BaseActivity implements CompoundButton.OnCheckedChangeListener {
+public class ChooseAccountActivity extends BaseActivity implements View.OnClickListener {
     private TextView zfbAccountTv, bankAccountTv;
     private CheckBox zfbCheckBox, bankCheckBox;
     private UserInfo userInfo;
     private Button confirmButton;
-
+    private boolean zfbRegistered = false;
+    private boolean bankRegistered = false;
+    private RelativeLayout zfbRelativeLayout, bankRelativeLayout;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_choose_account);
         userInfo = new UserInfo(this);
+        initView();
+        getBankInfo();
+    }
+
+    private void initView() {
         zfbAccountTv = (TextView) findViewById(R.id.tv_zhifubao_account);
         bankAccountTv = (TextView) findViewById(R.id.tv_bank_account);
         zfbCheckBox = (CheckBox) findViewById(R.id.cb_zhifubao);
         bankCheckBox = (CheckBox) findViewById(R.id.cb_bank);
-        zfbCheckBox.setOnCheckedChangeListener(this);
-        bankCheckBox.setOnCheckedChangeListener(this);
-        getBankInfo();
         confirmButton = (Button) findViewById(R.id.bt_confirm);
-        confirmButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(zfbCheckBox.isChecked()&&!bankCheckBox.isChecked()){
-
-                }
-
-            }
-        });
+        confirmButton.setOnClickListener(this);
+        zfbRelativeLayout = (RelativeLayout) findViewById(R.id.rl_zfb);
+        zfbRelativeLayout.setOnClickListener(this);
+        bankRelativeLayout = (RelativeLayout) findViewById(R.id.rl_bank);
+        bankRelativeLayout.setOnClickListener(this);
     }
+
 
     private void getBankInfo() {
         RequestParams requestParams = new RequestParams();
@@ -71,10 +73,12 @@ public class ChooseAccountActivity extends BaseActivity implements CompoundButto
                             String zfbAccount = jsonObject.getString("alipay");
                             if (!"".equals(zfbAccount)) {
                                 zfbAccountTv.setText(zfbAccount);
+                                zfbRegistered = true;
                             }
                             String bankAccount = jsonObject.getString("bank");
                             if (!"".equals(bankAccount)) {
                                 bankAccountTv.setText(bankAccount);
+                                bankRegistered = true;
                             }
                         }
 
@@ -88,19 +92,42 @@ public class ChooseAccountActivity extends BaseActivity implements CompoundButto
         });
     }
 
-
     @Override
-    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-        if (!isChecked) {
-            return;
-        }
-        switch (buttonView.getId()) {
-            case R.id.cb_zhifubao:
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.bt_confirm:
+                if (zfbCheckBox.isChecked() && !bankCheckBox.isChecked()) {
+                    if (zfbRegistered) {
+                        Intent intent = new Intent(this, WithdrawCashActivity.class);
+                        intent.putExtra("account", zfbAccountTv.getText());
+                        intent.putExtra("bankType",1);
+                        startActivity(intent);
+                    } else {
+                        startActivity(new Intent(this,BindAlipayAccountActivity.class));
+                    }
+                } else if (!zfbCheckBox.isChecked() && bankCheckBox.isChecked()) {
+                    if (bankRegistered) {
+                        Intent intent = new Intent(this, WithdrawCashActivity.class);
+                        intent.putExtra("account", bankAccountTv.getText());
+                        intent.putExtra("bankType",2);
+                        startActivity(intent);
+                    } else {
+                        startActivity(new Intent(this, BindBankAccountActivity.class));
+                    }
+                }
+                break;
+            case R.id.rl_zfb:
+                zfbCheckBox.setChecked(true);
                 bankCheckBox.setChecked(false);
                 break;
-            case R.id.cb_bank:
+            case R.id.rl_bank:
                 zfbCheckBox.setChecked(false);
+                bankCheckBox.setChecked(true);
                 break;
         }
+    }
+
+    public void onBack(View v) {
+        finish();
     }
 }

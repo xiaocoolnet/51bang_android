@@ -189,7 +189,8 @@
         <activity android:name=".activity.ImageDetailActivity" />
         <activity android:name=".activity.BuyActivity" />
         <activity android:name=".activity.ChooseAccountActivity"/>
-
+        <activity android:name=".activity.BindBankAccountActivity"/>
+        <activity android:name=".activity.BindAlipayAccountActivity"/>
         <!-- 极光Required SDK核心功能 -->
         <activity
             android:name="cn.jpush.android.ui.PushActivity"

@@ -91,10 +91,10 @@
                 android:layout_width="fill_parent"
                 android:layout_height="1dip"
                 android:background="@color/colorLine" />
-            <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="45dp"
-            android:background="@color/colorTextWhite">
+<!--            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="45dp"
+                android:background="@color/colorTextWhite">
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
@@ -175,7 +175,7 @@
                     android:paddingLeft="25dip"
                     android:textSize="14dp" >
                 </EditText>
-            </LinearLayout>
+            </LinearLayout>-->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="46dip"

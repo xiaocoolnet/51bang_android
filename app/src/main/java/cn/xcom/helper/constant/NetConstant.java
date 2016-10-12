@@ -227,4 +227,19 @@ public interface NetConstant extends HelperConstant {
      */
     public final static String GET_USER_BANK_INFO=NET_HOST_PREFIX+"a=GetUserBankInfo&";
 
+    /**
+     * 绑定银行账号
+     */
+    public final static String BIND_BINK_ACCOUNT = NET_HOST_PREFIX+"a=UpdateUserBank&";
+
+    /**
+     * 绑定支付宝账号
+     */
+    public final static String BIND_ALIPAY_ACCOUNT = NET_HOST_PREFIX+"a=UpdateUserBank&";
+
+    /**
+     * 提现申请
+     */
+    public final static String APPLY_WITHDRAW = NET_HOST_PREFIX+"a=ApplyWithdraw&";
+
 }
