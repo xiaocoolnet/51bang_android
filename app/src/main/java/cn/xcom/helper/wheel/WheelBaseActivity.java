@@ -1,13 +1,13 @@
 package cn.xcom.helper.wheel;
 
-import java.util.HashMap;
-import java.util.Map;
+import android.app.Activity;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import android.app.Activity;
+import java.util.HashMap;
+import java.util.Map;
 
 import cn.xcom.helper.HelperApplication;
 
@@ -20,7 +20,7 @@ public class WheelBaseActivity extends Activity {
 	 * key - 省 value - 市
 	 */
 	protected Map<String, CityModel[]> mCitisDatasMap = new HashMap<String, CityModel[]>();
-	/**
+	 /**
 	 * key - 市 values - 区
 	 */
 	protected Map<String, DistrictModel[]> mDistrictDatasMap = new HashMap<String, DistrictModel[]>();

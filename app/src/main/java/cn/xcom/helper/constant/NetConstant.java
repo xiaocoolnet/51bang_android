@@ -227,4 +227,9 @@ public interface NetConstant extends HelperConstant {
      */
     public final static String GET_USER_BANK_INFO=NET_HOST_PREFIX+"a=GetUserBankInfo&";
 
+    /*
+    获取城市列表（长字符串）
+     */
+    public final static String GET_CITY_LIST=NET_HOST_PREFIX+"a=GetCityListToStr";
+
 }
