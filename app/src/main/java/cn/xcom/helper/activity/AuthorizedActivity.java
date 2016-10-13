@@ -20,8 +20,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import cn.xcom.helper.R;
-import cn.xcom.helper.fragment.Authorized.BindAccountAuthorizedFragment;
-import cn.xcom.helper.fragment.Authorized.PhotoAuthorizedFragment;
+import cn.xcom.helper.fragment.authorized.BindAccountAuthorizedFragment;
+import cn.xcom.helper.fragment.authorized.PhotoAuthorizedFragment;
 
 /**
  * Created by zhuchongkun on 16/6/3.
@@ -33,7 +33,7 @@ public class AuthorizedActivity extends BaseActivity implements View.OnClickList
     private static final int MY_PERMISSIONS_REQUEST_READ_CONTACTS = 4;
     private ViewPager viewPager;
     private List<Fragment> fragments;
-    private TextView photeTitleTv,bindBankTitleTv;
+    private TextView photoTitleTv,bindBankTitleTv;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,8 +45,8 @@ public class AuthorizedActivity extends BaseActivity implements View.OnClickList
     }
 
     private void initView() {
-        photeTitleTv = (TextView) findViewById(R.id.tv_title_photo);
-        photeTitleTv.setOnClickListener(this);
+        photoTitleTv = (TextView) findViewById(R.id.tv_title_photo);
+        photoTitleTv.setOnClickListener(this);
         bindBankTitleTv = (TextView) findViewById(R.id.tv_title_bind);
         bindBankTitleTv.setOnClickListener(this);
         viewPager = (ViewPager) findViewById(R.id.view_pager);
@@ -124,10 +124,10 @@ public class AuthorizedActivity extends BaseActivity implements View.OnClickList
     @Override
     public void onPageSelected(int position) {
         if(position == 0){
-            photeTitleTv.setTextColor(getResources().getColor(R.color.colorTheme));
+            photoTitleTv.setTextColor(getResources().getColor(R.color.colorTheme));
             bindBankTitleTv.setTextColor(getResources().getColor(R.color.text_black));
         }else if(position == 1){
-            photeTitleTv.setTextColor(getResources().getColor(R.color.text_black));
+            photoTitleTv.setTextColor(getResources().getColor(R.color.text_black));
             bindBankTitleTv.setTextColor(getResources().getColor(R.color.colorTheme));
         }
     }

@@ -51,6 +51,7 @@ public class BindAlipayAccountActivity extends BaseActivity implements View.OnCl
         timer = new Timer();
         String decodePhone = userPhone.replaceAll("(\\d{3})\\d{4}(\\d{4})", "$1****$2");
         String phoneTxt = "您当前绑定的手机号码:" + decodePhone;
+
         phoneTv.setText(phoneTxt);
     }
 
@@ -112,7 +113,7 @@ public class BindAlipayAccountActivity extends BaseActivity implements View.OnCl
         });
     }
 
-    private void counter(){
+    private void counter() {
         getCodeTv.setClickable(false);
         time = 120;
         TimerTask timerTask = new TimerTask() {
@@ -121,14 +122,14 @@ public class BindAlipayAccountActivity extends BaseActivity implements View.OnCl
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        if(time <=0){
+                        if (time <= 0) {
                             getCodeTv.setClickable(true);
                             getCodeTv.setText("获取验证码");
-                        }else{
+                        } else {
                             getCodeTv.setClickable(false);
                             getCodeTv.setText("获取验证码(" + time + ")");
                         }
-                        time --;
+                        time--;
                     }
                 });
             }
@@ -149,7 +150,7 @@ public class BindAlipayAccountActivity extends BaseActivity implements View.OnCl
         }
 
         final String binkAccount = accountEditText.getText().toString();
-        if (accountEditText.length() == 0) {
+        if (binkAccount.length() == 0) {
             Toast.makeText(BindAlipayAccountActivity.this, "支付宝账号不能为空", Toast.LENGTH_SHORT).show();
             return;
         }
@@ -177,13 +178,14 @@ public class BindAlipayAccountActivity extends BaseActivity implements View.OnCl
                         String state = response.getString("status");
                         if (state.equals("success")) {
                             Toast.makeText(BindAlipayAccountActivity.this, "绑定成功！", Toast.LENGTH_LONG).show();
+                            finish();
                             Intent intent = new Intent(BindAlipayAccountActivity.this, WithdrawCashActivity.class);
-                            intent.putExtra("account",binkAccount);
-                            intent.putExtra("bankType",1);
+                            intent.putExtra("account", binkAccount);
+                            intent.putExtra("bankType", 1);
                             startActivity(intent);
-                        }else{
+                        } else {
                             String data = response.getString("data");
-                            Toast.makeText(BindAlipayAccountActivity.this,data, Toast.LENGTH_LONG).show();
+                            Toast.makeText(BindAlipayAccountActivity.this, data, Toast.LENGTH_LONG).show();
                         }
                     } catch (JSONException e) {
                         e.printStackTrace();

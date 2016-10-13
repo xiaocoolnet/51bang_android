@@ -58,7 +58,7 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="10dp"
-        android:background="@color/theme_gray"
+        android:background="@color/colorLine"
         />
     <android.support.v4.view.ViewPager
         android:id="@+id/view_pager"
