@@ -78,31 +78,27 @@ public class PhotoAuthorizedFragment extends Fragment implements View.OnClickLis
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_photo_authorized, container, false);
+        mContext = getActivity();
+        initView(view);
         return view;
     }
 
-    @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        mContext = getActivity();
-        initView();
-    }
 
-    private void initView() {
-        chooseCityLl = (LinearLayout) getView().findViewById(R.id.ll_choose_city);
+    private void initView(View v) {
+        chooseCityLl = (LinearLayout)v.findViewById(R.id.ll_choose_city);
         chooseCityLl.setOnClickListener(this);
-        iv_handheld_ID_card = (ImageView)  getView().findViewById(R.id.iv_authorized_handheld_ID_card);
+        iv_handheld_ID_card = (ImageView)v.findViewById(R.id.iv_authorized_handheld_ID_card);
         iv_handheld_ID_card.setOnClickListener(this);
-        iv_ID_card = (ImageView)  getView().findViewById(R.id.iv_authorized_ID_card);
+        iv_ID_card = (ImageView)  v.findViewById(R.id.iv_authorized_ID_card);
         iv_ID_card.setOnClickListener(this);
-        iv_driving_license = (ImageView)  getView().findViewById(R.id.iv_authorized_driving_license);
+        iv_driving_license = (ImageView) v.findViewById(R.id.iv_authorized_driving_license);
         iv_driving_license.setOnClickListener(this);
-        tv_city = (TextView) getView(). findViewById(R.id.tv_authorized_city);
-        et_name = (EditText)  getView().findViewById(R.id.et_authorized_name);
-        et_ID = (EditText)  getView().findViewById(R.id.et_authorized_ID);
-        et_contact_name = (EditText)  getView().findViewById(R.id.et_authorized_emergency_contact_person_name);
-        et_contact_phone = (EditText)  getView().findViewById(R.id.et_authorized_emergency_contact_person_phone);
-        bt_next = (Button)  getView().findViewById(R.id.bt_authorized_next);
+        tv_city = (TextView) v. findViewById(R.id.tv_authorized_city);
+        et_name = (EditText)  v.findViewById(R.id.et_authorized_name);
+        et_ID = (EditText)  v.findViewById(R.id.et_authorized_ID);
+        et_contact_name = (EditText)  v.findViewById(R.id.et_authorized_emergency_contact_person_name);
+        et_contact_phone = (EditText)  v.findViewById(R.id.et_authorized_emergency_contact_person_phone);
+        bt_next = (Button)  v.findViewById(R.id.bt_authorized_next);
         bt_next.setOnClickListener(this);
         userInfo = new UserInfo();
         dialog = new ProgressDialog(mContext, AlertDialog.THEME_HOLO_LIGHT);

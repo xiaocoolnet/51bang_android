@@ -22,7 +22,9 @@
             android:id="@+id/rl_authorized_back"
             android:layout_width="50dip"
             android:layout_height="fill_parent"
-            android:gravity="center" >
+            android:gravity="center"
+            android:onClick="onBack"
+            >
 
             <ImageView
                 android:layout_width="20dp"
@@ -31,12 +33,41 @@
                 android:src="@mipmap/ic_back_white_left" />
         </RelativeLayout>
     </RelativeLayout>
-    <fragment
-        android:id="@+id/fragment_1"
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp">
+        <TextView
+            android:id="@+id/tv_title_photo"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:text="认证方式一"
+            android:gravity="center"
+            android:textColor="@color/colorTheme"
+            />
+        <TextView
+            android:id="@+id/tv_title_bind"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:text="认证方式二"
+            android:gravity="center"
+            />
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="10dp"
+        android:background="@color/colorLine"
+        />
+    <android.support.v4.view.ViewPager
+        android:id="@+id/view_pager"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:name="cn.xcom.helper.fragment.Authorized.PhotoAuthorizedFragment"
-        tools:layout="@layout/fragment_photo_authorized" />
+        >
+
+    </android.support.v4.view.ViewPager>
+
 
 
 </LinearLayout>

@@ -34,7 +34,9 @@
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
                 android:layout_marginRight="10dp"
-                android:button="@null" />
+                android:button="@null"
+                android:visibility="gone"
+                />
         </RelativeLayout>
     </LinearLayout>
     <cn.xcom.helper.view.NoScrollGridView
