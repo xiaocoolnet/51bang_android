@@ -8,12 +8,21 @@ public class City {
     private String pinyin;
     private String latitude;
     private String longitude;
+    private String status;
 
     public City() {}
 
     public City(String name, String pinyin) {
         this.name = name;
         this.pinyin = pinyin;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 
     public String getLatitude() {

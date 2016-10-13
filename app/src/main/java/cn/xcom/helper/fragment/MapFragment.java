@@ -9,8 +9,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -24,6 +26,7 @@ import com.baidu.mapapi.map.BitmapDescriptor;
 import com.baidu.mapapi.map.BitmapDescriptorFactory;
 import com.baidu.mapapi.map.InfoWindow;
 import com.baidu.mapapi.map.MapStatus;
+import com.baidu.mapapi.map.MapStatusUpdate;
 import com.baidu.mapapi.map.MapStatusUpdateFactory;
 import com.baidu.mapapi.map.MapView;
 import com.baidu.mapapi.map.Marker;
@@ -46,6 +49,7 @@ import cn.xcom.helper.activity.CityPickerActivity;
 import cn.xcom.helper.activity.ConvenienceActivity;
 import cn.xcom.helper.activity.HelpMeActivity;
 import cn.xcom.helper.activity.IHelpActivity;
+import cn.xcom.helper.view.NiceDialog;
 
 /**
  * Created by zhuchongkun on 16/5/27.
@@ -62,20 +66,20 @@ public class MapFragment extends Fragment implements View.OnClickListener, OnGet
     public BDLocationListener myListener = new MyLocationListener();
     MapView mMapView;
     BaiduMap mBaiduMap;
-    BitmapDescriptor mCurrentMarker = null;
-    boolean isFirstLoc = true; // 是否首次定位
     MyLocationData locData;
     GeoCoder mSearch = null; // 搜索模块，也可去掉地图模块独立使用
-
     /**
      * 当前地点击点
      */
     private LatLng currentPt;
-    private Marker marker, marker2;
+    private Marker marker;
+    private boolean isResult;
+    private double mLatitude,mLongtitude;
+    private boolean isFirstIn = true;
+    private String status;
 
-    private LatLng currentLocPt;
-    private boolean isResult = false;
-    private boolean isFirstIn = false;
+    private NiceDialog mDialog;
+
 
     @Nullable
     @Override
@@ -104,7 +108,9 @@ public class MapFragment extends Fragment implements View.OnClickListener, OnGet
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mLocClient.start();
+                LatLng ll = new LatLng(mLatitude, mLongtitude);
+                MapStatusUpdate msu = MapStatusUpdateFactory.newLatLngZoom(ll,18.0f);
+                mBaiduMap.animateMapStatus(msu);
             }
         });
         initView();
@@ -113,13 +119,14 @@ public class MapFragment extends Fragment implements View.OnClickListener, OnGet
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
-                /*case CITY_RESULT:
-                    if (data!=null){
-                        String mSiteName = data.getStringExtra("siteName");
-                        Log.e("name",mSiteName);
-                        mSearch.geocode(new GeoCodeOption().city("福建").address(mSiteName));
-                    }
-                    break;*/
+            case CITY_RESULT:
+                isResult = true;
+                status = HelperApplication.getInstance().status;
+                Log.e("statu", status);
+                if(status.equals("0")){
+                    showDialog();
+                }
+                break;
         }
 
         super.onActivityResult(requestCode, resultCode, data);
@@ -224,24 +231,40 @@ public class MapFragment extends Fragment implements View.OnClickListener, OnGet
     }
 
     @Override
+    public void onHiddenChanged(boolean hidden) {
+        super.onHiddenChanged(hidden);
+        Log.e("onhidedenChanged", "yes");
+        if(HelperApplication.getInstance().mCurrentLocLon!=0){
+            currentPt = new LatLng(HelperApplication.getInstance().mCurrentLocLat, HelperApplication.getInstance().mCurrentLocLon);
+            MapStatusUpdate msu = MapStatusUpdateFactory.newLatLngZoom(currentPt, 18.0f);
+            mBaiduMap.animateMapStatus(msu);
+            /*mSearch.reverseGeoCode(new ReverseGeoCodeOption()
+                    .location(currentPt));
+            MapStatus mMapStatus = new MapStatus.Builder().target(currentPt).zoom(18.0f)
+                    .build();
+            MapStatusUpdate mMapStatusUpdate = MapStatusUpdateFactory
+                    .newMapStatus(mMapStatus);
+            mBaiduMap.setMapStatus(mMapStatusUpdate);*/
+        }
+    }
+
+    @Override
     public void onResume() {
         super.onResume();
-        mMapView.onResume();
+        Log.e("resume", "yes");
         Log.e("当前定位坐标", HelperApplication.getInstance().mCurrentLocLat + "," + HelperApplication.getInstance().mCurrentLocLon);
-        currentPt = new LatLng(HelperApplication.getInstance().mCurrentLocLat, HelperApplication.getInstance().mCurrentLocLon);
-        mSearch.reverseGeoCode(new ReverseGeoCodeOption()
-                .location(currentPt));
-        mBaiduMap.setMapStatus(MapStatusUpdateFactory.newLatLng(currentPt));
-
-        /*MapStatus.Builder builder = new MapStatus.Builder();
-        builder.target(new LatLng(HelperApplication.getInstance().mCurrentLocLat,HelperApplication.getInstance().mCurrentLocLon)).zoom(18.0f);
-        mBaiduMap.animateMapStatus(MapStatusUpdateFactory.newMapStatus(builder.build()));*/
+        if(HelperApplication.getInstance().mCurrentLocLon!=0){
+            currentPt = new LatLng(HelperApplication.getInstance().mCurrentLocLat, HelperApplication.getInstance().mCurrentLocLon);
+            MapStatusUpdate msu = MapStatusUpdateFactory.newLatLngZoom(currentPt, 18.0f);
+            mBaiduMap.animateMapStatus(msu);
+        }
+        mMapView.onResume();
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        mMapView.onPause();
+        //mMapView.onPause();
     }
 
     @Override
@@ -255,12 +278,33 @@ public class MapFragment extends Fragment implements View.OnClickListener, OnGet
         super.onDestroy();
     }
 
+    /**
+     * 弹出城市是否开通信息对话框
+     */
+    private void showDialog() {
+        mDialog = new NiceDialog(mContext);
+        mDialog.setOKButton("返回城市选择", new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivityForResult(new Intent(mContext, CityPickerActivity.class), CITY_RESULT);
+                mDialog.dismiss();
+            }
+        });
+        mDialog.show();
+        WindowManager wm = (WindowManager) mContext
+                .getSystemService(Context.WINDOW_SERVICE);
+        int width = wm.getDefaultDisplay().getWidth();
+        WindowManager.LayoutParams layoutParams = mDialog.getWindow().getAttributes();
+        layoutParams.width = width-200;
+        layoutParams.height = LinearLayout.LayoutParams.WRAP_CONTENT;
+        mDialog.getWindow().setAttributes(layoutParams);
+    }
     @Override
 
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.rl_fragment_map_location:
-                startActivity(new Intent(mContext, CityPickerActivity.class));
+                startActivityForResult(new Intent(mContext, CityPickerActivity.class), CITY_RESULT);
                 break;
             case R.id.rl_fragment_map_authentication_list:
                 startActivity(new Intent(mContext, AuthenticationListActivity.class));
@@ -269,7 +313,10 @@ public class MapFragment extends Fragment implements View.OnClickListener, OnGet
                 startActivity(new Intent(mContext, IHelpActivity.class));
                 break;
             case R.id.tv_fragment_map_help_me:
-                startActivity(new Intent(mContext, HelpMeActivity.class));
+                Intent intent = new Intent(mContext, HelpMeActivity.class);
+                intent.putExtra("lat", currentPt.latitude);
+                intent.putExtra("lon", currentPt.longitude);
+                startActivity(intent);
                 break;
             case R.id.tv_fragment_map_city_interaction:
                 startActivity(new Intent(mContext, ConvenienceActivity.class));
@@ -287,7 +334,11 @@ public class MapFragment extends Fragment implements View.OnClickListener, OnGet
 
     @Override
     public void onGetReverseGeoCodeResult(ReverseGeoCodeResult reverseGeoCodeResult) {
+        if(reverseGeoCodeResult==null){
+            return;
+        }
         createMarker(reverseGeoCodeResult.getLocation(), reverseGeoCodeResult.getPoiList().get(0).name);
+        isResult = false;
     }
 
     public class MyLocationListener implements BDLocationListener {
@@ -359,15 +410,20 @@ public class MapFragment extends Fragment implements View.OnClickListener, OnGet
                     .direction(100).latitude(location.getLatitude())
                     .longitude(location.getLongitude()).build();
             mBaiduMap.setMyLocationData(locData);
+
+            mLatitude = location.getLatitude();
+            mLongtitude = location.getLongitude();
             //currentLocPt = new LatLng(location.getLatitude(),location.getLongitude());
-            LatLng ll = new LatLng(location.getLatitude(),
-                    location.getLongitude());
-            MapStatus.Builder builder = new MapStatus.Builder();
-            builder.target(ll).zoom(18.0f);
-            mBaiduMap.animateMapStatus(MapStatusUpdateFactory.newMapStatus(builder.build()));
-            HelperApplication.getInstance().mCurrentLocLat = location.getLatitude();
-            HelperApplication.getInstance().mCurrentLocLon = location.getLongitude();
-            mLocClient.stop();
+            if(isFirstIn){
+                LatLng ll = new LatLng(mLatitude, mLongtitude);
+                MapStatusUpdate msu = MapStatusUpdateFactory.newLatLngZoom(ll, 18.0f);
+                mBaiduMap.animateMapStatus(msu);
+                isFirstIn = false;
+                HelperApplication.getInstance().mCurrentLocLat = location.getLatitude();
+                HelperApplication.getInstance().mCurrentLocLon = location.getLongitude();
+            }
+
+
         }
     }
 

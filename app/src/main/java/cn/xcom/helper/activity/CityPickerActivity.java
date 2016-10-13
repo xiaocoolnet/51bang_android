@@ -126,6 +126,9 @@ public class CityPickerActivity extends BaseActivity implements View.OnClickList
                 if(mLocaddress.equals(name)){
                     HelperApplication.getInstance().mCurrentLocLat = mLocLat;
                     HelperApplication.getInstance().mCurrentLocLon = mLocLon;
+                    HelperApplication.getInstance().status = "1";
+                    Log.e("定位的经纬度", mLocLat + "," + mLocLon);
+                    setResult(RESULT_OK);
                     finish();
                 }else{
                     City city = new City();
@@ -136,6 +139,8 @@ public class CityPickerActivity extends BaseActivity implements View.OnClickList
                     }
                     HelperApplication.getInstance().mCurrentLocLat = Double.parseDouble(city.getLatitude());
                     HelperApplication.getInstance().mCurrentLocLon = Double.parseDouble(city.getLongitude());
+                    HelperApplication.getInstance().status = city.getStatus();
+                    setResult(RESULT_OK);
                     finish();
                 }
             }
@@ -160,6 +165,7 @@ public class CityPickerActivity extends BaseActivity implements View.OnClickList
         city.setPinyin(Pinyin4jUtils.getPingYin(array.optJSONObject(0).optString("name")));
         city.setLatitude(array.optJSONObject(0).optString("latitude"));
         city.setLongitude(array.optJSONObject(0).optString("longitude"));
+        city.setStatus(array.optJSONObject(0).optString("status"));
         mAllCities.add(city);
         for(int i=1;i<array.length();i++){
             JSONArray cityArray = array.optJSONArray(i);
@@ -167,9 +173,10 @@ public class CityPickerActivity extends BaseActivity implements View.OnClickList
                 JSONObject object = cityArray.optJSONObject(j);
                 City city1 = new City();
                 city1.setName(object.optString("name"));
-                city1.setLongitude(object.optString("longitude"));
-                city1.setLatitude(object.optString("latitude"));
+                city1.setLongitude(object.optString("latitude"));
+                city1.setLatitude(object.optString("longitude"));
                 city1.setPinyin(Pinyin4jUtils.getPingYin(object.optString("name")));
+                city1.setStatus(object.optString("status"));
                 mAllCities.add(city1);
             }
         }

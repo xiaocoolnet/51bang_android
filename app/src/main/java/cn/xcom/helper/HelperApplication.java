@@ -29,8 +29,12 @@ public class HelperApplication  extends Application{
     //全局变量，选择的任务分类
     private List<TaskType> taskTypes;
 
-    public double mCurrentLocLat = 39.963175;
-    public double mCurrentLocLon = 116.400244;
+    //选择定位城市返回
+    public double mCurrentLocLat = 0;
+    public double mCurrentLocLon = 0;
+    public String status;
+
+
     // login user name
     public final String PREF_USERNAME = "username";
     /**
