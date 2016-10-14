@@ -247,4 +247,14 @@ public interface NetConstant extends HelperConstant {
      */
     public final static String GET_CITY_LIST=NET_HOST_PREFIX+"a=GetCityListToStr";
 
+    /*
+    获取我的技能
+     */
+    public final static String GET_MY_SKILLS =NET_HOST_PREFIX+"a=getSkillListByUserId&";
+
+    /*
+    修改我的技能
+     */
+    public final static String CHANGE_MY_SKILLS =NET_HOST_PREFIX+"a=UpdataUserSkill&";
+
 }

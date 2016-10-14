@@ -13,14 +13,14 @@
           android:scaleType="fitXY"
           android:layout_margin="2dp"
           />
-        <ImageView
+        <!--<ImageView
             android:id="@+id/delete_image"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/ic_shanchu_cha"
             android:layout_alignParentRight="true"
             android:layout_alignParentTop="true"
-            />
+            />-->
     </cn.xcom.helper.utils.SquareLayout>
 
 </LinearLayout>

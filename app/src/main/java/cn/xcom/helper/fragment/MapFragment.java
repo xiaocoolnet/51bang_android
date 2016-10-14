@@ -120,11 +120,13 @@ public class MapFragment extends Fragment implements View.OnClickListener, OnGet
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
             case CITY_RESULT:
-                isResult = true;
-                status = HelperApplication.getInstance().status;
-                Log.e("statu", status);
-                if(status.equals("0")){
-                    showDialog();
+                if(data!=null){
+                    isResult = true;
+                    status = HelperApplication.getInstance().status;
+                    Log.e("statu", status);
+                    if(status.equals("0")){
+                        showDialog();
+                    }
                 }
                 break;
         }

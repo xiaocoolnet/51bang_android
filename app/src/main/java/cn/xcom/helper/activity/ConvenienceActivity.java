@@ -54,7 +54,6 @@ public class ConvenienceActivity extends BaseActivity implements View.OnClickLis
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_convenience);
         initView();
-        addData();
         swipeRefresh();
     }
 
@@ -73,11 +72,18 @@ public class ConvenienceActivity extends BaseActivity implements View.OnClickLis
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        addData();
+    }
+
+    @Override
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.back:
                 finish();
                 break;
+            //发布便民消息
             case R.id.cnnvenience_release:
                 startActivity(new Intent(ConvenienceActivity.this,ReleaseConvenienceActivity.class));
                 break;
@@ -117,6 +123,7 @@ public class ConvenienceActivity extends BaseActivity implements View.OnClickLis
         });
         request.putValue("beginid","0");
         request.putValue("type","1");
+        request.putValue("city","芝罘区");
         SingleVolleyRequest.getInstance(context).addToRequestQueue(request);
     }
     public void swipeRefresh(){

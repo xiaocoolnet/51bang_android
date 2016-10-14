@@ -2,10 +2,8 @@ package cn.xcom.helper.activity;
 
 
 import android.content.Context;
-
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -20,8 +18,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import cn.xcom.helper.R;
-import cn.xcom.helper.fragment.authorized.BindAccountAuthorizedFragment;
-import cn.xcom.helper.fragment.authorized.PhotoAuthorizedFragment;
+import cn.xcom.helper.fragment.Authorized.BindAccountAuthorizedFragment;
+import cn.xcom.helper.fragment.Authorized.PhotoAuthorizedFragment;
+
 
 /**
  * Created by zhuchongkun on 16/6/3.

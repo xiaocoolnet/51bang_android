@@ -12,8 +12,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
-import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.baidu.mapapi.model.LatLng;
@@ -35,6 +35,7 @@ import java.util.List;
 import cn.xcom.helper.R;
 import cn.xcom.helper.activity.AddressDetailActivity;
 import cn.xcom.helper.activity.AuthorizedActivity;
+import cn.xcom.helper.activity.ChangeSkillsActivity;
 import cn.xcom.helper.activity.MyTaskActivity;
 import cn.xcom.helper.activity.TaskDetailActivity;
 import cn.xcom.helper.bean.TaskInfo;
@@ -47,6 +48,7 @@ import cn.xcom.helper.utils.LogUtils;
 import cn.xcom.helper.utils.SPUtils;
 import cn.xcom.helper.utils.ToastUtil;
 import cn.xcom.helper.utils.ViewHolder;
+import cn.xcom.helper.view.MenuPopupWindow;
 import cz.msebera.android.httpclient.Header;
 
 /**
@@ -59,13 +61,14 @@ public class BuyFragment extends Fragment implements View.OnClickListener{
     private Button bt_authorized;
     private UserInfo userInfo;
     private SwitchButton sb;
-    private LinearLayout ll_task;
+    private RelativeLayout ll_task;
     private SwipeRefreshLayout srl_task;
     private ListView lv_task;
     private SwitchButton sb_change;
     private boolean isChecked = true;
     private List<TaskInfo> taskInfos;
     private CommonAdapter<TaskInfo> adapter;
+    private MenuPopupWindow menuPopupWindow;
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -89,7 +92,7 @@ public class BuyFragment extends Fragment implements View.OnClickListener{
     private void initView(){
         userInfo=new UserInfo(mContext);
         if(SPUtils.get(getActivity(), HelperConstant.IS_HAD_AUTHENTICATION,"").equals("1")){
-            ll_task = (LinearLayout) getView().findViewById(R.id.ll_task);
+            ll_task = (RelativeLayout) getView().findViewById(R.id.ll_task);
             ll_task.setOnClickListener(this);
             srl_task = (SwipeRefreshLayout) getView().findViewById(R.id.grab_task_srl);
             lv_task = (ListView) getView().findViewById(R.id.grab_task_list);
@@ -128,6 +131,81 @@ public class BuyFragment extends Fragment implements View.OnClickListener{
         userInfo.readData(mContext);
         getData();
         getIdentity();
+    }
+
+    /**
+     *显示选择菜单
+     * */
+    private void showPopupMenu() {
+
+        /*//自定义布局
+        View layout = LayoutInflater.from(mContext).inflate(R.layout.address_add_menu, null);
+        //初始化popwindow
+        final PopupWindow popupWindow = new PopupWindow(layout, FrameLayout.LayoutParams.WRAP_CONTENT,FrameLayout.LayoutParams.WRAP_CONTENT);
+        popupWindow.setFocusable(true);
+        popupWindow.setOutsideTouchable(true);
+        popupWindow.setBackgroundDrawable(new BitmapDrawable());
+
+        //设置弹出位置
+        int[] location = new int[2];
+        ll_task.getLocationOnScreen(location);
+        popupWindow.showAsDropDown(ll_task);
+
+        final TextView add_qun = (TextView)layout.findViewById(R.id.add_qun);
+        TextView tong_bu = (TextView)layout.findViewById(R.id.tong_bu);
+        // 设置背景颜色变暗
+        // 实例化一个ColorDrawable颜色为半透明
+        ColorDrawable dw = new ColorDrawable(0xb0000000);
+        // 设置弹出窗体的背景
+        popupWindow.setBackgroundDrawable(dw);
+        *//*final WindowManager.LayoutParams lp = getActivity().getWindow().getAttributes();
+        lp.alpha = 0.7f;
+        getActivity().getWindow().setAttributes(lp);*//*
+        //监听popwindow消失事件，取消遮盖层
+        popupWindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
+            @Override
+            public void onDismiss() {
+                *//*lp.alpha = 1.0f;
+                getActivity().getWindow().setAttributes(lp);*//*
+            }
+        });
+
+        add_qun.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //我的任务
+                startActivity(new Intent(mContext, MyTaskActivity.class));
+                popupWindow.dismiss();
+            }
+        });
+        tong_bu.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //修改技能
+
+                popupWindow.dismiss();
+            }
+        });*/
+        menuPopupWindow = new MenuPopupWindow(mContext, new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                switch (v.getId()) {
+                    case R.id.add_qun:
+                        startActivity(new Intent(mContext, MyTaskActivity.class));
+                        menuPopupWindow.dismiss();
+                        break;
+                    case R.id.tong_bu:
+                        startActivity(new Intent(mContext, ChangeSkillsActivity.class));
+                        menuPopupWindow.dismiss();
+                        break;
+                }
+            }
+        });
+        //设置弹出位置
+        int[] location = new int[2];
+        ll_task.getLocationOnScreen(location);
+        menuPopupWindow.showAsDropDown(ll_task);
+
     }
 
     /**
@@ -211,7 +289,12 @@ public class BuyFragment extends Fragment implements View.OnClickListener{
         }
         //上门详细地址
         if(taskInfo.getLongitude().length()>0&&taskInfo.getLatitude().length()>0){
-            startRoutePlanDriving();
+            holder.getView(R.id.ll_address).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    startRoutePlanDriving();
+                }
+            });
         }
         //服务详细地址
         if(taskInfo.getSlongitude().length()>0&&taskInfo.getSlatitude().length()>0){
@@ -320,7 +403,7 @@ public class BuyFragment extends Fragment implements View.OnClickListener{
                 startActivity(new Intent(mContext, AuthorizedActivity.class));
                 break;
             case R.id.ll_task:
-                startActivity(new Intent(mContext, MyTaskActivity.class));
+                showPopupMenu();
         }
 
     }

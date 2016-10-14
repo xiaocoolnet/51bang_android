@@ -188,9 +188,9 @@
         <activity android:name=".activity.InProgressTaskActivity" />
         <activity android:name=".activity.ImageDetailActivity" />
         <activity android:name=".activity.BuyActivity" />
-        <activity android:name=".activity.ChooseAccountActivity"/>
-        <activity android:name=".activity.BindBankAccountActivity"/>
-        <activity android:name=".activity.BindAlipayAccountActivity"/>
+        <activity android:name=".activity.ChooseAccountActivity" />
+        <activity android:name=".activity.BindBankAccountActivity" />
+        <activity android:name=".activity.BindAlipayAccountActivity" />
         <!-- 极光Required SDK核心功能 -->
         <activity
             android:name="cn.jpush.android.ui.PushActivity"
@@ -299,7 +299,8 @@
         <!-- </>值来自开发者平台取得的AppKey -->
         <!-- 极光推送 -->
         <activity android:name=".activity.AddressDetailActivity" />
-        <activity android:name=".activity.SelectMapPoiActivity"></activity>
+        <activity android:name=".activity.SelectMapPoiActivity" />
+        <activity android:name=".activity.ChangeSkillsActivity"></activity>
     </application>
 
 </manifest>

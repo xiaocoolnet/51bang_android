@@ -3,6 +3,7 @@ package cn.xcom.helper.adapter;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,11 +16,13 @@ import java.util.List;
 
 import cn.xcom.helper.R;
 import cn.xcom.helper.bean.Convenience;
+import cn.xcom.helper.bean.UserInfo;
 import cn.xcom.helper.constant.NetConstant;
 import cn.xcom.helper.utils.MyImageLoader;
 import cn.xcom.helper.utils.NoScrollGridView;
 import cn.xcom.helper.utils.RoundImageView;
 import cn.xcom.helper.utils.TimeUtils;
+import cn.xcom.helper.utils.ToastUtil;
 
 /**
  * Created by Administrator on 2016/9/25 0025.
@@ -30,10 +33,13 @@ public class ConvenienceAdapter extends BaseAdapter {
     private Context context;
     private ImageView imageView;
     private ListGridview listGridview;
+    private UserInfo userInfo;
 
     public ConvenienceAdapter(List<Convenience> list, Context context) {
         this.list = list;
         this.context = context;
+        userInfo = new UserInfo(context);
+        userInfo.readData(context);
     }
 
     @Override
@@ -61,6 +67,8 @@ public class ConvenienceAdapter extends BaseAdapter {
             viewHolder.convenience_name = (TextView) convertView.findViewById(R.id.convenience_name);
             viewHolder.convenience_time = (TextView) convertView.findViewById(R.id.convenience_time);
             viewHolder.convenience_content = (TextView) convertView.findViewById(R.id.convenience_content);
+            viewHolder.iv_shanchu = (ImageView) convertView.findViewById(R.id.iv_shanchu);
+            viewHolder.iv_jubao = (ImageView) convertView.findViewById(R.id.iv_jubao);
           //  viewHolder.convenience_image = (ImageView) convertView.findViewById(R.id.convenience_image);
             viewHolder.convenience_phone= (ImageView) convertView.findViewById(R.id.convenience_phone);
             viewHolder.noScrollGridView= (NoScrollGridView) convertView.findViewById(R.id.gridview);
@@ -69,6 +77,7 @@ public class ConvenienceAdapter extends BaseAdapter {
            viewHolder= (ViewHolder) convertView.getTag();
         }
           final Convenience convenience=list.get(position);
+
           MyImageLoader.display(NetConstant.NET_DISPLAY_IMG + convenience.getPhoto(), viewHolder.convenience_photo);
           viewHolder.convenience_name.setText(convenience.getName());
           viewHolder.convenience_time.setText(TimeUtils.getDateToString(convenience.getCreate_time()));
@@ -78,8 +87,6 @@ public class ConvenienceAdapter extends BaseAdapter {
               for (int i=0;i<convenience.getPic().size();i++){
                   addList.add(NetConstant.NET_DISPLAY_IMG +convenience.getPic().get(i).getPictureurl());
               }
-          }else{
-              addList.add(NetConstant.NET_DISPLAY_IMG );
           }
           listGridview=new ListGridview(context,addList);
           viewHolder.noScrollGridView.setAdapter(listGridview);
@@ -87,12 +94,35 @@ public class ConvenienceAdapter extends BaseAdapter {
         viewHolder.convenience_phone.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent=new Intent();
+                Intent intent = new Intent();
                 intent.setAction(Intent.ACTION_DIAL);
                 intent.setData(Uri.parse("tel:" + list.get(position).getPhone()));
                 context.startActivity(intent);
             }
         });
+        //显示删除按钮
+        if(convenience.getUserid().equals(userInfo.getUserId())){
+            viewHolder.iv_jubao.setVisibility(View.GONE);
+            viewHolder.iv_shanchu.setVisibility(View.VISIBLE);
+            viewHolder.iv_shanchu.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    ToastUtil.showShort(context,"删除");
+                }
+            });
+        }
+        //显示举报按钮
+        if(!convenience.getUserid().equals(userInfo.getUserId())){
+            viewHolder.iv_jubao.setVisibility(View.VISIBLE);
+            viewHolder.iv_shanchu.setVisibility(View.GONE);
+            viewHolder.iv_jubao.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    ToastUtil.showShort(context,"删除");
+                }
+            });
+        }
+        Log.e("mid",convenience.getMid());
         return convertView;
     }
 
@@ -104,6 +134,7 @@ public class ConvenienceAdapter extends BaseAdapter {
         public ImageView convenience_image;
         public ImageView convenience_phone;
         public NoScrollGridView noScrollGridView;
+        public ImageView iv_shanchu,iv_jubao;
 
 
 

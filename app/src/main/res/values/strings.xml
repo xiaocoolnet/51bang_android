@@ -210,7 +210,7 @@
     <string name="tv_wallet_income_records">收支记录</string>
     <string name="tv_wallet_present_records">提现记录</string>
     <string name="bt_wallet_present">提现</string>
-    <string name= "tv_wallet_warning">欲了解提现详解请点击此处</string>
+    <string name="tv_wallet_warning">欲了解提现详解请点击此处</string>
     <!--PresentRecordActivity-->
     <string name="tv_present_record_title">提现记录</string>
     <!--IncomeRecordsActivity-->

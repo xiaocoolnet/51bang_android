@@ -107,6 +107,7 @@ public class ReleaseConvenienceActivity extends BaseActivity implements View.OnC
                     public void onResponse(String s) {
                         Log.d("===我的发布", s);
                         Toast.makeText(getApplication(), "发布成功", Toast.LENGTH_SHORT).show();
+                        finish();
 
                     }
                 }, new Response.ErrorListener() {

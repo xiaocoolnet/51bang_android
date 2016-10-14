@@ -1,9 +1,6 @@
 package cn.xcom.helper.adapter;
 
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -52,7 +49,7 @@ public class GridViewAdapter extends BaseAdapter {
             viewHolder = new ViewHolder();
             convertView = LayoutInflater.from(context).inflate(R.layout.layout_gridview, null);
             viewHolder.imageView1 = (ImageView) convertView.findViewById(R.id.add_image);
-            viewHolder.imageView2 = (ImageView) convertView.findViewById(R.id.delete_image);
+            //viewHolder.imageView2 = (ImageView) convertView.findViewById(R.id.delete_image);
             convertView.setTag(viewHolder);
         } else {
             viewHolder = (ViewHolder) convertView.getTag();
@@ -60,7 +57,7 @@ public class GridViewAdapter extends BaseAdapter {
 
         if(list.size()>0){
             MyImageLoader.display("file:/" + list.get(position).getPhotoPath(), viewHolder.imageView1);
-            Log.d("======path", list.get(position).getPhotoPath() + "");
+            /*Log.d("======path", list.get(position).getPhotoPath() + "");
             viewHolder.imageView2.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -73,7 +70,7 @@ public class GridViewAdapter extends BaseAdapter {
                                 }
                             }).setNegativeButton("取消", null).show();
                 }
-            });
+            });*/
         }
 
 
