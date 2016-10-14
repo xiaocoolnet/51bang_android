@@ -14,6 +14,7 @@ import com.jcodecraeer.xrecyclerview.XRecyclerView;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -34,7 +35,7 @@ public class IncomeRecordsActivity extends BaseActivity implements View.OnClickL
     private Context mContext;
     private RelativeLayout rl_back;
     private XRecyclerView mRecyclerView;
-    private IncomeRecordsAdapter mAdapter;
+    private IncomeRecordsAdapter incomeRecordsAdapter;
     private UserInfo userInfo;
 
 
@@ -62,7 +63,7 @@ public class IncomeRecordsActivity extends BaseActivity implements View.OnClickL
         mRecyclerView.setLoadingListener(new XRecyclerView.LoadingListener() {
             @Override
             public void onRefresh() {
-
+                getIncomeRecordsList();
             }
 
             @Override
@@ -70,8 +71,8 @@ public class IncomeRecordsActivity extends BaseActivity implements View.OnClickL
 
             }
         });
-        mAdapter=new IncomeRecordsAdapter();
-        mRecyclerView.setAdapter(mAdapter);
+//        mAdapter=new IncomeRecordsAdapter();
+//        mRecyclerView.setAdapter(mAdapter);
         // mRecyclerView.setRefreshing(true);
         userInfo=new UserInfo(mContext);
         getIncomeRecordsList();
@@ -89,7 +90,9 @@ public class IncomeRecordsActivity extends BaseActivity implements View.OnClickL
                     try {
                         String state=response.getString("status");
                         if (state.equals("success")){
-
+                            JSONArray jsonArray = response.getJSONArray("data");
+                            incomeRecordsAdapter = new IncomeRecordsAdapter(jsonArray);
+                            mRecyclerView.setAdapter(incomeRecordsAdapter);
                         }else if (state.equals("error")){
                             String date=response.getString("data");
                             Toast.makeText(mContext,date,Toast.LENGTH_SHORT).show();
@@ -98,6 +101,7 @@ public class IncomeRecordsActivity extends BaseActivity implements View.OnClickL
                         e.printStackTrace();
                     }
                 }
+                mRecyclerView.refreshComplete();
             }
         });
     }

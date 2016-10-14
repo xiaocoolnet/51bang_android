@@ -6,26 +6,42 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import cn.xcom.helper.R;
 
 /**
  * Created by zhuchongkun on 16/6/16.
  */
 public class IncomeRecordsAdapter extends RecyclerView.Adapter<IncomeRecordsAdapter.ViewHolder> {
+    private JSONArray jsonArray;
+    public IncomeRecordsAdapter(JSONArray jsonArray){
+        this.jsonArray = jsonArray;
+    }
+
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_present_record,parent,false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_income_records,parent,false);
         return new ViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-
+        try {
+            JSONObject jsonObject = jsonArray.getJSONObject(position);
+            holder.tv_money.setText(jsonObject.getString("money"));
+            holder.tv_time.setText(jsonObject.getString("time"));
+            holder.tv_balance.setText(jsonObject.getString("balance"));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
     public int getItemCount() {
-        return 10;
+        return jsonArray.length();
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder{

@@ -12,6 +12,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.widget.TextView;
@@ -20,8 +21,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import cn.xcom.helper.R;
-import cn.xcom.helper.fragment.authorized.BindAccountAuthorizedFragment;
-import cn.xcom.helper.fragment.authorized.PhotoAuthorizedFragment;
+import cn.xcom.helper.fragment.Authorized.BindAccountAuthorizedFragment;
+import cn.xcom.helper.fragment.Authorized.PhotoAuthorizedFragment;
 
 /**
  * Created by zhuchongkun on 16/6/3.
@@ -142,6 +143,9 @@ public class AuthorizedActivity extends BaseActivity implements View.OnClickList
         finish();
     }
 
-
-
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Log.d("warning","activity");
+    }
 }

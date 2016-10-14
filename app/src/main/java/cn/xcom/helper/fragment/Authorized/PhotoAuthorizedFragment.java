@@ -10,6 +10,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -248,7 +249,6 @@ public class PhotoAuthorizedFragment extends Fragment implements View.OnClickLis
     }
 
 
-
     private void submit() {
         String city = tv_city.getText().toString();
         if (city.length() == 0) {
@@ -282,14 +282,15 @@ public class PhotoAuthorizedFragment extends Fragment implements View.OnClickLis
             return;
         }
         String types;
-        if(checkedTypeLists.size() ==0){
+        if (checkedTypeLists.size() == 0) {
             Toast.makeText(mContext, "请至少选择一种职能！", Toast.LENGTH_LONG).show();
             return;
-        }else{
-             types = StringUtils.listToString(checkedTypeLists,",");
+        } else {
+            types = StringUtils.listToString(checkedTypeLists, ",");
         }
 
-
+        dialog.setMessage("正在提交认证");
+        dialog.show();
         RequestParams requestParams = new RequestParams();
         requestParams.put("userid", userInfo.getUserId());
         requestParams.put("city", city);
@@ -300,7 +301,7 @@ public class PhotoAuthorizedFragment extends Fragment implements View.OnClickLis
         requestParams.put("positive_pic", userInfo.getUserIDCard());
         requestParams.put("opposite_pic", userInfo.getUserHandIDCard());
         requestParams.put("driver_pic", userInfo.getUserDrivingLicense());
-        requestParams.put("tipe",types);
+        requestParams.put("tipe", types);
         HelperAsyncHttpClient.get(NetConstant.NET_IDENTITY_AUTHENTICATION, requestParams, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
@@ -310,12 +311,14 @@ public class PhotoAuthorizedFragment extends Fragment implements View.OnClickLis
                     try {
                         String state = response.getString("status");
                         if (state.equals("success")) {
-                            Toast.makeText(mContext, "上传成功！", Toast.LENGTH_LONG).show();
+                            Toast.makeText(mContext, "提交认证成功！", Toast.LENGTH_LONG).show();
+                            getActivity().finish();
                         }
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
                 }
+                dialog.dismiss();
             }
         });
 
@@ -327,6 +330,7 @@ public class PhotoAuthorizedFragment extends Fragment implements View.OnClickLis
      *
      * @param uri
      */
+    Uri uritempFile;
     public void startPhotoZoom(Uri uri) {
         Intent intent = new Intent("com.android.camera.action.CROP");
         intent.setDataAndType(uri, "image/*");
@@ -338,7 +342,16 @@ public class PhotoAuthorizedFragment extends Fragment implements View.OnClickLis
         // outputX outputY 是裁剪图片宽高
         intent.putExtra("outputX", 400);
         intent.putExtra("outputY", 300);
-        intent.putExtra("return-data", true);
+
+        //此方法返回的图片只能是小图片（sumsang测试为高宽160px的图片）
+        //故将图片保存在Uri中，调用时将Uri转换为Bitmap，此方法还可解决miui系统不能return data的问题
+        // intent.putExtra("return-data", true);
+
+        //uritempFile为Uri类变量，实例化uritempFile
+        uritempFile = Uri.parse("file://" + "/" + Environment.getExternalStorageDirectory().getPath() + "/" + "small.jpg");
+        intent.putExtra(MediaStore.EXTRA_OUTPUT, uritempFile);
+        intent.putExtra("outputFormat", Bitmap.CompressFormat.JPEG.toString());
+
         startActivityForResult(intent, PHOTO_REQUEST_CUT);
     }
 
@@ -350,8 +363,14 @@ public class PhotoAuthorizedFragment extends Fragment implements View.OnClickLis
     private void getImageToView(Intent data) {
         Bundle extras = data.getExtras();
         if (extras != null) {
-            Bitmap photo = extras.getParcelable("data");
-            storeImageToSDCARD(photo);
+            //将Uri图片转换为Bitmap
+            Bitmap bitmap = null;
+            try {
+                bitmap = BitmapFactory.decodeStream(mContext.getContentResolver().openInputStream(uritempFile));
+                storeImageToSDCARD(bitmap);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
         } else {
 
         }
@@ -430,4 +449,9 @@ public class PhotoAuthorizedFragment extends Fragment implements View.OnClickLis
 
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        Log.d("warning", "fragment");
+    }
 }
