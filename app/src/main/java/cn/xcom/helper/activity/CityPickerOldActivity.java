@@ -1,6 +1,5 @@
 package cn.xcom.helper.activity;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -19,40 +18,23 @@ import com.baidu.location.BDLocationListener;
 import com.baidu.location.LocationClient;
 import com.baidu.location.LocationClientOption;
 import com.baidu.location.Poi;
-import com.baidu.mapapi.model.LatLng;
-import com.baidu.mapapi.search.geocode.GeoCodeResult;
-import com.baidu.mapapi.search.geocode.GeoCoder;
-import com.baidu.mapapi.search.geocode.OnGetGeoCoderResultListener;
-import com.baidu.mapapi.search.geocode.ReverseGeoCodeOption;
-import com.baidu.mapapi.search.geocode.ReverseGeoCodeResult;
-import com.loopj.android.http.JsonHttpResponseHandler;
-import com.loopj.android.http.RequestParams;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
-
-import java.util.ArrayList;
 import java.util.List;
 
-import cn.xcom.helper.HelperApplication;
 import cn.xcom.helper.R;
 import cn.xcom.helper.adapter.CityListAdapter;
 import cn.xcom.helper.adapter.ResultListAdapter;
 import cn.xcom.helper.bean.City;
 import cn.xcom.helper.bean.LocateState;
-import cn.xcom.helper.constant.NetConstant;
 import cn.xcom.helper.db.DBManager;
-import cn.xcom.helper.net.HelperAsyncHttpClient;
-import cn.xcom.helper.utils.Pinyin4jUtils;
 import cn.xcom.helper.utils.ToastUtils;
 import cn.xcom.helper.view.SideLetterBar;
-import cz.msebera.android.httpclient.Header;
 
 
 /**
  * Created by zhuchongkun.
  */
-public class CityPickerActivity extends BaseActivity implements View.OnClickListener, OnGetGeoCoderResultListener {
+public class CityPickerOldActivity extends BaseActivity implements View.OnClickListener {
     public static final int REQUEST_CODE_PICK_CITY = 2333;
     public static final String KEY_PICKED_CITY = "picked_city";
 
@@ -74,21 +56,15 @@ public class CityPickerActivity extends BaseActivity implements View.OnClickList
     public LocationClient mLocationClient = null;
     public BDLocationListener myListener = new MyLocationListener();
 
-    GeoCoder mSearch = null; // 搜索模块，也可去掉地图模块独立使用
-    private String mLocaddress;
-    private double mLocLat,mLocLon;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_city_list);
         mLocationClient = new LocationClient(getApplicationContext());     //声明LocationClient类
         mLocationClient.registerLocationListener(myListener);    //注册监听函数
-        // 初始化搜索模块，注册事件监听
-        mSearch = GeoCoder.newInstance();
-        mSearch.setOnGetGeoCodeResultListener(this);
-        mAllCities = new ArrayList<>();
+        initData();
         initView();
+        initLocation();
     }
     /**
      * 初始化定位参数
@@ -113,77 +89,32 @@ public class CityPickerActivity extends BaseActivity implements View.OnClickList
 
 
 
-    private void initData(JSONObject response) {
-        mAllCities.clear();
-        initCity(response);
+    private void initData() {
+        dbManager = new DBManager(this);
+        dbManager.copyDBFile();
+        mAllCities = dbManager.getAllCities();
         mCityAdapter = new CityListAdapter(this, mAllCities);
-        mListView.setAdapter(mCityAdapter);
         mCityAdapter.setOnCityClickListener(new CityListAdapter.OnCityClickListener() {
             @Override
             public void onCityClick(String name) {
-                Log.e("name", name);
                 back(name);
-                if(mLocaddress.equals(name)){
-                    HelperApplication.getInstance().mCurrentLocLat = mLocLat;
-                    HelperApplication.getInstance().mCurrentLocLon = mLocLon;
-                    HelperApplication.getInstance().status = "1";
-                    Log.e("定位的经纬度", mLocLat + "," + mLocLon);
-                    setResult(RESULT_OK);
-                    finish();
-                }else{
-                    City city = new City();
-                    for(int i=0;i<mAllCities.size();i++){
-                        if(mAllCities.get(i).getName().equals(name)){
-                            city = mAllCities.get(i);
-                        }
-                    }
-                    HelperApplication.getInstance().mCurrentLocLat = Double.parseDouble(city.getLatitude());
-                    HelperApplication.getInstance().mCurrentLocLon = Double.parseDouble(city.getLongitude());
-                    HelperApplication.getInstance().status = city.getStatus();
-                    setResult(RESULT_OK);
-                    finish();
-                }
             }
 
             @Override
             public void onLocateClick() {
                 Log.e("onLocateClick", "重新定位...");
                 mCityAdapter.updateLocateState(LocateState.LOCATING, null);
+//                mLocationClient.startLocation();
             }
         });
 
-    }
-
-    /**
-     * 解析城市列表
-     * @param response
-     */
-    private void initCity(JSONObject response) {
-        JSONArray array = response.optJSONArray("data");
-        City city = new City();
-        city.setName(array.optJSONObject(0).optString("name"));
-        city.setPinyin(Pinyin4jUtils.getPingYin(array.optJSONObject(0).optString("name")));
-        city.setLatitude(array.optJSONObject(0).optString("latitude"));
-        city.setLongitude(array.optJSONObject(0).optString("longitude"));
-        city.setStatus(array.optJSONObject(0).optString("status"));
-        mAllCities.add(city);
-        for(int i=1;i<array.length();i++){
-            JSONArray cityArray = array.optJSONArray(i);
-            for(int j = 0; j<cityArray.length();j++){
-                JSONObject object = cityArray.optJSONObject(j);
-                City city1 = new City();
-                city1.setName(object.optString("name"));
-                city1.setLongitude(object.optString("latitude"));
-                city1.setLatitude(object.optString("longitude"));
-                city1.setPinyin(Pinyin4jUtils.getPingYin(object.optString("name")));
-                city1.setStatus(object.optString("status"));
-                mAllCities.add(city1);
-            }
-        }
+        mResultAdapter = new ResultListAdapter(this, null);
     }
 
     private void initView() {
         mListView = (ListView) findViewById(R.id.listview_all_city);
+        mListView.setAdapter(mCityAdapter);
+
         TextView overlay = (TextView) findViewById(R.id.tv_letter_overlay);
         mLetterBar = (SideLetterBar) findViewById(R.id.side_letter_bar);
         mLetterBar.setOverlay(overlay);
@@ -215,14 +146,12 @@ public class CityPickerActivity extends BaseActivity implements View.OnClickList
                 } else {
                     clearBtn.setVisibility(View.VISIBLE);
                     mResultListView.setVisibility(View.VISIBLE);
-                    List<City> result = searchCity(mAllCities, keyword);
+                    List<City> result = dbManager.searchCity(keyword);
                     if (result == null || result.size() == 0) {
                         emptyView.setVisibility(View.VISIBLE);
                     } else {
                         emptyView.setVisibility(View.GONE);
-                        mResultAdapter = new ResultListAdapter(CityPickerActivity.this, result);
-                        mResultListView.setAdapter(mResultAdapter);
-                       // mResultAdapter.changeData(result);
+                        mResultAdapter.changeData(result);
                     }
                 }
             }
@@ -230,13 +159,10 @@ public class CityPickerActivity extends BaseActivity implements View.OnClickList
 
         emptyView = (ViewGroup) findViewById(R.id.empty_view);
         mResultListView = (ListView) findViewById(R.id.listview_search_result);
+        mResultListView.setAdapter(mResultAdapter);
         mResultListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent intent = new Intent();
-                intent.putExtra("siteName",mResultAdapter.getItem(position).getName());
-                setResult(RESULT_OK, intent);
-                finish();
                 back(mResultAdapter.getItem(position).getName());
             }
         });
@@ -246,22 +172,6 @@ public class CityPickerActivity extends BaseActivity implements View.OnClickList
 
         clearBtn.setOnClickListener(this);
         backBtn.setOnClickListener(this);
-    }
-
-    /**
-     * 根据关键字搜索相关市区
-     * @param mAllCities
-     * @param keyword
-     * @return
-     */
-    private List<City> searchCity(List<City> mAllCities, String keyword) {
-        List<City> cities = new ArrayList<>();
-        for(int i=0;i<mAllCities.size();i++){
-            if(mAllCities.get(i).getName().contains(keyword)){
-                cities.add(mAllCities.get(i));
-            }
-        }
-        return cities;
     }
 
     private void back(String city) {
@@ -296,37 +206,29 @@ public class CityPickerActivity extends BaseActivity implements View.OnClickList
     @Override
     protected void onResume() {
         super.onResume();
-        getCityList();
+        //getCityList();
     }
-    private void getCityList() {
+    /*private void getCityList() {
         RequestParams params=new RequestParams();
-        HelperAsyncHttpClient.get(NetConstant.GET_CITY_LIST, params, new JsonHttpResponseHandler() {
+        HelperAsyncHttpClient.get(NetConstant.GETTASKLIST, params, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                 super.onSuccess(statusCode, headers, response);
+                srl_task.setRefreshing(false);
                 if (response.optString("status").equals("success")) {
-                    initData(response);
-                    initLocation();
+                    setAdapter(response);
                 }
+                LogUtils.e(TAG, response.toString());
+
             }
 
             @Override
             public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
                 super.onFailure(statusCode, headers, responseString, throwable);
+                LogUtils.e(TAG, responseString);
             }
         });
-    }
-
-    @Override
-    public void onGetGeoCodeResult(GeoCodeResult geoCodeResult) {
-
-    }
-
-    @Override
-    public void onGetReverseGeoCodeResult(ReverseGeoCodeResult result) {
-        mLocaddress = result.getAddressDetail().province+result.getAddressDetail().city+result.getAddressDetail().district;
-        mCityAdapter.updateLocateState(LocateState.SUCCESS, mLocaddress);
-    }
+    }*/
 
     public class MyLocationListener implements BDLocationListener {
 
@@ -391,11 +293,7 @@ public class CityPickerActivity extends BaseActivity implements View.OnClickList
                 }
             }
             Log.i("BaiduLocationApiDem", sb.toString());
-
-            mSearch.reverseGeoCode(new ReverseGeoCodeOption()
-                    .location(new LatLng(location.getLatitude(), location.getLongitude())));
-            mLocLat = location.getLatitude();
-            mLocLon = location.getLongitude();
+            mCityAdapter.updateLocateState(LocateState.SUCCESS, location.getCity());
             mLocationClient.stop();
         }
     }

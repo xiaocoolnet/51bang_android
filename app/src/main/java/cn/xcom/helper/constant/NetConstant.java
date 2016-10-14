@@ -242,4 +242,9 @@ public interface NetConstant extends HelperConstant {
      */
     public final static String APPLY_WITHDRAW = NET_HOST_PREFIX+"a=ApplyWithdraw&";
 
+    /*
+    获取城市列表（长字符串）
+     */
+    public final static String GET_CITY_LIST=NET_HOST_PREFIX+"a=GetCityListToStr";
+
 }

@@ -16,6 +16,10 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.baidu.mapapi.model.LatLng;
+import com.baidu.mapapi.navi.BaiduMapAppNotSupportNaviException;
+import com.baidu.mapapi.navi.BaiduMapNavigation;
+import com.baidu.mapapi.navi.NaviParaOption;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.kyleduo.switchbutton.SwitchButton;
@@ -207,15 +211,7 @@ public class BuyFragment extends Fragment implements View.OnClickListener{
         }
         //上门详细地址
         if(taskInfo.getLongitude().length()>0&&taskInfo.getLatitude().length()>0){
-            holder.getView(R.id.ll_address).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent intent = new Intent(mContext, AddressDetailActivity.class);
-                    intent.putExtra("lon",taskInfo.getLongitude());
-                    intent.putExtra("lat",taskInfo.getLatitude());
-                    startActivity(intent);
-                }
-            });
+            startRoutePlanDriving();
         }
         //服务详细地址
         if(taskInfo.getSlongitude().length()>0&&taskInfo.getSlatitude().length()>0){
@@ -223,12 +219,39 @@ public class BuyFragment extends Fragment implements View.OnClickListener{
                 @Override
                 public void onClick(View v) {
                     Intent intent = new Intent(mContext, AddressDetailActivity.class);
-                    intent.putExtra("lon",taskInfo.getSlongitude());
-                    intent.putExtra("lat",taskInfo.getSlatitude());
+                    intent.putExtra("lon", taskInfo.getSlongitude());
+                    intent.putExtra("lat", taskInfo.getSlatitude());
                     startActivity(intent);
                 }
             });
         }
+    }
+
+
+    /**
+     * 启动百度地图驾车路线规划
+     */
+    public void startRoutePlanDriving() {
+        // 天安门坐标
+        double mLat1 = 39.915291;
+        double mLon1 = 116.403857;
+        // 百度大厦坐标
+        double mLat2 = 40.056858;
+        double mLon2 = 116.308194;
+        LatLng pt1 = new LatLng(mLat1, mLon1);
+        LatLng pt2 = new LatLng(mLat2, mLon2);
+        // 构建 导航参数
+        NaviParaOption para = new NaviParaOption()
+                .startPoint(pt1).endPoint(pt2)
+                .startName("天安门").endName("百度大厦");
+        try {
+        // 调起百度地图骑行导航
+            BaiduMapNavigation.openBaiduMapBikeNavi(para, mContext);
+        } catch (BaiduMapAppNotSupportNaviException e) {
+            e.printStackTrace();
+            //showDialog();
+        }
+
     }
 
     /**

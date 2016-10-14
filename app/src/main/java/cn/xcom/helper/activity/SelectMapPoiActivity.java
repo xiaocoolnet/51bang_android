@@ -7,16 +7,21 @@ import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
 import com.baidu.mapapi.map.BaiduMap;
+import com.baidu.mapapi.map.BitmapDescriptor;
 import com.baidu.mapapi.map.BitmapDescriptorFactory;
+import com.baidu.mapapi.map.InfoWindow;
 import com.baidu.mapapi.map.MapStatus;
 import com.baidu.mapapi.map.MapStatusUpdateFactory;
 import com.baidu.mapapi.map.MapView;
+import com.baidu.mapapi.map.Marker;
 import com.baidu.mapapi.map.MarkerOptions;
+import com.baidu.mapapi.map.OverlayOptions;
 import com.baidu.mapapi.model.LatLng;
 import com.baidu.mapapi.search.core.PoiInfo;
 import com.baidu.mapapi.search.geocode.GeoCodeResult;
@@ -58,6 +63,9 @@ public class SelectMapPoiActivity extends BaseActivity implements OnGetGeoCoderR
     BaiduMap mBaiduMap = null;
     private List<PoiInformaiton> poiInformaitons;
     private CommonAdapter<PoiInformaiton> adapter;
+    private LatLng currentPt;
+    private Marker marker;
+    private boolean isFisrtIn = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,6 +77,7 @@ public class SelectMapPoiActivity extends BaseActivity implements OnGetGeoCoderR
         poiInformaitons = new ArrayList<>();
         mBaiduMap = mapview.getMap();
         initEvent();
+        initListener();
         // 初始化搜索模块，注册事件监听
         mSearch = GeoCoder.newInstance();
         mSearch.setOnGetGeoCodeResultListener(this);
@@ -88,6 +97,36 @@ public class SelectMapPoiActivity extends BaseActivity implements OnGetGeoCoderR
                 .location(mLat));
     }
 
+
+    /**
+     * 对地图事件的消息响应
+     */
+    private void initListener() {
+        mBaiduMap.setOnMapStatusChangeListener(new BaiduMap.OnMapStatusChangeListener() {
+            @Override
+            public void onMapStatusChangeStart(MapStatus mapStatus) {
+
+            }
+
+            @Override
+            public void onMapStatusChange(MapStatus mapStatus) {
+
+            }
+
+            @Override
+            public void onMapStatusChangeFinish(MapStatus mapStatus) {
+                mLat = mBaiduMap.getMapStatus().target;
+                mSearch.reverseGeoCode(new ReverseGeoCodeOption()
+                        .location(mLat));
+                Log.e("中心点", mLat.latitude + "");
+                if (marker != null) {
+                    marker.remove();
+                }
+                mBaiduMap.clear();
+            }
+        });
+    }
+
     /**
      * 初始化事件
      */
@@ -96,9 +135,9 @@ public class SelectMapPoiActivity extends BaseActivity implements OnGetGeoCoderR
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent intent = new Intent();
-                intent.putExtra("siteName",poiInformaitons.get(position).getName());
-                intent.putExtra("siteLat",poiInformaitons.get(position).getLat());
-                intent.putExtra("siteLon",poiInformaitons.get(position).getLon());
+                intent.putExtra("siteName", poiInformaitons.get(position).getName());
+                intent.putExtra("siteLat", poiInformaitons.get(position).getLat());
+                intent.putExtra("siteLon", poiInformaitons.get(position).getLon());
                 setResult(RESULT_OK, intent);
                 finish();
             }
@@ -133,15 +172,47 @@ public class SelectMapPoiActivity extends BaseActivity implements OnGetGeoCoderR
 
     @Override
     public void onGetReverseGeoCodeResult(ReverseGeoCodeResult result) {
+        if(result==null){
+            return;
+        }
         mBaiduMap.clear();
+        if(isFisrtIn){
+            mBaiduMap.setMapStatus(MapStatusUpdateFactory.newLatLng(mLat));
+            MapStatus.Builder builder = new MapStatus.Builder();
+            builder.target(mLat).zoom(18.0f);
+            mBaiduMap.animateMapStatus(MapStatusUpdateFactory.newMapStatus(builder.build()));
+        }
         mBaiduMap.addOverlay(new MarkerOptions().position(mLat)
                 .icon(BitmapDescriptorFactory
                         .fromResource(R.mipmap.ic_dingwei_shou)));
-        mBaiduMap.setMapStatus(MapStatusUpdateFactory.newLatLng(mLat));
-        MapStatus.Builder builder = new MapStatus.Builder();
-        builder.target(mLat).zoom(18.0f);
-        mBaiduMap.animateMapStatus(MapStatusUpdateFactory.newMapStatus(builder.build()));
+        createMarker(result.getLocation(), result.getPoiList().get(0).name);
         setAdapter(result);
+    }
+
+    /**
+     * 构建坐标点
+     *
+     * @param mPt
+     * @param name
+     */
+    public void createMarker(final LatLng mPt, String name) {
+        //构建Marker图标
+        BitmapDescriptor bitmap = BitmapDescriptorFactory
+                .fromResource(R.mipmap.ic_dingwei_shou);
+        OverlayOptions options = new MarkerOptions()
+                .position(mPt)  //设置marker的位置
+                .icon(bitmap)  //设置marker图标
+                .zIndex(9)  //设置marker所在层级
+                .draggable(true);  //设置手势拖拽
+        //将marker添加到地图上
+        marker = (Marker) (mBaiduMap.addOverlay(options));
+        //创建InfoWindow展示的view
+        Button button = new Button(context);
+        button.setText(name);
+        //创建InfoWindow , 传入 view， 地理坐标， y 轴偏移量
+        InfoWindow mInfoWindow = new InfoWindow(button, mPt, -47);
+        //显示InfoWindow
+        mBaiduMap.showInfoWindow(mInfoWindow);
     }
 
     /**
