@@ -10,6 +10,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -42,6 +43,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 
 import cn.xcom.helper.R;
 import cn.xcom.helper.activity.SelectTypeActivity;
@@ -50,6 +52,8 @@ import cn.xcom.helper.bean.UserInfo;
 import cn.xcom.helper.constant.NetConstant;
 import cn.xcom.helper.net.HelperAsyncHttpClient;
 import cn.xcom.helper.utils.LogUtils;
+import cn.xcom.helper.utils.RegexUtil;
+import cn.xcom.helper.utils.StringUtils;
 import cz.msebera.android.httpclient.Header;
 
 
@@ -61,46 +65,51 @@ public class PhotoAuthorizedFragment extends Fragment implements View.OnClickLis
     private Context mContext;
     private LinearLayout chooseCityLl;
     private RelativeLayout rl_back;
-    private ImageView iv_handheld_ID_card,iv_ID_card,iv_driving_license;
+    private ImageView iv_handheld_ID_card, iv_ID_card, iv_driving_license;
     private TextView tv_city;
-    private EditText et_name,et_ID,et_contact_name,et_contact_phone;
+    private EditText et_name, et_ID, et_contact_name, et_contact_phone;
     private Button bt_next;
-    private ImageLoader imageLoader=ImageLoader.getInstance();
+    private ImageLoader imageLoader = ImageLoader.getInstance();
     private DisplayImageOptions options;
-    private static final int PHOTO_REQUEST_CAMERA=1;//拍照
-    private static final int PHOTO_REQUEST_ALBUM=2;//相册
-    private static final int PHOTO_REQUEST_CUT=3;//剪裁
-    private static final int MY_PERMISSIONS_REQUEST_READ_CONTACTS=4;
-    private int flag=0;
+    private static final int PHOTO_REQUEST_CAMERA = 1;//拍照
+    private static final int PHOTO_REQUEST_ALBUM = 2;//相册
+    private static final int PHOTO_REQUEST_CUT = 3;//剪裁
+    private static final int MY_PERMISSIONS_REQUEST_READ_CONTACTS = 4;
+    private static final int GET_SKILL_TYPE = 10;
+
+    private int flag = 0;
     private ProgressDialog dialog;
     private UserInfo userInfo;
+    private ArrayList<String> checkedTypeLists;
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_photo_authorized, container, false);
         mContext = getActivity();
         initView(view);
+        checkedTypeLists = new ArrayList<>();
         return view;
     }
 
 
     private void initView(View v) {
-        chooseCityLl = (LinearLayout)v.findViewById(R.id.ll_choose_city);
+        chooseCityLl = (LinearLayout) v.findViewById(R.id.ll_choose_city);
         chooseCityLl.setOnClickListener(this);
-        iv_handheld_ID_card = (ImageView)v.findViewById(R.id.iv_authorized_handheld_ID_card);
+        iv_handheld_ID_card = (ImageView) v.findViewById(R.id.iv_authorized_handheld_ID_card);
         iv_handheld_ID_card.setOnClickListener(this);
-        iv_ID_card = (ImageView)  v.findViewById(R.id.iv_authorized_ID_card);
+        iv_ID_card = (ImageView) v.findViewById(R.id.iv_authorized_ID_card);
         iv_ID_card.setOnClickListener(this);
         iv_driving_license = (ImageView) v.findViewById(R.id.iv_authorized_driving_license);
         iv_driving_license.setOnClickListener(this);
-        tv_city = (TextView) v. findViewById(R.id.tv_authorized_city);
-        et_name = (EditText)  v.findViewById(R.id.et_authorized_name);
-        et_ID = (EditText)  v.findViewById(R.id.et_authorized_ID);
-        et_contact_name = (EditText)  v.findViewById(R.id.et_authorized_emergency_contact_person_name);
-        et_contact_phone = (EditText)  v.findViewById(R.id.et_authorized_emergency_contact_person_phone);
-        bt_next = (Button)  v.findViewById(R.id.bt_authorized_next);
+        tv_city = (TextView) v.findViewById(R.id.tv_authorized_city);
+        et_name = (EditText) v.findViewById(R.id.et_authorized_name);
+        et_ID = (EditText) v.findViewById(R.id.et_authorized_ID);
+        et_contact_name = (EditText) v.findViewById(R.id.et_authorized_emergency_contact_person_name);
+        et_contact_phone = (EditText) v.findViewById(R.id.et_authorized_emergency_contact_person_phone);
+        bt_next = (Button) v.findViewById(R.id.bt_authorized_next);
         bt_next.setOnClickListener(this);
-        userInfo = new UserInfo();
+        userInfo = new UserInfo(mContext);
         dialog = new ProgressDialog(mContext, AlertDialog.THEME_HOLO_LIGHT);
         options = new DisplayImageOptions.Builder()
                 .bitmapConfig(Bitmap.Config.RGB_565)
@@ -122,33 +131,35 @@ public class PhotoAuthorizedFragment extends Fragment implements View.OnClickLis
                 break;
 
             case R.id.iv_authorized_handheld_ID_card:
-                flag=1;
+                flag = 1;
                 showPickDialog();
                 break;
             case R.id.iv_authorized_ID_card:
-                flag=2;
+                flag = 2;
                 showPickDialog();
                 break;
             case R.id.iv_authorized_driving_license:
-                flag=3;
+                flag = 3;
                 showPickDialog();
                 break;
             case R.id.bt_authorized_next:
-                startActivity(new Intent(mContext,SelectTypeActivity.class));
+                Intent intent1 = new Intent(mContext, SelectTypeActivity.class);
+                intent1.putStringArrayListExtra("checked", checkedTypeLists);
+                startActivityForResult(intent1, GET_SKILL_TYPE);
                 break;
         }
     }
 
-    private void showPickDialog(){
-        new AlertDialog.Builder(mContext,AlertDialog.THEME_HOLO_LIGHT)
+    private void showPickDialog() {
+        new AlertDialog.Builder(mContext, AlertDialog.THEME_HOLO_LIGHT)
                 .setNegativeButton("相册", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss();
-                        Intent albumIntent=new Intent();
+                        Intent albumIntent = new Intent();
                         albumIntent.setType("image/*");
                         albumIntent.setAction(Intent.ACTION_PICK);
-                        startActivityForResult(albumIntent,PHOTO_REQUEST_ALBUM);
+                        startActivityForResult(albumIntent, PHOTO_REQUEST_ALBUM);
                     }
                 }).setPositiveButton("拍照", new DialogInterface.OnClickListener() {
             @Override
@@ -156,16 +167,16 @@ public class PhotoAuthorizedFragment extends Fragment implements View.OnClickLis
                 dialog.dismiss();
                 int permissionCheck = ContextCompat.checkSelfPermission(mContext,
                         Manifest.permission.CAMERA);
-                if(permissionCheck== PackageManager.PERMISSION_GRANTED){
-                    Intent cameraIntent=new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                if (permissionCheck == PackageManager.PERMISSION_GRANTED) {
+                    Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                     String state = Environment.getExternalStorageState();
-                    if (state.equals(Environment.MEDIA_MOUNTED)){
-                        File path=Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM);
-                        File file=new File(path,"51helper.jpg");
+                    if (state.equals(Environment.MEDIA_MOUNTED)) {
+                        File path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM);
+                        File file = new File(path, "51helper.jpg");
                         cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(file));
                     }
-                    startActivityForResult(cameraIntent,PHOTO_REQUEST_CAMERA);
-                }else if (permissionCheck== PackageManager.PERMISSION_DENIED){
+                    startActivityForResult(cameraIntent, PHOTO_REQUEST_CAMERA);
+                } else if (permissionCheck == PackageManager.PERMISSION_DENIED) {
                     // Should we show an explanation?
                     if (ActivityCompat.shouldShowRequestPermissionRationale((Activity) mContext,
                             Manifest.permission.CAMERA)) {
@@ -195,46 +206,131 @@ public class PhotoAuthorizedFragment extends Fragment implements View.OnClickLis
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        {
-            if (resultCode != Activity.RESULT_CANCELED) {
-                switch (requestCode) {
-                    case PHOTO_REQUEST_CAMERA:// 相册
-                        // 判断存储卡是否可以用，可用进行存储
-                        String state = Environment.getExternalStorageState();
-                        if (state.equals(Environment.MEDIA_MOUNTED)) {
-                            File path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM);
-                            File tempFile = new File(path, "51helper.jpg");
-                            startPhotoZoom(Uri.fromFile(tempFile));
-                        } else {
-                            Toast.makeText(mContext, "未找到存储卡，无法存储照片！", Toast.LENGTH_SHORT).show();
-                        }
-                        break;
-                    case PHOTO_REQUEST_ALBUM:// 图库
-                        startPhotoZoom(data.getData());
-                        break;
+        if (resultCode != Activity.RESULT_CANCELED) {
+            switch (requestCode) {
+                case PHOTO_REQUEST_CAMERA:// 相册
+                    // 判断存储卡是否可以用，可用进行存储
+                    String state = Environment.getExternalStorageState();
+                    if (state.equals(Environment.MEDIA_MOUNTED)) {
+                        File path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM);
+                        File tempFile = new File(path, "51helper.jpg");
+                        startPhotoZoom(Uri.fromFile(tempFile));
+                    } else {
+                        Toast.makeText(mContext, "未找到存储卡，无法存储照片！", Toast.LENGTH_SHORT).show();
+                    }
+                    break;
+                case PHOTO_REQUEST_ALBUM:// 图库
+                    startPhotoZoom(data.getData());
+                    break;
 
-                    case PHOTO_REQUEST_CUT: // 图片缩放完成后
-                        if (data != null) {
-                            getImageToView(data);
+                case PHOTO_REQUEST_CUT: // 图片缩放完成后
+                    if (data != null) {
+                        getImageToView(data);
+                    }
+                    break;
+                case 4://选择城市
+                    if (data != null) {
+                        Log.e("cityResult", data.getStringExtra("city"));
+                        tv_city.setText(data.getStringExtra("city"));
+                    }
+                    break;
+                case GET_SKILL_TYPE:
+                    if (resultCode == 10001) {
+                        checkedTypeLists.clear();
+                        checkedTypeLists = data.getStringArrayListExtra("checked");
+                        boolean submitFlag = data.getBooleanExtra("submit", false);
+                        if (submitFlag) {
+                            submit();
                         }
-                        break;
-                    case 4:
-                        if (data != null) {
-                            Log.e("cityResult", data.getStringExtra("city"));
-                            tv_city.setText(data.getStringExtra("city"));
-                        }
-                }
+
+                    }
             }
-            super.onActivityResult(requestCode, resultCode, data);
+        }
+    }
+
+
+    private void submit() {
+        String city = tv_city.getText().toString();
+        if (city.length() == 0) {
+            Toast.makeText(mContext, "请选择所在城市", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        String name = et_name.getText().toString();
+        if (!RegexUtil.IsChineseOrEnglish(name)) {
+            Toast.makeText(mContext, "输入的姓名不合法", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        String idNum = et_ID.getText().toString();
+        if (!RegexUtil.checkIdCard(idNum)) {
+            Toast.makeText(mContext, "输入的身份证号码不合法", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        String contactName = et_contact_name.getText().toString();
+        if (!RegexUtil.IsChineseOrEnglish(contactName)) {
+            Toast.makeText(mContext, "输入的姓名不合法", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        String contactPhone = et_contact_phone.getText().toString();
+        if (!RegexUtil.checkMobile(contactPhone)) {
+            Toast.makeText(mContext, "请正确输入手机号！", Toast.LENGTH_LONG).show();
+            return;
         }
 
+        if ("".equals(userInfo.getUserIDCard()) && "".equals(userInfo.getUserHandIDCard())
+                && "".equals(userInfo.getUserDrivingLicense())) {
+            Toast.makeText(mContext, "请至少上传一张图片！", Toast.LENGTH_LONG).show();
+            return;
+        }
+        String types;
+        if (checkedTypeLists.size() == 0) {
+            Toast.makeText(mContext, "请至少选择一种职能！", Toast.LENGTH_LONG).show();
+            return;
+        } else {
+            types = StringUtils.listToString(checkedTypeLists, ",");
+        }
+
+        dialog.setMessage("正在提交认证");
+        dialog.show();
+        RequestParams requestParams = new RequestParams();
+        requestParams.put("userid", userInfo.getUserId());
+        requestParams.put("city", city);
+        requestParams.put("realname", name);
+        requestParams.put("idcard", idNum);
+        requestParams.put("contactperson", contactName);
+        requestParams.put("contactphone", contactPhone);
+        requestParams.put("positive_pic", userInfo.getUserIDCard());
+        requestParams.put("opposite_pic", userInfo.getUserHandIDCard());
+        requestParams.put("driver_pic", userInfo.getUserDrivingLicense());
+        requestParams.put("tipe", types);
+        HelperAsyncHttpClient.get(NetConstant.NET_IDENTITY_AUTHENTICATION, requestParams, new JsonHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                super.onSuccess(statusCode, headers, response);
+                LogUtils.e(TAG, "--statusCode->" + statusCode + "==>" + response.toString());
+                if (response != null) {
+                    try {
+                        String state = response.getString("status");
+                        if (state.equals("success")) {
+                            Toast.makeText(mContext, "提交认证成功！", Toast.LENGTH_LONG).show();
+                            getActivity().finish();
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+                dialog.dismiss();
+            }
+        });
+
     }
+
 
     /**
      * 裁剪图片方法实现
      *
      * @param uri
      */
+    Uri uritempFile;
     public void startPhotoZoom(Uri uri) {
         Intent intent = new Intent("com.android.camera.action.CROP");
         intent.setDataAndType(uri, "image/*");
@@ -246,7 +342,16 @@ public class PhotoAuthorizedFragment extends Fragment implements View.OnClickLis
         // outputX outputY 是裁剪图片宽高
         intent.putExtra("outputX", 400);
         intent.putExtra("outputY", 300);
-        intent.putExtra("return-data", true);
+
+        //此方法返回的图片只能是小图片（sumsang测试为高宽160px的图片）
+        //故将图片保存在Uri中，调用时将Uri转换为Bitmap，此方法还可解决miui系统不能return data的问题
+        // intent.putExtra("return-data", true);
+
+        //uritempFile为Uri类变量，实例化uritempFile
+        uritempFile = Uri.parse("file://" + "/" + Environment.getExternalStorageDirectory().getPath() + "/" + "small.jpg");
+        intent.putExtra(MediaStore.EXTRA_OUTPUT, uritempFile);
+        intent.putExtra("outputFormat", Bitmap.CompressFormat.JPEG.toString());
+
         startActivityForResult(intent, PHOTO_REQUEST_CUT);
     }
 
@@ -258,8 +363,14 @@ public class PhotoAuthorizedFragment extends Fragment implements View.OnClickLis
     private void getImageToView(Intent data) {
         Bundle extras = data.getExtras();
         if (extras != null) {
-            Bitmap photo = extras.getParcelable("data");
-            storeImageToSDCARD(photo);
+            //将Uri图片转换为Bitmap
+            Bitmap bitmap = null;
+            try {
+                bitmap = BitmapFactory.decodeStream(mContext.getContentResolver().openInputStream(uritempFile));
+                storeImageToSDCARD(bitmap);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
         } else {
 
         }
@@ -336,7 +447,11 @@ public class PhotoAuthorizedFragment extends Fragment implements View.OnClickLis
             }
         });
 
-
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        Log.d("warning", "fragment");
+    }
 }
