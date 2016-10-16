@@ -23,6 +23,7 @@ import java.util.List;
 
 import cn.finalteam.galleryfinal.GalleryFinal;
 import cn.finalteam.galleryfinal.model.PhotoInfo;
+import cn.xcom.helper.HelperApplication;
 import cn.xcom.helper.R;
 import cn.xcom.helper.adapter.GridViewAdapter;
 import cn.xcom.helper.bean.UserInfo;
@@ -127,6 +128,10 @@ public class ReleaseConvenienceActivity extends BaseActivity implements View.OnC
                 request.putValue("picurl", s);
                 request.putValue("sound", "");
                 request.putValue("soundtime", "");
+                request.putValue("latitude", String.valueOf(HelperApplication.getInstance().mLocLat));
+                request.putValue("longitude", String.valueOf(HelperApplication.getInstance().mLocLon));
+                request.putValue("address", HelperApplication.getInstance().mLocAddress);
+                Log.e("发布便民圈",String.valueOf(HelperApplication.getInstance().mLocLat) + HelperApplication.getInstance().mLocAddress);
                 SingleVolleyRequest.getInstance(getApplication()).addToRequestQueue(request);
 
             }

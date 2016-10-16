@@ -84,4 +84,5 @@ dependencies {
     compile 'com.lzy.widget:view-core:0.2.1'
     compile files('libs/jpush-android-2.1.9.jar')
     compile files('libs/pinyin4j-2.5.0.jar')
+    compile 'com.bigkoo:alertview:1.0.3' //仿ios弹出框
 }

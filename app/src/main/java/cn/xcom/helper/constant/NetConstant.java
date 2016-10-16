@@ -257,10 +257,4 @@ public interface NetConstant extends HelperConstant {
      */
     public final static String CHANGE_MY_SKILLS =NET_HOST_PREFIX+"a=UpdataUserSkill&";
 
-    /**
-     * 获取我发布的任务列表
-     */
-    public final static String GET_TASK_LIST_BY_USERID = NET_HOST_PREFIX+"a=getTaskListByUserid&";
-
-
 }
