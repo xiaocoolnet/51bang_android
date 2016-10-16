@@ -20,8 +20,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import cn.xcom.helper.R;
-import cn.xcom.helper.fragment.authorized.BindAccountAuthorizedFragment;
-import cn.xcom.helper.fragment.authorized.PhotoAuthorizedFragment;
+import cn.xcom.helper.fragment.Authorized.BindAccountAuthorizedFragment;
+import cn.xcom.helper.fragment.Authorized.PhotoAuthorizedFragment;
 
 /**
  * Created by zhuchongkun on 16/6/3.
