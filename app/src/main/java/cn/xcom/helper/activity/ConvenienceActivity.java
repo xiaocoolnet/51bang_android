@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ListView;
@@ -22,6 +23,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
+import cn.xcom.helper.HelperApplication;
 import cn.xcom.helper.R;
 import cn.xcom.helper.adapter.ConvenienceAdapter;
 import cn.xcom.helper.bean.Convenience;
@@ -123,7 +125,8 @@ public class ConvenienceActivity extends BaseActivity implements View.OnClickLis
         });
         request.putValue("beginid","0");
         request.putValue("type","1");
-        request.putValue("city","芝罘区");
+        request.putValue("city", HelperApplication.getInstance().mDistrict);
+        Log.e("获取便民圈",HelperApplication.getInstance().mDistrict);
         SingleVolleyRequest.getInstance(context).addToRequestQueue(request);
     }
     public void swipeRefresh(){

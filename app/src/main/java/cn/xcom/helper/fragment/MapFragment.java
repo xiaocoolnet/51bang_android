@@ -60,7 +60,7 @@ public class MapFragment extends Fragment implements View.OnClickListener, OnGet
     private String TAG = "MapFragment";
     private Context mContext;
     private RelativeLayout rl_location, rl_authentication_list;
-    private TextView tv_I_help, tv_help_me, tv_city_interaction;
+    private TextView tv_I_help, tv_help_me, tv_city_interaction,locate_district;
     // 定位相关
     LocationClient mLocClient;
     public BDLocationListener myListener = new MyLocationListener();
@@ -230,6 +230,7 @@ public class MapFragment extends Fragment implements View.OnClickListener, OnGet
         tv_help_me.setOnClickListener(this);
         tv_city_interaction = (TextView) getView().findViewById(R.id.tv_fragment_map_city_interaction);
         tv_city_interaction.setOnClickListener(this);
+        locate_district = (TextView) getView().findViewById(R.id.locate_district);
     }
 
     @Override
@@ -259,6 +260,7 @@ public class MapFragment extends Fragment implements View.OnClickListener, OnGet
             currentPt = new LatLng(HelperApplication.getInstance().mCurrentLocLat, HelperApplication.getInstance().mCurrentLocLon);
             MapStatusUpdate msu = MapStatusUpdateFactory.newLatLngZoom(currentPt, 18.0f);
             mBaiduMap.animateMapStatus(msu);
+            locate_district.setText(HelperApplication.getInstance().mDistrict);
         }
         mMapView.onResume();
     }
@@ -416,6 +418,11 @@ public class MapFragment extends Fragment implements View.OnClickListener, OnGet
             mLatitude = location.getLatitude();
             mLongtitude = location.getLongitude();
             //currentLocPt = new LatLng(location.getLatitude(),location.getLongitude());
+            HelperApplication.getInstance().mLocLat = location.getLatitude();
+            HelperApplication.getInstance().mLocLon = location.getLongitude();
+            HelperApplication.getInstance().mLocAddress = location.getAddrStr();
+            HelperApplication.getInstance().mDistrict = location.getDistrict();
+            locate_district.setText(location.getDistrict());
             if(isFirstIn){
                 LatLng ll = new LatLng(mLatitude, mLongtitude);
                 MapStatusUpdate msu = MapStatusUpdateFactory.newLatLngZoom(ll, 18.0f);

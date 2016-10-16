@@ -77,6 +77,7 @@ public class CityPickerActivity extends BaseActivity implements View.OnClickList
     GeoCoder mSearch = null; // 搜索模块，也可去掉地图模块独立使用
     private String mLocaddress;
     private double mLocLat,mLocLon;
+    private int type; //1是定位，2是切换城市
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -123,13 +124,16 @@ public class CityPickerActivity extends BaseActivity implements View.OnClickList
             public void onCityClick(String name) {
                 Log.e("name", name);
                 back(name);
+                type = 2;
                 if(mLocaddress.equals(name)){
                     HelperApplication.getInstance().mCurrentLocLat = mLocLat;
                     HelperApplication.getInstance().mCurrentLocLon = mLocLon;
                     HelperApplication.getInstance().status = "1";
+                    mSearch.reverseGeoCode(new ReverseGeoCodeOption()
+                            .location(new LatLng(mLocLat, mLocLon)));
                     Log.e("定位的经纬度", mLocLat + "," + mLocLon);
-                    setResult(RESULT_OK);
-                    finish();
+                    /*setResult(RESULT_OK);
+                    finish();*/
                 }else{
                     City city = new City();
                     for(int i=0;i<mAllCities.size();i++){
@@ -140,8 +144,10 @@ public class CityPickerActivity extends BaseActivity implements View.OnClickList
                     HelperApplication.getInstance().mCurrentLocLat = Double.parseDouble(city.getLatitude());
                     HelperApplication.getInstance().mCurrentLocLon = Double.parseDouble(city.getLongitude());
                     HelperApplication.getInstance().status = city.getStatus();
-                    setResult(RESULT_OK);
-                    finish();
+                    mSearch.reverseGeoCode(new ReverseGeoCodeOption()
+                            .location(new LatLng(Double.parseDouble(city.getLatitude()), Double.parseDouble(city.getLongitude()))));
+                    /*setResult(RESULT_OK);
+                    finish();*/
                 }
             }
 
@@ -324,8 +330,15 @@ public class CityPickerActivity extends BaseActivity implements View.OnClickList
 
     @Override
     public void onGetReverseGeoCodeResult(ReverseGeoCodeResult result) {
-        mLocaddress = result.getAddressDetail().province+result.getAddressDetail().city+result.getAddressDetail().district;
-        mCityAdapter.updateLocateState(LocateState.SUCCESS, mLocaddress);
+        if (type == 1){
+            mLocaddress = result.getAddressDetail().province+result.getAddressDetail().city+result.getAddressDetail().district;
+            mCityAdapter.updateLocateState(LocateState.SUCCESS, mLocaddress);
+        }
+        if(type == 2){
+            HelperApplication.getInstance().mDistrict = result.getAddressDetail().district;
+            setResult(RESULT_OK);
+            finish();
+        }
     }
 
     public class MyLocationListener implements BDLocationListener {
@@ -391,7 +404,7 @@ public class CityPickerActivity extends BaseActivity implements View.OnClickList
                 }
             }
             Log.i("BaiduLocationApiDem", sb.toString());
-
+            type = 1;
             mSearch.reverseGeoCode(new ReverseGeoCodeOption()
                     .location(new LatLng(location.getLatitude(), location.getLongitude())));
             mLocLat = location.getLatitude();
