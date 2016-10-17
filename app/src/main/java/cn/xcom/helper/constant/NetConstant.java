@@ -257,4 +257,16 @@ public interface NetConstant extends HelperConstant {
      */
     public final static String CHANGE_MY_SKILLS =NET_HOST_PREFIX+"a=UpdataUserSkill&";
 
+    /*
+   删除自己的帖子
+    */
+    public final static String DELETE_OWN_POST =NET_HOST_PREFIX+"a=deletebbspost&";
+
+
+    /**
+     * 获取我发布的任务列表
+     */
+    public final static String GET_TASK_LIST_BY_USERID =NET_HOST_PREFIX+"a=getTaskListByUserid&";
+
+
 }
