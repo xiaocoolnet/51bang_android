@@ -7,6 +7,7 @@
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
         <item name="actionSheetStyle">@style/ActionSheetStyleiOS7</item>
+        <item name="android:listDivider">@drawable/divider_bg</item>
     </style>
     <style name="DialogBottomTheme" parent="DialogBaseTheme">
         <item name="android:windowAnimationStyle">@style/WindowAnimBottomToTop</item>

@@ -81,6 +81,7 @@
         android:layout_width="match_parent"
         android:layout_height="45dip"
         android:background="@color/colorTextWhite">
+
         <TextView
             android:layout_width="0dip"
             android:layout_height="match_parent"
@@ -90,7 +91,9 @@
             android:gravity="center_vertical"
             android:drawablePadding="15dip"
             android:text="@string/tv_payment_weixin"
-            android:textSize="15dp"/>
+            android:textSize="15dp"
+            android:id="@+id/textView2" />
+
         <CheckBox
             android:id="@+id/cb_payment_weixin"
             android:layout_width="20dp"

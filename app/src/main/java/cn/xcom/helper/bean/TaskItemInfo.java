@@ -65,14 +65,19 @@ public class TaskItemInfo implements Serializable {
     private String paystatus;
     private String time;
     private String state;
-    private String apply_uid;
-    private String apply_name;
-    private String apply_phone;
-    private String apply_time;
     private String status;
-    private String apply_photo;
     private String idcard;
     private Object evaluate;
+    private ApplyUser apply;
+
+    public ApplyUser getApply() {
+        return apply;
+    }
+
+    public void setApply(ApplyUser apply) {
+        this.apply = apply;
+    }
+
     /**
      * id : 8
      * taskid : 63
@@ -260,52 +265,12 @@ public class TaskItemInfo implements Serializable {
         this.state = state;
     }
 
-    public String getApply_uid() {
-        return apply_uid;
-    }
-
-    public void setApply_uid(String apply_uid) {
-        this.apply_uid = apply_uid;
-    }
-
-    public String getApply_name() {
-        return apply_name;
-    }
-
-    public void setApply_name(String apply_name) {
-        this.apply_name = apply_name;
-    }
-
-    public String getApply_phone() {
-        return apply_phone;
-    }
-
-    public void setApply_phone(String apply_phone) {
-        this.apply_phone = apply_phone;
-    }
-
-    public String getApply_time() {
-        return apply_time;
-    }
-
-    public void setApply_time(String apply_time) {
-        this.apply_time = apply_time;
-    }
-
     public String getStatus() {
         return status;
     }
 
     public void setStatus(String status) {
         this.status = status;
-    }
-
-    public String getApply_photo() {
-        return apply_photo;
-    }
-
-    public void setApply_photo(String apply_photo) {
-        this.apply_photo = apply_photo;
     }
 
     public String getIdcard() {
@@ -387,4 +352,62 @@ public class TaskItemInfo implements Serializable {
             this.time = time;
         }
     }
+
+    public class ApplyUser {
+        private String userId;
+        private String name;
+        private String status;
+        private String phone;
+        private String photo;
+        private String idCard;
+
+        public String getUserId() {
+            return userId;
+        }
+
+        public void setUserId(String userId) {
+            this.userId = userId;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public String getStatus() {
+            return status;
+        }
+
+        public void setStatus(String status) {
+            this.status = status;
+        }
+
+        public String getPhone() {
+            return phone;
+        }
+
+        public void setPhone(String phone) {
+            this.phone = phone;
+        }
+
+        public String getPhoto() {
+            return photo;
+        }
+
+        public void setPhoto(String photo) {
+            this.photo = photo;
+        }
+
+        public String getIdCard() {
+            return idCard;
+        }
+
+        public void setIdCard(String idCard) {
+            this.idCard = idCard;
+        }
+    }
+
 }

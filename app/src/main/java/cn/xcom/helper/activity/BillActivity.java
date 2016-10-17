@@ -45,10 +45,23 @@ public class BillActivity extends BaseActivity implements View.OnClickListener{
         rl_back.setOnClickListener(this);
         pagerTitles = (PagerSlidingTabStrip) findViewById(R.id.order_title);
         viewPager = (ViewPager) findViewById(R.id.vp_my_post);
-        Fragment fragment1 = new MyPostOrderFragment().newInstance(1);
-        Fragment fragment2 = new MyPostOrderFragment().newInstance(2);
-        Fragment fragment3 = new MyPostOrderFragment().newInstance(3);
-        Fragment fragment4 = new MyPostOrderFragment().newInstance(4);
+        MyPostOrderFragment fragment1 = new MyPostOrderFragment().newInstance(1);
+        MyPostOrderFragment fragment2 = new MyPostOrderFragment().newInstance(2);
+        MyPostOrderFragment fragment3 = new MyPostOrderFragment().newInstance(3);
+        MyPostOrderFragment fragment4 = new MyPostOrderFragment().newInstance(4);
+        fragment2.setOnChangeFragment(new MyPostOrderFragment.OnChangeFragment() {
+            @Override
+            public void onChangerFragment() {
+                viewPager.setCurrentItem(3);
+            }
+        });
+        fragment3.setOnChangeFragment(new MyPostOrderFragment.OnChangeFragment() {
+            @Override
+            public void onChangerFragment() {
+                viewPager.setCurrentItem(3);
+            }
+        });
+
         fragments = new ArrayList<>();
         fragments.add(fragment1);
         fragments.add(fragment2);

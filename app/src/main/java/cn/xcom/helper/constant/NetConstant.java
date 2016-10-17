@@ -268,5 +268,9 @@ public interface NetConstant extends HelperConstant {
      */
     public final static String GET_TASK_LIST_BY_USERID =NET_HOST_PREFIX+"a=getTaskListByUserid&";
 
+    /**
+     * 查看任务详情
+     */
+    public final static String GET_TASK_INFO_BY_TASK_ID =NET_HOST_PREFIX+"a=getTaskInfoByTaskid&";
 
 }
