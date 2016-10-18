@@ -192,6 +192,9 @@
         <activity android:name=".activity.BindBankAccountActivity" />
         <activity android:name=".activity.BindAlipayAccountActivity" />
         <activity android:name=".activity.MyPostOrderDetailActivity"/>
+        <activity android:name=".activity.MyOrderActivity"/>
+        <activity android:name=".activity.MyOrderDetailActivity"/>
+
         <!-- 极光Required SDK核心功能 -->
         <activity
             android:name="cn.jpush.android.ui.PushActivity"

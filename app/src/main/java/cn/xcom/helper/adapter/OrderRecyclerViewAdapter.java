@@ -22,6 +22,7 @@ import java.util.Date;
 import java.util.List;
 
 import cn.xcom.helper.R;
+import cn.xcom.helper.activity.BillActivity;
 import cn.xcom.helper.bean.TaskItemInfo;
 import cn.xcom.helper.constant.NetConstant;
 import cn.xcom.helper.net.HelperAsyncHttpClient;
@@ -36,16 +37,11 @@ public class OrderRecyclerViewAdapter extends RecyclerView.Adapter<OrderRecycler
     private Context mContext;
     private List<TaskItemInfo> taskItemInfos;
     private OnItemClickListener onItemClickListener;
-    private OnPaymentStateChangedListener onPaymentStateChangedListener;
 
     public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
         this.onItemClickListener = onItemClickListener;
     }
 
-    public void setOnPaymentStateChangedListener(OnPaymentStateChangedListener
-                                                         onPaymentStateChangedListener){
-        this.onPaymentStateChangedListener = onPaymentStateChangedListener;
-    }
 
     public OrderRecyclerViewAdapter(Context context, List<TaskItemInfo> taskItemInfos) {
         mContext = context;
@@ -158,10 +154,8 @@ public class OrderRecyclerViewAdapter extends RecyclerView.Adapter<OrderRecycler
                                     Toast.makeText(mContext, "确认付款成功", Toast.LENGTH_SHORT).show();
                                     taskItemInfos.remove(position);
                                     notifyDataSetChanged();
-                                    if(onPaymentStateChangedListener!=null){
-                                        onPaymentStateChangedListener.onChanged();
-                                    }
-
+                                    BillActivity billActivity = (BillActivity) mContext;
+                                    billActivity.changePager();
                                 }else{
                                     String data = response.getString("data");
                                     Toast.makeText(mContext,data, Toast.LENGTH_SHORT).show();
@@ -200,11 +194,6 @@ public class OrderRecyclerViewAdapter extends RecyclerView.Adapter<OrderRecycler
         void onClick(View view, int position);
     }
 
-    /**
-     * 用于改变订单状态后,外部viewpager页面的跳转
-     */
-    public interface OnPaymentStateChangedListener{
-        void onChanged();
-    }
+
 
 }
