@@ -273,4 +273,14 @@ public interface NetConstant extends HelperConstant {
      */
     public final static String GET_TASK_INFO_BY_TASK_ID =NET_HOST_PREFIX+"a=getTaskInfoByTaskid&";
 
+    /**
+     * 举报别人的帖子
+     */
+    public final static String REPORT_OHTHER_POST =NET_HOST_PREFIX+"a=Report&";
+
+    /**
+     * 获取认证帮列表
+     */
+    public final static String GET_AUTHENTICATION_LIST =NET_HOST_PREFIX+"a=getAuthenticationUserList&";
+
 }

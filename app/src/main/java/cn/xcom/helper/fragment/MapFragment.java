@@ -44,7 +44,7 @@ import java.util.List;
 
 import cn.xcom.helper.HelperApplication;
 import cn.xcom.helper.R;
-import cn.xcom.helper.activity.AuthenticationListActivity;
+import cn.xcom.helper.activity.AuthenticationActivity;
 import cn.xcom.helper.activity.CityPickerActivity;
 import cn.xcom.helper.activity.ConvenienceActivity;
 import cn.xcom.helper.activity.HelpMeActivity;
@@ -311,7 +311,7 @@ public class MapFragment extends Fragment implements View.OnClickListener, OnGet
                 startActivityForResult(new Intent(mContext, CityPickerActivity.class), CITY_RESULT);
                 break;
             case R.id.rl_fragment_map_authentication_list:
-                startActivity(new Intent(mContext, AuthenticationListActivity.class));
+                startActivity(new Intent(mContext, AuthenticationActivity.class));
                 break;
             case R.id.tv_fragment_map_I_help:
                 startActivity(new Intent(mContext, IHelpActivity.class));
@@ -420,9 +420,7 @@ public class MapFragment extends Fragment implements View.OnClickListener, OnGet
             //currentLocPt = new LatLng(location.getLatitude(),location.getLongitude());
             HelperApplication.getInstance().mLocLat = location.getLatitude();
             HelperApplication.getInstance().mLocLon = location.getLongitude();
-            HelperApplication.getInstance().mLocAddress = location.getAddrStr();
-            HelperApplication.getInstance().mDistrict = location.getDistrict();
-            locate_district.setText(location.getDistrict());
+            HelperApplication.getInstance().mLocAddress = location.getAddrStr(); 
             if(isFirstIn){
                 LatLng ll = new LatLng(mLatitude, mLongtitude);
                 MapStatusUpdate msu = MapStatusUpdateFactory.newLatLngZoom(ll, 18.0f);
@@ -430,6 +428,8 @@ public class MapFragment extends Fragment implements View.OnClickListener, OnGet
                 isFirstIn = false;
                 HelperApplication.getInstance().mCurrentLocLat = location.getLatitude();
                 HelperApplication.getInstance().mCurrentLocLon = location.getLongitude();
+                HelperApplication.getInstance().mDistrict = location.getDistrict();
+                locate_district.setText(location.getDistrict());
             }
 
 

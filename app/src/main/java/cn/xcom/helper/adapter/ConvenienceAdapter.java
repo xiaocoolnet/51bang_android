@@ -3,7 +3,6 @@ package cn.xcom.helper.adapter;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -118,42 +117,43 @@ public class ConvenienceAdapter extends BaseAdapter {
             viewHolder.iv_shanchu.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                     AlertView mAlertView = new AlertView("提示", "你确定删除自己的便民圈？", "取消", new String[]{"确定"}, null, context, AlertView.Style.Alert, new OnItemClickListener() {
-                         @Override
-                         public void onItemClick(Object o, int position) {
-                             ToastUtil.showShort(context, "删除");
-                             String url= NetConstant.DELETE_OWN_POST;
-                             StringPostRequest request=new StringPostRequest(url, new Response.Listener<String>() {
-                                 @Override
-                                 public void onResponse(String s) {
-                                     try {
-                                         JSONObject jsonObject=new JSONObject(s);
-                                         String status=jsonObject.getString("status");
-                                         if (status.equals("success")){
-                                             ToastUtil.showShort(context,"删除成功");
-                                             notifyDataSetChanged();
-                                         }
-                                     } catch (JSONException e) {
-                                         e.printStackTrace();
-                                     }
+                    AlertView mAlertView = new AlertView("提示", "你确定删除自己的便民圈？", "取消", new String[]{"确定"}, null, context, AlertView.Style.Alert, new OnItemClickListener() {
+                        @Override
+                        public void onItemClick(Object o, int position) {
+                            if (position == 0) {
+                                String url = NetConstant.DELETE_OWN_POST;
+                                StringPostRequest request = new StringPostRequest(url, new Response.Listener<String>() {
+                                    @Override
+                                    public void onResponse(String s) {
+                                        try {
+                                            JSONObject jsonObject = new JSONObject(s);
+                                            String status = jsonObject.getString("status");
+                                            if (status.equals("success")) {
+                                                ToastUtil.showShort(context, "删除成功");
+                                                notifyDataSetChanged();
+                                            }
+                                        } catch (JSONException e) {
+                                            e.printStackTrace();
+                                        }
 
-                                 }
-                             }, new Response.ErrorListener() {
-                                 @Override
-                                 public void onErrorResponse(VolleyError volleyError) {
-                                     ToastUtil.Toast(context,"网络错误，请检查");
-                                 }
-                             });
-                             request.putValue("userid",userInfo.getUserId());
-                             request.putValue("id",convenience.getMid());
-                             SingleVolleyRequest.getInstance(context).addToRequestQueue(request);
-                         }
-                     }).setCancelable(true).setOnDismissListener(new OnDismissListener() {
-                         @Override
-                         public void onDismiss(Object o) {
+                                    }
+                                }, new Response.ErrorListener() {
+                                    @Override
+                                    public void onErrorResponse(VolleyError volleyError) {
+                                        ToastUtil.Toast(context, "网络错误，请检查");
+                                    }
+                                });
+                                request.putValue("userid", userInfo.getUserId());
+                                request.putValue("id", convenience.getMid());
+                                SingleVolleyRequest.getInstance(context).addToRequestQueue(request);
+                            }
+                        }
+                    }).setCancelable(true).setOnDismissListener(new OnDismissListener() {
+                        @Override
+                        public void onDismiss(Object o) {
 
-                         }
-                     });
+                        }
+                    });
                     mAlertView.show();
                 }
             });
@@ -168,32 +168,34 @@ public class ConvenienceAdapter extends BaseAdapter {
                     AlertView mAlertView = new AlertView("提示", "你确定举报这条便民圈？", "取消", new String[]{"确定"}, null, context, AlertView.Style.Alert, new OnItemClickListener() {
                         @Override
                         public void onItemClick(Object o, int position) {
-                            ToastUtil.showShort(context, "删除");
-                            String url= NetConstant.DELETE_OWN_POST;
-                            StringPostRequest request=new StringPostRequest(url, new Response.Listener<String>() {
-                                @Override
-                                public void onResponse(String s) {
-                                    try {
-                                        JSONObject jsonObject=new JSONObject(s);
-                                        String status=jsonObject.getString("status");
-                                        if (status.equals("success")){
-                                            ToastUtil.showShort(context,"删除成功");
-                                            notifyDataSetChanged();
+                            if (position == 0) {
+                                String url = NetConstant.REPORT_OHTHER_POST;
+                                StringPostRequest request = new StringPostRequest(url, new Response.Listener<String>() {
+                                    @Override
+                                    public void onResponse(String s) {
+                                        try {
+                                            JSONObject jsonObject = new JSONObject(s);
+                                            String status = jsonObject.getString("status");
+                                            if (status.equals("success")) {
+                                                ToastUtil.showShort(context, "举报成功");
+                                                notifyDataSetChanged();
+                                            }
+                                        } catch (JSONException e) {
+                                            e.printStackTrace();
                                         }
-                                    } catch (JSONException e) {
-                                        e.printStackTrace();
-                                    }
 
-                                }
-                            }, new Response.ErrorListener() {
-                                @Override
-                                public void onErrorResponse(VolleyError volleyError) {
-                                    ToastUtil.Toast(context,"网络错误，请检查");
-                                }
-                            });
-                            request.putValue("userid",userInfo.getUserId());
-                            request.putValue("id",convenience.getMid());
-                            SingleVolleyRequest.getInstance(context).addToRequestQueue(request);
+                                    }
+                                }, new Response.ErrorListener() {
+                                    @Override
+                                    public void onErrorResponse(VolleyError volleyError) {
+                                        ToastUtil.Toast(context, "网络错误，请检查");
+                                    }
+                                });
+                                request.putValue("userid", userInfo.getUserId());
+                                request.putValue("refid", convenience.getMid());
+                                request.putValue("type", "1");
+                                SingleVolleyRequest.getInstance(context).addToRequestQueue(request);
+                            }
                         }
                     }).setCancelable(true).setOnDismissListener(new OnDismissListener() {
                         @Override
@@ -205,7 +207,6 @@ public class ConvenienceAdapter extends BaseAdapter {
                 }
             });
         }
-        Log.e("mid",convenience.getMid());
         return convertView;
     }
 
