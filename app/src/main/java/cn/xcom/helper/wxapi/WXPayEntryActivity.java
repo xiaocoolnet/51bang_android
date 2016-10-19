@@ -32,16 +32,17 @@ public class WXPayEntryActivity extends Activity implements IWXAPIEventHandler {
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
         setIntent(intent);
-        iwxapi.handleIntent(getIntent(),this);
+        iwxapi.handleIntent(getIntent(), this);
     }
 
     @Override
     public void onReq(BaseReq baseReq) {
-
+        finish();
     }
 
     @Override
     public void onResp(BaseResp baseResp) {
+        finish();
         switch (baseResp.errCode){
             case 0:
                 break;

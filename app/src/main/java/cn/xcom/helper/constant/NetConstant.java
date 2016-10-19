@@ -295,5 +295,13 @@ public interface NetConstant extends HelperConstant {
      */
     public final static String BUYER_GET_SHOP_ORDER_LIST =NET_HOST_PREFIX+"a=BuyerGetShoppingOrderList&";
 
+    /**
+     * 商户分享h5
+     */
+    public final static String SHARE_SHOP_H5 ="http://www.my51bang.com/index.php?g=portal&m=article&a=shop&id=";
 
+    /**
+     * 用户二维码h5
+     */
+    public final static String SHARE_QRCODE_H5 ="http://www.my51bang.com/index.php?g=portal&m=article&a=server&userid=";
 }

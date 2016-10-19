@@ -28,7 +28,6 @@ import cn.xcom.helper.R;
 import cn.xcom.helper.activity.AddressListActivity;
 import cn.xcom.helper.activity.BillActivity;
 import cn.xcom.helper.activity.CollectionActivity;
-import cn.xcom.helper.activity.CouponActivity;
 import cn.xcom.helper.activity.EditPersonalActivity;
 import cn.xcom.helper.activity.InsureActivity;
 import cn.xcom.helper.activity.MessageActivity;
@@ -36,6 +35,7 @@ import cn.xcom.helper.activity.MoreServiceActivity;
 import cn.xcom.helper.activity.MyOrderActivity;
 import cn.xcom.helper.activity.OrderActivity;
 import cn.xcom.helper.activity.OrderTakingActivity;
+import cn.xcom.helper.activity.ShareQRCodeActivity;
 import cn.xcom.helper.activity.ShopBuyActivity;
 import cn.xcom.helper.activity.ShoppingCartActivity;
 import cn.xcom.helper.activity.SignActivity;
@@ -239,6 +239,7 @@ public class MeFragment extends Fragment implements View.OnClickListener{
                 startActivity(new Intent(mContext, MoreServiceActivity.class));
                 break;
             case R.id. tv_fragment_me_share2:
+                startActivity(new Intent(mContext, ShareQRCodeActivity.class));
                 break;
         }
 

@@ -88,6 +88,7 @@ public class WXPayEntryActivity extends Activity implements IWXAPIEventHandler {
 	@Override
 	public void onResp(BaseResp resp) {
 		if (resp.getType() == ConstantsAPI.COMMAND_PAY_BY_WX) {
+			finish();
 			if ("0".equals(String.valueOf(resp.errCode))){
 				user.readData(contect);
 				Log.e("useridpay3", "===============>" + user.getUserId());

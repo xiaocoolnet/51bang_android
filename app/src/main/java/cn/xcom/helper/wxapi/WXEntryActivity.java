@@ -24,16 +24,16 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler {
         mContext=this;
         iwxapi= WXAPIFactory.createWXAPI(this,APP_ID,false);
         iwxapi.registerApp(APP_ID);
-        iwxapi.handleIntent(getIntent(),this);
+        iwxapi.handleIntent(getIntent(), this);
     }
 
     @Override
     public void onReq(BaseReq baseReq) {
-
+        finish();
     }
 
     @Override
     public void onResp(BaseResp baseResp) {
-
+        finish();
     }
 }

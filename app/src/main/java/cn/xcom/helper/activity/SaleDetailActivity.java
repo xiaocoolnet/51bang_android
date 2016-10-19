@@ -2,10 +2,13 @@ package cn.xcom.helper.activity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.view.Window;
 import android.widget.ImageView;
@@ -17,6 +20,11 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.tencent.mm.sdk.modelmsg.SendMessageToWX;
+import com.tencent.mm.sdk.modelmsg.WXMediaMessage;
+import com.tencent.mm.sdk.modelmsg.WXWebpageObject;
+import com.tencent.mm.sdk.openapi.IWXAPI;
+import com.tencent.mm.sdk.openapi.WXAPIFactory;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -25,6 +33,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import cn.xcom.helper.R;
+import cn.xcom.helper.WXpay.Constants;
 import cn.xcom.helper.adapter.ViewPageAdapter;
 import cn.xcom.helper.bean.Collection;
 import cn.xcom.helper.bean.Front;
@@ -36,6 +45,7 @@ import cn.xcom.helper.utils.SingleVolleyRequest;
 import cn.xcom.helper.utils.StringPostRequest;
 import cn.xcom.helper.utils.ToastUtil;
 import cn.xcom.helper.utils.ToastUtils;
+import cn.xcom.helper.view.SharePopupWindow;
 
 public class SaleDetailActivity extends BaseActivity implements View.OnClickListener {
     private ViewPager vp;
@@ -51,13 +61,19 @@ public class SaleDetailActivity extends BaseActivity implements View.OnClickList
     private UserInfo userInfo;
     private List<Collection>addList;
     private Collection collection;
-    private int flag=2;
+    private int flag=2,wxflag=1;
+    SharePopupWindow takePhotoPopWin;
+    private RelativeLayout rl_share;
+    IWXAPI msgApi;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_sale_detail);
+        context=this;
+        msgApi = WXAPIFactory.createWXAPI(context, Constants.APP_ID, false);
+        msgApi.registerApp(Constants.APP_ID);
          initView();
         //得到传过来的数据
         Intent intent=getIntent();
@@ -90,7 +106,6 @@ public class SaleDetailActivity extends BaseActivity implements View.OnClickList
 
     //初始化控件
     public void initView(){
-        context=this;
         userInfo=new UserInfo();
         userInfo.readData(context);
         addViewList=new ArrayList();
@@ -108,6 +123,8 @@ public class SaleDetailActivity extends BaseActivity implements View.OnClickList
         shopPublish.setOnClickListener(this);
         buy= (TextView) findViewById(R.id.buy);
         buy.setOnClickListener(this);
+        rl_share = (RelativeLayout) findViewById(R.id.rl_share);
+        rl_share.setOnClickListener(this);
     }
     //根据商品的id得到商家的id
     public void addGood(){
@@ -173,10 +190,76 @@ public class SaleDetailActivity extends BaseActivity implements View.OnClickList
             case R.id.buy:
                 Intent intent=new Intent(context,BuyActivity.class);
                 Bundle bundle=new Bundle();
-                bundle.putSerializable("price",front);
+                bundle.putSerializable("price", front);
                 intent.putExtras(bundle);
                 startActivity(intent);
+                break;
+            case R.id.rl_share:
+                showPopFormBottom(v);
+                break;
         }
+    }
+
+    public void showPopFormBottom(View view) {
+        takePhotoPopWin = new SharePopupWindow(this, onClickListener);
+        //SharePopupWindow takePhotoPopWin = new SharePopupWindow(this, onClickListener);
+        takePhotoPopWin.showAtLocation(findViewById(R.id.rl_bottom), Gravity.BOTTOM, 0, 0);
+    }
+
+    private View.OnClickListener onClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            switch (v.getId()) {
+                case R.id.haoyou:
+                    ToastUtils.showToast(SaleDetailActivity.this, "微信好友");
+                    setting();
+                    break;
+                case R.id.dongtai:
+                    ToastUtils.showToast(SaleDetailActivity.this, "微信朋友圈");
+                    history();
+                    break;
+            }
+        }
+    };
+
+    /**
+     * 微信分享网页
+     * */
+    private void shareWX() {
+        //创建一个WXWebPageObject对象，用于封装要发送的Url
+        WXWebpageObject webpage =new WXWebpageObject();
+        webpage.webpageUrl=NetConstant.SHARE_SHOP_H5+userInfo.getUserId();
+        WXMediaMessage msg =new WXMediaMessage(webpage);
+        msg.title="我注册了51bang，发布了商品，来加入吧";
+        msg.description="基于同城个人，商户服务 。商品购买。给个人，商户提供交流与服务平台";
+        Bitmap thumb = BitmapFactory.decodeResource(getResources(), R.drawable.logo_wx);
+        msg.setThumbImage(thumb);
+        SendMessageToWX.Req req = new SendMessageToWX.Req();
+        req.transaction = "weiyi";
+        req.message = msg;
+        req.scene = wxflag==0? SendMessageToWX.Req.WXSceneSession: SendMessageToWX.Req.WXSceneTimeline;
+        msgApi.sendReq(req);
+    }
+
+    /**
+     * 分享到微信好友
+     */
+    private void setting() {
+        //ToastUtils.ToastShort(this, "分享到微信好友");
+        wxflag = 0;
+        shareWX();
+        takePhotoPopWin.dismiss();
+
+    }
+
+    /**
+     * 分享到微信朋友圈
+     */
+    private void history() {
+        // ToastUtils.ToastShort(this, "分享到微信朋友圈");
+        wxflag = 1;
+        shareWX();
+        takePhotoPopWin.dismiss();
     }
     //点击收藏商品
     public void collection(){
