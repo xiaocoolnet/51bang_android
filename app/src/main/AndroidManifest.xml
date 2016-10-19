@@ -306,6 +306,7 @@
         <activity android:name=".activity.SelectMapPoiActivity" />
         <activity android:name=".activity.ChangeSkillsActivity"></activity>
         <activity android:name=".activity.AuthenticationActivity"></activity>
+
     </application>
 
 </manifest>
