@@ -1,7 +1,10 @@
 package cn.xcom.helper.adapter;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -11,6 +14,7 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.baidu.platform.comapi.map.A;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 
@@ -23,8 +27,11 @@ import java.util.List;
 
 import cn.xcom.helper.R;
 import cn.xcom.helper.activity.BillActivity;
+import cn.xcom.helper.activity.PostCommentActivity;
+import cn.xcom.helper.bean.PoiInformaiton;
 import cn.xcom.helper.bean.TaskItemInfo;
 import cn.xcom.helper.constant.NetConstant;
+import cn.xcom.helper.fragment.order.MyPostOrderFragment;
 import cn.xcom.helper.net.HelperAsyncHttpClient;
 import cn.xcom.helper.utils.TimeUtils;
 import cz.msebera.android.httpclient.Header;
@@ -37,15 +44,16 @@ public class OrderRecyclerViewAdapter extends RecyclerView.Adapter<OrderRecycler
     private Context mContext;
     private List<TaskItemInfo> taskItemInfos;
     private OnItemClickListener onItemClickListener;
-
+    private Fragment fragment;
     public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
         this.onItemClickListener = onItemClickListener;
     }
 
 
-    public OrderRecyclerViewAdapter(Context context, List<TaskItemInfo> taskItemInfos) {
+    public OrderRecyclerViewAdapter(Context context, List<TaskItemInfo> taskItemInfos,Fragment fragment) {
         mContext = context;
         this.taskItemInfos = taskItemInfos;
+        this.fragment = fragment;
     }
 
     @Override
@@ -57,6 +65,7 @@ public class OrderRecyclerViewAdapter extends RecyclerView.Adapter<OrderRecycler
     @Override
     public void onBindViewHolder(final ViewHolder holder, final int position) {
         final TaskItemInfo taskItemInfo = taskItemInfos.get(position);
+
         //0未付款 1已付款
         String payState = taskItemInfo.getPaystatus();
         if (payState.equals("0")) {
@@ -66,6 +75,8 @@ public class OrderRecyclerViewAdapter extends RecyclerView.Adapter<OrderRecycler
         }
 
         String state = taskItemInfo.getState();
+        //0＝》未开始,1＝》已开始，2=》已抢单，3已上门，4申请付款，
+        // 5已付款， 6服务者评价，7发布者评价， 10 已完成，－1=》已取消
         if (state.equals("1")) {
             holder.orderCompleteStateTv.setText("未完成");
             holder.orderStateTv.setText("未抢单");
@@ -83,6 +94,11 @@ public class OrderRecyclerViewAdapter extends RecyclerView.Adapter<OrderRecycler
         } else {
             holder.orderCompleteStateTv.setText("已完成");
             holder.orderStateTv.setText("已完成");
+            if(taskItemInfo.getEvaluate().size() ==0){
+                holder.toCommentBtn.setVisibility(View.VISIBLE);
+            }else{
+                holder.toCommentBtn.setVisibility(View.GONE);
+            }
         }
 
         Date date = new Date();
@@ -112,6 +128,17 @@ public class OrderRecyclerViewAdapter extends RecyclerView.Adapter<OrderRecycler
                         }).setNegativeButton("取消", null).show();
             }
         });
+
+        holder.toCommentBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(mContext, PostCommentActivity.class);
+                intent.putExtra("order_id",taskItemInfo.getId());
+                intent.putExtra("type","1");//任务是1,商城是2
+                fragment.startActivityForResult(intent,MyPostOrderFragment.POST_ORDER_REQUEST_CODE);
+            }
+        });
+
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -120,6 +147,7 @@ public class OrderRecyclerViewAdapter extends RecyclerView.Adapter<OrderRecycler
                 }
             }
         });
+
 
     }
 
@@ -173,7 +201,7 @@ public class OrderRecyclerViewAdapter extends RecyclerView.Adapter<OrderRecycler
     class ViewHolder extends RecyclerView.ViewHolder {
         private TextView orderCompleteStateTv, publishTimeTv, orderNumTv,
                 orderTitleTv, phoneTv, applyNameTv, orderStateTv, payStateDesTv;
-        private Button payBt, trusteeshipBt;
+        private Button payBt, trusteeshipBt,toCommentBtn;
 
         public ViewHolder(View itemView) {
             super(itemView);
@@ -187,6 +215,7 @@ public class OrderRecyclerViewAdapter extends RecyclerView.Adapter<OrderRecycler
             payStateDesTv = (TextView) itemView.findViewById(R.id.tv_pay_state_des);
             payBt = (Button) itemView.findViewById(R.id.bt_confirm_payment);
             trusteeshipBt = (Button) itemView.findViewById(R.id.bt_trusteeship_payment);
+            toCommentBtn = (Button) itemView.findViewById(R.id.bt_to_comment);
         }
     }
 

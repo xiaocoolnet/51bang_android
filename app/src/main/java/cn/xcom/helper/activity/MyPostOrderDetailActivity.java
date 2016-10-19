@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -22,6 +23,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import cn.xcom.helper.R;
+import cn.xcom.helper.adapter.CommentsListAdapter;
 import cn.xcom.helper.bean.TaskItemInfo;
 import cn.xcom.helper.bean.UserInfo;
 import cn.xcom.helper.constant.NetConstant;
@@ -34,11 +36,14 @@ import cz.msebera.android.httpclient.Header;
 
 public class MyPostOrderDetailActivity extends BaseActivity {
     private int titleType;
-    private TextView fistTitle, secondTitle, thirdTitle, fourthTitle, orderNumTv, descriptionTv, priceTv, saddressTv, addressTv, expiryTv, applyPhoneTv;
+    private TextView fistTitle, secondTitle, thirdTitle, fourthTitle, orderNumTv, descriptionTv,
+            priceTv, saddressTv, addressTv, expiryTv, applyPhoneTv;
     private String orderId;
     private Button cancelBtn;
     private UserInfo userInfo;
     private Context mContext;
+    private ListView commentsLv;
+    private TaskItemInfo taskItemInfo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,10 +51,14 @@ public class MyPostOrderDetailActivity extends BaseActivity {
         setContentView(R.layout.activity_my_post_order_detail);
         mContext = this;
         userInfo = new UserInfo(this);
-        titleType = getIntent().getIntExtra("type", 0);
-        orderId = getIntent().getStringExtra("taskid");
+//        titleType = getIntent().getIntExtra("type", 0);
+//        orderId = getIntent().getStringExtra("taskid");
+        Bundle bundle = getIntent().getBundleExtra("bundle");
+        titleType = bundle.getInt("type");
+        taskItemInfo = (TaskItemInfo) bundle.getSerializable("task_info");
         initView();
-        getData();
+        setView(taskItemInfo);
+//        getData();
     }
 
     private void initView() {
@@ -76,6 +85,8 @@ public class MyPostOrderDetailActivity extends BaseActivity {
                 }).setNegativeButton("取消", null).show();
             }
         });
+
+        commentsLv = (ListView) findViewById(R.id.lv_comments);
     }
 
     private void setView(TaskItemInfo taskItemInfo) {
@@ -108,6 +119,8 @@ public class MyPostOrderDetailActivity extends BaseActivity {
             applyPhoneTv.setText(taskItemInfo.getApply().getPhone());
         }
 
+        CommentsListAdapter adapter = new CommentsListAdapter(mContext,taskItemInfo.getEvaluate());
+        commentsLv.setAdapter(adapter);
 
     }
 

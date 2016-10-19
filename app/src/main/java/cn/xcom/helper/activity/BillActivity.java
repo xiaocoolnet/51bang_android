@@ -24,7 +24,6 @@ import cn.xcom.helper.fragment.order.MyPostOrderFragment;
  * 我的发单页
  */
 public class BillActivity extends BaseActivity implements View.OnClickListener{
-    private String TAG="";
     private Context mContext;
     private RelativeLayout rl_back;
     private PagerSlidingTabStrip pagerTitles;

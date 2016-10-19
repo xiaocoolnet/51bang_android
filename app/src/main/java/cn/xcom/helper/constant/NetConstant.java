@@ -296,4 +296,15 @@ public interface NetConstant extends HelperConstant {
     public final static String BUYER_GET_SHOP_ORDER_LIST =NET_HOST_PREFIX+"a=BuyerGetShoppingOrderList&";
 
 
+    /**
+     * 我的订单页面 取消订单
+     */
+    public final static String CANCEL_ORDER  =NET_HOST_PREFIX+"a=cancelorder&";
+
+
+    /**
+     * 发表订单评价
+     */
+    public final static String POST_COMMENT  =NET_HOST_PREFIX+"a=SetEvaluate&";
+
 }
