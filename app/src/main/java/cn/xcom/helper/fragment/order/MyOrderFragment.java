@@ -20,15 +20,13 @@ import com.loopj.android.http.RequestParams;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import cn.xcom.helper.R;
 import cn.xcom.helper.activity.MyOrderDetailActivity;
-import cn.xcom.helper.activity.MyPostOrderDetailActivity;
 import cn.xcom.helper.adapter.MyOrderAdapter;
-import cn.xcom.helper.adapter.OrderRecyclerViewAdapter;
 import cn.xcom.helper.bean.ShopGoodInfo;
-import cn.xcom.helper.bean.TaskItemInfo;
 import cn.xcom.helper.bean.UserInfo;
 import cn.xcom.helper.constant.NetConstant;
 import cn.xcom.helper.net.HelperAsyncHttpClient;
@@ -40,12 +38,17 @@ import cz.msebera.android.httpclient.Header;
  * 我的订单fragment
  */
 
-public class MyOrderFragment extends Fragment{
+public class MyOrderFragment extends Fragment {
+    private static final int DEATIL_REQUEST = 1000;
+    private static final int CANCEL_SUCCESS = 101;
+    private static final int PAY_SUCCESS =102;
+    private static final int COMMENT_SUCCESS = 103;
     private int orderListType;//1全部 2待付款 3待消费 4待评价
     private Context mContext;
     private XRecyclerView mRecyclerView;
     private UserInfo userInfo;
-
+    private List<ShopGoodInfo> shopGoodInfos;
+    private MyOrderAdapter myOrderAdapter;
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,7 +60,7 @@ public class MyOrderFragment extends Fragment{
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view  = inflater.inflate(R.layout.fragment_order,container,false);
+        View view = inflater.inflate(R.layout.fragment_order, container, false);
         initView(view);
         getOrder();
         return view;
@@ -83,11 +86,25 @@ public class MyOrderFragment extends Fragment{
                 mRecyclerView.loadMoreComplete();
             }
         });
+        shopGoodInfos = new ArrayList<>();
+        myOrderAdapter= new MyOrderAdapter(mContext, shopGoodInfos);
+        myOrderAdapter.setOnItemClickListener(new MyOrderAdapter.OnItemClickListener() {
+            @Override
+            public void onClick(int position) {
+                ShopGoodInfo shopGoodInfo = shopGoodInfos.get(position);
+                Intent intent = new Intent(mContext, MyOrderDetailActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("good", shopGoodInfo);
+                intent.putExtra("bundle", bundle);
+                startActivityForResult(intent, DEATIL_REQUEST);
+            }
+        });
 
+        mRecyclerView.setAdapter(myOrderAdapter);
 
     }
 
-    private void getOrder(){
+    private void getOrder() {
         RequestParams requestParams = new RequestParams();
         requestParams.put("userid", userInfo.getUserId());
         switch (orderListType) {
@@ -115,46 +132,43 @@ public class MyOrderFragment extends Fragment{
                                 String state = response.getString("status");
                                 if (state.equals("success")) {
                                     String data = response.getString("data");
-                                    final List<ShopGoodInfo> shopGoodInfos = new Gson().fromJson(data,
+                                    shopGoodInfos.clear();
+                                    List<ShopGoodInfo> list = new Gson().fromJson(data,
                                             new TypeToken<List<ShopGoodInfo>>() {
                                             }.getType());
-                                    MyOrderAdapter myOrderAdapter = new MyOrderAdapter(mContext,shopGoodInfos);
-                                    myOrderAdapter.setOnItemClickListener(new MyOrderAdapter.OnItemClickListener() {
-
-                                        @Override
-                                        public void onClick(int position) {
-                                            ShopGoodInfo shopGoodInfo = shopGoodInfos.get(position);
-                                            Intent intent = new Intent(mContext, MyOrderDetailActivity.class);
-                                            Bundle bundle = new Bundle();
-                                            bundle.putSerializable("good",shopGoodInfo);
-                                            intent.putExtra("bundle",bundle);
-                                            startActivity(intent);
-                                        }
-                                    });
-
-                                    mRecyclerView.setAdapter(myOrderAdapter);
+                                    shopGoodInfos.addAll(list);
+                                    myOrderAdapter.notifyDataSetChanged();
                                 }
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
                         }
                         mRecyclerView.refreshComplete();
-
                     }
                 });
+    }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == DEATIL_REQUEST){
+            switch (resultCode){
+                case CANCEL_SUCCESS:
+                    getOrder();
+                break;
+            }
+
+
+        }
 
     }
 
-
-
-
-    public static final MyOrderFragment newInstance(int orderListType){
+    public static final MyOrderFragment newInstance(int orderListType) {
         MyOrderFragment myOrderFragment = new MyOrderFragment();
         Bundle bundle = new Bundle();
-        bundle.putInt("type",orderListType);
+        bundle.putInt("type", orderListType);
         myOrderFragment.setArguments(bundle);
-        return  myOrderFragment;
+        return myOrderFragment;
     }
 
 

@@ -301,6 +301,17 @@ public interface NetConstant extends HelperConstant {
     public final static String SHARE_SHOP_H5 ="http://www.my51bang.com/index.php?g=portal&m=article&a=shop&id=";
 
     /**
+     * 我的订单页面 取消订单
+     */
+    public final static String CANCEL_ORDER  =NET_HOST_PREFIX+"a=cancelorder&";
+
+
+    /**
+     * 发表订单评价
+     */
+    public final static String POST_COMMENT  =NET_HOST_PREFIX+"a=SetEvaluate&";
+
+    /**
      * 用户二维码h5
      */
     public final static String SHARE_QRCODE_H5 ="http://www.my51bang.com/index.php?g=portal&m=article&a=server&userid=";

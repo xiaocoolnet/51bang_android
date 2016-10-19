@@ -22,6 +22,7 @@ import com.loopj.android.http.RequestParams;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import cn.xcom.helper.R;
@@ -41,13 +42,15 @@ import cz.msebera.android.httpclient.Header;
  */
 
 public class MyPostOrderFragment extends Fragment {
-    public static final int CANCEL_ORDER_REQUEST_CODE = 111;
+    public static final int POST_ORDER_REQUEST_CODE = 10002;
+    private static final int CANCEL_ORDER_RESULT_CODE = 111;
+    private static final int COMMENT_RESULT_CODE = 112;
     private Context mContext;
     private XRecyclerView mRecyclerView;
     private UserInfo userInfo;
     private int orderType;
-
-
+    private List<TaskItemInfo> taskItemInfos;
+    private OrderRecyclerViewAdapter adapter;
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -85,6 +88,22 @@ public class MyPostOrderFragment extends Fragment {
                 mRecyclerView.loadMoreComplete();
             }
         });
+        taskItemInfos = new ArrayList<>();
+        adapter = new OrderRecyclerViewAdapter(mContext, taskItemInfos,MyPostOrderFragment.this);
+        adapter.setOnItemClickListener(new OrderRecyclerViewAdapter.OnItemClickListener() {
+            @Override
+            public void onClick(View view, int position) {
+                Intent intent = new Intent(mContext, MyPostOrderDetailActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("task_info",taskItemInfos.get(position));
+                bundle.putInt("type", orderType);
+                intent.putExtra("bundle",bundle);
+//                intent.putExtra("taskid",taskItemInfos.get(position).getId());
+                startActivityForResult(intent,POST_ORDER_REQUEST_CODE);
+            }
+        });
+
+        mRecyclerView.setAdapter(adapter);
 
 
     }
@@ -116,22 +135,12 @@ public class MyPostOrderFragment extends Fragment {
                                 String state = response.getString("status");
                                 if (state.equals("success")) {
                                     String data = response.getString("data");
-                                    final List<TaskItemInfo> taskItemInfos = new Gson().fromJson(data,
+                                    taskItemInfos.clear();
+                                    List<TaskItemInfo> list = new Gson().fromJson(data,
                                             new TypeToken<List<TaskItemInfo>>() {
                                             }.getType());
-                                    OrderRecyclerViewAdapter adapter = new OrderRecyclerViewAdapter(mContext, taskItemInfos);
-                                    adapter.setOnItemClickListener(new OrderRecyclerViewAdapter.OnItemClickListener() {
-                                        @Override
-                                        public void onClick(View view, int position) {
-                                            Intent intent = new Intent(mContext, MyPostOrderDetailActivity.class);
-                                            intent.putExtra("type", orderType);
-                                            intent.putExtra("taskid",taskItemInfos.get(position).getId());
-                                            startActivityForResult(intent,CANCEL_ORDER_REQUEST_CODE);
-                                        }
-                                    });
-
-
-                                    mRecyclerView.setAdapter(adapter);
+                                    taskItemInfos.addAll(list);
+                                    adapter.notifyDataSetChanged();
                                 }
                             } catch (JSONException e) {
                                 e.printStackTrace();
@@ -148,10 +157,16 @@ public class MyPostOrderFragment extends Fragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode == CANCEL_ORDER_REQUEST_CODE){
-            if(resultCode == Activity.RESULT_OK){
-                getOrder();
+        if(requestCode == POST_ORDER_REQUEST_CODE){
+            switch (resultCode){
+                case CANCEL_ORDER_RESULT_CODE:
+                    getOrder();
+                    break;
+                case COMMENT_RESULT_CODE:
+                    getOrder();
+                    break;
             }
+
         }
     }
 

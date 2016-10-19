@@ -1,6 +1,8 @@
 package cn.xcom.helper.adapter;
 
 import android.content.Context;
+import android.content.DialogInterface;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,12 +12,22 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.loopj.android.http.JsonHttpResponseHandler;
+import com.loopj.android.http.RequestParams;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.List;
 
 import cn.xcom.helper.R;
+import cn.xcom.helper.activity.MyOrderDetailActivity;
 import cn.xcom.helper.bean.ShopGoodInfo;
+import cn.xcom.helper.bean.UserInfo;
 import cn.xcom.helper.constant.NetConstant;
+import cn.xcom.helper.net.HelperAsyncHttpClient;
 import cn.xcom.helper.utils.MyImageLoader;
+import cz.msebera.android.httpclient.Header;
 
 /**
  * Created by Administrator on 2016/10/18 0018.
@@ -26,6 +38,7 @@ public class MyOrderAdapter extends RecyclerView.Adapter<MyOrderAdapter.ViewHold
     private Context mContext;
     private List<ShopGoodInfo> goodInfos;
     private OnItemClickListener onItemClickListener;
+    private UserInfo userInfo;
 
     public void setOnItemClickListener (OnItemClickListener onItemClickListener){
         this.onItemClickListener = onItemClickListener;
@@ -33,6 +46,7 @@ public class MyOrderAdapter extends RecyclerView.Adapter<MyOrderAdapter.ViewHold
     public MyOrderAdapter(Context context, List<ShopGoodInfo> goodInfos) {
         mContext = context;
         this.goodInfos = goodInfos;
+        userInfo = new UserInfo(mContext);
     }
 
     @Override
@@ -49,7 +63,7 @@ public class MyOrderAdapter extends RecyclerView.Adapter<MyOrderAdapter.ViewHold
 
     @Override
     public void onBindViewHolder(ViewHold holder, final int position) {
-        ShopGoodInfo goodInfo = goodInfos.get(position);
+        final ShopGoodInfo goodInfo = goodInfos.get(position);
         if (goodInfo.getPicture().size() > 0) {
             MyImageLoader.display(NetConstant.NET_DISPLAY_IMG +
                     goodInfo.getPicture().get(0).getFile(), holder.goodImage);
@@ -88,7 +102,13 @@ public class MyOrderAdapter extends RecyclerView.Adapter<MyOrderAdapter.ViewHold
         holder.cancelPaymentBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(mContext, "cancelPaymentBtn", Toast.LENGTH_SHORT).show();;
+                new AlertDialog.Builder(mContext).setTitle("取消订单").setPositiveButton("确认",
+                        new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        cancelOrde(goodInfo.getOrder_num(),position);
+                    }
+                }).setNegativeButton("取消", null).show();
             }
         });
 
@@ -127,8 +147,42 @@ public class MyOrderAdapter extends RecyclerView.Adapter<MyOrderAdapter.ViewHold
         }
     }
 
+    private void cancelOrde(String orderNum, final int position) {
+        RequestParams requestParams = new RequestParams();
+        requestParams.put("ordernum",orderNum);
+        requestParams.put("userid", userInfo.getUserId());
+        HelperAsyncHttpClient.get(NetConstant.CANCEL_ORDER, requestParams,
+                new JsonHttpResponseHandler() {
+                    @Override
+                    public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                        super.onSuccess(statusCode, headers, response);
+                        if (response != null) {
+                            try {
+                                String state = response.getString("status");
+                                if (state.equals("success")) {
+                                    Toast.makeText(mContext, "取消订单成功", Toast.LENGTH_SHORT).show();
+                                    goodInfos.remove(position);
+                                    notifyDataSetChanged();
+                                } else {
+                                    String data = response.getString("data");
+                                    Toast.makeText(mContext, data, Toast.LENGTH_SHORT).show();
+                                }
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                        }
+
+                    }
+                });
+
+    }
+
+
+
+
     public interface OnItemClickListener{
         void onClick(int position);
     }
+
 
 }

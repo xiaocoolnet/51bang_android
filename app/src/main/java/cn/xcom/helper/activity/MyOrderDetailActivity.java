@@ -1,13 +1,22 @@
 package cn.xcom.helper.activity;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v7.widget.RecyclerView;
+import android.support.v7.app.AlertDialog;
 import android.view.View;
 import android.widget.TextView;
-
+import android.widget.Toast;
+import com.loopj.android.http.JsonHttpResponseHandler;
+import com.loopj.android.http.RequestParams;
+import org.json.JSONException;
+import org.json.JSONObject;
 import cn.xcom.helper.R;
 import cn.xcom.helper.bean.ShopGoodInfo;
+import cn.xcom.helper.bean.UserInfo;
+import cn.xcom.helper.constant.NetConstant;
+import cn.xcom.helper.net.HelperAsyncHttpClient;
+import cz.msebera.android.httpclient.Header;
 
 /**
  * Created by Administrator on 2016/10/18 0018.
@@ -15,21 +24,27 @@ import cn.xcom.helper.bean.ShopGoodInfo;
  */
 
 public class MyOrderDetailActivity extends BaseActivity implements View.OnClickListener {
+    private static final int CANCEL_SUCCESS = 101;
+    private static final int PAY_SUCCESS =102;
+    private static final int COMMENT_SUCCESS = 103;
+
     private ShopGoodInfo goodInfo;
-    private TextView userNameTv,mobileTv,goodNameTv,priceTv,goodsCountTv
-            ,moneyTv,deliveryTv,remarksTv,addressTv,toPaytv,cancelPaymentTv,trackingTv;
+    private TextView userNameTv, mobileTv, goodNameTv, priceTv, goodsCountTv, moneyTv, deliveryTv,
+            remarksTv, addressTv, toPaytv, cancelPaymentTv, trackingTv, commentTv;
     private View backView;
+    private UserInfo userInfo;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my_order_detail);
         goodInfo = (ShopGoodInfo) getIntent().getBundleExtra("bundle").getSerializable("good");
+        userInfo = new UserInfo(this);
         initView();
         setView();
     }
 
-    private void initView(){
+    private void initView() {
         backView = findViewById(R.id.rl_help_me_back);
         backView.setOnClickListener(this);
         userNameTv = (TextView) findViewById(R.id.tv_username);
@@ -46,31 +61,86 @@ public class MyOrderDetailActivity extends BaseActivity implements View.OnClickL
         cancelPaymentTv = (TextView) findViewById(R.id.tv_cancel_payment);
         cancelPaymentTv.setOnClickListener(this);
         trackingTv = (TextView) findViewById(R.id.tv_tracking);
+        commentTv = (TextView) findViewById(R.id.tv_comment);
     }
 
-    private void setView(){
+    private void setView() {
         userNameTv.setText(goodInfo.getUsername());
         mobileTv.setText(goodInfo.getMobile());
         goodNameTv.setText(goodInfo.getGoodsname());
-        priceTv.setText("￥"+goodInfo.getPrice());
+        priceTv.setText("￥" + goodInfo.getPrice());
         goodsCountTv.setText(goodInfo.getNumber());
         moneyTv.setText(goodInfo.getMoney());
         deliveryTv.setText(goodInfo.getDelivery());
         remarksTv.setText(goodInfo.getRemarks());
         addressTv.setText(goodInfo.getAddress());
-        trackingTv.setText("卷码:"+goodInfo.getTracking());
+        trackingTv.setText("卷码:" + goodInfo.getTracking());
+        String state = goodInfo.getState();
+        if ("1".equals(state)) {
+            toPaytv.setVisibility(View.VISIBLE);
+            cancelPaymentTv.setVisibility(View.VISIBLE);
+            commentTv.setVisibility(View.GONE);
+            trackingTv.setVisibility(View.GONE);//卷码未支付时隐藏
+        } else if ("2".equals(state)) {
+            toPaytv.setVisibility(View.GONE);
+            cancelPaymentTv.setVisibility(View.VISIBLE);
+            commentTv.setVisibility(View.GONE);
+        } else if ("4".equals(state)){
+            toPaytv.setVisibility(View.VISIBLE);
+            cancelPaymentTv.setVisibility(View.VISIBLE);
+            commentTv.setVisibility(View.GONE);
+        }
+
     }
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
+        switch (v.getId()) {
             case R.id.rl_help_me_back:
                 finish();
                 break;
             case R.id.tv_to_pay:
                 break;
             case R.id.tv_cancel_payment:
+                new AlertDialog.Builder(this).setTitle("取消订单").setPositiveButton("确认", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        cancelOrde();
+                    }
+                }).setNegativeButton("取消", null).show();
                 break;
         }
     }
+
+    private void cancelOrde() {
+        RequestParams requestParams = new RequestParams();
+        requestParams.put("ordernum",goodInfo.getOrder_num());
+        requestParams.put("userid", userInfo.getUserId());
+        HelperAsyncHttpClient.get(NetConstant.CANCEL_ORDER, requestParams,
+                new JsonHttpResponseHandler() {
+                    @Override
+                    public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                        super.onSuccess(statusCode, headers, response);
+                        if (response != null) {
+                            try {
+                                String state = response.getString("status");
+                                if (state.equals("success")) {
+                                    Toast.makeText(MyOrderDetailActivity.this, "取消订单成功", Toast.LENGTH_SHORT).show();
+                                    setResult(CANCEL_SUCCESS);
+                                    cancelPaymentTv.setVisibility(View.GONE);
+                                    toPaytv.setVisibility(View.GONE);
+                                } else {
+                                    String data = response.getString("data");
+                                    Toast.makeText(MyOrderDetailActivity.this, data, Toast.LENGTH_SHORT).show();
+                                }
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                        }
+
+                    }
+                });
+
+    }
+
 }

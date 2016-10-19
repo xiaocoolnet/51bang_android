@@ -67,8 +67,9 @@ public class TaskItemInfo implements Serializable {
     private String state;
     private String status;
     private String idcard;
-    private Object evaluate;
+    private List<Evaluate> evaluate;
     private ApplyUser apply;
+
 
     public ApplyUser getApply() {
         return apply;
@@ -77,14 +78,6 @@ public class TaskItemInfo implements Serializable {
     public void setApply(ApplyUser apply) {
         this.apply = apply;
     }
-
-    /**
-     * id : 8
-     * taskid : 63
-     * file : avatar201609202308506071405094201.png
-     * type : 1
-     * time : null
-     */
 
     private List<FilesBean> files;
     private List<?> commentlist;
@@ -281,14 +274,6 @@ public class TaskItemInfo implements Serializable {
         this.idcard = idcard;
     }
 
-    public Object getEvaluate() {
-        return evaluate;
-    }
-
-    public void setEvaluate(Object evaluate) {
-        this.evaluate = evaluate;
-    }
-
     public List<FilesBean> getFiles() {
         return files;
     }
@@ -305,6 +290,21 @@ public class TaskItemInfo implements Serializable {
         this.commentlist = commentlist;
     }
 
+    public List<Evaluate> getEvaluate() {
+        return evaluate;
+    }
+
+    public void setEvaluate(List<Evaluate> evaluate) {
+        this.evaluate = evaluate;
+    }
+
+    /**
+     * id : 8
+     * taskid : 63
+     * file : avatar201609202308506071405094201.png
+     * type : 1
+     * time : null
+     */
     public static class FilesBean implements Serializable {
         private String id;
         private String taskid;
@@ -353,7 +353,7 @@ public class TaskItemInfo implements Serializable {
         }
     }
 
-    public class ApplyUser {
+    public class ApplyUser implements Serializable{
         private String userId;
         private String name;
         private String status;
