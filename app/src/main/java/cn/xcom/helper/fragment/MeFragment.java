@@ -33,6 +33,7 @@ import cn.xcom.helper.activity.EditPersonalActivity;
 import cn.xcom.helper.activity.InsureActivity;
 import cn.xcom.helper.activity.MessageActivity;
 import cn.xcom.helper.activity.MoreServiceActivity;
+import cn.xcom.helper.activity.MyOrderActivity;
 import cn.xcom.helper.activity.OrderActivity;
 import cn.xcom.helper.activity.OrderTakingActivity;
 import cn.xcom.helper.activity.ShopBuyActivity;
@@ -204,7 +205,8 @@ public class MeFragment extends Fragment implements View.OnClickListener{
                 startActivity(new Intent(mContext, BillActivity.class));
                 break;
             case R.id.tv_fragment_me_coupon:
-                startActivity(new Intent(mContext, CouponActivity.class));
+//                startActivity(new Intent(mContext, CouponActivity.class));
+                startActivity(new Intent(mContext, MyOrderActivity.class));
                 break;
             case R.id.tv_fragment_me_order:
                 startActivity(new Intent(mContext, OrderActivity.class));

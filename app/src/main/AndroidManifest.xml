@@ -191,7 +191,10 @@
         <activity android:name=".activity.ChooseAccountActivity" />
         <activity android:name=".activity.BindBankAccountActivity" />
         <activity android:name=".activity.BindAlipayAccountActivity" />
-        <activity android:name=".activity.MyPostOrderDetailActivity" />
+        <activity android:name=".activity.MyPostOrderDetailActivity"/>
+        <activity android:name=".activity.MyOrderActivity"/>
+        <activity android:name=".activity.MyOrderDetailActivity"/>
+
         <!-- 极光Required SDK核心功能 -->
         <activity
             android:name="cn.jpush.android.ui.PushActivity"
@@ -301,9 +304,8 @@
         <!-- 极光推送 -->
         <activity android:name=".activity.AddressDetailActivity" />
         <activity android:name=".activity.SelectMapPoiActivity" />
-        <activity android:name=".activity.ChangeSkillsActivity" />
-        <activity android:name=".activity.AuthenticationActivity" />
-        <activity android:name=".activity.DetailAuthenticatinActivity"></activity>
+        <activity android:name=".activity.ChangeSkillsActivity"></activity>
+        <activity android:name=".activity.AuthenticationActivity"></activity>
     </application>
 
 </manifest>

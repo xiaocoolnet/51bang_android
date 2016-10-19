@@ -1,6 +1,5 @@
 package cn.xcom.helper.fragment.order;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -10,7 +9,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -25,8 +23,11 @@ import org.json.JSONObject;
 import java.util.List;
 
 import cn.xcom.helper.R;
+import cn.xcom.helper.activity.MyOrderDetailActivity;
 import cn.xcom.helper.activity.MyPostOrderDetailActivity;
+import cn.xcom.helper.adapter.MyOrderAdapter;
 import cn.xcom.helper.adapter.OrderRecyclerViewAdapter;
+import cn.xcom.helper.bean.ShopGoodInfo;
 import cn.xcom.helper.bean.TaskItemInfo;
 import cn.xcom.helper.bean.UserInfo;
 import cn.xcom.helper.constant.NetConstant;
@@ -34,24 +35,21 @@ import cn.xcom.helper.net.HelperAsyncHttpClient;
 import cn.xcom.helper.view.DividerItemDecoration;
 import cz.msebera.android.httpclient.Header;
 
-
 /**
- * Created by Administrator on 2016/10/14 0014.
- * 我的发单fragment
+ * Created by Administrator on 2016/10/18 0018.
+ * 我的订单fragment
  */
 
-public class MyPostOrderFragment extends Fragment {
-    public static final int CANCEL_ORDER_REQUEST_CODE = 111;
+public class MyOrderFragment extends Fragment{
+    private int orderListType;//1全部 2待付款 3待消费 4待评价
     private Context mContext;
     private XRecyclerView mRecyclerView;
     private UserInfo userInfo;
-    private int orderType;
-
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        orderType = getArguments().getInt("order_type");
+        orderListType = getArguments().getInt("type");
         mContext = getContext();
         userInfo = new UserInfo(mContext);
     }
@@ -59,7 +57,7 @@ public class MyPostOrderFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_order, container, false);
+        View view  = inflater.inflate(R.layout.fragment_order,container,false);
         initView(view);
         getOrder();
         return view;
@@ -89,24 +87,25 @@ public class MyPostOrderFragment extends Fragment {
 
     }
 
-    private void getOrder() {
+    private void getOrder(){
         RequestParams requestParams = new RequestParams();
         requestParams.put("userid", userInfo.getUserId());
-        switch (orderType) {
+        switch (orderListType) {
             case 1:
-                requestParams.put("state", "1");
+                requestParams.put("state", "");
                 break;
             case 2:
-                requestParams.put("state", "2");
+                requestParams.put("state", "1");
                 break;
             case 3:
-                requestParams.put("state", "3,4");
+                requestParams.put("state", "2,3");
                 break;
             case 4:
-                requestParams.put("state", "5,6,7,10");
+                requestParams.put("state", "4");
                 break;
         }
-        HelperAsyncHttpClient.get(NetConstant.GET_TASK_LIST_BY_USERID, requestParams,
+
+        HelperAsyncHttpClient.get(NetConstant.BUYER_GET_SHOP_ORDER_LIST, requestParams,
                 new JsonHttpResponseHandler() {
                     @Override
                     public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
@@ -116,22 +115,24 @@ public class MyPostOrderFragment extends Fragment {
                                 String state = response.getString("status");
                                 if (state.equals("success")) {
                                     String data = response.getString("data");
-                                    final List<TaskItemInfo> taskItemInfos = new Gson().fromJson(data,
-                                            new TypeToken<List<TaskItemInfo>>() {
+                                    final List<ShopGoodInfo> shopGoodInfos = new Gson().fromJson(data,
+                                            new TypeToken<List<ShopGoodInfo>>() {
                                             }.getType());
-                                    OrderRecyclerViewAdapter adapter = new OrderRecyclerViewAdapter(mContext, taskItemInfos);
-                                    adapter.setOnItemClickListener(new OrderRecyclerViewAdapter.OnItemClickListener() {
+                                    MyOrderAdapter myOrderAdapter = new MyOrderAdapter(mContext,shopGoodInfos);
+                                    myOrderAdapter.setOnItemClickListener(new MyOrderAdapter.OnItemClickListener() {
+
                                         @Override
-                                        public void onClick(View view, int position) {
-                                            Intent intent = new Intent(mContext, MyPostOrderDetailActivity.class);
-                                            intent.putExtra("type", orderType);
-                                            intent.putExtra("taskid",taskItemInfos.get(position).getId());
-                                            startActivityForResult(intent,CANCEL_ORDER_REQUEST_CODE);
+                                        public void onClick(int position) {
+                                            ShopGoodInfo shopGoodInfo = shopGoodInfos.get(position);
+                                            Intent intent = new Intent(mContext, MyOrderDetailActivity.class);
+                                            Bundle bundle = new Bundle();
+                                            bundle.putSerializable("good",shopGoodInfo);
+                                            intent.putExtra("bundle",bundle);
+                                            startActivity(intent);
                                         }
                                     });
 
-
-                                    mRecyclerView.setAdapter(adapter);
+                                    mRecyclerView.setAdapter(myOrderAdapter);
                                 }
                             } catch (JSONException e) {
                                 e.printStackTrace();
@@ -145,24 +146,16 @@ public class MyPostOrderFragment extends Fragment {
 
     }
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode == CANCEL_ORDER_REQUEST_CODE){
-            if(resultCode == Activity.RESULT_OK){
-                getOrder();
-            }
-        }
-    }
 
-    public static final MyPostOrderFragment newInstance(int orderType) {
-        MyPostOrderFragment myPostOrderFragment = new MyPostOrderFragment();
+
+
+    public static final MyOrderFragment newInstance(int orderListType){
+        MyOrderFragment myOrderFragment = new MyOrderFragment();
         Bundle bundle = new Bundle();
-        bundle.putInt("order_type", orderType);
-        myPostOrderFragment.setArguments(bundle);
-        return myPostOrderFragment;
+        bundle.putInt("type",orderListType);
+        myOrderFragment.setArguments(bundle);
+        return  myOrderFragment;
     }
-
 
 
 }

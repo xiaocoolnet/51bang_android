@@ -283,4 +283,17 @@ public interface NetConstant extends HelperConstant {
      */
     public final static String GET_AUTHENTICATION_LIST =NET_HOST_PREFIX+"a=getAuthenticationUserList&";
 
+
+    /**
+     * 发布任务者取消订单
+     */
+    public final static String OWNER_CANCEL_TASK =NET_HOST_PREFIX+"a=OwnerCancelTask&";
+
+
+    /**
+     * 买家获取我的商城商品列表
+     */
+    public final static String BUYER_GET_SHOP_ORDER_LIST =NET_HOST_PREFIX+"a=BuyerGetShoppingOrderList&";
+
+
 }

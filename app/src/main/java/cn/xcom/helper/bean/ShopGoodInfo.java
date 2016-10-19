@@ -1,11 +1,12 @@
 package cn.xcom.helper.bean;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
  * Created by Administrator on 2016/9/24 0024.
  */
-public class ShopGoodInfo {
+public class ShopGoodInfo implements Serializable {
 
 
     /**
@@ -38,11 +39,11 @@ public class ShopGoodInfo {
     private String userid;
     private String goodsname;
     private String type;
-    private String price;
+    private String price;//单价
     private String oprice;
     private String unit;
     private String description;
-    private Object picture;
+    private List<PicturelistBean> picture;
     private String sound;
     private String showid;
     private String address;
@@ -55,6 +56,15 @@ public class ShopGoodInfo {
     private String sellnumber;
     private String name;
     private String phone;
+    private String state;
+    private String money;//小计
+    private String number;//商品数量
+    private String username;//收货人
+    private String order_num;
+    private String mobile;//联系电话
+    private String remarks;//买家留言
+    private String tracking;//卷码
+
     /**
      * id : 162
      * goodsid : 65
@@ -129,11 +139,11 @@ public class ShopGoodInfo {
         this.description = description;
     }
 
-    public Object getPicture() {
+    public List<PicturelistBean> getPicture() {
         return picture;
     }
 
-    public void setPicture(Object picture) {
+    public void setPicture(List<PicturelistBean> picture) {
         this.picture = picture;
     }
 
@@ -233,6 +243,70 @@ public class ShopGoodInfo {
         this.phone = phone;
     }
 
+    public String getState() {
+        return state;
+    }
+
+    public void setState(String state) {
+        this.state = state;
+    }
+
+    public String getMoney() {
+        return money;
+    }
+
+    public void setMoney(String money) {
+        this.money = money;
+    }
+
+    public String getNumber() {
+        return number;
+    }
+
+    public void setNumber(String number) {
+        this.number = number;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getOrder_num() {
+        return order_num;
+    }
+
+    public void setOrder_num(String order_num) {
+        this.order_num = order_num;
+    }
+
+    public String getMobile() {
+        return mobile;
+    }
+
+    public void setMobile(String mobile) {
+        this.mobile = mobile;
+    }
+
+    public String getRemarks() {
+        return remarks;
+    }
+
+    public void setRemarks(String remarks) {
+        this.remarks = remarks;
+    }
+
+    public String getTracking() {
+        return tracking;
+    }
+
+    public void setTracking(String tracking) {
+        this.tracking = tracking;
+    }
+
     public List<PicturelistBean> getPicturelist() {
         return picturelist;
     }
@@ -249,7 +323,7 @@ public class ShopGoodInfo {
         this.commentlist = commentlist;
     }
 
-    public static class PicturelistBean {
+    public static class PicturelistBean implements Serializable {
         private String id;
         private String goodsid;
         private String file;
