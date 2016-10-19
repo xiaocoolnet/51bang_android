@@ -39,16 +39,17 @@ import cz.msebera.android.httpclient.Header;
  */
 
 public class MyOrderFragment extends Fragment {
-    private static final int DEATIL_REQUEST = 1000;
+    public static final int MY_ORDER_REQUEST = 1000;
     private static final int CANCEL_SUCCESS = 101;
-    private static final int PAY_SUCCESS =102;
-    private static final int COMMENT_SUCCESS = 103;
+    private static final int PAY_SUCCESS = 102;
+    private static final int COMMENT_SUCCESS = 112;
     private int orderListType;//1全部 2待付款 3待消费 4待评价
     private Context mContext;
     private XRecyclerView mRecyclerView;
     private UserInfo userInfo;
     private List<ShopGoodInfo> shopGoodInfos;
     private MyOrderAdapter myOrderAdapter;
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -87,7 +88,7 @@ public class MyOrderFragment extends Fragment {
             }
         });
         shopGoodInfos = new ArrayList<>();
-        myOrderAdapter= new MyOrderAdapter(mContext, shopGoodInfos);
+        myOrderAdapter = new MyOrderAdapter(mContext, shopGoodInfos, MyOrderFragment.this);
         myOrderAdapter.setOnItemClickListener(new MyOrderAdapter.OnItemClickListener() {
             @Override
             public void onClick(int position) {
@@ -96,7 +97,7 @@ public class MyOrderFragment extends Fragment {
                 Bundle bundle = new Bundle();
                 bundle.putSerializable("good", shopGoodInfo);
                 intent.putExtra("bundle", bundle);
-                startActivityForResult(intent, DEATIL_REQUEST);
+                startActivityForResult(intent, MY_ORDER_REQUEST);
             }
         });
 
@@ -151,11 +152,15 @@ public class MyOrderFragment extends Fragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode == DEATIL_REQUEST){
-            switch (resultCode){
+        if (requestCode == MY_ORDER_REQUEST) {
+            switch (resultCode) {
                 case CANCEL_SUCCESS:
                     getOrder();
-                break;
+                    break;
+                case COMMENT_SUCCESS:
+                    getOrder();
+                    break;
+
             }
 
 
