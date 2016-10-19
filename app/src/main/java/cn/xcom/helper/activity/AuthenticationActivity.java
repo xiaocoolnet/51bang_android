@@ -1,9 +1,11 @@
 package cn.xcom.helper.activity;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
@@ -65,7 +67,7 @@ public class AuthenticationActivity extends BaseActivity {
     @BindView(R.id.srl_authentication)
     SwipeRefreshLayout srlAuthentication;
     private Context context;
-    private String type,sort,onlineType;
+    private String type, sort, onlineType;
     private CommonAdapter<AuthenticationList> adapter;
     private List<AuthenticationList> authenticationLists;
 
@@ -79,7 +81,18 @@ public class AuthenticationActivity extends BaseActivity {
         authenticationLists = new ArrayList<>();
         type = "0";
         sort = "1";
+        onlineType = "1";
         setRefresh();
+        lvAuthentication.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent intent = new Intent(AuthenticationActivity.this,DetailAuthenticatinActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("authentication",authenticationLists.get(position));
+                intent.putExtras(bundle);
+                startActivity(intent);
+            }
+        });
     }
 
     /**
@@ -107,14 +120,14 @@ public class AuthenticationActivity extends BaseActivity {
      * 加载数据
      */
     private void getData() {
-        String url= NetConstant.GET_AUTHENTICATION_LIST;
-        StringPostRequest request=new StringPostRequest(url, new Response.Listener<String>() {
+        String url = NetConstant.GET_AUTHENTICATION_LIST;
+        StringPostRequest request = new StringPostRequest(url, new Response.Listener<String>() {
             @Override
             public void onResponse(String s) {
                 try {
-                    JSONObject jsonObject=new JSONObject(s);
-                    String status=jsonObject.getString("status");
-                    if (status.equals("success")){
+                    JSONObject jsonObject = new JSONObject(s);
+                    String status = jsonObject.getString("status");
+                    if (status.equals("success")) {
                         srlAuthentication.setRefreshing(false);
                         setAdapter(jsonObject);
                     }
@@ -130,17 +143,19 @@ public class AuthenticationActivity extends BaseActivity {
                 srlAuthentication.setRefreshing(false);
             }
         });
-        request.putValue("cityname","芝罘区");
-        request.putValue("latitude","");
-        request.putValue("longitude","");
-        request.putValue("sort",sort);
+        request.putValue("cityname", "芝罘区");
+        request.putValue("latitude", "");
+        request.putValue("longitude", "");
+        request.putValue("sort", sort);
         request.putValue("type", type);
+        Log.e("认证帮", NetConstant.GET_AUTHENTICATION_LIST + sort + type);
         SingleVolleyRequest.getInstance(context).addToRequestQueue(request);
     }
 
 
     /**
      * 字符串转模型集合
+     *
      * @param response
      * @return
      */
@@ -155,28 +170,83 @@ public class AuthenticationActivity extends BaseActivity {
         }.getType());
     }
 
+    private List<AuthenticationList> getBeanByMe(JSONObject response){
+        List<AuthenticationList> lists = new ArrayList<>();
+        try {
+            JSONArray array = response.getJSONArray("data");
+            for(int i = 0;i<array.length();i++){
+                JSONObject object = array.optJSONObject(i);
+                if(object.optString("isworking").equals("1")){
+                    AuthenticationList authenticationList = new AuthenticationList();
+                    authenticationList.setId(object.optString("id"));
+                    authenticationList.setName(object.optString("name"));
+                    authenticationList.setPhoto(object.optString("photo"));
+                    authenticationList.setPhone(object.optString("phone"));
+                    authenticationList.setAddress(object.optString("address"));
+                    authenticationList.setStatus(object.optString("status"));
+                    authenticationList.setUsertype(object.optString("usertype"));
+                    authenticationList.setIsworking(object.optString("isworking"));
+                    authenticationList.setServiceCount(object.optString("serviceCount"));
+                    authenticationList.setLongitude(object.optString("longitude"));
+                    authenticationList.setLatitude(object.optString("latitude"));
+                    authenticationList.setDistance(Long.parseLong(object.optString("distance")));
+                    JSONArray skillArray = object.optJSONArray("skilllist");
+                    List<AuthenticationList.SkilllistBean> skilllistBeans = new ArrayList<>();
+                    for(int j=0;j<skillArray.length();j++){
+                        AuthenticationList.SkilllistBean skilllistBean = new AuthenticationList.SkilllistBean();
+                        skilllistBean.setType(skillArray.optJSONObject(j).optString("type"));
+                        skilllistBean.setTypename(skillArray.optJSONObject(j).optString("typename"));
+                        skilllistBean.setParent_typeid(skillArray.optJSONObject(j).optString("parent_typeid"));
+                        skilllistBeans.add(skilllistBean);
+                    }
+                    authenticationList.setSkilllist(skilllistBeans);
+                    lists.add(authenticationList);
+                }
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return lists;
+    }
+
     /**
      * 设置适配器
+     *
      * @param jsonObject
      */
     private void setAdapter(JSONObject jsonObject) {
         authenticationLists.clear();
-        authenticationLists.addAll(getBeanFromJson(jsonObject));
+        if(onlineType.equals("2")){
+            authenticationLists.addAll(getBeanByMe(jsonObject));
+        }else{
+            authenticationLists.addAll(getBeanFromJson(jsonObject));
+        }
+        /*if (onlineType.equals("2")) {
+            for (int i = 0; i < authenticationLists.size(); i++) {
+                AuthenticationList authenticationList = new AuthenticationList();
+                if (authenticationLists.get(i).getIsworking().equals("1")){
+                    authenticationList = authenticationLists.get(i);
+                    onlineList.add(authenticationList);
+                }
+            }
+            authenticationLists.clear();
+            authenticationLists = onlineList;
+        }*/
+
         if(adapter!=null){
             adapter.notifyDataSetChanged();
         }else{
-            adapter = new CommonAdapter<AuthenticationList>(context,authenticationLists,R.layout.item_authentication_info) {
+            adapter = new CommonAdapter<AuthenticationList>(context, authenticationLists, R.layout.item_authentication_info) {
                 @Override
                 public void convert(ViewHolder holder, AuthenticationList authenticationList) {
-                    holder.setImageByUrl(R.id.iv_avatar,authenticationList.getPhoto())
-                            .setText(R.id.tv_name,authenticationList.getName())
-                            .setText(R.id.tv_address,authenticationList.getAddress())
-                            .setText(R.id.tv_count,"服务"+authenticationList.getServiceCount()+"次");
+                    holder.setImageByUrl(R.id.iv_avatar, authenticationList.getPhoto())
+                            .setText(R.id.tv_name, authenticationList.getName())
+                            .setText(R.id.tv_address, authenticationList.getAddress())
+                            .setText(R.id.tv_count, "服务" + authenticationList.getServiceCount() + "次");
                 }
             };
             lvAuthentication.setAdapter(adapter);
         }
-
     }
 
     @OnClick({R.id.rl_back, R.id.rl_type1, R.id.rl_type2, R.id.rl_type3})
@@ -204,7 +274,7 @@ public class AuthenticationActivity extends BaseActivity {
         //自定义布局
         View layout = LayoutInflater.from(context).inflate(R.layout.select_type_mode1, null);
         //初始化popwindow
-        final PopupWindow popupWindow = new PopupWindow(layout, FrameLayout.LayoutParams.MATCH_PARENT,FrameLayout.LayoutParams.WRAP_CONTENT);
+        final PopupWindow popupWindow = new PopupWindow(layout, FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT);
         popupWindow.setFocusable(true);
         popupWindow.setOutsideTouchable(true);
         popupWindow.setBackgroundDrawable(new BitmapDrawable());
@@ -219,7 +289,7 @@ public class AuthenticationActivity extends BaseActivity {
             @Override
             public void onClick(View v) {
                 tvType2.setText(tv1.getText());
-                sort="1";
+                sort = "1";
                 popupWindow.dismiss();
                 getData();
             }
@@ -228,7 +298,7 @@ public class AuthenticationActivity extends BaseActivity {
             @Override
             public void onClick(View v) {
                 tvType2.setText(tv2.getText());
-                sort="2";
+                sort = "2";
                 popupWindow.dismiss();
                 getData();
             }
@@ -237,7 +307,7 @@ public class AuthenticationActivity extends BaseActivity {
             @Override
             public void onClick(View v) {
                 tvType2.setText(tv3.getText());
-                sort="3";
+                sort = "3";
                 popupWindow.dismiss();
                 getData();
             }
@@ -257,13 +327,13 @@ public class AuthenticationActivity extends BaseActivity {
     }
 
     /**
-     * 服务类型弹出框
+     * 是否在线弹出框
      */
     private void showPopupWindow2() {
         //自定义布局
         View layout = LayoutInflater.from(context).inflate(R.layout.select_type_mode2, null);
         //初始化popwindow
-        final PopupWindow popupWindow = new PopupWindow(layout, FrameLayout.LayoutParams.MATCH_PARENT,FrameLayout.LayoutParams.WRAP_CONTENT);
+        final PopupWindow popupWindow = new PopupWindow(layout, FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT);
         popupWindow.setFocusable(true);
         popupWindow.setOutsideTouchable(true);
         popupWindow.setBackgroundDrawable(new BitmapDrawable());
@@ -277,6 +347,8 @@ public class AuthenticationActivity extends BaseActivity {
             @Override
             public void onClick(View v) {
                 tvType3.setText(tv1.getText());
+                onlineType = "1";
+                getData();
                 popupWindow.dismiss();
             }
         });
@@ -284,6 +356,8 @@ public class AuthenticationActivity extends BaseActivity {
             @Override
             public void onClick(View v) {
                 tvType3.setText(tv2.getText());
+                onlineType = "2";
+                getData();
                 popupWindow.dismiss();
             }
         });
@@ -302,12 +376,12 @@ public class AuthenticationActivity extends BaseActivity {
     }
 
     /**
-     *技能分类弹出框
-     * */
+     * 技能分类弹出框
+     */
     private void showPopupMenu() {
         final ArrayList<SkillTagInfo> skillTagInfos = new ArrayList<>();
-        RequestParams params=new RequestParams();
-        params.put("id",0);
+        RequestParams params = new RequestParams();
+        params.put("id", 0);
         HelperAsyncHttpClient.get(NetConstant.NET_GET_TASKLIST, params, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
@@ -332,7 +406,7 @@ public class AuthenticationActivity extends BaseActivity {
                             //自定义布局
                             View layout = LayoutInflater.from(context).inflate(R.layout.select_type_list, null);
                             //初始化popwindow
-                            final PopupWindow popupWindow = new PopupWindow(layout, FrameLayout.LayoutParams.MATCH_PARENT,FrameLayout.LayoutParams.WRAP_CONTENT);
+                            final PopupWindow popupWindow = new PopupWindow(layout, FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT);
                             popupWindow.setFocusable(true);
                             popupWindow.setOutsideTouchable(true);
                             popupWindow.setBackgroundDrawable(new BitmapDrawable());
@@ -341,10 +415,10 @@ public class AuthenticationActivity extends BaseActivity {
                             rlType1.getLocationOnScreen(location);
                             popupWindow.showAsDropDown(rlType1);
                             ListView listView = (ListView) layout.findViewById(R.id.type_list);
-                            listView.setAdapter(new CommonAdapter<SkillTagInfo>(context,skillTagInfos,R.layout.item_skill) {
+                            listView.setAdapter(new CommonAdapter<SkillTagInfo>(context, skillTagInfos, R.layout.item_skill) {
                                 @Override
                                 public void convert(ViewHolder holder, SkillTagInfo skillTagInfo) {
-                                    holder.setText(R.id.tv_type_name,skillTagInfo.getSkill_name());
+                                    holder.setText(R.id.tv_type_name, skillTagInfo.getSkill_name());
                                 }
                             });
                             listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -375,6 +449,7 @@ public class AuthenticationActivity extends BaseActivity {
                 }
 
             }
+
             @Override
             public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
                 super.onFailure(statusCode, headers, responseString, throwable);

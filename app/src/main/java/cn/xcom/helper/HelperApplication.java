@@ -32,7 +32,7 @@ public class HelperApplication  extends Application{
     //切换城市信息
     public double mCurrentLocLat = 0;
     public double mCurrentLocLon = 0;
-    public String status,mDistrict;
+    public String status="",mDistrict="";
 
     //实时定位坐标和地址
     public double mLocLat,mLocLon;

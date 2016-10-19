@@ -1,11 +1,12 @@
 package cn.xcom.helper.bean;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
  * Created by Administrator on 2016/10/17 0017.
  */
-public class AuthenticationList {
+public class AuthenticationList implements Serializable{
 
     /**
      * id : 645
@@ -147,7 +148,7 @@ public class AuthenticationList {
         this.skilllist = skilllist;
     }
 
-    public static class SkilllistBean {
+    public static class SkilllistBean implements Serializable {
         private String type;
         private String typename;
         private String parent_typeid;

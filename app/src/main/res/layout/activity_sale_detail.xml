@@ -6,11 +6,17 @@
     android:orientation="vertical"
     tools:context="cn.xcom.helper.activity.SaleDetailActivity">
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
+        android:layout_height="wrap_content">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="46dip"
+            android:background="@color/colorTheme"
+            android:gravity="center"
+            android:text="确认订单"
+            android:textColor="@color/colorTextWhite"
+            android:textSize="17dp" />
         <RelativeLayout
             android:id="@+id/back"
             android:layout_width="46dp"
@@ -24,15 +30,8 @@
                 android:src="@mipmap/ic_back_white_left" />
         </RelativeLayout>
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="46dip"
-            android:background="@color/colorTheme"
-            android:gravity="center"
-            android:text="确认订单"
-            android:textColor="@color/colorTextWhite"
-            android:textSize="17dp" />
-    </LinearLayout>
+
+    </RelativeLayout>
 
     <ScrollView
         android:id="@+id/sv"
@@ -62,7 +61,7 @@
                 android:layout_marginTop="5dp"
                 android:text="自助烤肉都来吃啊、、、、、、"
                 android:textColor="@color/colorTextSale"
-                android:textSize="18sp" />
+                android:textSize="16sp" />
 
             <View
                 android:layout_width="match_parent"
@@ -84,13 +83,15 @@
                     android:layout_alignParentLeft="true"
                     android:text="￥38.90"
                     android:textColor="@color/msg_red"
-                    android:textSize="20sp" />
+                    android:layout_centerVertical="true"
+                    android:textSize="16sp" />
 
                 <ImageView
                     android:id="@+id/collect"
                     android:layout_width="20dp"
                     android:layout_height="20dp"
                     android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
                     android:src="@mipmap/shoucang" />
 
             </RelativeLayout>
@@ -113,7 +114,7 @@
                     android:layout_height="wrap_content"
                     android:text="烟台市"
                     android:textColor="@color/colorTextSale"
-                    android:textSize="18sp"
+                    android:textSize="16sp"
                     android:drawableLeft="@mipmap/ic_locate"
                     android:drawablePadding="5dp"
                     />
@@ -125,8 +126,9 @@
                     android:text="芝罘区上尧鲁东大学南校区"
                     android:layout_alignLeft="@id/tv_city_name"
                     android:layout_below="@id/tv_city_name"
-                    android:textSize="16sp"
-                    android:layout_marginLeft="15dp"
+                    android:layout_marginTop="5dp"
+                    android:textSize="15sp"
+                    android:layout_marginLeft="17dp"
                     />
                 <LinearLayout
                     android:layout_width="wrap_content"
@@ -167,10 +169,11 @@
                     android:layout_height="wrap_content"
                     android:text="商家发布"
                     android:textColor="@color/colorTextSale"
-                    android:textSize="18sp" />
+                    android:layout_centerVertical="true"
+                    android:textSize="16sp" />
                 <ImageView
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
+                    android:layout_width="15dp"
+                    android:layout_height="15dp"
                     android:src="@mipmap/ic_arrow_right"
                     android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
@@ -196,7 +199,7 @@
             android:layout_height="wrap_content"
             android:text="价格:"
             android:textColor="@color/colorTextSale"
-            android:textSize="20sp"
+            android:textSize="16sp"
             android:layout_alignParentLeft="true"
             android:layout_centerVertical="true"
             android:layout_marginLeft="10dp"
@@ -207,7 +210,7 @@
             android:layout_height="wrap_content"
             android:text="￥38.90"
             android:textColor="@color/colorHelpMe"
-            android:textSize="20sp"
+            android:textSize="16sp"
             android:layout_toRightOf="@id/tvprice_"
             android:layout_centerVertical="true"
             />
@@ -220,7 +223,7 @@
             android:background="@color/colorHelpMe"
             android:text="购买"
             android:textColor="#ffffff"
-            android:textSize="22sp"
+            android:textSize="18sp"
             android:gravity="center"
             />
     </RelativeLayout>

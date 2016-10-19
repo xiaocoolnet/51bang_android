@@ -16,6 +16,8 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
 import com.baidu.location.BDLocation;
 import com.baidu.location.BDLocationListener;
 import com.baidu.location.LocationClient;
@@ -40,6 +42,11 @@ import com.baidu.mapapi.search.geocode.OnGetGeoCoderResultListener;
 import com.baidu.mapapi.search.geocode.ReverseGeoCodeOption;
 import com.baidu.mapapi.search.geocode.ReverseGeoCodeResult;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
 import java.util.List;
 
 import cn.xcom.helper.HelperApplication;
@@ -49,6 +56,11 @@ import cn.xcom.helper.activity.CityPickerActivity;
 import cn.xcom.helper.activity.ConvenienceActivity;
 import cn.xcom.helper.activity.HelpMeActivity;
 import cn.xcom.helper.activity.IHelpActivity;
+import cn.xcom.helper.bean.AuthenticationList;
+import cn.xcom.helper.constant.NetConstant;
+import cn.xcom.helper.utils.SingleVolleyRequest;
+import cn.xcom.helper.utils.StringPostRequest;
+import cn.xcom.helper.utils.ToastUtil;
 import cn.xcom.helper.view.NiceDialog;
 
 /**
@@ -61,6 +73,8 @@ public class MapFragment extends Fragment implements View.OnClickListener, OnGet
     private Context mContext;
     private RelativeLayout rl_location, rl_authentication_list;
     private TextView tv_I_help, tv_help_me, tv_city_interaction,locate_district;
+    private List<AuthenticationList> lists;
+    private List<Marker> markers;
     // 定位相关
     LocationClient mLocClient;
     public BDLocationListener myListener = new MyLocationListener();
@@ -92,6 +106,8 @@ public class MapFragment extends Fragment implements View.OnClickListener, OnGet
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         mContext = getActivity();
+        lists = new ArrayList<>();
+        markers = new ArrayList<>();
         mLocClient = new LocationClient(mContext);     //声明LocationClient类
         mLocClient.registerLocationListener(myListener);    //注册监听函数
         // 地图初始化
@@ -158,7 +174,6 @@ public class MapFragment extends Fragment implements View.OnClickListener, OnGet
                 if (marker != null) {
                     marker.remove();
                 }
-                mBaiduMap.clear();
             }
         });
     }
@@ -262,7 +277,110 @@ public class MapFragment extends Fragment implements View.OnClickListener, OnGet
             mBaiduMap.animateMapStatus(msu);
             locate_district.setText(HelperApplication.getInstance().mDistrict);
         }
+        if(HelperApplication.getInstance().mDistrict.length()!=0){
+            getAuthentication();
+        }
         mMapView.onResume();
+    }
+
+    /**
+     * 获取认证帮服务者
+     */
+    private void getAuthentication() {
+        String url = NetConstant.GET_AUTHENTICATION_LIST;
+        StringPostRequest request = new StringPostRequest(url, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String s) {
+                try {
+                    JSONObject jsonObject = new JSONObject(s);
+                    String status = jsonObject.getString("status");
+                    if (status.equals("success")) {
+                        getAuthenticationData(jsonObject);
+                        createPersonTag();
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError volleyError) {
+                ToastUtil.Toast(mContext, "网络错误，请检查");
+            }
+        });
+        request.putValue("cityname", HelperApplication.getInstance().mDistrict);
+        request.putValue("latitude", "");
+        request.putValue("longitude", "");
+        SingleVolleyRequest.getInstance(mContext).addToRequestQueue(request);
+    }
+
+    /**
+     * 在地图中显示小红人图标
+     */
+    private void createPersonTag() {
+        if(markers.size()>0){
+            for(int i=0;i<markers.size();i++){
+                markers.get(i).remove();
+            }
+        }
+        markers.clear();
+        for(int i=0;i<lists.size();i++){
+            LatLng latLng = new LatLng(Double.parseDouble(lists.get(i).getLatitude()),Double.parseDouble(lists.get(i).getLongitude()));
+            //构建Marker图标
+            BitmapDescriptor bitmap = BitmapDescriptorFactory
+                    .fromResource(R.drawable.service_person);
+            OverlayOptions options = new MarkerOptions()
+                    .position(latLng)  //设置marker的位置
+                    .icon(bitmap)  //设置marker图标
+                    .zIndex(9)  //设置marker所在层级
+                    .draggable(true);  //设置手势拖拽
+            //将marker添加到地图上
+            Marker m = (Marker) (mBaiduMap.addOverlay(options));
+            markers.add(m);
+        }
+    }
+
+    /**
+     * 解析认证帮信息
+     * @param jsonObject
+     */
+    private void getAuthenticationData(JSONObject jsonObject) {
+        lists.clear();
+        try {
+            JSONArray array = jsonObject.getJSONArray("data");
+            for(int i = 0;i<array.length();i++){
+                JSONObject object = array.optJSONObject(i);
+                if(object.optString("isworking").equals("1")){
+                    AuthenticationList authenticationList = new AuthenticationList();
+                    authenticationList.setId(object.optString("id"));
+                    authenticationList.setName(object.optString("name"));
+                    authenticationList.setPhoto(object.optString("photo"));
+                    authenticationList.setPhone(object.optString("phone"));
+                    authenticationList.setAddress(object.optString("address"));
+                    authenticationList.setStatus(object.optString("status"));
+                    authenticationList.setUsertype(object.optString("usertype"));
+                    authenticationList.setIsworking(object.optString("isworking"));
+                    authenticationList.setServiceCount(object.optString("serviceCount"));
+                    authenticationList.setLongitude(object.optString("longitude"));
+                    authenticationList.setLatitude(object.optString("latitude"));
+                    authenticationList.setDistance(Long.parseLong(object.optString("distance")));
+                    JSONArray skillArray = object.optJSONArray("skilllist");
+                    List<AuthenticationList.SkilllistBean> skilllistBeans = new ArrayList<>();
+                    for(int j=0;j<skillArray.length();j++){
+                        AuthenticationList.SkilllistBean skilllistBean = new AuthenticationList.SkilllistBean();
+                        skilllistBean.setType(skillArray.optJSONObject(j).optString("type"));
+                        skilllistBean.setTypename(skillArray.optJSONObject(j).optString("typename"));
+                        skilllistBean.setParent_typeid(skillArray.optJSONObject(j).optString("parent_typeid"));
+                        skilllistBeans.add(skilllistBean);
+                    }
+                    authenticationList.setSkilllist(skilllistBeans);
+                    lists.add(authenticationList);
+                }
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -430,6 +548,7 @@ public class MapFragment extends Fragment implements View.OnClickListener, OnGet
                 HelperApplication.getInstance().mCurrentLocLon = location.getLongitude();
                 HelperApplication.getInstance().mDistrict = location.getDistrict();
                 locate_district.setText(location.getDistrict());
+                getAuthentication();
             }
 
 
