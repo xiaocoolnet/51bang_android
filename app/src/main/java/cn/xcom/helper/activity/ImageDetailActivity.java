@@ -1,7 +1,6 @@
 package cn.xcom.helper.activity;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -44,7 +43,7 @@ import cn.xcom.helper.utils.ToastUtil;
 /**
  * Created by 潘 on 2016/4/3.
  */
-public class ImageDetailActivity extends Activity implements View.OnClickListener {
+public class ImageDetailActivity extends BaseActivity implements View.OnClickListener {
     private RelativeLayout back;
     private ViewPager viewPager;
     private ArrayList<String> imgsList;

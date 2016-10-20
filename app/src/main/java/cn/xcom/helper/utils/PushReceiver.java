@@ -31,10 +31,12 @@ public class PushReceiver extends BroadcastReceiver {
         String type = bundle.getString(JPushInterface.EXTRA_EXTRA);
 
         if (type==null)return;
-        String str = "";
+        String key = "";
+        String v = "";
         try {
             JSONObject jsonObject = new JSONObject(type);
-            str = jsonObject.getString("type");
+            key = jsonObject.getString("key");
+            v = jsonObject.getString("v");
         } catch (JSONException e) {
             Log.i(TAG, "JSONException" + type);
             e.printStackTrace();
@@ -53,7 +55,8 @@ public class PushReceiver extends BroadcastReceiver {
             Log.i(TAG, "[PushReceiver] 接收到推送下来的通知");
             int notifactionId = bundle.getInt(JPushInterface.EXTRA_NOTIFICATION_ID);
             Log.i(TAG, "[PushReceiver] 接收到推送下来的通知的ID: " + notifactionId);
-
+            SPUtils.put(context,"push",key);
+            SPUtils.put(context,"pushstate",v);
             //本地存储条数
             int msgNum = (int) SPUtils.get(context, JPUSHMESSAGE, 0);
             int hmkNum = (int) SPUtils.get(context, JPUSHHOMEWORK, 0);
@@ -65,7 +68,7 @@ public class PushReceiver extends BroadcastReceiver {
             int commentNum = (int) SPUtils.get(context, JPUSHCOMMENT, 0);
 
 
-            if (str.equals("message")){//信息群发
+            /*if (str.equals("message")){//信息群发
                 msgNum = msgNum + 1;
                 SPUtils.put(context,JPUSHMESSAGE,msgNum);
             } else if (str.equals("homework")){//作业
@@ -91,7 +94,7 @@ public class PushReceiver extends BroadcastReceiver {
             }else if (str.equals("comment")){//教师点评
                 commentNum = commentNum + 1;
                 SPUtils.put(context,JPUSHCOMMENT,commentNum);
-            }
+            }*/
 
             Intent pointIntent = new Intent();
             pointIntent.setAction("com.USER_ACTION");

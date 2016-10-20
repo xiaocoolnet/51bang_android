@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -20,6 +21,10 @@ import com.loopj.android.http.RequestParams;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.Set;
+
+import cn.jpush.android.api.JPushInterface;
+import cn.jpush.android.api.TagAliasCallback;
 import cn.xcom.helper.R;
 import cn.xcom.helper.bean.UserInfo;
 import cn.xcom.helper.constant.HelperConstant;
@@ -42,6 +47,42 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
     private TextView tv_register,tv_forget_password;
     private ImageView iv_delete;
     private SharedPreferences sp;
+    private static final int MSG_SET_ALIAS = 1001;
+    private String userId;
+    private final TagAliasCallback mAliasCallback = new TagAliasCallback() {
+        @Override
+        public void gotResult(int i, String s, Set<String> set) {
+            String logs;
+            switch (i) {
+                case 0:
+                    logs = "Set tag and alias success";
+                    Log.i("setAlias", logs);
+                    // 建议这里往 SharePreference 里写一个成功设置的状态。成功设置一次后，以后不必再次设置了。
+                    break;
+                case 6002:
+                    logs = "Failed to set alias and tags due to timeout. Try again after 60s.";
+                    Log.i("setAlias", logs);
+                    // 延迟 60 秒来调用 Handler 设置别名
+                    handler.sendMessageDelayed(handler.obtainMessage(MSG_SET_ALIAS, userId), 1000 * 60);
+                    break;
+                default:
+                    logs = "Failed with errorCode = " + i;
+                    Log.e("setAlias", logs);
+            }
+        }
+    };
+
+    private Handler handler = new Handler() {
+        public void handleMessage(android.os.Message msg) {
+            switch (msg.what) {
+                case MSG_SET_ALIAS:
+                    Log.d("setAlias", "Set alias in handler.");
+                    JPushInterface.setAliasAndTags(getApplicationContext(), (String) msg.obj, null, mAliasCallback);
+                    break;
+            }
+        }
+
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -128,6 +169,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
                                 userInfo.setUserID(jsonObject.getString("idcard"));
                                 userInfo.setUserPhone(jsonObject.getString("phone"));
                                 userInfo.setUserGender(jsonObject.getString("sex"));
+                                userId = userInfo.getUserId();
                                 userInfo.writeData(mContext);
                                 getNameAuthentication(userInfo.getUserId());
                             }if(state.equals("error")){
@@ -165,6 +207,8 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
                 }else{
                     SPUtils.put(mContext, HelperConstant.IS_HAD_AUTHENTICATION,"0");
                 }
+                JPushInterface.resumePush(mContext);
+                JPushInterface.setAlias(getBaseContext(), userId, mAliasCallback);
                 Intent intent=new Intent(mContext,HomeActivity.class);
                 intent.putExtra("userid",userid);
 

@@ -1,6 +1,5 @@
 package cn.xcom.helper.activity;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -25,7 +24,7 @@ import cn.xcom.helper.bean.MyRegion;
 import cn.xcom.helper.utils.CityUtils;
 
 
-public class CitySelect1Activity extends Activity implements OnClickListener {
+public class CitySelect1Activity extends BaseActivity implements OnClickListener {
 
 	private Button btn_back, btn_right;
 	private ListView lv_city;

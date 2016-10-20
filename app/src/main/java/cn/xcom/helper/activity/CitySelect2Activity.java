@@ -1,7 +1,6 @@
 package cn.xcom.helper.activity;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
@@ -35,7 +34,7 @@ import cn.xcom.helper.utils.CityUtils;
  * @author zander
  *
  */
-public class CitySelect2Activity extends Activity implements OnClickListener {
+public class CitySelect2Activity extends BaseActivity implements OnClickListener {
 
 	private Button btn_back, btn_right;
 	private ListView lv_city;

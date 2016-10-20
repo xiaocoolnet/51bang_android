@@ -1,6 +1,5 @@
 package cn.xcom.helper.activity;
 
-import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.view.View;
@@ -26,7 +25,7 @@ import cz.msebera.android.httpclient.Header;
 /**
  * Created by zhuchongkun.
  */
-public class UpdateNameActivity extends Activity implements View.OnClickListener {
+public class UpdateNameActivity extends BaseActivity implements View.OnClickListener {
     private String TAG="UpdateNameActivity";
     private RelativeLayout rl_back;
     private TextView tv_save;

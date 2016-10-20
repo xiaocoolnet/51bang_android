@@ -8,7 +8,6 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.AppCompatActivity;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
@@ -23,7 +22,7 @@ import cn.xcom.helper.R;
 import cn.xcom.helper.adapter.ViewPageAdapter;
 import cn.xcom.helper.utils.SmoothImageView;
 
-public class SpaceImageDetailActivity extends AppCompatActivity {
+public class SpaceImageDetailActivity extends BaseActivity {
     private int mLocationX;
     private int mLocationY;
     private int mWidth;
@@ -45,7 +44,7 @@ public class SpaceImageDetailActivity extends AppCompatActivity {
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
         setContentView(R.layout.activity_space_image_detail);
-        getSupportActionBar().hide();
+        //getSupportActionBar().hide();
         context=this;
         addViewList=new ArrayList();
         convenience=new ArrayList<>();
