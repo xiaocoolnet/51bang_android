@@ -25,6 +25,7 @@ import java.util.List;
 import cn.xcom.helper.R;
 import cn.xcom.helper.adapter.CollectionAdapter;
 import cn.xcom.helper.bean.Collection;
+import cn.xcom.helper.bean.Front;
 import cn.xcom.helper.bean.UserInfo;
 import cn.xcom.helper.constant.NetConstant;
 import cn.xcom.helper.utils.SingleVolleyRequest;
@@ -39,17 +40,11 @@ public class CollectionActivity extends BaseActivity implements View.OnClickList
     private Context mContext;
     private ListView listView;
     private RelativeLayout rl_back;
-    private List<Collection>addList;
+    private List<Collection> addList;
     private UserInfo userInfo;
     private SwipeRefreshLayout swipeRefreshLayout;
     private CollectionAdapter collectionAdapter;
-    private Handler handler=new Handler();
-    private Runnable runnable=new Runnable() {
-        @Override
-        public void run() {
-            swipeRefreshLayout.setRefreshing(false);
-        }
-    };
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -61,8 +56,6 @@ public class CollectionActivity extends BaseActivity implements View.OnClickList
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                handler.removeCallbacks(runnable);
-                handler.postDelayed(runnable, 1000);
                 collectionList();
             }
         });
@@ -80,7 +73,9 @@ public class CollectionActivity extends BaseActivity implements View.OnClickList
         //swip.setProgressBackgroundColorSchemeColor(getResources().getColor(R.color.colorPrimary));
         swipeRefreshLayout.setSize(SwipeRefreshLayout.LARGE);
         swipeRefreshLayout.setColorSchemeColors(getResources().getColor(R.color.colorTextWhite));
-
+        addList = new ArrayList<>();
+        collectionAdapter=new CollectionAdapter(addList,mContext);
+        listView.setAdapter(collectionAdapter);
     }
     @Override
     public void onClick(View v) {
@@ -99,21 +94,18 @@ public class CollectionActivity extends BaseActivity implements View.OnClickList
                 try {
                     JSONObject jsonObject=new JSONObject(s);
                     String data=jsonObject.getString("data");
-                    Log.d("==用户data", data);
-                    if (data==null){
-                        Log.d("==用户是否收藏", "用户没有收藏");
-                    }else {
-                        Log.d("==用户是否收藏", "用户有收藏");
+                    if (data!=null){
                         Gson gson=new Gson();
-                        addList=gson.fromJson(data,
+                        List<Collection> fronts =gson.fromJson(data,
                                 new TypeToken<ArrayList<Collection>>(){}.getType());
-                        collectionAdapter=new CollectionAdapter(addList,mContext);
-                        listView.setAdapter(collectionAdapter);
-
+                        addList.clear();
+                        addList.addAll(fronts);
+                        collectionAdapter.notifyDataSetChanged();
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
+                swipeRefreshLayout.setRefreshing(false);
             }
         }, new Response.ErrorListener() {
             @Override
@@ -123,6 +115,5 @@ public class CollectionActivity extends BaseActivity implements View.OnClickList
         });
         request.putValue("userid", userInfo.getUserId());
         SingleVolleyRequest.getInstance(mContext).addToRequestQueue(request);
-
     }
 }

@@ -277,7 +277,7 @@ public class MapFragment extends Fragment implements View.OnClickListener, OnGet
             mBaiduMap.animateMapStatus(msu);
             locate_district.setText(HelperApplication.getInstance().mDistrict);
         }
-        if(HelperApplication.getInstance().mDistrict.length()!=0){
+        if("".equals(HelperApplication.getInstance().mDistrict)){
             getAuthentication();
         }
         mMapView.onResume();

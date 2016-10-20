@@ -1,6 +1,7 @@
 package cn.xcom.helper.activity;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
@@ -24,9 +25,10 @@ import cz.msebera.android.httpclient.Header;
  */
 
 public class MyOrderDetailActivity extends BaseActivity implements View.OnClickListener {
+    private static final int ORDER_DETAIL_REQUEST_CODE = 1122;
     private static final int CANCEL_SUCCESS = 101;
     private static final int PAY_SUCCESS =102;
-    private static final int COMMENT_SUCCESS = 103;
+    private static final int COMMENT_SUCCESS = 112;
 
     private ShopGoodInfo goodInfo;
     private TextView userNameTv, mobileTv, goodNameTv, priceTv, goodsCountTv, moneyTv, deliveryTv,
@@ -76,11 +78,14 @@ public class MyOrderDetailActivity extends BaseActivity implements View.OnClickL
         addressTv.setText(goodInfo.getAddress());
         trackingTv.setText("卷码:" + goodInfo.getTracking());
         String state = goodInfo.getState();
-        if ("1".equals(state)) {
+//状态：-1已取消，1:未付款，2未发货，3未确认，4买家未评价，5卖家未评价，10订单完成
+        if("-1".equals(state)){
+            trackingTv.setVisibility(View.GONE);//卷码未支付时隐藏
+        }else if ("1".equals(state)) {
             toPaytv.setVisibility(View.VISIBLE);
             cancelPaymentTv.setVisibility(View.VISIBLE);
             commentTv.setVisibility(View.GONE);
-            trackingTv.setVisibility(View.GONE);//卷码未支付时隐藏
+            trackingTv.setVisibility(View.GONE);
         } else if ("2".equals(state)) {
             toPaytv.setVisibility(View.GONE);
             cancelPaymentTv.setVisibility(View.VISIBLE);
@@ -88,7 +93,7 @@ public class MyOrderDetailActivity extends BaseActivity implements View.OnClickL
         } else if ("4".equals(state)){
             toPaytv.setVisibility(View.VISIBLE);
             cancelPaymentTv.setVisibility(View.VISIBLE);
-            commentTv.setVisibility(View.GONE);
+            commentTv.setVisibility(View.VISIBLE);
         }
 
     }
@@ -109,6 +114,12 @@ public class MyOrderDetailActivity extends BaseActivity implements View.OnClickL
                     }
                 }).setNegativeButton("取消", null).show();
                 break;
+            case R.id.tv_comment:
+                Intent intent = new Intent(this, MyOrderDetailActivity.class);
+                intent.putExtra("order_id",goodInfo.getId());
+                intent.putExtra("type","2");//任务是1,商城是2
+                startActivityForResult(intent, ORDER_DETAIL_REQUEST_CODE);
+
         }
     }
 
@@ -143,4 +154,16 @@ public class MyOrderDetailActivity extends BaseActivity implements View.OnClickL
 
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == ORDER_DETAIL_REQUEST_CODE){
+            if(resultCode == COMMENT_SUCCESS){
+                commentTv.setVisibility(View.GONE);
+                setResult(COMMENT_SUCCESS);
+            }
+
+        }
+
+    }
 }

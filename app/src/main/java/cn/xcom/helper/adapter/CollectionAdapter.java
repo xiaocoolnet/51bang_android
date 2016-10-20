@@ -14,6 +14,7 @@ import java.util.List;
 
 import cn.xcom.helper.R;
 import cn.xcom.helper.bean.Collection;
+import cn.xcom.helper.bean.Front;
 import cn.xcom.helper.constant.NetConstant;
 import cn.xcom.helper.utils.MyImageLoader;
 
@@ -28,7 +29,6 @@ public class CollectionAdapter extends BaseAdapter {
         this.addList = addList;
         this.context = context;
     }
-
 
 
     @Override
@@ -52,28 +52,28 @@ public class CollectionAdapter extends BaseAdapter {
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
         Log.e("========shipeiqi", "ZOUBUZOU");
-        ViewHolder viewHolder=null;
-        if (convertView==null){
-            viewHolder=new ViewHolder();
-            convertView= LayoutInflater.from(context).inflate(R.layout.collec_layout,null);
-            viewHolder.imageView= (ImageView) convertView.findViewById(R.id.imgview);
-            viewHolder.textView1= (TextView) convertView.findViewById(R.id.title);
-            viewHolder.textView2= (TextView) convertView.findViewById(R.id.content);
-            viewHolder.textView3= (TextView) convertView.findViewById(R.id.price);
-            viewHolder.button= (Button) convertView.findViewById(R.id.havesell);
+        ViewHolder viewHolder = null;
+        if (convertView == null) {
+            viewHolder = new ViewHolder();
+            convertView = LayoutInflater.from(context).inflate(R.layout.collec_layout, null);
+            viewHolder.imageView = (ImageView) convertView.findViewById(R.id.imgview);
+            viewHolder.textView1 = (TextView) convertView.findViewById(R.id.title);
+            viewHolder.textView2 = (TextView) convertView.findViewById(R.id.content);
+            viewHolder.textView3 = (TextView) convertView.findViewById(R.id.price);
+            viewHolder.button = (Button) convertView.findViewById(R.id.havesell);
 
             convertView.setTag(viewHolder);
-        }else {
-            viewHolder= (ViewHolder) convertView.getTag();
+        } else {
+            viewHolder = (ViewHolder) convertView.getTag();
         }
-        Collection front=addList.get(position);
+        Collection front = addList.get(position);
         Log.e("========shipeiqi", "" + addList.size());
 
-            MyImageLoader.display(NetConstant.NET_DISPLAY_IMG, viewHolder.imageView);
+        MyImageLoader.display(NetConstant.NET_DISPLAY_IMG, viewHolder.imageView);
 
         viewHolder.textView1.setText(front.getTitle());
         viewHolder.textView2.setText(front.getDescription());
-        viewHolder.textView3.setText("￥"+front.getPrice());
+        viewHolder.textView3.setText("￥" + front.getPrice());
 
 //        viewHolder.button.setOnClickListener(new View.OnClickListener() {
 //            @Override
@@ -89,12 +89,20 @@ public class CollectionAdapter extends BaseAdapter {
 //                context.startActivity(intent);
 //            }
 //        });
+        convertView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
 
-        return convertView ;
+            }
+        });
+
+
+        return convertView;
     }
-    public class ViewHolder{
+
+    public class ViewHolder {
         private ImageView imageView;
-        private TextView textView1,textView2,textView3,textView4,textView5;
+        private TextView textView1, textView2, textView3, textView4, textView5;
         private Button button;
 
     }

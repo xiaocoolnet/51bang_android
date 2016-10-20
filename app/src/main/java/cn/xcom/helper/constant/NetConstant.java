@@ -19,7 +19,7 @@ public interface NetConstant extends HelperConstant {
     /**
      * 发送验证码
      */
-    public final static String NET_GET_CODE=NET_HOST_PREFIX+"a=SendMobileCode&";
+    public final static String NET_GET_CODE = NET_HOST_PREFIX + "a=SendMobileCode&";
     /**
      * 修改密码
      */
@@ -31,7 +31,7 @@ public interface NetConstant extends HelperConstant {
     /**
      * 上传图片
      */
-    public final static String NET_UPLOAD_IMG=NET_HOST_PREFIX+"a=uploadimg";
+    public final static String NET_UPLOAD_IMG = NET_HOST_PREFIX + "a=uploadimg";
     /**
      * 图片路径
      */
@@ -114,15 +114,13 @@ public interface NetConstant extends HelperConstant {
 
 
     /*
-    *根据商品信息找出商家的信息
-     */
-    public final static String SHOPINFO = NET_HOST_PREFIX + "a=showshoppinginfo&";
-
-    /*
     *根据地点获取抢单列表
      */
     public final static String GETTASKLIST = NET_HOST_PREFIX + "a=getTaskListByCity&";
 
+    /*
+    *根据商品id查询商品详情
+    */
     public final static String SHOP_INFO = NET_HOST_PREFIX + "a=showshoppinginfo&";
 
 
@@ -140,20 +138,20 @@ public interface NetConstant extends HelperConstant {
     /*
     *便民圈接口
     */
-    public final static String CONVENIENCE=NET_HOST_PREFIX+"a=getbbspostlist&";
+    public final static String CONVENIENCE = NET_HOST_PREFIX + "a=getbbspostlist&";
 
     /*
- 快递查询
-  */
-    public static final String DELIEVER="http://m.kuaidi100.com/index_all.html";
+        快递查询
+    */
+    public static final String DELIEVER = "http://m.kuaidi100.com/index_all.html";
     /*
-     发布便民圈信息
+        发布便民圈信息
      */
-    public static final String CONVENIENCE_RELEASE=NET_HOST_PREFIX+"a=addbbsposts&";
+    public static final String CONVENIENCE_RELEASE = NET_HOST_PREFIX + "a=addbbsposts&";
 
     /*
-   删除商品
-   */
+        删除商品
+     */
     public static final String DELETE_GOOD = NET_HOST_PREFIX + "a=DeleteGoods&";
 
     /*
@@ -168,151 +166,165 @@ public interface NetConstant extends HelperConstant {
     /*
    *更新任务
    */
-    public final static String UPDATA=NET_HOST_PREFIX+"a=UpdateGoodsInfo&";
+    public final static String UPDATA = NET_HOST_PREFIX + "a=UpdateGoodsInfo&";
     /*
   *更新图片
   */
-    public final static String UPDATA_PICTURE=NET_HOST_PREFIX+"a=UpdateGoodsPicture&";
+    public final static String UPDATA_PICTURE = NET_HOST_PREFIX + "a=UpdateGoodsPicture&";
     /*
     产品收藏
      */
-    public final static String GOOD_COLLECTION=NET_HOST_PREFIX+"a=addfavorite&";
+    public final static String GOOD_COLLECTION = NET_HOST_PREFIX + "a=addfavorite&";
     /*
    产品是否收藏
     */
-    public final static String GOOD_IS_COLLECTION=NET_HOST_PREFIX+"a=CheckHadFavorite&";
+    public final static String GOOD_IS_COLLECTION = NET_HOST_PREFIX + "a=CheckHadFavorite&";
 
     /*
    取消收藏
    */
-    public final static String GOOD_CANCLE_COLLECTION=NET_HOST_PREFIX+"a=cancelfavorite&";
+    public final static String GOOD_CANCLE_COLLECTION = NET_HOST_PREFIX + "a=cancelfavorite&";
     /*
     收藏列表
      */
-    public final static String HAS_COLLECTION=NET_HOST_PREFIX+"a=getfavoritelist&";
+    public final static String HAS_COLLECTION = NET_HOST_PREFIX + "a=getfavoritelist&";
     /*
     添加用户地址
      */
-    public final static String ADD_ADRESS=NET_HOST_PREFIX+"a=AddAddress&";
+    public final static String ADD_ADRESS = NET_HOST_PREFIX + "a=AddAddress&";
     /*
     获取用户地址列表
      */
-    public final static String GET_ADRESS=NET_HOST_PREFIX+"a=GetMyAddressList&";
+    public final static String GET_ADRESS = NET_HOST_PREFIX + "a=GetMyAddressList&";
     /*
     修改用户地址
      */
-    public final static String FIX_ADRESS=NET_HOST_PREFIX+"a=UpdateAddress&";
+    public final static String FIX_ADRESS = NET_HOST_PREFIX + "a=UpdateAddress&";
     /*
     删除用户地址
      */
-    public final static String DELETE_ADRESS=NET_HOST_PREFIX+"a=DeleteAddress&";
+    public final static String DELETE_ADRESS = NET_HOST_PREFIX + "a=DeleteAddress&";
 
     /*
     我的接单
      */
-    public final static String GET_MY_TASK=NET_HOST_PREFIX+"a=getMyApplyTaskList&";
+    public final static String GET_MY_TASK = NET_HOST_PREFIX + "a=getMyApplyTaskList&";
 
     /*
     检查用户是否实名认证
      */
-    public final static String Check_Had_Authentication=NET_HOST_PREFIX+"a=CheckHadAuthentication&";
+    public final static String Check_Had_Authentication = NET_HOST_PREFIX + "a=CheckHadAuthentication&";
 
     /*
     检查用户是否保险认证
      */
-    public final static String Check_Insurance=NET_HOST_PREFIX+"a=CheckInsurance&";
+    public final static String Check_Insurance = NET_HOST_PREFIX + "a=CheckInsurance&";
 
     /*
     获取银行信息
      */
-    public final static String GET_USER_BANK_INFO=NET_HOST_PREFIX+"a=GetUserBankInfo&";
+    public final static String GET_USER_BANK_INFO = NET_HOST_PREFIX + "a=GetUserBankInfo&";
 
     /**
      * 绑定银行账号
      */
-    public final static String BIND_BINK_ACCOUNT = NET_HOST_PREFIX+"a=UpdateUserBank&";
+    public final static String BIND_BINK_ACCOUNT = NET_HOST_PREFIX + "a=UpdateUserBank&";
 
     /**
      * 绑定支付宝账号
      */
-    public final static String BIND_ALIPAY_ACCOUNT = NET_HOST_PREFIX+"a=UpdateUserBank&";
+    public final static String BIND_ALIPAY_ACCOUNT = NET_HOST_PREFIX + "a=UpdateUserBank&";
 
     /**
      * 提现申请
      */
-    public final static String APPLY_WITHDRAW = NET_HOST_PREFIX+"a=ApplyWithdraw&";
+    public final static String APPLY_WITHDRAW = NET_HOST_PREFIX + "a=ApplyWithdraw&";
 
     /*
     获取城市列表（长字符串）
      */
-    public final static String GET_CITY_LIST=NET_HOST_PREFIX+"a=GetCityListToStr";
+    public final static String GET_CITY_LIST = NET_HOST_PREFIX + "a=GetCityListToStr";
 
     /*
     获取我的技能
      */
-    public final static String GET_MY_SKILLS =NET_HOST_PREFIX+"a=getSkillListByUserId&";
+    public final static String GET_MY_SKILLS = NET_HOST_PREFIX + "a=getSkillListByUserId&";
 
     /*
     修改我的技能
      */
-    public final static String CHANGE_MY_SKILLS =NET_HOST_PREFIX+"a=UpdataUserSkill&";
+    public final static String CHANGE_MY_SKILLS = NET_HOST_PREFIX + "a=UpdataUserSkill&";
 
     /*
    删除自己的帖子
     */
-    public final static String DELETE_OWN_POST =NET_HOST_PREFIX+"a=deletebbspost&";
+    public final static String DELETE_OWN_POST = NET_HOST_PREFIX + "a=deletebbspost&";
 
 
     /**
      * 获取我发布的任务列表
      */
-    public final static String GET_TASK_LIST_BY_USERID =NET_HOST_PREFIX+"a=getTaskListByUserid&";
+    public final static String GET_TASK_LIST_BY_USERID = NET_HOST_PREFIX + "a=getTaskListByUserid&";
 
     /**
      * 查看任务详情
      */
-    public final static String GET_TASK_INFO_BY_TASK_ID =NET_HOST_PREFIX+"a=getTaskInfoByTaskid&";
+    public final static String GET_TASK_INFO_BY_TASK_ID = NET_HOST_PREFIX + "a=getTaskInfoByTaskid&";
 
     /**
      * 举报别人的帖子
      */
-    public final static String REPORT_OHTHER_POST =NET_HOST_PREFIX+"a=Report&";
+    public final static String REPORT_OHTHER_POST = NET_HOST_PREFIX + "a=Report&";
 
     /**
      * 获取认证帮列表
      */
-    public final static String GET_AUTHENTICATION_LIST =NET_HOST_PREFIX+"a=getAuthenticationUserList&";
+    public final static String GET_AUTHENTICATION_LIST = NET_HOST_PREFIX + "a=getAuthenticationUserList&";
 
 
     /**
      * 发布任务者取消订单
      */
-    public final static String OWNER_CANCEL_TASK =NET_HOST_PREFIX+"a=OwnerCancelTask&";
+    public final static String OWNER_CANCEL_TASK = NET_HOST_PREFIX + "a=OwnerCancelTask&";
 
 
     /**
      * 买家获取我的商城商品列表
      */
-    public final static String BUYER_GET_SHOP_ORDER_LIST =NET_HOST_PREFIX+"a=BuyerGetShoppingOrderList&";
+    public final static String BUYER_GET_SHOP_ORDER_LIST = NET_HOST_PREFIX + "a=BuyerGetShoppingOrderList&";
 
     /**
      * 商户分享h5
      */
-    public final static String SHARE_SHOP_H5 ="http://www.my51bang.com/index.php?g=portal&m=article&a=shop&id=";
+    public final static String SHARE_SHOP_H5 = "http://www.my51bang.com/index.php?g=portal&m=article&a=shop&id=";
 
     /**
      * 我的订单页面 取消订单
      */
-    public final static String CANCEL_ORDER  =NET_HOST_PREFIX+"a=cancelorder&";
+    public final static String CANCEL_ORDER = NET_HOST_PREFIX + "a=cancelorder&";
 
 
     /**
      * 发表订单评价
      */
-    public final static String POST_COMMENT  =NET_HOST_PREFIX+"a=SetEvaluate&";
+    public final static String POST_COMMENT = NET_HOST_PREFIX + "a=SetEvaluate&";
 
     /**
      * 用户二维码h5
      */
-    public final static String SHARE_QRCODE_H5 ="http://www.my51bang.com/index.php?g=portal&m=article&a=server&userid=";
+    public final static String SHARE_QRCODE_H5 = "http://www.my51bang.com/index.php?g=portal&m=article&a=server&userid=";
+
+
+    /**
+     * 卖家确认验证码
+     */
+    public final static String VERIFY_SHOPPING_CODE = NET_HOST_PREFIX + "a=VerifyShoppingCode&";
+
+
+    /**
+     * 卖家获取订单列表
+     */
+    public final static String SELLER_GET_SHOPPING_ORDER_LIST = NET_HOST_PREFIX + "a=SellerGetShoppingOrderList&";
+
+
 }

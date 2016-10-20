@@ -9,6 +9,7 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.View;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.lzy.widget.tab.PagerSlidingTabStrip;
 
@@ -17,12 +18,14 @@ import java.util.List;
 
 import cn.xcom.helper.R;
 import cn.xcom.helper.adapter.MyOrderAdapter;
+import cn.xcom.helper.bean.OrderHelper;
 import cn.xcom.helper.fragment.order.MyOrderFragment;
 import cn.xcom.helper.fragment.order.MyPostOrderFragment;
 
 /**
  * Created by Administrator on 2016/10/18 0018.
- * 我的订单页面
+ * 我的订单 商户订单
+ * 根据orderType区分
  */
 
 public class MyOrderActivity extends BaseActivity implements View.OnClickListener {
@@ -31,23 +34,30 @@ public class MyOrderActivity extends BaseActivity implements View.OnClickListene
     private PagerSlidingTabStrip pagerTitles;
     private ViewPager viewPager;
     private List<Fragment> fragments;
+    private int orderType;
+    private TextView titleView;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my_order);
+        orderType = getIntent().getIntExtra("order_type", OrderHelper.BuyerOrder);
         initView();
     }
 
     private void initView(){
+        titleView = (TextView) findViewById(R.id.title);
+        if(orderType == OrderHelper.SellerOrder){
+            titleView.setText("收到的订单");
+        }
         rl_back= (RelativeLayout) findViewById(R.id.rl_bill_back);
         rl_back.setOnClickListener(this);
         pagerTitles = (PagerSlidingTabStrip) findViewById(R.id.order_title);
         viewPager = (ViewPager) findViewById(R.id.vp_my_order);
-        MyOrderFragment fragment1 = MyOrderFragment.newInstance(1);
-        MyOrderFragment fragment2 = MyOrderFragment.newInstance(2);
-        MyOrderFragment fragment3 = MyOrderFragment.newInstance(3);
-        MyOrderFragment fragment4 = MyOrderFragment.newInstance(4);
+        MyOrderFragment fragment1 = MyOrderFragment.newInstance(1,orderType);
+        MyOrderFragment fragment2 = MyOrderFragment.newInstance(2,orderType);
+        MyOrderFragment fragment3 = MyOrderFragment.newInstance(3,orderType);
+        MyOrderFragment fragment4 = MyOrderFragment.newInstance(4,orderType);
         fragments = new ArrayList<>();
         fragments.add(fragment1);
         fragments.add(fragment2);

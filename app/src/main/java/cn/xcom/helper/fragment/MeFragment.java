@@ -39,7 +39,10 @@ import cn.xcom.helper.activity.ShareQRCodeActivity;
 import cn.xcom.helper.activity.ShopBuyActivity;
 import cn.xcom.helper.activity.ShoppingCartActivity;
 import cn.xcom.helper.activity.SignActivity;
+import cn.xcom.helper.activity.VerifyShoppingCodeActivity;
 import cn.xcom.helper.activity.WalletActivity;
+import cn.xcom.helper.adapter.MyOrderAdapter;
+import cn.xcom.helper.bean.OrderHelper;
 import cn.xcom.helper.bean.UserInfo;
 import cn.xcom.helper.constant.NetConstant;
 import cn.xcom.helper.net.HelperAsyncHttpClient;
@@ -206,7 +209,8 @@ public class MeFragment extends Fragment implements View.OnClickListener{
                 break;
             case R.id.tv_fragment_me_coupon:
 //                startActivity(new Intent(mContext, CouponActivity.class));
-                startActivity(new Intent(mContext, MyOrderActivity.class));
+                startActivity(new Intent(mContext, MyOrderActivity.class).
+                        putExtra("order_type", OrderHelper.BuyerOrder));
                 break;
             case R.id.tv_fragment_me_order:
                 startActivity(new Intent(mContext, OrderActivity.class));
@@ -215,13 +219,15 @@ public class MeFragment extends Fragment implements View.OnClickListener{
                 startActivity(new Intent(mContext, CollectionActivity.class));
                 break;
             case R.id.tv_fragment_me_shopping_cart:
-                startActivity(new Intent(mContext, ShoppingCartActivity.class));
+//                startActivity(new Intent(mContext, ShoppingCartActivity.class));
+                startActivity(new Intent(mContext, VerifyShoppingCodeActivity.class));
                 break;
             case R.id.tv_fragment_me_adress:
                 startActivity(new Intent(mContext, AddressListActivity.class));
                 break;
             case R.id.tv_fragment_me_shopBuy:
-                startActivity(new Intent(mContext, ShopBuyActivity.class));
+                startActivity(new Intent(mContext, MyOrderActivity.class).
+                        putExtra("order_type",OrderHelper.SellerOrder));
                 break;
             case R.id.tv_fragment_me_order_taking:
                 startActivity(new Intent(mContext, OrderTakingActivity.class));

@@ -2,6 +2,9 @@ package cn.xcom.helper.adapter;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -22,9 +25,12 @@ import java.util.List;
 
 import cn.xcom.helper.R;
 import cn.xcom.helper.activity.MyOrderDetailActivity;
+import cn.xcom.helper.activity.PostCommentActivity;
+import cn.xcom.helper.bean.OrderHelper;
 import cn.xcom.helper.bean.ShopGoodInfo;
 import cn.xcom.helper.bean.UserInfo;
 import cn.xcom.helper.constant.NetConstant;
+import cn.xcom.helper.fragment.order.MyOrderFragment;
 import cn.xcom.helper.net.HelperAsyncHttpClient;
 import cn.xcom.helper.utils.MyImageLoader;
 import cz.msebera.android.httpclient.Header;
@@ -32,21 +38,20 @@ import cz.msebera.android.httpclient.Header;
 /**
  * Created by Administrator on 2016/10/18 0018.
  * 我的订单页面适配器
+ * 卖家订单页面适配器
  */
 
 public class MyOrderAdapter extends RecyclerView.Adapter<MyOrderAdapter.ViewHold> {
     private Context mContext;
     private List<ShopGoodInfo> goodInfos;
-    private OnItemClickListener onItemClickListener;
     private UserInfo userInfo;
+    private Fragment fragment;
 
-    public void setOnItemClickListener (OnItemClickListener onItemClickListener){
-        this.onItemClickListener = onItemClickListener;
-    }
-    public MyOrderAdapter(Context context, List<ShopGoodInfo> goodInfos) {
+    public MyOrderAdapter(Context context, List<ShopGoodInfo> goodInfos,Fragment fragment) {
         mContext = context;
         this.goodInfos = goodInfos;
         userInfo = new UserInfo(mContext);
+        this.fragment = fragment;
     }
 
     @Override
@@ -64,6 +69,7 @@ public class MyOrderAdapter extends RecyclerView.Adapter<MyOrderAdapter.ViewHold
     @Override
     public void onBindViewHolder(ViewHold holder, final int position) {
         final ShopGoodInfo goodInfo = goodInfos.get(position);
+
         if (goodInfo.getPicture().size() > 0) {
             MyImageLoader.display(NetConstant.NET_DISPLAY_IMG +
                     goodInfo.getPicture().get(0).getFile(), holder.goodImage);
@@ -73,24 +79,31 @@ public class MyOrderAdapter extends RecyclerView.Adapter<MyOrderAdapter.ViewHold
         holder.goodTitle.setText(goodInfo.getGoodsname());
         holder.goodPrice.setText(goodInfo.getMoney());
         switch (Integer.valueOf(goodInfo.getState())){
-            case -1:
+            case OrderHelper.CANCELED:
                 holder.orderState.setText("已取消");
+                holder.payBtn.setVisibility(View.GONE);
                 break;
-            case 1:
+            case OrderHelper.UNPAY:
                 holder.orderState.setText("待付款");
                 holder.payBtn.setVisibility(View.VISIBLE);
                 break;
-            case 2:
+            case OrderHelper.UN_SEND_OUT:
                 holder.orderState.setText("待发货");
+                holder.payBtn.setVisibility(View.GONE);
                 holder.cancelPaymentBtn.setVisibility(View.VISIBLE);
                 break;
-            case 3:
+            case OrderHelper.UNCONFIRMED:
                 holder.orderState.setText("待消费");
+                holder.payBtn.setVisibility(View.GONE);
                 break;
-            case 4:
+            case OrderHelper.BUYER_UNCOMMENT:
                 holder.orderState.setText("待评价");
+                holder.payBtn.setVisibility(View.GONE);
                 holder.commentBtn.setVisibility(View.VISIBLE);
                 break;
+            case OrderHelper.SELLER_UNCOMMENT:
+                holder.payBtn.setVisibility(View.GONE);
+                holder.orderState.setText("待评价");
         }
         holder.payBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -115,14 +128,21 @@ public class MyOrderAdapter extends RecyclerView.Adapter<MyOrderAdapter.ViewHold
         holder.commentBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(mContext, "commentBtn", Toast.LENGTH_SHORT).show();;
+                Intent intent = new Intent(mContext, PostCommentActivity.class);
+                intent.putExtra("order_id",goodInfo.getId());
+                intent.putExtra("type","2");//任务是1,商城是2
+                fragment.startActivityForResult(intent, MyOrderFragment.MY_ORDER_REQUEST);
             }
         });
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onItemClickListener.onClick(position);
+                Intent intent = new Intent(mContext, MyOrderDetailActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("good", goodInfo);
+                intent.putExtra("bundle", bundle);
+                fragment.startActivityForResult(intent, MyOrderFragment.MY_ORDER_REQUEST);
             }
         });
 
@@ -178,11 +198,6 @@ public class MyOrderAdapter extends RecyclerView.Adapter<MyOrderAdapter.ViewHold
     }
 
 
-
-
-    public interface OnItemClickListener{
-        void onClick(int position);
-    }
 
 
 }
