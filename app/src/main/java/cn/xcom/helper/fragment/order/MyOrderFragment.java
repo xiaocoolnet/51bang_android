@@ -26,6 +26,7 @@ import java.util.List;
 import cn.xcom.helper.R;
 import cn.xcom.helper.activity.MyOrderDetailActivity;
 import cn.xcom.helper.adapter.MyOrderAdapter;
+import cn.xcom.helper.bean.OrderHelper;
 import cn.xcom.helper.bean.ShopGoodInfo;
 import cn.xcom.helper.bean.UserInfo;
 import cn.xcom.helper.constant.NetConstant;
@@ -35,7 +36,7 @@ import cz.msebera.android.httpclient.Header;
 
 /**
  * Created by Administrator on 2016/10/18 0018.
- * 我的订单fragment
+ * 订单fragment
  */
 
 public class MyOrderFragment extends Fragment {
@@ -43,7 +44,8 @@ public class MyOrderFragment extends Fragment {
     private static final int CANCEL_SUCCESS = 101;
     private static final int PAY_SUCCESS = 102;
     private static final int COMMENT_SUCCESS = 112;
-    private int orderListType;//1全部 2待付款 3待消费 4待评价
+    private int orderState;//1全部 2待付款 3待消费 4待评价
+    private int orderType;//商户或者买家
     private Context mContext;
     private XRecyclerView mRecyclerView;
     private UserInfo userInfo;
@@ -53,7 +55,8 @@ public class MyOrderFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        orderListType = getArguments().getInt("type");
+        orderState = getArguments().getInt("state");
+        orderType = getArguments().getInt("type");
         mContext = getContext();
         userInfo = new UserInfo(mContext);
     }
@@ -89,17 +92,6 @@ public class MyOrderFragment extends Fragment {
         });
         shopGoodInfos = new ArrayList<>();
         myOrderAdapter = new MyOrderAdapter(mContext, shopGoodInfos, MyOrderFragment.this);
-        myOrderAdapter.setOnItemClickListener(new MyOrderAdapter.OnItemClickListener() {
-            @Override
-            public void onClick(int position) {
-                ShopGoodInfo shopGoodInfo = shopGoodInfos.get(position);
-                Intent intent = new Intent(mContext, MyOrderDetailActivity.class);
-                Bundle bundle = new Bundle();
-                bundle.putSerializable("good", shopGoodInfo);
-                intent.putExtra("bundle", bundle);
-                startActivityForResult(intent, MY_ORDER_REQUEST);
-            }
-        });
 
         mRecyclerView.setAdapter(myOrderAdapter);
 
@@ -108,7 +100,7 @@ public class MyOrderFragment extends Fragment {
     private void getOrder() {
         RequestParams requestParams = new RequestParams();
         requestParams.put("userid", userInfo.getUserId());
-        switch (orderListType) {
+        switch (orderState) {
             case 1:
                 requestParams.put("state", "");
                 break;
@@ -119,11 +111,17 @@ public class MyOrderFragment extends Fragment {
                 requestParams.put("state", "2,3");
                 break;
             case 4:
-                requestParams.put("state", "4");
+                requestParams.put("state", "4,5,10");
                 break;
         }
+        String url;
+        if (orderType == OrderHelper.BuyerOrder) {
+            url = NetConstant.BUYER_GET_SHOP_ORDER_LIST;
+        } else {
+            url = NetConstant.SELLER_GET_SHOPPING_ORDER_LIST;
+        }
 
-        HelperAsyncHttpClient.get(NetConstant.BUYER_GET_SHOP_ORDER_LIST, requestParams,
+        HelperAsyncHttpClient.get(url, requestParams,
                 new JsonHttpResponseHandler() {
                     @Override
                     public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
@@ -163,15 +161,15 @@ public class MyOrderFragment extends Fragment {
 
             }
 
-
         }
 
     }
 
-    public static final MyOrderFragment newInstance(int orderListType) {
+    public static final MyOrderFragment newInstance(int orderState, int orderType) {
         MyOrderFragment myOrderFragment = new MyOrderFragment();
         Bundle bundle = new Bundle();
-        bundle.putInt("type", orderListType);
+        bundle.putInt("state", orderState);
+        bundle.putInt("type", orderType);
         myOrderFragment.setArguments(bundle);
         return myOrderFragment;
     }

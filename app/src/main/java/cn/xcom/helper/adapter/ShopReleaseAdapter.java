@@ -96,6 +96,7 @@ public class ShopReleaseAdapter extends BaseAdapter {
                 // intent.putExtra("item",bundle);
                 Log.i("---", position + "");
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                intent.putExtra("from",2);
                 context.startActivity(intent);
             }
         });
