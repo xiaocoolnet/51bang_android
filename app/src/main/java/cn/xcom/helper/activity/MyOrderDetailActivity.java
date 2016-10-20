@@ -8,11 +8,15 @@ import android.support.v7.app.AlertDialog;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
+
 import org.json.JSONException;
 import org.json.JSONObject;
+
 import cn.xcom.helper.R;
+import cn.xcom.helper.bean.OrderHelper;
 import cn.xcom.helper.bean.ShopGoodInfo;
 import cn.xcom.helper.bean.UserInfo;
 import cn.xcom.helper.constant.NetConstant;
@@ -27,7 +31,7 @@ import cz.msebera.android.httpclient.Header;
 public class MyOrderDetailActivity extends BaseActivity implements View.OnClickListener {
     private static final int ORDER_DETAIL_REQUEST_CODE = 1122;
     private static final int CANCEL_SUCCESS = 101;
-    private static final int PAY_SUCCESS =102;
+    private static final int PAY_SUCCESS = 102;
     private static final int COMMENT_SUCCESS = 112;
 
     private ShopGoodInfo goodInfo;
@@ -35,12 +39,14 @@ public class MyOrderDetailActivity extends BaseActivity implements View.OnClickL
             remarksTv, addressTv, toPaytv, cancelPaymentTv, trackingTv, commentTv;
     private View backView;
     private UserInfo userInfo;
+    private int orderType;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my_order_detail);
         goodInfo = (ShopGoodInfo) getIntent().getBundleExtra("bundle").getSerializable("good");
+        orderType = getIntent().getIntExtra("order_type", OrderHelper.SellerOrder);
         userInfo = new UserInfo(this);
         initView();
         setView();
@@ -78,23 +84,61 @@ public class MyOrderDetailActivity extends BaseActivity implements View.OnClickL
         addressTv.setText(goodInfo.getAddress());
         trackingTv.setText("卷码:" + goodInfo.getTracking());
         String state = goodInfo.getState();
-//状态：-1已取消，1:未付款，2未发货，3未确认，4买家未评价，5卖家未评价，10订单完成
-        if("-1".equals(state)){
-            trackingTv.setVisibility(View.GONE);//卷码未支付时隐藏
-        }else if ("1".equals(state)) {
-            toPaytv.setVisibility(View.VISIBLE);
-            cancelPaymentTv.setVisibility(View.VISIBLE);
-            commentTv.setVisibility(View.GONE);
-            trackingTv.setVisibility(View.GONE);
-        } else if ("2".equals(state)) {
+        //状态：-1已取消，1:未付款，2未发货，3未确认，4买家未评价，5卖家未评价，10订单完成
+
+        if (orderType == OrderHelper.BuyerOrder) {
+            switch (Integer.valueOf(state)) {
+                case OrderHelper.CANCELED:
+                    trackingTv.setVisibility(View.GONE);//卷码未支付时隐藏
+                    toPaytv.setVisibility(View.GONE);
+                    cancelPaymentTv.setVisibility(View.GONE);
+                    commentTv.setVisibility(View.GONE);
+                    break;
+                case OrderHelper.UNPAY:
+                    trackingTv.setVisibility(View.GONE);
+                    toPaytv.setVisibility(View.VISIBLE);
+                    cancelPaymentTv.setVisibility(View.VISIBLE);
+                    commentTv.setVisibility(View.GONE);
+                    break;
+                case OrderHelper.UN_SEND_OUT:
+                    trackingTv.setVisibility(View.VISIBLE);
+                    toPaytv.setVisibility(View.GONE);
+                    cancelPaymentTv.setVisibility(View.VISIBLE);
+                    commentTv.setVisibility(View.GONE);
+                    break;
+                case OrderHelper.UNCONFIRMED:
+                    trackingTv.setVisibility(View.VISIBLE);
+                    toPaytv.setVisibility(View.GONE);
+                    cancelPaymentTv.setVisibility(View.GONE);
+                    commentTv.setVisibility(View.GONE);
+                    break;
+                case OrderHelper.BUYER_UNCOMMENT:
+                    trackingTv.setVisibility(View.VISIBLE);
+                    toPaytv.setVisibility(View.GONE);
+                    cancelPaymentTv.setVisibility(View.GONE);
+                    commentTv.setVisibility(View.VISIBLE);
+                    break;
+                case OrderHelper.SELLER_UNCOMMENT:
+                    trackingTv.setVisibility(View.VISIBLE);
+                    toPaytv.setVisibility(View.GONE);
+                    cancelPaymentTv.setVisibility(View.GONE);
+                    commentTv.setVisibility(View.GONE);
+                    break;
+                case OrderHelper.COMPLETED:
+                    trackingTv.setVisibility(View.GONE);
+                    toPaytv.setVisibility(View.GONE);
+                    cancelPaymentTv.setVisibility(View.GONE);
+                    commentTv.setVisibility(View.GONE);
+
+            }
+
+        } else {
+            trackingTv.setVisibility(View.VISIBLE);
             toPaytv.setVisibility(View.GONE);
-            cancelPaymentTv.setVisibility(View.VISIBLE);
+            cancelPaymentTv.setVisibility(View.GONE);
             commentTv.setVisibility(View.GONE);
-        } else if ("4".equals(state)){
-            toPaytv.setVisibility(View.VISIBLE);
-            cancelPaymentTv.setVisibility(View.VISIBLE);
-            commentTv.setVisibility(View.VISIBLE);
         }
+
 
     }
 
@@ -116,8 +160,8 @@ public class MyOrderDetailActivity extends BaseActivity implements View.OnClickL
                 break;
             case R.id.tv_comment:
                 Intent intent = new Intent(this, MyOrderDetailActivity.class);
-                intent.putExtra("order_id",goodInfo.getId());
-                intent.putExtra("type","2");//任务是1,商城是2
+                intent.putExtra("order_id", goodInfo.getId());
+                intent.putExtra("type", "2");//任务是1,商城是2
                 startActivityForResult(intent, ORDER_DETAIL_REQUEST_CODE);
 
         }
@@ -125,7 +169,7 @@ public class MyOrderDetailActivity extends BaseActivity implements View.OnClickL
 
     private void cancelOrde() {
         RequestParams requestParams = new RequestParams();
-        requestParams.put("ordernum",goodInfo.getOrder_num());
+        requestParams.put("ordernum", goodInfo.getOrder_num());
         requestParams.put("userid", userInfo.getUserId());
         HelperAsyncHttpClient.get(NetConstant.CANCEL_ORDER, requestParams,
                 new JsonHttpResponseHandler() {
@@ -157,8 +201,8 @@ public class MyOrderDetailActivity extends BaseActivity implements View.OnClickL
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode == ORDER_DETAIL_REQUEST_CODE){
-            if(resultCode == COMMENT_SUCCESS){
+        if (requestCode == ORDER_DETAIL_REQUEST_CODE) {
+            if (resultCode == COMMENT_SUCCESS) {
                 commentTv.setVisibility(View.GONE);
                 setResult(COMMENT_SUCCESS);
             }

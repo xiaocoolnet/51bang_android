@@ -45,19 +45,19 @@ public class MyOrderActivity extends BaseActivity implements View.OnClickListene
         initView();
     }
 
-    private void initView(){
+    private void initView() {
         titleView = (TextView) findViewById(R.id.title);
-        if(orderType == OrderHelper.SellerOrder){
+        if (orderType == OrderHelper.SellerOrder) {
             titleView.setText("收到的订单");
         }
-        rl_back= (RelativeLayout) findViewById(R.id.rl_bill_back);
+        rl_back = (RelativeLayout) findViewById(R.id.rl_bill_back);
         rl_back.setOnClickListener(this);
         pagerTitles = (PagerSlidingTabStrip) findViewById(R.id.order_title);
         viewPager = (ViewPager) findViewById(R.id.vp_my_order);
-        MyOrderFragment fragment1 = MyOrderFragment.newInstance(1,orderType);
-        MyOrderFragment fragment2 = MyOrderFragment.newInstance(2,orderType);
-        MyOrderFragment fragment3 = MyOrderFragment.newInstance(3,orderType);
-        MyOrderFragment fragment4 = MyOrderFragment.newInstance(4,orderType);
+        MyOrderFragment fragment1 = MyOrderFragment.newInstance(1, orderType);
+        MyOrderFragment fragment2 = MyOrderFragment.newInstance(2, orderType);
+        MyOrderFragment fragment3 = MyOrderFragment.newInstance(3, orderType);
+        MyOrderFragment fragment4 = MyOrderFragment.newInstance(4, orderType);
         fragments = new ArrayList<>();
         fragments.add(fragment1);
         fragments.add(fragment2);
@@ -70,16 +70,16 @@ public class MyOrderActivity extends BaseActivity implements View.OnClickListene
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
+        switch (v.getId()) {
             case R.id.rl_bill_back:
                 finish();
                 break;
         }
     }
 
-    public class MyOrderFragmentAdapter extends FragmentPagerAdapter{
+    public class MyOrderFragmentAdapter extends FragmentPagerAdapter {
 
-        private String titles[] = {"全部","待付款","待消费","待评价"};
+        private String titles[] = {"全部", "待付款", "待消费", "待评价"};
 
         @Override
         public CharSequence getPageTitle(int position) {

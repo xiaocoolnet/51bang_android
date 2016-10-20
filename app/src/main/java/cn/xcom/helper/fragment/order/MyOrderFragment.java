@@ -91,7 +91,7 @@ public class MyOrderFragment extends Fragment {
             }
         });
         shopGoodInfos = new ArrayList<>();
-        myOrderAdapter = new MyOrderAdapter(mContext, shopGoodInfos, MyOrderFragment.this);
+        myOrderAdapter = new MyOrderAdapter(mContext, shopGoodInfos, MyOrderFragment.this, orderType);
 
         mRecyclerView.setAdapter(myOrderAdapter);
 

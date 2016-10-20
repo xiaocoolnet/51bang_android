@@ -46,12 +46,15 @@ public class MyOrderAdapter extends RecyclerView.Adapter<MyOrderAdapter.ViewHold
     private List<ShopGoodInfo> goodInfos;
     private UserInfo userInfo;
     private Fragment fragment;
+    private int orderType;
 
-    public MyOrderAdapter(Context context, List<ShopGoodInfo> goodInfos,Fragment fragment) {
+    public MyOrderAdapter(Context context, List<ShopGoodInfo> goodInfos,
+                          Fragment fragment, int orderType) {
         mContext = context;
         this.goodInfos = goodInfos;
         userInfo = new UserInfo(mContext);
         this.fragment = fragment;
+        this.orderType = orderType;
     }
 
     @Override
@@ -78,37 +81,79 @@ public class MyOrderAdapter extends RecyclerView.Adapter<MyOrderAdapter.ViewHold
         }
         holder.goodTitle.setText(goodInfo.getGoodsname());
         holder.goodPrice.setText(goodInfo.getMoney());
-        switch (Integer.valueOf(goodInfo.getState())){
-            case OrderHelper.CANCELED:
-                holder.orderState.setText("已取消");
-                holder.payBtn.setVisibility(View.GONE);
-                break;
-            case OrderHelper.UNPAY:
-                holder.orderState.setText("待付款");
-                holder.payBtn.setVisibility(View.VISIBLE);
-                break;
-            case OrderHelper.UN_SEND_OUT:
-                holder.orderState.setText("待发货");
-                holder.payBtn.setVisibility(View.GONE);
-                holder.cancelPaymentBtn.setVisibility(View.VISIBLE);
-                break;
-            case OrderHelper.UNCONFIRMED:
-                holder.orderState.setText("待消费");
-                holder.payBtn.setVisibility(View.GONE);
-                break;
-            case OrderHelper.BUYER_UNCOMMENT:
-                holder.orderState.setText("待评价");
-                holder.payBtn.setVisibility(View.GONE);
-                holder.commentBtn.setVisibility(View.VISIBLE);
-                break;
-            case OrderHelper.SELLER_UNCOMMENT:
-                holder.payBtn.setVisibility(View.GONE);
-                holder.orderState.setText("待评价");
+
+        if (orderType == OrderHelper.BuyerOrder) {
+            switch (Integer.valueOf(goodInfo.getState())) {
+                case OrderHelper.CANCELED:
+                    holder.orderState.setText("已取消");
+                    holder.payBtn.setVisibility(View.GONE);
+                    holder.cancelPaymentBtn.setVisibility(View.GONE);
+                    holder.commentBtn.setVisibility(View.GONE);
+                    break;
+                case OrderHelper.UNPAY:
+                    holder.orderState.setText("待付款");
+                    holder.payBtn.setVisibility(View.VISIBLE);
+                    holder.cancelPaymentBtn.setVisibility(View.GONE);
+                    holder.commentBtn.setVisibility(View.GONE);
+                    break;
+                case OrderHelper.UN_SEND_OUT:
+                    holder.orderState.setText("待发货");
+                    holder.payBtn.setVisibility(View.GONE);
+                    holder.cancelPaymentBtn.setVisibility(View.VISIBLE);
+                    holder.commentBtn.setVisibility(View.GONE);
+                    break;
+                case OrderHelper.UNCONFIRMED:
+                    holder.orderState.setText("待消费");
+                    holder.payBtn.setVisibility(View.GONE);
+                    holder.cancelPaymentBtn.setVisibility(View.GONE);
+                    holder.commentBtn.setVisibility(View.GONE);
+
+                    break;
+                case OrderHelper.BUYER_UNCOMMENT:
+                    holder.orderState.setText("待评价");
+                    holder.payBtn.setVisibility(View.GONE);
+                    holder.cancelPaymentBtn.setVisibility(View.GONE);
+                    holder.commentBtn.setVisibility(View.VISIBLE);
+                    break;
+                case OrderHelper.SELLER_UNCOMMENT:
+                    holder.orderState.setText("待评价");
+                    holder.payBtn.setVisibility(View.GONE);
+                    holder.cancelPaymentBtn.setVisibility(View.GONE);
+                    holder.commentBtn.setVisibility(View.GONE);
+            }
+
+        } else { //orderType == OrderHelper.SellerOrder 卖家
+            holder.payBtn.setVisibility(View.GONE);
+            holder.cancelPaymentBtn.setVisibility(View.GONE);
+            holder.commentBtn.setVisibility(View.GONE);
+            switch (Integer.valueOf(goodInfo.getState())) {
+                case OrderHelper.CANCELED:
+                    holder.orderState.setText("已取消");
+                    break;
+                case OrderHelper.UNPAY:
+                    holder.orderState.setText("待付款");
+                    break;
+                case OrderHelper.UN_SEND_OUT:
+                    holder.orderState.setText("待发货");
+                    break;
+                case OrderHelper.UNCONFIRMED:
+                    holder.orderState.setText("待消费");
+                    break;
+                case OrderHelper.BUYER_UNCOMMENT:
+                    holder.orderState.setText("待评价");
+                    break;
+                case OrderHelper.SELLER_UNCOMMENT:
+                    holder.orderState.setText("待评价");
+            }
+
         }
+
+
         holder.payBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(mContext, "payBtn", Toast.LENGTH_SHORT).show();;
+                Toast.makeText(mContext, "payBtn", Toast.LENGTH_SHORT).show();
+                ;
             }
         });
 
@@ -117,11 +162,11 @@ public class MyOrderAdapter extends RecyclerView.Adapter<MyOrderAdapter.ViewHold
             public void onClick(View v) {
                 new AlertDialog.Builder(mContext).setTitle("取消订单").setPositiveButton("确认",
                         new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        cancelOrde(goodInfo.getOrder_num(),position);
-                    }
-                }).setNegativeButton("取消", null).show();
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                cancelOrde(goodInfo.getOrder_num(), position);
+                            }
+                        }).setNegativeButton("取消", null).show();
             }
         });
 
@@ -129,8 +174,8 @@ public class MyOrderAdapter extends RecyclerView.Adapter<MyOrderAdapter.ViewHold
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(mContext, PostCommentActivity.class);
-                intent.putExtra("order_id",goodInfo.getId());
-                intent.putExtra("type","2");//任务是1,商城是2
+                intent.putExtra("order_id", goodInfo.getId());
+                intent.putExtra("type", "2");//任务是1,商城是2
                 fragment.startActivityForResult(intent, MyOrderFragment.MY_ORDER_REQUEST);
             }
         });
@@ -142,6 +187,7 @@ public class MyOrderAdapter extends RecyclerView.Adapter<MyOrderAdapter.ViewHold
                 Bundle bundle = new Bundle();
                 bundle.putSerializable("good", goodInfo);
                 intent.putExtra("bundle", bundle);
+                intent.putExtra("order_type", orderType);
                 fragment.startActivityForResult(intent, MyOrderFragment.MY_ORDER_REQUEST);
             }
         });
@@ -151,8 +197,8 @@ public class MyOrderAdapter extends RecyclerView.Adapter<MyOrderAdapter.ViewHold
 
     class ViewHold extends RecyclerView.ViewHolder {
         private ImageView goodImage;
-        private TextView goodPrice,goodTitle,orderState;
-        private Button payBtn,commentBtn,cancelPaymentBtn;
+        private TextView goodPrice, goodTitle, orderState;
+        private Button payBtn, commentBtn, cancelPaymentBtn;
 
         public ViewHold(View itemView) {
             super(itemView);
@@ -169,7 +215,7 @@ public class MyOrderAdapter extends RecyclerView.Adapter<MyOrderAdapter.ViewHold
 
     private void cancelOrde(String orderNum, final int position) {
         RequestParams requestParams = new RequestParams();
-        requestParams.put("ordernum",orderNum);
+        requestParams.put("ordernum", orderNum);
         requestParams.put("userid", userInfo.getUserId());
         HelperAsyncHttpClient.get(NetConstant.CANCEL_ORDER, requestParams,
                 new JsonHttpResponseHandler() {
@@ -196,8 +242,6 @@ public class MyOrderAdapter extends RecyclerView.Adapter<MyOrderAdapter.ViewHold
                 });
 
     }
-
-
 
 
 }
