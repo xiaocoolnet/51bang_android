@@ -11,6 +11,7 @@
         android:layout_height="46dip" >
 
         <TextView
+            android:id="@+id/tv_title_name"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:gravity="center"
@@ -23,7 +24,9 @@
             android:id="@+id/rl_user_message_back"
             android:layout_width="50dip"
             android:layout_height="fill_parent"
-            android:gravity="center" >
+            android:gravity="center"
+            android:onClick="onBack"
+            >
 
             <ImageView
                 android:layout_width="20dp"
@@ -38,7 +41,31 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
+        android:divider="@null"
+        android:transcriptMode="normal"
+        android:listSelector="@android:color/transparent"
         >
     </ListView>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:padding="5dp"
+        android:orientation="horizontal"
+        >
+        <EditText
+            android:id="@+id/edt_content"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            />
+        <Button
+            android:id="@+id/btn_send"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="发送"
+            />
+
+    </LinearLayout>
 
 </LinearLayout>

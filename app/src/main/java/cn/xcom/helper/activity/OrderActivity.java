@@ -26,6 +26,8 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.loopj.android.http.JsonHttpResponseHandler;
+import com.loopj.android.http.RequestParams;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -35,11 +37,14 @@ import java.util.List;
 
 import cn.xcom.helper.R;
 import cn.xcom.helper.bean.Front;
+import cn.xcom.helper.bean.TaskItemInfo;
 import cn.xcom.helper.bean.UserInfo;
 import cn.xcom.helper.constant.NetConstant;
+import cn.xcom.helper.net.HelperAsyncHttpClient;
 import cn.xcom.helper.utils.MyImageLoader;
 import cn.xcom.helper.utils.SingleVolleyRequest;
 import cn.xcom.helper.utils.StringPostRequest;
+import cz.msebera.android.httpclient.Header;
 
 /**
  * Created by zhuchongkun on 16/6/12.
@@ -56,14 +61,6 @@ public class OrderActivity extends BaseActivity implements View.OnClickListener 
     private int position1;
     private MineReleaseAdapter mineReleaseAdapter;
     private SwipeRefreshLayout swipeRefreshLayout;
-    private Handler handler = new Handler() {
-        @Override
-        public void handleMessage(Message msg) {
-            if (msg.what == position1) {
-                mineReleaseAdapter.notifyDataSetChanged();
-            }
-        }
-    };
 
 
     @Override
@@ -183,6 +180,7 @@ public class OrderActivity extends BaseActivity implements View.OnClickListener 
                 viewHolder.mine_editor = (TextView) convertView.findViewById(R.id.mine_editor);
                 viewHolder.mine_delete = (TextView) convertView.findViewById(R.id.mine_delete);
                 viewHolder.mine_saled = (TextView) convertView.findViewById(R.id.mine_saled);
+                viewHolder.good_state = (TextView) convertView.findViewById(R.id.good_state);
                 convertView.setTag(viewHolder);
             } else {
                 viewHolder = (ViewHolder) convertView.getTag();
@@ -198,6 +196,20 @@ public class OrderActivity extends BaseActivity implements View.OnClickListener 
             viewHolder.mine_content.setText(front.getDescription());
             viewHolder.mine_price.setText("￥" + front.getPrice());
             viewHolder.mine_saled.setText("已售" + front.getSellnumber());
+            if (front.getRacking() == 0) {//0正在上架,1已下架
+                viewHolder.good_state.setText("下架");
+            } else {
+                viewHolder.good_state.setText("上架");
+            }
+            //上下架
+            viewHolder.good_state.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    changeGoodsState(front.getId(), front.getRacking());
+                }
+            });
+
+
             //删除
             viewHolder.mine_delete.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -206,7 +218,6 @@ public class OrderActivity extends BaseActivity implements View.OnClickListener 
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             position1 = position;
-                            final Message message = Message.obtain();
                             String url = NetConstant.DELETE_GOOD;
                             StringPostRequest request = new StringPostRequest(url, new Response.Listener<String>() {
                                 @Override
@@ -220,8 +231,7 @@ public class OrderActivity extends BaseActivity implements View.OnClickListener 
                                             Toast.makeText(context, "删除失败", Toast.LENGTH_LONG).show();
                                         }
                                         addlist.remove(position);
-                                        message.what = position;
-                                        handler.sendMessage(message);
+                                        mineReleaseAdapter.notifyDataSetChanged();
                                     } catch (JSONException e) {
                                         e.printStackTrace();
                                     }
@@ -259,7 +269,7 @@ public class OrderActivity extends BaseActivity implements View.OnClickListener 
                     Bundle bundle = new Bundle();
                     bundle.putSerializable("item1", addlist.get(position));
                     intent.putExtras(bundle);
-                    intent.putExtra("from",1);
+                    intent.putExtra("from", 1);
                     // intent.putExtra("item",bundle);
                     Log.i("---", position + "");
                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -278,8 +288,46 @@ public class OrderActivity extends BaseActivity implements View.OnClickListener 
             public TextView mine_editor;
             public TextView mine_delete;
             public TextView mine_saled;
-
+            public TextView good_state;
 
         }
+    }
+
+    private void changeGoodsState(String id, final int goodState) {
+        String url;
+        if (goodState == 0) {//已上架,需要下架
+            url = NetConstant.GOODS_XIA_JIA;
+        } else {
+            url = NetConstant.GOODS_SHANG_JIA;
+        }
+        RequestParams params = new RequestParams();
+        params.put("id", id);
+        HelperAsyncHttpClient.get(url, params, new JsonHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                super.onSuccess(statusCode, headers, response);
+                if (response != null) {
+                    try {
+                        String state = response.getString("status");
+                        String data = response.getString("data");
+                        if (state.equals("success")) {
+                            if (goodState == 0) {
+                                Toast.makeText(mContext, "下架成功", Toast.LENGTH_SHORT).show();
+                            } else {
+                                Toast.makeText(mContext, "上架成功", Toast.LENGTH_SHORT).show();
+                            }
+                            addData();
+                        } else {
+                            Toast.makeText(mContext, data, Toast.LENGTH_SHORT).show();
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+            }
+        });
+
+
     }
 }

@@ -8,25 +8,6 @@ import java.util.List;
  */
 public class Front implements Serializable {
 
-    /**
-     * id : 192
-     * type :
-     * goodsname : 在线
-     * username : 黄金丽
-     * phone : 13515067861
-     * price : 1
-     * oprice : 10
-     * picture : null
-     * description : 一切众生下一代
-     * sellnumber : 0
-     * address : 泽友家电商场(金山店)
-     * longitude : 119.654707765037
-     * latitude : 27.0908283086104
-     * delivery : 同城自取
-     * picturelist : [{"id":"116","goodsid":"192","file":"avatar2016:09:11:21:31:45.9900.png","time":null},{"id":"117","goodsid":"192","file":"avatar2016:09:11:21:31:46.1600.png","time":null},{"id":"118","goodsid":"192","file":"avatar2016:09:11:21:31:46.1190.png","time":null}]
-     * commentlist : [{"id":"69","content":"0.00.0.0.","add_time":"1473675745","userid":"607","name":"你好冴","photo":null}]
-     */
-
     private String id;
     private String type;
     private String goodsname;
@@ -43,6 +24,8 @@ public class Front implements Serializable {
     private String delivery;
     private List<PicturelistBean> picturelist;
     private List<CommentlistBean> commentlist;
+    private int racking;//0正在上架 1已下架
+
 
     public String getId() {
         return id;
@@ -170,7 +153,13 @@ public class Front implements Serializable {
         this.commentlist = commentlist;
     }
 
+    public int getRacking() {
+        return racking;
+    }
 
+    public void setRacking(int racking) {
+        this.racking = racking;
+    }
 
     public static class PicturelistBean implements Serializable {
         private String id;
@@ -266,6 +255,8 @@ public class Front implements Serializable {
         public void setPhoto(Object photo) {
             this.photo = photo;
         }
+
+
     }
 
 

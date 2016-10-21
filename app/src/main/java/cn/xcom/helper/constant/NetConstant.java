@@ -327,4 +327,33 @@ public interface NetConstant extends HelperConstant {
     public final static String SELLER_GET_SHOPPING_ORDER_LIST = NET_HOST_PREFIX + "a=SellerGetShoppingOrderList&";
 
 
+    /**
+     * 获取聊天列表
+     */
+    public final static String GET_CHAT_LIST = NET_HOST_PREFIX + "a=xcGetChatListData&";
+
+
+    /**
+     * 获取聊天信息（两个人之间的）
+     * send_uid,receive_uid
+     */
+    public final static String GET_CHAT_DATA = NET_HOST_PREFIX + "a=xcGetChatData&";
+
+
+    /**
+     *    发送聊天信息
+     */
+    public final static String SEND_CHAT_DATA = NET_HOST_PREFIX + "a=SendChatData&";
+
+
+    /**
+     * 产品上架
+     */
+    public final static String GOODS_SHANG_JIA = NET_HOST_PREFIX + "a=Shangjia&";
+
+    /**
+     * 产品下架
+     */
+    public final static String GOODS_XIA_JIA = NET_HOST_PREFIX + "a=Xiajia&";
+
 }

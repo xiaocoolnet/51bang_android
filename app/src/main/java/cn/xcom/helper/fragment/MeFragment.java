@@ -39,6 +39,7 @@ import cn.xcom.helper.activity.ShareQRCodeActivity;
 import cn.xcom.helper.activity.ShopBuyActivity;
 import cn.xcom.helper.activity.ShoppingCartActivity;
 import cn.xcom.helper.activity.SignActivity;
+import cn.xcom.helper.activity.UserMessageActivity;
 import cn.xcom.helper.activity.VerifyShoppingCodeActivity;
 import cn.xcom.helper.activity.WalletActivity;
 import cn.xcom.helper.adapter.MyOrderAdapter;
@@ -202,7 +203,8 @@ public class MeFragment extends Fragment implements View.OnClickListener{
                 startActivity(new Intent(mContext, SignActivity.class));
                 break;
             case R.id.tv_fragment_me_message:
-                startActivity(new Intent(mContext, MessageActivity.class));
+//                startActivity(new Intent(mContext, MessageActivity.class));
+                startActivity(new Intent(mContext, UserMessageActivity.class));
                 break;
             case R.id.tv_fragment_me_bill:
                 startActivity(new Intent(mContext, BillActivity.class));
