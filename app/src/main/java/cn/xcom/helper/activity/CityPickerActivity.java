@@ -144,10 +144,11 @@ public class CityPickerActivity extends BaseActivity implements View.OnClickList
                     HelperApplication.getInstance().mCurrentLocLat = Double.parseDouble(city.getLatitude());
                     HelperApplication.getInstance().mCurrentLocLon = Double.parseDouble(city.getLongitude());
                     HelperApplication.getInstance().status = city.getStatus();
+                    Log.e("result",HelperApplication.getInstance().status);
                     mSearch.reverseGeoCode(new ReverseGeoCodeOption()
                             .location(new LatLng(Double.parseDouble(city.getLatitude()), Double.parseDouble(city.getLongitude()))));
-                    /*setResult(RESULT_OK);
-                    finish();*/
+//                    setResult(RESULT_OK);
+//                    finish();
                 }
             }
 
@@ -335,6 +336,7 @@ public class CityPickerActivity extends BaseActivity implements View.OnClickList
             mCityAdapter.updateLocateState(LocateState.SUCCESS, mLocaddress);
         }
         if(type == 2){
+            Log.e("result_ok","yes");
             HelperApplication.getInstance().mDistrict = result.getAddressDetail().district;
             setResult(RESULT_OK);
             finish();

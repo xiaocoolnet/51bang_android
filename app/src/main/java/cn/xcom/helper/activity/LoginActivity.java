@@ -31,6 +31,7 @@ import cn.xcom.helper.constant.HelperConstant;
 import cn.xcom.helper.constant.NetConstant;
 import cn.xcom.helper.fragment.MapFragment;
 import cn.xcom.helper.net.HelperAsyncHttpClient;
+import cn.xcom.helper.utils.GetUniqueNumber;
 import cn.xcom.helper.utils.LogUtils;
 import cn.xcom.helper.utils.RegexUtil;
 import cn.xcom.helper.utils.SPUtils;
@@ -150,6 +151,8 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
         RequestParams params=new RequestParams();
         params.put("phone",phone);
         params.put("password",password);
+        params.put("registrationID", GetUniqueNumber.getInstance().getNumber());
+        Log.e("OnlyId",GetUniqueNumber.getInstance().getNumber());
         HelperAsyncHttpClient.get(NetConstant.NET_LOGIN,params,new JsonHttpResponseHandler(){
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {

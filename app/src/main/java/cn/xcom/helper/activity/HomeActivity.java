@@ -1,6 +1,7 @@
 package cn.xcom.helper.activity;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -11,11 +12,15 @@ import android.view.Window;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.bigkoo.alertview.AlertView;
+import com.bigkoo.alertview.OnItemClickListener;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 
 import org.json.JSONObject;
 
+import cn.jpush.android.api.JPushInterface;
+import cn.xcom.helper.HelperApplication;
 import cn.xcom.helper.R;
 import cn.xcom.helper.bean.UserInfo;
 import cn.xcom.helper.constant.HelperConstant;
@@ -144,6 +149,28 @@ public class HomeActivity extends BaseActivity{
     protected void onResume() {
         super.onResume();
         getInsurance();
+        if(HelperApplication.getInstance().flag.equals("true")){
+            popDialog();
+        }
+    }
+
+    /**
+     * 弹出退出提示框
+     */
+    private void popDialog() {
+        final AlertView mAlertView = new AlertView("提示", "您的账号在另一个设备登录，请重新登陆", null, new String[]{"确定"}, null, this, AlertView.Style.Alert, new OnItemClickListener() {
+            @Override
+            public void onItemClick(Object o, int position) {
+                UserInfo userInfo=new UserInfo();
+                userInfo.clearDataExceptPhone(mContext);
+                SPUtils.clear(mContext);
+                JPushInterface.stopPush(mContext);
+                startActivity(new Intent(mContext, LoginActivity.class));
+                HelperApplication.getInstance().onTerminate();
+            }
+        });
+        mAlertView.setCancelable(false);
+        mAlertView.show();
     }
 
     /**

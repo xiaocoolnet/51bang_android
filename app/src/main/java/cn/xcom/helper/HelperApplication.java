@@ -1,5 +1,6 @@
 package cn.xcom.helper;
 
+import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.Application;
 import android.content.Context;
@@ -32,11 +33,18 @@ public class HelperApplication  extends Application{
     //切换城市信息
     public double mCurrentLocLat = 0;
     public double mCurrentLocLon = 0;
-    public String status="",mDistrict="";
+    public String status="";
+    public String mDistrict="";
 
     //实时定位坐标和地址
     public double mLocLat,mLocLon;
     public String mLocAddress;
+
+    //是否强退标识
+    public String flag = "false";
+
+    /**打开的activity**/
+    private List<Activity> activities = new ArrayList<Activity>();
 
     // login user name
     public final String PREF_USERNAME = "username";
@@ -81,6 +89,40 @@ public class HelperApplication  extends Application{
 //                .build();
 //        themeConfig = theme;
 
+    }
+
+
+    /**
+     * 新建了一个activity
+     * @param activity
+     */
+    public void addActivity(Activity activity){
+        activities.add(activity);
+    }
+    /**
+     *  结束指定的Activity
+     * @param activity
+     */
+    public void finishActivity(Activity activity){
+        if (activity!=null) {
+            this.activities.remove(activity);
+            activity.finish();
+            activity = null;
+        }
+    }
+
+    /**
+     * 结束所有的activity
+     */
+    @Override
+    public void onTerminate() {
+        super.onTerminate();
+
+        for (Activity activity : activities) {
+            activity.finish();
+        }
+
+        System.exit(0);
     }
 
     private void setPush() {

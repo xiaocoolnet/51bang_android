@@ -13,6 +13,7 @@ import com.bigkoo.alertview.AlertView;
 import com.bigkoo.alertview.OnDismissListener;
 import com.bigkoo.alertview.OnItemClickListener;
 
+import cn.xcom.helper.HelperApplication;
 import cn.xcom.helper.utils.SPUtils;
 import cn.xcom.helper.utils.ToastUtil;
 
@@ -26,6 +27,8 @@ public class BaseActivity extends FragmentActivity{
         super.onCreate(savedInstanceState);
         IntentFilter filter = new IntentFilter("com.USER_ACTION");
         this.registerReceiver(new Receiver(), filter);
+        //添加ctivity集合
+        HelperApplication.getInstance().addActivity(this);
     }
 
     /**
@@ -46,10 +49,12 @@ public class BaseActivity extends FragmentActivity{
                     if(state.equals("1")){
                         message = "是否去抢单？";
                     }
+                    popDialog(context,title,message);
                     break;
                 case "newMessage":
                     title = "您有新的留言消息";
                     message ="是否立即查看？";
+                    popDialog(context,title,message);
                     break;
                 case "sendTaskType":
                     title = "您的任务状态改变";
@@ -68,6 +73,7 @@ public class BaseActivity extends FragmentActivity{
                     if(state.equals("5")){
                         message = "对方已评价";
                     }
+                    popDialog(context,title,message);
                     break;
                 case "acceptTaskType":
                     title = "您接的任务状态改变";
@@ -83,10 +89,12 @@ public class BaseActivity extends FragmentActivity{
                     if(state.equals("-1")){
                         message = "对方已取消";
                     }
+                    popDialog(context,title,message);
                     break;
                 case "myWallet":
                     title = "钱包数据已更新";
                     message = "是否立即查看？";
+                    popDialog(context,title,message);
                     break;
                 case "buyOrderType":
                     title = "您购买的商品订单状态已更新";
@@ -102,6 +110,7 @@ public class BaseActivity extends FragmentActivity{
                     if(state.equals("4")){
                         message = "商家回复评论";
                     }
+                    popDialog(context,title,message);
                     break;
                 case "businessOrderType":
                     title = "您发布的商品订单状态已更新";
@@ -120,10 +129,14 @@ public class BaseActivity extends FragmentActivity{
                     if(state.equals("5")){
                         message = "对方已评论";
                     }
+                    popDialog(context,title,message);
                     break;
                 case "loginFromOther":
                     title = "有人登陆您的账号";
                     message ="您需要重新登陆";
+                    Intent loginIntent = new Intent(context,HomeActivity.class);
+                    HelperApplication.getInstance().flag = "true";
+                    startActivity(loginIntent);
                     break;
                 case "certificationType":
                     title = "认证状态更新";
@@ -139,13 +152,14 @@ public class BaseActivity extends FragmentActivity{
                     if(state.equals("4")){
                         message = "您未通过投保认证";
                     }
+                    popDialog(context,title,message);
                     break;
                 case "prohibitVisit":
                     title = "封号";
                     message = "封号";
+                    popDialog(context,title,message);
                     break;
             }
-            popDialog(context,title,message);
         }
 
     }

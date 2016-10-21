@@ -15,8 +15,11 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import cn.jpush.android.api.JPushInterface;
+import cn.xcom.helper.HelperApplication;
 import cn.xcom.helper.R;
 import cn.xcom.helper.bean.UserInfo;
+import cn.xcom.helper.utils.SPUtils;
 
 /**
  * Created by zhuchongkun on 16/6/8.
@@ -99,8 +102,10 @@ public class MoreServiceActivity extends BaseActivity implements View.OnClickLis
                 dialog.dismiss();
                 UserInfo userInfo=new UserInfo();
                 userInfo.clearDataExceptPhone(mContext);
-                startActivity(new Intent(mContext,LoginActivity.class));
-                finish();
+                SPUtils.clear(mContext);
+                JPushInterface.stopPush(mContext);
+                startActivity(new Intent(mContext, LoginActivity.class));
+                HelperApplication.getInstance().onTerminate();
             }
         });
         builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {

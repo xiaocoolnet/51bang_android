@@ -53,7 +53,7 @@
                 android:layout_marginLeft="10dp"
                 android:background="@null"
                 android:hint="@string/tv_i_relsase_good"
-                android:textSize="20sp" />
+                android:textSize="16sp" />
 
             <View
                 android:layout_width="match_parent"
@@ -68,7 +68,7 @@
                 android:background="@null"
                 android:gravity="top"
                 android:hint="@string/tv_i_relsase_content"
-                android:textSize="20sp" />
+                android:textSize="16sp" />
 
 
             <ImageView
@@ -122,7 +122,7 @@
                     android:layout_marginLeft="10dp"
                     android:text="@string/tv_i_relsase_divide"
                     android:textColor="#201717"
-                    android:textSize="18sp" />
+                    android:textSize="15sp" />
                 <!--<ImageView-->
                 <!--android:id="@+id/ima_dissmis"-->
                 <!--android:layout_width="20dp"-->
@@ -132,17 +132,17 @@
                 <!--android:layout_marginTop="5dp"-->
                 <!--android:layout_marginLeft="280dp"/>-->
                 <RelativeLayout
-                    android:layout_width="150dp"
-                    android:layout_height="45dp"
-                    android:layout_marginLeft="180dp">
-
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
                     <TextView
                         android:id="@+id/text_divide"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_centerInParent="true"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginRight="10dp"
                         android:text="@string/tv_i_relsase_choose"
-                        android:textSize="18sp" />
+                        android:textSize="16sp" />
                 </RelativeLayout>
             </LinearLayout>
 
@@ -163,17 +163,22 @@
                     android:layout_marginLeft="10dp"
                     android:text="@string/tv_i_relsase_price"
                     android:textColor="#201717"
-                    android:textSize="18sp" />
-
-                <EditText
-                    android:id="@+id/ed_price"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_marginLeft="220dp"
-                    android:background="@null"
-                    android:hint="@string/tv_i_relsase_printprice"
-                    android:textColor="#a19e9e" />
+                    android:textSize="16sp" />
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+                    <EditText
+                        android:id="@+id/ed_price"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginRight="10dp"
+                        android:background="@null"
+                        android:hint="@string/tv_i_relsase_printprice"
+                        android:textSize="16sp"
+                        android:textColor="#a19e9e" />
+                </RelativeLayout>
             </LinearLayout>
 
             <View
@@ -193,17 +198,24 @@
                     android:layout_marginLeft="10dp"
                     android:text="@string/tv_i_relsase_oldprintprice"
                     android:textColor="#201717"
-                    android:textSize="18sp" />
+                    android:textSize="16sp" />
 
-                <EditText
-                    android:id="@+id/ed_oldprice"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_marginLeft="220dp"
-                    android:background="@null"
-                    android:hint="@string/tv_i_relsase_printprice"
-                    android:textColor="#a19e9e" />
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+                    <EditText
+                        android:id="@+id/ed_oldprice"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginRight="10dp"
+                        android:layout_marginLeft="220dp"
+                        android:background="@null"
+                        android:hint="@string/tv_i_relsase_printprice"
+                        android:textSize="16sp"
+                        android:textColor="#a19e9e" />
+                </RelativeLayout>
             </LinearLayout>
 
             <View
@@ -224,16 +236,22 @@
                     android:layout_marginLeft="10dp"
                     android:text="@string/tv_i_relsase_location"
                     android:textColor="#201717"
-                    android:textSize="18sp" />
-
-                <EditText
-                    android:id="@+id/ed_location"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_marginLeft="220dp"
-                    android:background="@null"
-                    android:hint="请输入位置" />
+                    android:textSize="16sp" />
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+                    <EditText
+                        android:id="@+id/ed_location"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginRight="10dp"
+                        android:layout_marginLeft="220dp"
+                        android:background="@null"
+                        android:textSize="16sp"
+                        android:hint="请输入位置" />
+                </RelativeLayout>
             </LinearLayout>
 
             <View
@@ -254,27 +272,29 @@
                     android:layout_marginLeft="10dp"
                     android:text="@string/tv_i_relsase_transport"
                     android:textColor="#201717"
-                    android:textSize="18sp" />
+                    android:textSize="16sp" />
 
-                <ImageView
-                    android:id="@+id/id_dismiss11"
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    android:layout_gravity="center"
-                    android:layout_marginLeft="250dp"
-                    android:src="@mipmap/ic_arrow_right" />
+
 
                 <RelativeLayout
-                    android:layout_width="100dp"
-                    android:layout_height="45dp"
-                    android:layout_marginLeft="-100dp">
-
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+                    <ImageView
+                        android:id="@+id/id_dismiss11"
+                        android:layout_width="15dp"
+                        android:layout_height="15dp"
+                        android:layout_centerVertical="true"
+                        android:layout_alignParentRight="true"
+                        android:layout_marginRight="10dp"
+                        android:src="@mipmap/ic_arrow_right" />
                     <TextView
                         android:id="@+id/text_transport"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_centerInParent="true"
-                        android:textSize="18sp" />
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginRight="10dp"
+                        android:textSize="16sp" />
                 </RelativeLayout>
 
             </LinearLayout>
@@ -297,17 +317,21 @@
                     android:layout_marginLeft="10dp"
                     android:text="@string/tv_i_relsase_contactPhone"
                     android:textColor="#201717"
-                    android:textSize="18sp" />
-
-                <TextView
-                    android:id="@+id/telephone"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_marginLeft="180dp"
-                    android:text="18865623775"
-                    android:textColor="#201717"
-                    android:textSize="18sp" />
+                    android:textSize="16sp" />
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+                    <TextView
+                        android:id="@+id/telephone"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginRight="10dp"
+                        android:text="18865623775"
+                        android:textColor="#201717"
+                        android:textSize="16sp" />
+                </RelativeLayout>
             </LinearLayout>
 
             <View
