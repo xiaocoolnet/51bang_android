@@ -25,6 +25,7 @@ import java.util.List;
 
 import cn.xcom.helper.R;
 import cn.xcom.helper.activity.MyOrderDetailActivity;
+import cn.xcom.helper.activity.PaymentActivity;
 import cn.xcom.helper.activity.PostCommentActivity;
 import cn.xcom.helper.bean.OrderHelper;
 import cn.xcom.helper.bean.ShopGoodInfo;
@@ -152,8 +153,11 @@ public class MyOrderAdapter extends RecyclerView.Adapter<MyOrderAdapter.ViewHold
         holder.payBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(mContext, "payBtn", Toast.LENGTH_SHORT).show();
-                ;
+                Intent intent = new Intent(mContext, PaymentActivity.class);
+                intent.putExtra("price",goodInfo.getMoney());
+                intent.putExtra("tradeNo",goodInfo.getOrder_num());
+                intent.putExtra("orderType",2);//1--任务,2--商品
+                fragment.startActivityForResult(intent, MyOrderFragment.MY_ORDER_REQUEST);
             }
         });
 

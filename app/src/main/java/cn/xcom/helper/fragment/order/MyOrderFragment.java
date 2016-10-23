@@ -42,7 +42,7 @@ import cz.msebera.android.httpclient.Header;
 public class MyOrderFragment extends Fragment {
     public static final int MY_ORDER_REQUEST = 1000;
     private static final int CANCEL_SUCCESS = 101;
-    private static final int PAY_SUCCESS = 102;
+    private static final int PAY_SUCCESS = 113;
     private static final int COMMENT_SUCCESS = 112;
     private int orderState;//1全部 2待付款 3待消费 4待评价
     private int orderType;//商户或者买家
@@ -158,6 +158,8 @@ public class MyOrderFragment extends Fragment {
                 case COMMENT_SUCCESS:
                     getOrder();
                     break;
+                case PAY_SUCCESS:
+                    getOrder();
 
             }
 

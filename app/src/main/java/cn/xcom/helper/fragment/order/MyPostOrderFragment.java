@@ -43,8 +43,10 @@ import cz.msebera.android.httpclient.Header;
 
 public class MyPostOrderFragment extends Fragment {
     public static final int POST_ORDER_REQUEST_CODE = 10002;
-    private static final int CANCEL_ORDER_RESULT_CODE = 111;
-    private static final int COMMENT_RESULT_CODE = 112;
+    public static final int CANCEL_ORDER_RESULT_CODE = 111;
+    public static final int COMMENT_RESULT_CODE = 112;
+    public static final int PAY_RESULT_CODE = 113;
+
     private Context mContext;
     private XRecyclerView mRecyclerView;
     private UserInfo userInfo;
@@ -89,19 +91,7 @@ public class MyPostOrderFragment extends Fragment {
             }
         });
         taskItemInfos = new ArrayList<>();
-        adapter = new OrderRecyclerViewAdapter(mContext, taskItemInfos,MyPostOrderFragment.this);
-        adapter.setOnItemClickListener(new OrderRecyclerViewAdapter.OnItemClickListener() {
-            @Override
-            public void onClick(View view, int position) {
-                Intent intent = new Intent(mContext, MyPostOrderDetailActivity.class);
-                Bundle bundle = new Bundle();
-                bundle.putSerializable("task_info",taskItemInfos.get(position));
-                bundle.putInt("type", orderType);
-                intent.putExtra("bundle",bundle);
-//                intent.putExtra("taskid",taskItemInfos.get(position).getId());
-                startActivityForResult(intent,POST_ORDER_REQUEST_CODE);
-            }
-        });
+        adapter = new OrderRecyclerViewAdapter(mContext, taskItemInfos,MyPostOrderFragment.this,orderType);
 
         mRecyclerView.setAdapter(adapter);
 
@@ -165,6 +155,8 @@ public class MyPostOrderFragment extends Fragment {
                 case COMMENT_RESULT_CODE:
                     getOrder();
                     break;
+                case PAY_RESULT_CODE:
+                    getOrder();
             }
 
         }

@@ -22,9 +22,8 @@ import cn.xcom.helper.utils.MyImageLoader;
 
 /**
  * Created by zhuchongkun on 16/6/8.
- *
  */
-public class SaleAdapter extends BaseAdapter{
+public class SaleAdapter extends BaseAdapter {
     private List<Front> addList;
     private Context context;
 
@@ -34,10 +33,9 @@ public class SaleAdapter extends BaseAdapter{
     }
 
 
-
     @Override
     public int getCount() {
-        Log.e("=======shipei1qi",""+addList.size());
+        Log.e("=======shipei1qi", "" + addList.size());
         return addList.size();
 
     }
@@ -56,55 +54,51 @@ public class SaleAdapter extends BaseAdapter{
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
         Log.e("========shipeiqi", "ZOUBUZOU");
-        ViewHolder viewHolder=null;
-        if (convertView==null){
-            viewHolder=new ViewHolder();
-            convertView= LayoutInflater.from(context).inflate(R.layout.sale_fragment,null);
-            viewHolder.imageView= (ImageView) convertView.findViewById(R.id.imgview);
-            viewHolder.textView1= (TextView) convertView.findViewById(R.id.title);
-            viewHolder.textView2= (TextView) convertView.findViewById(R.id.content);
-            viewHolder.textView3= (TextView) convertView.findViewById(R.id.price);
-            viewHolder.textView4= (TextView) convertView.findViewById(R.id.oldprice);
-            viewHolder.textView5= (TextView) convertView.findViewById(R.id.havesell);
+        ViewHolder viewHolder = null;
+        if (convertView == null) {
+            viewHolder = new ViewHolder();
+            convertView = LayoutInflater.from(context).inflate(R.layout.sale_fragment, null);
+            viewHolder.imageView = (ImageView) convertView.findViewById(R.id.imgview);
+            viewHolder.textView1 = (TextView) convertView.findViewById(R.id.title);
+            viewHolder.textView2 = (TextView) convertView.findViewById(R.id.content);
+            viewHolder.textView3 = (TextView) convertView.findViewById(R.id.price);
+            viewHolder.textView4 = (TextView) convertView.findViewById(R.id.oldprice);
+            viewHolder.textView5 = (TextView) convertView.findViewById(R.id.havesell);
             convertView.setTag(viewHolder);
-        }else {
-            viewHolder= (ViewHolder) convertView.getTag();
+        } else {
+            viewHolder = (ViewHolder) convertView.getTag();
         }
-            Front front=addList.get(position);
-            Log.e("========shipeiqi", "" + addList.size());
-            Log.e("========shipeiqi8989", "" + front.getPicturelist().size());
-            if (front.getPicturelist().size()>0) {
-                MyImageLoader.display(NetConstant.NET_DISPLAY_IMG +
-                        front.getPicturelist().get(0).getFile(), viewHolder.imageView);
-            }else if (front.getPicturelist().size()==0){
-                MyImageLoader.display(NetConstant.NET_DISPLAY_IMG, viewHolder.imageView);
-            }
-            viewHolder.textView1.setText(front.getGoodsname());
-            viewHolder.textView2.setText(front.getDescription());
-            viewHolder.textView3.setText("￥"+front.getPrice());
-            viewHolder.textView4.setText(front.getOprice());
-            viewHolder.textView4.getPaint().setFlags(Paint.STRIKE_THRU_TEXT_FLAG); //中划线
-            viewHolder.textView5.setText("已售"+front.getSellnumber());
+        final Front front = addList.get(position);
+        Log.e("========shipeiqi", "" + addList.size());
+        Log.e("========shipeiqi8989", "" + front.getPicturelist().size());
+        if (front.getPicturelist().size() > 0) {
+            MyImageLoader.display(NetConstant.NET_DISPLAY_IMG +
+                    front.getPicturelist().get(0).getFile(), viewHolder.imageView);
+        } else if (front.getPicturelist().size() == 0) {
+            MyImageLoader.display(NetConstant.NET_DISPLAY_IMG, viewHolder.imageView);
+        }
+        viewHolder.textView1.setText(front.getGoodsname());
+        viewHolder.textView2.setText(front.getDescription());
+        viewHolder.textView3.setText("￥" + front.getPrice());
+        viewHolder.textView4.setText(front.getOprice());
+        viewHolder.textView4.getPaint().setFlags(Paint.STRIKE_THRU_TEXT_FLAG); //中划线
+        viewHolder.textView5.setText("已售" + front.getSellnumber());
         //对cinvertview进行监听
-            convertView.setOnClickListener(new View.OnClickListener() {
+        convertView.setOnClickListener(new View.OnClickListener() {
             @Override
-              public void onClick(View v) {
-                 Intent intent=new Intent(context,SaleDetailActivity.class);
-                 Bundle bundle=new Bundle();
-                 bundle.putSerializable("item10", addList.get(position));
-                 Log.i("---", addList.size() + "");
-                 intent.putExtras(bundle);
-                // intent.putExtra("item",bundle);
-                 Log.i("---", position + "");
-                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                 context.startActivity(intent);
+            public void onClick(View v) {
+                Intent intent = new Intent(context, SaleDetailActivity.class);
+                intent.putExtra("id", front.getId());
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                context.startActivity(intent);
             }
         });
 
-            return convertView ;
+        return convertView;
     }
-    public class ViewHolder{
+
+    public class ViewHolder {
         private ImageView imageView;
-        private TextView textView1,textView2,textView3,textView4,textView5;
+        private TextView textView1, textView2, textView3, textView4, textView5;
     }
 }

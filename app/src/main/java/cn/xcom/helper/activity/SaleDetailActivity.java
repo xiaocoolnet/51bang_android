@@ -55,8 +55,8 @@ public class SaleDetailActivity extends BaseActivity implements View.OnClickList
     private RelativeLayout shopPublish;
     private List addViewList;//添加图片的list
     private ViewPageAdapter viewPageAdapter;
-    private Front front;
-    private ShopGoodInfo shopGoodInfo=new ShopGoodInfo();
+//    private Front front;
+    private ShopGoodInfo shopGoodInfo;
     private Context context;
     private UserInfo userInfo;
     private List<Collection>addList;
@@ -65,7 +65,7 @@ public class SaleDetailActivity extends BaseActivity implements View.OnClickList
     SharePopupWindow takePhotoPopWin;
     private RelativeLayout rl_share;
     IWXAPI msgApi;
-
+    private String goodsId;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -77,16 +77,20 @@ public class SaleDetailActivity extends BaseActivity implements View.OnClickList
          initView();
         //得到传过来的数据
         Intent intent=getIntent();
-        front= (Front) intent.getSerializableExtra("item10");
-        tvContent.setText(front.getDescription());
-        price.setText("￥" + front.getPrice());
-        tvprice.setText("￥" + front.getPrice());
-        adress.setText(front.getAddress());
-        Log.e("========shipeiqiwocao", "" + front.getPicturelist().size());
-        if (front.getPicturelist().size()>0){
-            for (int i=0;i<front.getPicturelist().size();i++){
+        goodsId = intent.getStringExtra("id");
+        addGood();
+  }
+
+    private void setData(){
+        tvContent.setText(shopGoodInfo.getDescription());
+        price.setText("￥" + shopGoodInfo.getPrice());
+        tvprice.setText("￥" + shopGoodInfo.getPrice());
+        adress.setText(shopGoodInfo.getAddress());
+        Log.e("========shipeiqiwocao", "" + shopGoodInfo.getPicturelist().size());
+        if (shopGoodInfo.getPicturelist().size()>0){
+            for (int i=0;i<shopGoodInfo.getPicturelist().size();i++){
                 imageView=new ImageView(this);
-                MyImageLoader.display(NetConstant.NET_DISPLAY_IMG +front.getPicturelist().get(i).getFile(),
+                MyImageLoader.display(NetConstant.NET_DISPLAY_IMG +shopGoodInfo.getPicturelist().get(i).getFile(),
                         imageView);
                 imageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
                 addViewList.add(imageView);
@@ -100,9 +104,7 @@ public class SaleDetailActivity extends BaseActivity implements View.OnClickList
         viewPageAdapter=new ViewPageAdapter(addViewList);
         vp.setAdapter(viewPageAdapter);
         vp.setCurrentItem(0);
-        collectionList();
-        addGood();
-  }
+    }
 
     //初始化控件
     public void initView(){
@@ -143,7 +145,8 @@ public class SaleDetailActivity extends BaseActivity implements View.OnClickList
                         shopGoodInfo=gson.fromJson(data,
                                 new TypeToken<ShopGoodInfo>() {
                                 }.getType());
-
+                        setData();
+                        collectionList();
                         Log.d("data1111",shopGoodInfo.getUserid());
                     }
                 } catch (JSONException e) {
@@ -157,7 +160,7 @@ public class SaleDetailActivity extends BaseActivity implements View.OnClickList
                 ToastUtils.showToast(context, "网络错误，请检查网络");
             }
         });
-        request.putValue("id",front.getId());
+        request.putValue("id",goodsId);
         SingleVolleyRequest.getInstance(context).addToRequestQueue(request);
     }
 
@@ -175,7 +178,6 @@ public class SaleDetailActivity extends BaseActivity implements View.OnClickList
                 }else{
                     Intent intent=new Intent(SaleDetailActivity.this,ShopReleaseActivity.class);
                     intent.putExtra("userid",shopGoodInfo.getUserid());
-                    Log.d("===id",front.getId());
                     startActivity(intent);
                 }
 
@@ -190,7 +192,7 @@ public class SaleDetailActivity extends BaseActivity implements View.OnClickList
             case R.id.buy:
                 Intent intent=new Intent(context,BuyActivity.class);
                 Bundle bundle=new Bundle();
-                bundle.putSerializable("price", front);
+                bundle.putSerializable("price", shopGoodInfo);
                 intent.putExtras(bundle);
                 startActivity(intent);
                 break;
@@ -296,21 +298,22 @@ public class SaleDetailActivity extends BaseActivity implements View.OnClickList
         });
         request.putValue("userid", userInfo.getUserId());
         Log.d("shoucangid", userInfo.getUserId());
-        if (front.getPicturelist().size()==0){
+        if (shopGoodInfo.getPicturelist().size()==0){
             request.putValue("goodsid","");
         }else{
-            request.putValue("goodsid",front.getPicturelist().get(0).getGoodsid());
+            request.putValue("goodsid",shopGoodInfo.getPicturelist().get(0).getGoodsid());
         }
       //  request.putValue("goodsid",front.getPicturelist().get(0).getGoodsid());
-        request.putValue("type",front.getType());
-        request.putValue("title", front.getGoodsname());
-        request.putValue("description", front.getDescription());
+        request.putValue("type",shopGoodInfo.getType());
+        request.putValue("title", shopGoodInfo.getGoodsname());
+        request.putValue("description", shopGoodInfo.getDescription());
         SingleVolleyRequest.getInstance(context).addToRequestQueue(request);
     }
+
     //判断该商品是否被收藏
     public void judgeIsCollection(){
         for ( int j=0;j< addList.size();j++){
-            if (front.getId().equals(addList.get(j).getObject_id())){
+            if (shopGoodInfo.getId().equals(addList.get(j).getObject_id())){
                 String url = NetConstant.GOOD_IS_COLLECTION;
                 StringPostRequest request = new StringPostRequest(url, new Response.Listener<String>() {
                     @Override
@@ -421,12 +424,12 @@ public class SaleDetailActivity extends BaseActivity implements View.OnClickList
             }
         });
         request.putValue("userid", userInfo.getUserId());
-        if (front.getPicturelist().size()==0){
+        if (shopGoodInfo.getPicturelist().size()==0){
             request.putValue("goodsid","");
         }else {
-            request.putValue("goodsid", front.getPicturelist().get(0).getGoodsid());
+            request.putValue("goodsid", shopGoodInfo.getPicturelist().get(0).getGoodsid());
         }
-        request.putValue("type", front.getType());
+        request.putValue("type", shopGoodInfo.getType());
         SingleVolleyRequest.getInstance(context).addToRequestQueue(request);
     }
 

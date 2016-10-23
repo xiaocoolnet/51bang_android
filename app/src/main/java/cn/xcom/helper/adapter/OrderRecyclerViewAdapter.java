@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
@@ -27,6 +28,8 @@ import java.util.List;
 
 import cn.xcom.helper.R;
 import cn.xcom.helper.activity.BillActivity;
+import cn.xcom.helper.activity.MyPostOrderDetailActivity;
+import cn.xcom.helper.activity.PaymentActivity;
 import cn.xcom.helper.activity.PostCommentActivity;
 import cn.xcom.helper.bean.PoiInformaiton;
 import cn.xcom.helper.bean.TaskItemInfo;
@@ -43,17 +46,14 @@ import cz.msebera.android.httpclient.Header;
 public class OrderRecyclerViewAdapter extends RecyclerView.Adapter<OrderRecyclerViewAdapter.ViewHolder> implements View.OnClickListener {
     private Context mContext;
     private List<TaskItemInfo> taskItemInfos;
-    private OnItemClickListener onItemClickListener;
     private Fragment fragment;
-    public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
-        this.onItemClickListener = onItemClickListener;
-    }
+    private int type;
 
-
-    public OrderRecyclerViewAdapter(Context context, List<TaskItemInfo> taskItemInfos,Fragment fragment) {
+    public OrderRecyclerViewAdapter(Context context, List<TaskItemInfo> taskItemInfos,Fragment fragment,int orderType) {
         mContext = context;
         this.taskItemInfos = taskItemInfos;
         this.fragment = fragment;
+        type = orderType;
     }
 
     @Override
@@ -70,8 +70,10 @@ public class OrderRecyclerViewAdapter extends RecyclerView.Adapter<OrderRecycler
         String payState = taskItemInfo.getPaystatus();
         if (payState.equals("0")) {
             holder.payStateDesTv.setText("支付未托管");
+            holder.trusteeshipBt.setVisibility(View.VISIBLE);
         } else if (payState.equals("1")) {
             holder.payStateDesTv.setText("支付已托管");
+            holder.trusteeshipBt.setVisibility(View.GONE);
         }
 
         String state = taskItemInfo.getState();
@@ -80,20 +82,22 @@ public class OrderRecyclerViewAdapter extends RecyclerView.Adapter<OrderRecycler
         if (state.equals("1")) {
             holder.orderCompleteStateTv.setText("未完成");
             holder.orderStateTv.setText("未抢单");
-            if (payState.equals("0")) {
-                holder.trusteeshipBt.setVisibility(View.VISIBLE);
-            }
+            holder.payBt.setVisibility(View.GONE);
+            holder.toCommentBtn.setVisibility(View.GONE);
         } else if (state.equals("2")) {
             holder.orderCompleteStateTv.setText("未完成");
             holder.orderStateTv.setText("已被抢");
             holder.payBt.setVisibility(View.VISIBLE);
+            holder.toCommentBtn.setVisibility(View.GONE);
         } else if (state.equals("3") || state.equals("4")) {
             holder.orderCompleteStateTv.setText("未完成");
             holder.orderStateTv.setText("已上门");
             holder.payBt.setVisibility(View.VISIBLE);
+            holder.toCommentBtn.setVisibility(View.GONE);
         } else {
             holder.orderCompleteStateTv.setText("已完成");
             holder.orderStateTv.setText("已完成");
+            holder.payBt.setVisibility(View.GONE);
             if(taskItemInfo.getEvaluate().size() ==0){
                 holder.toCommentBtn.setVisibility(View.VISIBLE);
             }else{
@@ -139,12 +143,26 @@ public class OrderRecyclerViewAdapter extends RecyclerView.Adapter<OrderRecycler
             }
         });
 
+        holder.trusteeshipBt.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(mContext, PaymentActivity.class);
+                intent.putExtra("price",taskItemInfo.getPrice());
+                intent.putExtra("tradeNo",taskItemInfo.getOrder_num());
+                intent.putExtra("orderType",1);//1--任务,2--商品
+                fragment.startActivityForResult(intent,MyPostOrderFragment.POST_ORDER_REQUEST_CODE);
+            }
+        });
+
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (onItemClickListener != null) {
-                    onItemClickListener.onClick(holder.itemView, position);
-                }
+                Intent intent = new Intent(mContext, MyPostOrderDetailActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("task_info",taskItemInfos.get(position));
+                bundle.putInt("type", type);
+                intent.putExtra("bundle",bundle);
+                fragment.startActivityForResult(intent,MyPostOrderFragment.POST_ORDER_REQUEST_CODE);
             }
         });
 
@@ -218,11 +236,6 @@ public class OrderRecyclerViewAdapter extends RecyclerView.Adapter<OrderRecycler
             toCommentBtn = (Button) itemView.findViewById(R.id.bt_to_comment);
         }
     }
-
-    public interface OnItemClickListener {
-        void onClick(View view, int position);
-    }
-
 
 
 }

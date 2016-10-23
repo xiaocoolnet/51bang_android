@@ -1,6 +1,7 @@
 package cn.xcom.helper.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,6 +14,7 @@ import android.widget.TextView;
 import java.util.List;
 
 import cn.xcom.helper.R;
+import cn.xcom.helper.activity.SaleDetailActivity;
 import cn.xcom.helper.bean.Collection;
 import cn.xcom.helper.bean.Front;
 import cn.xcom.helper.constant.NetConstant;
@@ -66,7 +68,7 @@ public class CollectionAdapter extends BaseAdapter {
         } else {
             viewHolder = (ViewHolder) convertView.getTag();
         }
-        Collection front = addList.get(position);
+        final Collection front = addList.get(position);
         Log.e("========shipeiqi", "" + addList.size());
 
         MyImageLoader.display(NetConstant.NET_DISPLAY_IMG, viewHolder.imageView);
@@ -92,7 +94,9 @@ public class CollectionAdapter extends BaseAdapter {
         convertView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                Intent intent = new Intent(context, SaleDetailActivity.class);
+                intent.putExtra("id",front.getObject_id());
+                context.startActivity(intent);
             }
         });
 
