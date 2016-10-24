@@ -197,6 +197,7 @@
         <activity android:name=".activity.PostCommentActivity"/>
         <activity android:name=".activity.VerifyShoppingCodeActivity"/>
         <activity android:name=".activity.ChatActivity"/>
+        <activity android:name=".activity.InsureDetailActivity"/>
         <!-- 极光Required SDK核心功能 -->
         <activity
             android:name="cn.jpush.android.ui.PushActivity"
