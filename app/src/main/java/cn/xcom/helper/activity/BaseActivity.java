@@ -1,20 +1,15 @@
 package cn.xcom.helper.activity;
 
-import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentActivity;
-import android.util.Log;
 
 import com.bigkoo.alertview.AlertView;
 import com.bigkoo.alertview.OnDismissListener;
 import com.bigkoo.alertview.OnItemClickListener;
 
 import cn.xcom.helper.HelperApplication;
-import cn.xcom.helper.utils.SPUtils;
 import cn.xcom.helper.utils.ToastUtil;
 
 /**
@@ -25,8 +20,8 @@ public class BaseActivity extends FragmentActivity{
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        IntentFilter filter = new IntentFilter("com.USER_ACTION");
-        this.registerReceiver(new Receiver(), filter);
+        /*IntentFilter filter = new IntentFilter("com.USER_ACTION");
+        this.registerReceiver(new Receiver(), filter);*/
         //添加ctivity集合
         HelperApplication.getInstance().addActivity(this);
     }
@@ -34,12 +29,12 @@ public class BaseActivity extends FragmentActivity{
     /**
      * 接受推送通知并通知页面添加小红点
      */
-    public class Receiver extends BroadcastReceiver {
+   /* public class Receiver extends BroadcastReceiver {
 
         @Override
         public void onReceive(Context context, Intent intent) {
             Log.i("Recevier1", "接收到:");
-            String key = SPUtils.get(context,"push","").toString();
+            String key = SPUtils.get(context, "push", "").toString();
             String state = SPUtils.get(context,"pushstate","").toString();
             String title = "";
             String message = "";
@@ -162,7 +157,7 @@ public class BaseActivity extends FragmentActivity{
             }
         }
 
-    }
+    }*/
 
     /**
      * 接受推送弹出提示框
@@ -209,6 +204,7 @@ public class BaseActivity extends FragmentActivity{
 
     @Override
     protected void onDestroy() {
+        HelperApplication.getInstance().finishActivity(this);
         super.onDestroy();
     }
 }

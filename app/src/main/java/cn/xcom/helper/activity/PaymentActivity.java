@@ -290,6 +290,14 @@ public class PaymentActivity extends BaseActivity implements View.OnClickListene
         payThread.start();
     }
 
+    public void createTrendNumber(){
+        String treadNo = "";
+        if(treadNo==null){
+            return;
+        }
+
+    }
+
     /**
      * 生成支付宝订单号
      * @return
