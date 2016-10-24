@@ -50,7 +50,7 @@ public class ShopGoodInfo implements Serializable {
     private String longitude;
     private String latitude;
     private String status;
-    private String racking;
+    private String racking;//0正在上架 1已下架
     private String delivery;
     private String time;
     private String sellnumber;

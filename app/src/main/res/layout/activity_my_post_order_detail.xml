@@ -277,10 +277,11 @@
 
             <Button
                 android:id="@+id/btn_cancel"
-                android:layout_width="60dp"
-                android:layout_height="30dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_gravity="end"
                 android:layout_marginRight="10dp"
+                android:padding="5dp"
                 android:background="@color/colorTheme"
                 android:text="取消订单"
                 android:textColor="@color/colorTextWhite"

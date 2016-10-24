@@ -72,7 +72,6 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
                 android:layout_marginTop="5dp"
-                android:text="自助烤肉都来吃啊、、、、、、"
                 android:textColor="@color/colorTextSale"
                 android:textSize="16sp" />
 
@@ -94,7 +93,6 @@
                     android:layout_width="150dp"
                     android:layout_height="wrap_content"
                     android:layout_alignParentLeft="true"
-                    android:text="￥38.90"
                     android:textColor="@color/msg_red"
                     android:layout_centerVertical="true"
                     android:textSize="16sp" />
@@ -125,7 +123,6 @@
                     android:id="@+id/tv_city_name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="烟台市"
                     android:textColor="@color/colorTextSale"
                     android:textSize="16sp"
                     android:drawableLeft="@mipmap/ic_locate"
@@ -136,7 +133,6 @@
                     android:id="@+id/adress"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="芝罘区上尧鲁东大学南校区"
                     android:layout_alignLeft="@id/tv_city_name"
                     android:layout_below="@id/tv_city_name"
                     android:layout_marginTop="5dp"
@@ -157,7 +153,6 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="1.3km"
                         android:layout_marginTop="2dp" />
 
                 </LinearLayout>
@@ -222,7 +217,6 @@
             android:id="@+id/tvprice"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="￥38.90"
             android:textColor="@color/colorHelpMe"
             android:textSize="16sp"
             android:layout_toRightOf="@id/tvprice_"

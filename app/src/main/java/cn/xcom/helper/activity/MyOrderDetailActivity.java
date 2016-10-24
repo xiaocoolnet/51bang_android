@@ -31,7 +31,7 @@ import cz.msebera.android.httpclient.Header;
 public class MyOrderDetailActivity extends BaseActivity implements View.OnClickListener {
     private static final int ORDER_DETAIL_REQUEST_CODE = 1122;
     private static final int CANCEL_SUCCESS = 101;
-    private static final int PAY_SUCCESS = 102;
+    private static final int PAY_SUCCESS = 113;
     private static final int COMMENT_SUCCESS = 112;
 
     private ShopGoodInfo goodInfo;
@@ -149,6 +149,11 @@ public class MyOrderDetailActivity extends BaseActivity implements View.OnClickL
                 finish();
                 break;
             case R.id.tv_to_pay:
+                Intent intent = new Intent(this, PaymentActivity.class);
+                intent.putExtra("price",goodInfo.getMoney());
+                intent.putExtra("tradeNo",goodInfo.getOrder_num());
+                intent.putExtra("orderType",2);//1--任务,2--商品
+                startActivityForResult(intent, ORDER_DETAIL_REQUEST_CODE);
                 break;
             case R.id.tv_cancel_payment:
                 new AlertDialog.Builder(this).setTitle("取消订单").setPositiveButton("确认", new DialogInterface.OnClickListener() {
@@ -159,11 +164,11 @@ public class MyOrderDetailActivity extends BaseActivity implements View.OnClickL
                 }).setNegativeButton("取消", null).show();
                 break;
             case R.id.tv_comment:
-                Intent intent = new Intent(this, MyOrderDetailActivity.class);
-                intent.putExtra("order_id", goodInfo.getId());
-                intent.putExtra("type", "2");//任务是1,商城是2
-                startActivityForResult(intent, ORDER_DETAIL_REQUEST_CODE);
-
+                Intent intent1 = new Intent(this, PostCommentActivity.class);
+                intent1.putExtra("order_id", goodInfo.getId());
+                intent1.putExtra("type", "2");//任务是1,商城是2
+                startActivityForResult(intent1, ORDER_DETAIL_REQUEST_CODE);
+                break;
         }
     }
 
@@ -202,10 +207,17 @@ public class MyOrderDetailActivity extends BaseActivity implements View.OnClickL
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == ORDER_DETAIL_REQUEST_CODE) {
-            if (resultCode == COMMENT_SUCCESS) {
-                commentTv.setVisibility(View.GONE);
-                setResult(COMMENT_SUCCESS);
+            switch (resultCode){
+                case COMMENT_SUCCESS:
+                    commentTv.setVisibility(View.GONE);
+                    setResult(COMMENT_SUCCESS);
+                    break;
+                case PAY_SUCCESS:
+                    toPaytv.setVisibility(View.GONE);
+                    setResult(PAY_SUCCESS);
+                    break;
             }
+
 
         }
 

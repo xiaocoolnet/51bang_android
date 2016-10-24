@@ -15,9 +15,9 @@ import android.widget.Toast;
 
 import cn.xcom.helper.R;
 import cn.xcom.helper.bean.Front;
+import cn.xcom.helper.bean.ShopGoodInfo;
 
 public class BuyActivity extends BaseActivity implements View.OnClickListener {
-    private Front front;
     private RelativeLayout back;
     private TextView buy_phone;
     private TextView buy_price;
@@ -30,6 +30,7 @@ public class BuyActivity extends BaseActivity implements View.OnClickListener {
     private TextView adress;
     private LinearLayout buy_address;
     private RelativeLayout buy_commit;
+    private ShopGoodInfo shopGoodInfo;
     int amount=1;//初始化购买数量
     private TextWatcher textWatcher=new TextWatcher() {
         @Override
@@ -58,10 +59,10 @@ public class BuyActivity extends BaseActivity implements View.OnClickListener {
         setContentView(R.layout.activity_buy);
         initView();
         Intent intent=getIntent();
-        front= (Front) intent.getSerializableExtra("price");
-        buy_price.setText("￥"+front.getPrice());
-        buy_total.setText(front.getPrice());
-        buy_deliver.setText(front.getDelivery());
+        shopGoodInfo= (ShopGoodInfo) intent.getSerializableExtra("price");
+        buy_price.setText("￥"+shopGoodInfo.getPrice());
+        buy_total.setText(shopGoodInfo.getPrice());
+        buy_deliver.setText(shopGoodInfo.getDelivery());
     }
 
     private void initView() {

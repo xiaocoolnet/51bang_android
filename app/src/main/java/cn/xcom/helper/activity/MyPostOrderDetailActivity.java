@@ -27,6 +27,7 @@ import cn.xcom.helper.adapter.CommentsListAdapter;
 import cn.xcom.helper.bean.TaskItemInfo;
 import cn.xcom.helper.bean.UserInfo;
 import cn.xcom.helper.constant.NetConstant;
+import cn.xcom.helper.fragment.order.MyPostOrderFragment;
 import cn.xcom.helper.net.HelperAsyncHttpClient;
 import cz.msebera.android.httpclient.Header;
 
@@ -153,7 +154,7 @@ public class MyPostOrderDetailActivity extends BaseActivity {
     private void cancelPayment() {
         RequestParams requestParams = new RequestParams();
         requestParams.put("ownerid", userInfo.getUserId());
-        requestParams.put("taskid", orderId);
+        requestParams.put("taskid", taskItemInfo.getId());
         HelperAsyncHttpClient.get(NetConstant.OWNER_CANCEL_TASK, requestParams,
                 new JsonHttpResponseHandler() {
                     @Override
@@ -165,7 +166,7 @@ public class MyPostOrderDetailActivity extends BaseActivity {
                                 if (state.equals("success")) {
                                     Toast.makeText(MyPostOrderDetailActivity.this, "取消订单成功", Toast.LENGTH_SHORT).show();
                                     cancelBtn.setVisibility(View.GONE);
-                                    setResult(Activity.RESULT_OK);
+                                    setResult(MyPostOrderFragment.COMMENT_RESULT_CODE);
                                 } else {
                                     Toast.makeText(MyPostOrderDetailActivity.this, "取消订单失败", Toast.LENGTH_SHORT).show();
                                 }
