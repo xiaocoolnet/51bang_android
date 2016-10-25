@@ -36,7 +36,7 @@ public class MyOrderDetailActivity extends BaseActivity implements View.OnClickL
 
     private ShopGoodInfo goodInfo;
     private TextView userNameTv, mobileTv, goodNameTv, priceTv, goodsCountTv, moneyTv, deliveryTv,
-            remarksTv, addressTv, toPaytv, cancelPaymentTv, trackingTv, commentTv;
+            remarksTv, addressTv, toPaytv, cancelPaymentTv, trackingTv, commentTv, sendOutTv;
     private View backView;
     private UserInfo userInfo;
     private int orderType;
@@ -70,6 +70,9 @@ public class MyOrderDetailActivity extends BaseActivity implements View.OnClickL
         cancelPaymentTv.setOnClickListener(this);
         trackingTv = (TextView) findViewById(R.id.tv_tracking);
         commentTv = (TextView) findViewById(R.id.tv_comment);
+        commentTv.setOnClickListener(this);
+        sendOutTv = (TextView) findViewById(R.id.tv_send_out);
+        sendOutTv.setOnClickListener(this);
     }
 
     private void setView() {
@@ -93,52 +96,63 @@ public class MyOrderDetailActivity extends BaseActivity implements View.OnClickL
                     toPaytv.setVisibility(View.GONE);
                     cancelPaymentTv.setVisibility(View.GONE);
                     commentTv.setVisibility(View.GONE);
+                    sendOutTv.setVisibility(View.GONE);
                     break;
                 case OrderHelper.UNPAY:
                     trackingTv.setVisibility(View.GONE);
                     toPaytv.setVisibility(View.VISIBLE);
                     cancelPaymentTv.setVisibility(View.VISIBLE);
                     commentTv.setVisibility(View.GONE);
+                    sendOutTv.setVisibility(View.GONE);
                     break;
                 case OrderHelper.UN_SEND_OUT:
                     trackingTv.setVisibility(View.VISIBLE);
                     toPaytv.setVisibility(View.GONE);
                     cancelPaymentTv.setVisibility(View.VISIBLE);
                     commentTv.setVisibility(View.GONE);
+                    sendOutTv.setVisibility(View.GONE);
                     break;
                 case OrderHelper.UNCONFIRMED:
                     trackingTv.setVisibility(View.VISIBLE);
                     toPaytv.setVisibility(View.GONE);
                     cancelPaymentTv.setVisibility(View.GONE);
                     commentTv.setVisibility(View.GONE);
+                    sendOutTv.setVisibility(View.GONE);
                     break;
                 case OrderHelper.BUYER_UNCOMMENT:
                     trackingTv.setVisibility(View.VISIBLE);
                     toPaytv.setVisibility(View.GONE);
                     cancelPaymentTv.setVisibility(View.GONE);
                     commentTv.setVisibility(View.VISIBLE);
+                    sendOutTv.setVisibility(View.GONE);
                     break;
                 case OrderHelper.SELLER_UNCOMMENT:
                     trackingTv.setVisibility(View.VISIBLE);
                     toPaytv.setVisibility(View.GONE);
                     cancelPaymentTv.setVisibility(View.GONE);
                     commentTv.setVisibility(View.GONE);
+                    sendOutTv.setVisibility(View.GONE);
                     break;
                 case OrderHelper.COMPLETED:
                     trackingTv.setVisibility(View.GONE);
                     toPaytv.setVisibility(View.GONE);
                     cancelPaymentTv.setVisibility(View.GONE);
                     commentTv.setVisibility(View.GONE);
-
+                    sendOutTv.setVisibility(View.GONE);
+                    break;
             }
 
         } else {
-            trackingTv.setVisibility(View.VISIBLE);
+            trackingTv.setVisibility(View.GONE);
             toPaytv.setVisibility(View.GONE);
             cancelPaymentTv.setVisibility(View.GONE);
             commentTv.setVisibility(View.GONE);
+            if (orderType == OrderHelper.UN_SEND_OUT) {
+                sendOutTv.setVisibility(View.VISIBLE);
+            } else {
+                sendOutTv.setVisibility(View.GONE);
+            }
         }
-
 
     }
 
@@ -150,9 +164,9 @@ public class MyOrderDetailActivity extends BaseActivity implements View.OnClickL
                 break;
             case R.id.tv_to_pay:
                 Intent intent = new Intent(this, PaymentActivity.class);
-                intent.putExtra("price",goodInfo.getMoney());
-                intent.putExtra("tradeNo",goodInfo.getOrder_num());
-                intent.putExtra("orderType",2);//1--任务,2--商品
+                intent.putExtra("price", goodInfo.getMoney());
+                intent.putExtra("tradeNo", goodInfo.getOrder_num());
+                intent.putExtra("orderType", 2);//1--任务,2--商品
                 startActivityForResult(intent, ORDER_DETAIL_REQUEST_CODE);
                 break;
             case R.id.tv_cancel_payment:
@@ -168,6 +182,9 @@ public class MyOrderDetailActivity extends BaseActivity implements View.OnClickL
                 intent1.putExtra("order_id", goodInfo.getId());
                 intent1.putExtra("type", "2");//任务是1,商城是2
                 startActivityForResult(intent1, ORDER_DETAIL_REQUEST_CODE);
+                break;
+            case R.id.tv_send_out:
+                sendOutOrder();
                 break;
         }
     }
@@ -200,6 +217,32 @@ public class MyOrderDetailActivity extends BaseActivity implements View.OnClickL
 
                     }
                 });
+    }
+
+    private void sendOutOrder() {
+        RequestParams requestParams = new RequestParams();
+        requestParams.put("order_num", goodInfo.getOrder_num());
+        requestParams.put("state", OrderHelper.UNCONFIRMED);
+        HelperAsyncHttpClient.get(NetConstant.UPDATE_SHOPPING_STATE, requestParams, new JsonHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                super.onSuccess(statusCode, headers, response);
+                if (response != null) {
+                    try {
+                        String state = response.getString("status");
+                        if (state.equals("success")) {
+                            Toast.makeText(MyOrderDetailActivity.this, "提醒发货成功", Toast.LENGTH_SHORT).show();
+                            sendOutTv.setVisibility(View.GONE);
+                        } else {
+                            String data = response.getString("data");
+                            Toast.makeText(MyOrderDetailActivity.this, data, Toast.LENGTH_SHORT).show();
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        });
 
     }
 
@@ -207,7 +250,7 @@ public class MyOrderDetailActivity extends BaseActivity implements View.OnClickL
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == ORDER_DETAIL_REQUEST_CODE) {
-            switch (resultCode){
+            switch (resultCode) {
                 case COMMENT_SUCCESS:
                     commentTv.setVisibility(View.GONE);
                     setResult(COMMENT_SUCCESS);

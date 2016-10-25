@@ -363,4 +363,10 @@ public interface NetConstant extends HelperConstant {
     public final static String UPDATE_USER_INSURANCE = NET_HOST_PREFIX + "a=UpdateUserInsurance&";
 
 
+    /**
+     * 热卖］更新状态
+     */
+    public final static String UPDATE_SHOPPING_STATE = NET_HOST_PREFIX + "a=UpdataShoppingState&";
+
+
 }

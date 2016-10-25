@@ -94,7 +94,7 @@ public class WithdrawCashActivity extends BaseActivity implements View.OnClickLi
                     try {
                         String state = response.getString("status");
                         if (state.equals("success")) {
-                            Toast.makeText(WithdrawCashActivity.this, "提现成功", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(WithdrawCashActivity.this, "提现申请成功，请耐心等待", Toast.LENGTH_SHORT).show();
                         } else {
                             String data = response.getString("data");
                             Toast.makeText(WithdrawCashActivity.this, data, Toast.LENGTH_SHORT).show();
