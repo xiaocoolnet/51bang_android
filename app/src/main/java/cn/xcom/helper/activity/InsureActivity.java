@@ -17,6 +17,7 @@ import android.widget.Toast;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -79,7 +80,7 @@ public class InsureActivity extends BaseActivity implements View.OnClickListener
         bt_insure.setOnClickListener(this);
         insureImg  = (ImageView) findViewById(R.id.iv_insure);
         progressDialog = new ProgressDialog(this);
-        progressDialog.setCancelable(false);
+        progressDialog.setCancelable(true);
     }
 
 
@@ -182,11 +183,19 @@ public class InsureActivity extends BaseActivity implements View.OnClickListener
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                 super.onSuccess(statusCode, headers, response);
                 progressDialog.dismiss();
-                Toast.makeText(mContext,"上传成功",Toast.LENGTH_SHORT).show();
-                rl_state.setBackgroundResource(R.color.colorTheme);
-                tv_state.setText("认证中");
-                bt_insure.setVisibility(View.GONE);
-                insureImg.setVisibility(View.GONE);
+                try {
+                    if(response.getString("status").equals("success")){
+                        Toast.makeText(mContext,"上传成功,请等待验证",Toast.LENGTH_SHORT).show();
+                        rl_state.setBackgroundResource(R.color.colorTheme);
+                        tv_state.setText("认证中");
+                        bt_insure.setVisibility(View.GONE);
+                        insureImg.setVisibility(View.GONE);
+                    }else{
+                        Toast.makeText(mContext,response.getString("data"),Toast.LENGTH_SHORT).show();
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
             }
             @Override
             public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {

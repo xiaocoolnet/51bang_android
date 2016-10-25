@@ -24,6 +24,7 @@ import cn.xcom.helper.bean.UserInfo;
 import cn.xcom.helper.constant.NetConstant;
 import cn.xcom.helper.net.HelperAsyncHttpClient;
 import cn.xcom.helper.utils.LogUtils;
+import cn.xcom.helper.view.DividerItemDecoration;
 import cz.msebera.android.httpclient.Header;
 
 /**
@@ -55,11 +56,8 @@ public class IncomeRecordsActivity extends BaseActivity implements View.OnClickL
         LinearLayoutManager layoutManager = new LinearLayoutManager(mContext);
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         mRecyclerView.setLayoutManager(layoutManager);
-
         mRecyclerView.setRefreshProgressStyle(ProgressStyle.BallSpinFadeLoader);
         mRecyclerView.setLoadingMoreProgressStyle(ProgressStyle.BallRotate);
-//        mRecyclerView.setArrowImageView(R.drawable.iconfont_downgrey);
-
         mRecyclerView.setLoadingListener(new XRecyclerView.LoadingListener() {
             @Override
             public void onRefresh() {
@@ -68,12 +66,10 @@ public class IncomeRecordsActivity extends BaseActivity implements View.OnClickL
 
             @Override
             public void onLoadMore() {
-
+                mRecyclerView.refreshComplete();
             }
         });
-//        mAdapter=new IncomeRecordsAdapter();
-//        mRecyclerView.setAdapter(mAdapter);
-        // mRecyclerView.setRefreshing(true);
+        mRecyclerView.addItemDecoration(new DividerItemDecoration(this,LinearLayoutManager.VERTICAL));
         userInfo=new UserInfo(mContext);
         getIncomeRecordsList();
     }

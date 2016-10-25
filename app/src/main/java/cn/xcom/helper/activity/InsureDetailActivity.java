@@ -13,6 +13,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -67,34 +68,23 @@ public class InsureDetailActivity extends BaseActivity implements View.OnClickLi
 
                 String data = year + "-" + monthOfYear + "-" + dayOfMonth;
                 timeTv.setText(data);
-                //时分秒用0代替
-                data_new = dataOne(data + "-" + hour + "-" + minute + "-" + second);
+                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+                Date time = null;
+                try {
+                    time = simpleDateFormat.parse(data);
+                    long ts = time.getTime();
+                    String s = String.valueOf(ts);
+                    data_new =s.substring(0, 10);
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
 
             }
         }, year, month, day);
         dlg.show();
     }
 
-    /**
-     * 时间转时间戳
-     * @param time
-     * @return
-     */
-    public String dataOne(String time) {
-        SimpleDateFormat sdr = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss",
-                Locale.CHINA);
-        Date date;
-        String times = null;
-        try {
-            date = sdr.parse(time);
-            long l = date.getTime();
-            String stf = String.valueOf(l);
-            times = stf.substring(0, 10);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return times;
-    }
+
 
     @Override
     public void onClick(View v) {

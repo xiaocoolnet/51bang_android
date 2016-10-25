@@ -368,6 +368,12 @@ public interface NetConstant extends HelperConstant {
     public final static String GET_WORKING_STATE = NET_HOST_PREFIX + "a=GetWorkingState&";
 
     /**
+     * 热卖］更新状态
+     */
+    public final static String UPDATE_SHOPPING_STATE = NET_HOST_PREFIX + "a=UpdataShoppingState&";
+
+
+    /**
      * 切换开工收工状态
      */
     public final static String CHANGE_WORKING_STATE = NET_HOST_PREFIX + "a=BeginWorking&";

@@ -102,7 +102,7 @@ public class SignActivity extends BaseActivity implements View.OnClickListener{
     private void isSign() {
         RequestParams requestParams=new RequestParams();
         requestParams.put("userid",userInfo.getUserId());
-        requestParams.put("day", TimeUtils.getNowTime()*1000);
+        requestParams.put("day", TimeUtils.getNowTime()/1000);
         HelperAsyncHttpClient.get(NetConstant.NET_GET_SIGN_STATE,requestParams,new JsonHttpResponseHandler(){
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
@@ -130,7 +130,7 @@ public class SignActivity extends BaseActivity implements View.OnClickListener{
     private void toSign() {
         RequestParams requestParams=new RequestParams();
         requestParams.put("userid",userInfo.getUserId());
-        requestParams.put("day", TimeUtils.getNowTime()*1000);
+        requestParams.put("day", TimeUtils.getNowTime()/1000);
         LogUtils.e(TAG,"--requestParams->"+requestParams.toString());
         HelperAsyncHttpClient.get(NetConstant.NET_TO_SIGN,requestParams,new JsonHttpResponseHandler(){
             @Override

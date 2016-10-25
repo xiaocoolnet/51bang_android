@@ -3,11 +3,15 @@ package cn.xcom.helper.activity;
 import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -29,22 +33,25 @@ import cn.xcom.helper.bean.UserInfo;
 import cn.xcom.helper.constant.NetConstant;
 import cn.xcom.helper.fragment.order.MyPostOrderFragment;
 import cn.xcom.helper.net.HelperAsyncHttpClient;
+import cn.xcom.helper.utils.MyImageLoader;
 import cz.msebera.android.httpclient.Header;
 
 /**
  * 我的发单详情页面
  */
 
-public class MyPostOrderDetailActivity extends BaseActivity {
+public class MyPostOrderDetailActivity extends BaseActivity implements View.OnClickListener {
     private int titleType;
     private TextView fistTitle, secondTitle, thirdTitle, fourthTitle, orderNumTv, descriptionTv,
-            priceTv, saddressTv, addressTv, expiryTv, applyPhoneTv;
+            priceTv, saddressTv, addressTv, expiryTv, applyPhoneTv,timeTv,serverNameTv,serveCountTv;
+    private ImageView avatarIv,toPhoneIv,toChatIv;
     private String orderId;
     private Button cancelBtn;
     private UserInfo userInfo;
     private Context mContext;
     private ListView commentsLv;
     private TaskItemInfo taskItemInfo;
+    private RelativeLayout applyRl;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,8 +93,16 @@ public class MyPostOrderDetailActivity extends BaseActivity {
                 }).setNegativeButton("取消", null).show();
             }
         });
-
         commentsLv = (ListView) findViewById(R.id.lv_comments);
+        timeTv = (TextView) findViewById(R.id.tv_time);
+        avatarIv = (ImageView) findViewById(R.id.iv_avatar);
+        serverNameTv = (TextView) findViewById(R.id.tv_server_name);
+        serveCountTv = (TextView) findViewById(R.id.tv_serve_count);
+        toPhoneIv = (ImageView) findViewById(R.id.iv_to_phone);
+        toPhoneIv.setOnClickListener(this);
+        toChatIv = (ImageView) findViewById(R.id.iv_to_chat);
+        toChatIv.setOnClickListener(this);
+        applyRl = (RelativeLayout) findViewById(R.id.rl_apply);
     }
 
     private void setView(TaskItemInfo taskItemInfo) {
@@ -113,15 +128,26 @@ public class MyPostOrderDetailActivity extends BaseActivity {
         addressTv.setText(taskItemInfo.getAddress());
         Date date = new Date();
         date.setTime(Long.parseLong(taskItemInfo.getExpirydate()) * 1000);
-        expiryTv.setText(new SimpleDateFormat("MM-dd  HH:mm:ss").format(date));
+        expiryTv.setText(new SimpleDateFormat("MM-dd HH:mm:ss").format(date));
         if (taskItemInfo.getApply() == null) {
             applyPhoneTv.setText("无人接单");
+            applyRl.setVisibility(View.GONE);
         } else {
             applyPhoneTv.setText(taskItemInfo.getApply().getPhone());
+            serverNameTv.setText(taskItemInfo.getApply().getName());
+//            serveCountTv.setText(taskItemInfo.getApply());
+            if("".equals(taskItemInfo.getApply().getPhoto())){
+                MyImageLoader.display(NetConstant.NET_DISPLAY_IMG, avatarIv);
+            }else{
+                MyImageLoader.display(NetConstant.NET_DISPLAY_IMG +
+                        taskItemInfo.getApply().getPhoto(), avatarIv);
+            }
         }
-
         CommentsListAdapter adapter = new CommentsListAdapter(mContext,taskItemInfo.getEvaluate());
         commentsLv.setAdapter(adapter);
+
+        date.setTime(Long.parseLong(taskItemInfo.getTime()) * 1000);
+        timeTv.setText(new SimpleDateFormat("MM-dd HH:mm:ss").format(date));
 
     }
 
@@ -184,4 +210,22 @@ public class MyPostOrderDetailActivity extends BaseActivity {
         finish();
     }
 
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()){
+            case R.id.iv_to_phone:
+                Intent intent = new Intent();
+                intent.setAction(Intent.ACTION_CALL);
+                intent.setData(Uri.parse("tel:" + taskItemInfo.getApply().getPhone()));
+                //开启系统拨号器
+                startActivity(intent);
+                break;
+            case R.id.iv_to_chat:
+                Intent chatIntent = new Intent(this,ChatActivity.class);
+                chatIntent.putExtra("id",taskItemInfo.getApply().getUserId());
+                chatIntent.putExtra("name",taskItemInfo.getApply().getName());
+                startActivity(chatIntent);
+                break;
+        }
+    }
 }

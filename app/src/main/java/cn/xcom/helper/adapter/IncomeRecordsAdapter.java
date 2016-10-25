@@ -10,6 +10,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import cn.xcom.helper.R;
 
 /**
@@ -30,10 +33,15 @@ public class IncomeRecordsAdapter extends RecyclerView.Adapter<IncomeRecordsAdap
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         try {
+
             JSONObject jsonObject = jsonArray.getJSONObject(position);
             holder.tv_money.setText(jsonObject.getString("money"));
-            holder.tv_time.setText(jsonObject.getString("time"));
-            holder.tv_balance.setText(jsonObject.getString("balance"));
+
+            Date date = new Date();
+            date.setTime(Long.parseLong(jsonObject.getString("time"))* 1000);
+            holder.tv_time.setText(new SimpleDateFormat("yyyy-MM-dd  HH:mm:ss").format(date));
+
+            holder.tv_balance.setText("余额:"+jsonObject.getString("balance"));
         } catch (JSONException e) {
             e.printStackTrace();
         }
