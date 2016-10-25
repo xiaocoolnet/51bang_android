@@ -6,10 +6,11 @@
 
     <TextView
         android:id="@+id/groupItem"
-        android:textColor="#ffffff"
-        android:textSize="18dp"
+        android:textColor="@color/text_black"
+        android:textSize="15dp"
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:gravity="center" />
+        android:layout_height="40dp"
+        android:gravity="center"
+        android:text="全部"/>
 
 </LinearLayout>  

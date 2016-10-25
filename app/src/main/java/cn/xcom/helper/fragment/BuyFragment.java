@@ -1,6 +1,8 @@
 package cn.xcom.helper.fragment;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -20,6 +22,10 @@ import com.baidu.mapapi.model.LatLng;
 import com.baidu.mapapi.navi.BaiduMapAppNotSupportNaviException;
 import com.baidu.mapapi.navi.BaiduMapNavigation;
 import com.baidu.mapapi.navi.NaviParaOption;
+import com.baidu.mapapi.utils.DistanceUtil;
+import com.baidu.mapapi.utils.OpenClientUtil;
+import com.baidu.mapapi.utils.route.BaiduMapRoutePlan;
+import com.baidu.mapapi.utils.route.RouteParaOption;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.kyleduo.switchbutton.SwitchButton;
@@ -35,7 +41,6 @@ import java.util.List;
 
 import cn.xcom.helper.HelperApplication;
 import cn.xcom.helper.R;
-import cn.xcom.helper.activity.AddressDetailActivity;
 import cn.xcom.helper.activity.AuthorizedActivity;
 import cn.xcom.helper.activity.ChangeSkillsActivity;
 import cn.xcom.helper.activity.MyTaskActivity;
@@ -71,6 +76,8 @@ public class BuyFragment extends Fragment implements View.OnClickListener{
     private List<TaskInfo> taskInfos;
     private CommonAdapter<TaskInfo> adapter;
     private MenuPopupWindow menuPopupWindow;
+
+    int flag = 0;
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -139,55 +146,6 @@ public class BuyFragment extends Fragment implements View.OnClickListener{
      *显示选择菜单
      * */
     private void showPopupMenu() {
-
-        /*//自定义布局
-        View layout = LayoutInflater.from(mContext).inflate(R.layout.address_add_menu, null);
-        //初始化popwindow
-        final PopupWindow popupWindow = new PopupWindow(layout, FrameLayout.LayoutParams.WRAP_CONTENT,FrameLayout.LayoutParams.WRAP_CONTENT);
-        popupWindow.setFocusable(true);
-        popupWindow.setOutsideTouchable(true);
-        popupWindow.setBackgroundDrawable(new BitmapDrawable());
-
-        //设置弹出位置
-        int[] location = new int[2];
-        ll_task.getLocationOnScreen(location);
-        popupWindow.showAsDropDown(ll_task);
-
-        final TextView add_qun = (TextView)layout.findViewById(R.id.add_qun);
-        TextView tong_bu = (TextView)layout.findViewById(R.id.tong_bu);
-        // 设置背景颜色变暗
-        // 实例化一个ColorDrawable颜色为半透明
-        ColorDrawable dw = new ColorDrawable(0xb0000000);
-        // 设置弹出窗体的背景
-        popupWindow.setBackgroundDrawable(dw);
-        *//*final WindowManager.LayoutParams lp = getActivity().getWindow().getAttributes();
-        lp.alpha = 0.7f;
-        getActivity().getWindow().setAttributes(lp);*//*
-        //监听popwindow消失事件，取消遮盖层
-        popupWindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
-            @Override
-            public void onDismiss() {
-                *//*lp.alpha = 1.0f;
-                getActivity().getWindow().setAttributes(lp);*//*
-            }
-        });
-
-        add_qun.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //我的任务
-                startActivity(new Intent(mContext, MyTaskActivity.class));
-                popupWindow.dismiss();
-            }
-        });
-        tong_bu.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //修改技能
-
-                popupWindow.dismiss();
-            }
-        });*/
         menuPopupWindow = new MenuPopupWindow(mContext, new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -215,18 +173,28 @@ public class BuyFragment extends Fragment implements View.OnClickListener{
      */
     private void getData() {
         if(SPUtils.get(getActivity(), HelperConstant.IS_HAD_AUTHENTICATION,"").equals("1")){
+            getWorkingState();
+            if(HelperApplication.getInstance().mDistrict.equals("")){
+                flag = 1;
+            }
             RequestParams params=new RequestParams();
-            params.put("city",HelperApplication.getInstance().mDistrict);
+//            params.put("city",HelperApplication.getInstance().mDistrict);
+            params.put("city","芝罘区");
+            params.put("userid",userInfo.getUserId());
             HelperAsyncHttpClient.get(NetConstant.GETTASKLIST, params, new JsonHttpResponseHandler() {
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                     super.onSuccess(statusCode, headers, response);
-                    srl_task.setRefreshing(false);
-                    if (response.optString("status").equals("success")) {
-                        setAdapter(response);
+                    if(flag == 1){
+                        getData();
+                        flag = 2;
+                    }else{
+                        srl_task.setRefreshing(false);
+                        if (response.optString("status").equals("success")) {
+                            setAdapter(response);
+                        }
+                        LogUtils.e(TAG, response.toString());
                     }
-                    LogUtils.e(TAG, response.toString());
-
                 }
 
                 @Override
@@ -236,6 +204,66 @@ public class BuyFragment extends Fragment implements View.OnClickListener{
                 }
             });
         }
+    }
+
+    /**
+     * 获取当前用户开工收工状态
+     */
+    private void getWorkingState() {
+        RequestParams params=new RequestParams();
+        params.put("userid",userInfo.getUserId());
+        HelperAsyncHttpClient.get(NetConstant.GET_WORKING_STATE, params, new JsonHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                super.onSuccess(statusCode, headers, response);
+                String state = response.optString("data");
+                if(state.equals("0")){
+                    sb_change.setChecked(false);
+                }else if(state.equals("1")){
+                    sb_change.setChecked(true);
+                }
+                sb_change.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (sb_change.isChecked()) {
+                            changeWorkingState("1");
+                        }else{
+                            changeWorkingState("0");
+                        }
+                    }
+                });
+
+            }
+            @Override
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                super.onFailure(statusCode, headers, responseString, throwable);
+                LogUtils.e(TAG, responseString);
+            }
+        });
+    }
+
+    /**
+     * 切换工作状态
+     */
+    private void changeWorkingState(String state) {
+        RequestParams params=new RequestParams();
+        params.put("userid",userInfo.getUserId());
+        params.put("address",HelperApplication.getInstance().mLocAddress);
+        params.put("longitude",HelperApplication.getInstance().mLocLon);
+        params.put("latitude",HelperApplication.getInstance().mLocLat);
+        params.put("isworking",state);
+        HelperAsyncHttpClient.get(NetConstant.CHANGE_WORKING_STATE, params, new JsonHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                super.onSuccess(statusCode, headers, response);
+                Log.e(TAG, String.valueOf(response));
+            }
+            @Override
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                super.onFailure(statusCode, headers, responseString, throwable);
+                LogUtils.e(TAG, responseString);
+            }
+        });
     }
 
     /**
@@ -264,16 +292,23 @@ public class BuyFragment extends Fragment implements View.OnClickListener{
      * @param taskInfo
      */
     private void setItem(ViewHolder holder, final TaskInfo taskInfo) {
-        holder.setText(R.id.tv_name,taskInfo.getName())
-                .setText(R.id.tv_task_name,taskInfo.getDescription())
-                .setTimeText(R.id.tv_task_time,taskInfo.getTime())
-                .setTimeTextWithStr(R.id.tv_expiry_time,taskInfo.getExpirydate(),"前有效")
-                .setText(R.id.tv_type_name,taskInfo.getTypename())
+        holder.setText(R.id.tv_name, taskInfo.getName())
+                .setText(R.id.tv_task_name, taskInfo.getDescription())
+                .setTimeText(R.id.tv_task_time, taskInfo.getTime())
+                .setTimeTextWithStr(R.id.tv_expiry_time, taskInfo.getExpirydate(), "前有效")
+                .setText(R.id.tv_type_name, taskInfo.getTypename())
                 .setText(R.id.tv_address1,taskInfo.getAddress())
                 .setText(R.id.tv_address2,taskInfo.getSaddress())
-                .setText(R.id.tv_btn_grab,taskInfo.getState().equals("1")?"抢单":"已被抢")
-                .setImageByUrl(R.id.iv_avatar,taskInfo.getPhoto())
+                .setText(R.id.tv_btn_grab, taskInfo.getState().equals("1") ? "抢单" : "已被抢")
+                .setImageByUrl(R.id.iv_avatar, taskInfo.getPhoto())
                 .setText(R.id.tv_price, taskInfo.getPrice());
+        if(!taskInfo.getLongitude().equals("")&&!taskInfo.getLatitude().equals("")&&!taskInfo.getSlatitude().equals("")&&!taskInfo.getSlongitude().equals("")){
+            holder.setText(R.id.tv_distance, (int) DistanceUtil.getDistance(
+                    new LatLng(Double.parseDouble(taskInfo.getLatitude()),
+                            Double.parseDouble(taskInfo.getLongitude())),
+                    new LatLng(Double.parseDouble(taskInfo.getSlatitude()),
+                            Double.parseDouble(taskInfo.getSlongitude()))) + "米");
+        }
         TextView btn_grab = holder.getView(R.id.tv_btn_grab);
         if(taskInfo.getState().equals("1")){
             if(Long.parseLong(taskInfo.getExpirydate()) * 1000 < new Date().getTime()){
@@ -300,49 +335,107 @@ public class BuyFragment extends Fragment implements View.OnClickListener{
             btn_grab.setText("已被抢");
             btn_grab.setTextColor(getResources().getColor(R.color.holo_red_light));
         }
-        //上门详细地址
-        if(taskInfo.getLongitude().length()>0&&taskInfo.getLatitude().length()>0){
+        //启用百度地图app导航
+        if(taskInfo.getLongitude().length()>0&&taskInfo.getLatitude().length()>0
+                &&taskInfo.getSlongitude().length()>0&&taskInfo.getSlatitude().length()>0){
             holder.getView(R.id.ll_address).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    startRoutePlanDriving(taskInfo.getLatitude(),taskInfo.getLongitude(),taskInfo.getAddress());
+                    startRoutePlanDriving(taskInfo.getLatitude(),taskInfo.getLongitude(),taskInfo.getAddress()
+                                        ,taskInfo.getSlatitude(),taskInfo.getSlongitude(),taskInfo.getSaddress());
                 }
             });
         }
-        //服务详细地址
-        if(taskInfo.getSlongitude().length()>0&&taskInfo.getSlatitude().length()>0){
-            holder.getView(R.id.ll_saddress).setOnClickListener(new View.OnClickListener() {
+        //启用百度地图app导航
+        if(taskInfo.getLongitude().length()>0&&taskInfo.getLatitude().length()>0
+                &&taskInfo.getSlongitude().length()>0&&taskInfo.getSlatitude().length()>0){
+            holder.getView(R.id.ll_address).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent intent = new Intent(mContext, AddressDetailActivity.class);
-                    intent.putExtra("lon", taskInfo.getSlongitude());
-                    intent.putExtra("lat", taskInfo.getSlatitude());
-                    startActivity(intent);
+                    startRoutePlanDriving(taskInfo.getLatitude(), taskInfo.getLongitude(), taskInfo.getAddress()
+                            , taskInfo.getSlatitude(), taskInfo.getSlongitude(), taskInfo.getSaddress());
                 }
             });
         }
     }
 
-
     /**
      * 启动百度地图驾车路线规划
-     * @param latitude
-     * @param longitude
-     * @param address
      */
-    public void startRoutePlanDriving(String latitude, String longitude, String address) {
+    public void startRoutePlanDriving(String taskInfoLatitude, String taskInfoLongitude, String taskInfoAddress, String latitude, String longitude, String address) {
         // 起点坐标
-        double mLat1 = HelperApplication.getInstance().mLocLat;
-        double mLon1 = HelperApplication.getInstance().mLocLon;
+        double mLat1 = Double.parseDouble(taskInfoLatitude);
+        double mLon1 = Double.parseDouble(taskInfoLongitude);
         // 终点
         double mLat2 = Double.parseDouble(latitude);
         double mLon2 = Double.parseDouble(longitude);
         LatLng pt1 = new LatLng(mLat1, mLon1);
         LatLng pt2 = new LatLng(mLat2, mLon2);
+        // 构建 route搜索参数
+        RouteParaOption para = new RouteParaOption()
+                .startPoint(pt1)
+                .startName(taskInfoAddress)
+                .endPoint(pt2)
+                .endName(address);
+        try {
+            BaiduMapRoutePlan.setSupportWebRoute(true);
+            BaiduMapRoutePlan.openBaiduMapDrivingRoute(para, mContext);
+        } catch (Exception e) {
+            e.printStackTrace();
+            showDialog();
+        }
+
+    }
+
+    /**
+     * 提示未安装百度地图app或app版本过低
+     */
+    public void showDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+        builder.setMessage("您尚未安装百度地图app或app版本过低，点击确认安装？");
+        builder.setTitle("提示");
+        builder.setPositiveButton("确认", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+                OpenClientUtil.getLatestBaiduMapApp(mContext);
+            }
+        });
+
+        builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+
+        builder.create().show();
+
+    }
+
+    /**
+     * 启动百度地图驾车路线规划
+     * @param taskInfoLatitude
+     * @param taskInfoLongitude
+     * @param taskInfoAddress
+     * @param latitude
+     * @param longitude
+     * @param address
+     */
+    public void startRoutePlan(String taskInfoLatitude, String taskInfoLongitude, String taskInfoAddress, String latitude, String longitude, String address) {
+        // 起点坐标
+        double mLat1 = Double.parseDouble(taskInfoLatitude);
+        double mLon1 = Double.parseDouble(taskInfoLongitude);
+        // 终点
+        double mLat2 = Double.parseDouble(latitude);
+        double mLon2 = Double.parseDouble(longitude);
+        LatLng pt1 = new LatLng(mLat1, mLon1);
+        LatLng pt2 = new LatLng(mLat2, mLon2);
+        BaiduMapNavigation.setSupportWebNavi(true);
         // 构建 导航参数
         NaviParaOption para = new NaviParaOption()
                 .startPoint(pt1).endPoint(pt2)
-                .startName(HelperApplication.getInstance().mLocAddress).endName(address);
+                .startName(taskInfoAddress).endName(address);
         try {
         // 调起百度地图骑行导航
             BaiduMapNavigation.openBaiduMapBikeNavi(para, mContext);

@@ -18,6 +18,9 @@ import android.widget.Toast;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -94,82 +97,99 @@ public class ReleaseConvenienceActivity extends BaseActivity implements View.OnC
             Toast.makeText(this, "descriptionString不能为空", Toast.LENGTH_SHORT).show();
             return;
         }
-        //先上传图片再发布
-        new PushImageUtil().setPushIamge(getApplication(), addImageList, nameList, new PushImage() {
-            @Override
-            public void success(boolean state) {
-
-                Toast.makeText(getApplication(), "图片上传成功", Toast.LENGTH_SHORT).show();
-
-                //发布任务
-                String url = NetConstant.CONVENIENCE_RELEASE;
-                StringPostRequest request = new StringPostRequest(url, new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String s) {
-                        Log.d("===我的发布", s);
-                        Toast.makeText(getApplication(), "发布成功", Toast.LENGTH_SHORT).show();
-                        finish();
-
+        if(addImageList.size()==0){
+            //发布任务
+            String url = NetConstant.CONVENIENCE_RELEASE;
+            StringPostRequest request = new StringPostRequest(url, new Response.Listener<String>() {
+                @Override
+                public void onResponse(String s) {
+                    Log.d("我的发布", s);
+                    try {
+                        JSONObject object = new JSONObject(s);
+                        if(object.optString("status").equals("success")){
+                            Toast.makeText(getApplication(), "发布成功", Toast.LENGTH_SHORT).show();
+                        }else{
+                            Toast.makeText(getApplication(), "亲，请拨打4000608856申请VIP客户才能多发哦", Toast.LENGTH_SHORT).show();
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
                     }
-                }, new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError volleyError) {
-                        Toast.makeText(getApplication(), "网络错误，检查您的网络", Toast.LENGTH_SHORT).show();
-                    }
-                });
-                String s = StringJoint.arrayJointchar(nameList, ",");
-                Log.d("2222233", s + "");
-                Log.d("2222233", nameList.size() + "");
-                request.putValue("userid", userInfo.getUserId());
-                request.putValue("phone", convenience_phone.getText().toString());
-                request.putValue("type", "1");
-                request.putValue("title", convenience_phone.getText().toString());
-                request.putValue("content",descriptionString);
-                request.putValue("picurl", s);
-                request.putValue("sound", "");
-                request.putValue("soundtime", "");
-                request.putValue("latitude", String.valueOf(HelperApplication.getInstance().mLocLat));
-                request.putValue("longitude", String.valueOf(HelperApplication.getInstance().mLocLon));
-                request.putValue("address", HelperApplication.getInstance().mLocAddress);
-                Log.e("发布便民圈",String.valueOf(HelperApplication.getInstance().mLocLat) + HelperApplication.getInstance().mLocAddress);
-                SingleVolleyRequest.getInstance(getApplication()).addToRequestQueue(request);
+                    finish();
 
-            }
+                }
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError volleyError) {
+                    Toast.makeText(getApplication(), "网络错误，检查您的网络", Toast.LENGTH_SHORT).show();
+                }
+            });
+            request.putValue("userid", userInfo.getUserId());
+            request.putValue("phone", convenience_phone.getText().toString());
+            request.putValue("type", "1");
+            request.putValue("title", convenience_phone.getText().toString());
+            request.putValue("content",descriptionString);
+            request.putValue("sound", "");
+            request.putValue("soundtime", "");
+            request.putValue("latitude", String.valueOf(HelperApplication.getInstance().mLocLat));
+            request.putValue("longitude", String.valueOf(HelperApplication.getInstance().mLocLon));
+            request.putValue("address", HelperApplication.getInstance().mLocAddress);
+            Log.e("发布便民圈",String.valueOf(HelperApplication.getInstance().mLocLat) + HelperApplication.getInstance().mLocAddress);
+            SingleVolleyRequest.getInstance(getApplication()).addToRequestQueue(request);
+        }else{
+            //先上传图片再发布
+            new PushImageUtil().setPushIamge(getApplication(), addImageList, nameList, new PushImage() {
+                @Override
+                public void success(boolean state) {
+                    Toast.makeText(getApplication(), "图片上传成功", Toast.LENGTH_SHORT).show();
+                    //发布任务
+                    String url = NetConstant.CONVENIENCE_RELEASE;
+                    StringPostRequest request = new StringPostRequest(url, new Response.Listener<String>() {
+                        @Override
+                        public void onResponse(String s) {
+                            Log.d("我的发布", s);
+                            try {
+                                JSONObject object = new JSONObject(s);
+                                if(object.optString("status").equals("success")){
+                                    Toast.makeText(getApplication(), "发布成功", Toast.LENGTH_SHORT).show();
+                                }else{
+                                    Toast.makeText(getApplication(), "发布失败", Toast.LENGTH_SHORT).show();
+                                }
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                            finish();
 
-            @Override
-            public void error() {
-                Toast.makeText(getApplication(), "上传失败", Toast.LENGTH_SHORT).show();
-                String url = NetConstant.RELEASE;
-                StringPostRequest request = new StringPostRequest(url, new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String s) {
-                        Log.d("++++我的发布", s);
-                        Toast.makeText(getApplication(), "发布成功", Toast.LENGTH_SHORT).show();
-
-                    }
-                }, new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError volleyError) {
-                        Toast.makeText(getApplication(), "网络错误，检查您的网络", Toast.LENGTH_SHORT).show();
-                    }
-                });
-//                request.putValue("userid", info.getUserId());
-//                request.putValue("goodsname", goodNameString);
-//                request.putValue("type", type);
-//                request.putValue("price", price);
-//                request.putValue("oprice", oldprice);
-//                request.putValue("description", descriptionString);
-//                request.putValue("unit", "个");
-//                request.putValue("address", "北京市朝阳区");
-//                request.putValue("longitude", location);
-//                request.putValue("latitude", location);
-//                request.putValue("delivery", text_transport.getText().toString());
-                SingleVolleyRequest.getInstance(getApplication()).addToRequestQueue(request);
-            }
-        });
+                        }
+                    }, new Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError volleyError) {
+                            Toast.makeText(getApplication(), "网络错误，检查您的网络", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                    String s = StringJoint.arrayJointchar(nameList, ",");
+                    Log.d("2222233", s + "");
+                    Log.d("2222233", nameList.size() + "");
+                    request.putValue("userid", userInfo.getUserId());
+                    request.putValue("phone", convenience_phone.getText().toString());
+                    request.putValue("type", "1");
+                    request.putValue("title", convenience_phone.getText().toString());
+                    request.putValue("content",descriptionString);
+                    request.putValue("picurl", s);
+                    request.putValue("sound", "");
+                    request.putValue("soundtime", "");
+                    request.putValue("latitude", String.valueOf(HelperApplication.getInstance().mLocLat));
+                    request.putValue("longitude", String.valueOf(HelperApplication.getInstance().mLocLon));
+                    request.putValue("address", HelperApplication.getInstance().mLocAddress);
+                    Log.e("发布便民圈",String.valueOf(HelperApplication.getInstance().mLocLat) + HelperApplication.getInstance().mLocAddress);
+                    SingleVolleyRequest.getInstance(getApplication()).addToRequestQueue(request);
+                }
+                @Override
+                public void error() {
+                    Toast.makeText(getApplication(), "上传失败", Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
     // TODO validate success, do something
-
-
 }
     public void showPicturePicker(View view){
         PicturePickerDialog picturePickerDialog = new PicturePickerDialog(this);

@@ -1,6 +1,8 @@
 package cn.xcom.helper.fragment.mytask;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -12,6 +14,10 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
+import com.baidu.mapapi.model.LatLng;
+import com.baidu.mapapi.utils.OpenClientUtil;
+import com.baidu.mapapi.utils.route.BaiduMapRoutePlan;
+import com.baidu.mapapi.utils.route.RouteParaOption;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.loopj.android.http.JsonHttpResponseHandler;
@@ -141,13 +147,78 @@ public class TaskAlrCancelFragment extends Fragment {
      * @param holder
      * @param taskInfo
      */
-    private void setItem(ViewHolder holder, TaskItemInfo taskInfo) {
+    private void setItem(ViewHolder holder, final TaskItemInfo taskInfo) {
         holder.setText(R.id.tv_tradeNo,taskInfo.getOrder_num())
                 .setTimeTextWithStr(R.id.tv_time,taskInfo.getTime(),"")
                 .setText(R.id.tv_tradeName,taskInfo.getDescription())
                 .setText(R.id.tv_price,taskInfo.getPrice())
                 .setText(R.id.tv_address1,taskInfo.getAddress())
-                .setText(R.id.tv_address2,taskInfo.getSaddress());
+                .setText(R.id.tv_address2, taskInfo.getSaddress());
+        //启用百度地图app导航
+        if(taskInfo.getLongitude().length()>0&&taskInfo.getLatitude().length()>0
+                &&taskInfo.getSlongitude().length()>0&&taskInfo.getSlatitude().length()>0){
+            holder.getView(R.id.ll_route).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    startRoutePlanDriving(taskInfo.getLatitude(),taskInfo.getLongitude(),taskInfo.getAddress()
+                            ,taskInfo.getSlatitude(),taskInfo.getSlongitude(),taskInfo.getSaddress());
+                }
+            });
+        }
+    }
+
+    /**
+     * 启动百度地图驾车路线规划
+     */
+    public void startRoutePlanDriving(String taskInfoLatitude, String taskInfoLongitude, String taskInfoAddress, String latitude, String longitude, String address) {
+        // 起点坐标
+        double mLat1 = Double.parseDouble(taskInfoLatitude);
+        double mLon1 = Double.parseDouble(taskInfoLongitude);
+        // 终点
+        double mLat2 = Double.parseDouble(latitude);
+        double mLon2 = Double.parseDouble(longitude);
+        LatLng pt1 = new LatLng(mLat1, mLon1);
+        LatLng pt2 = new LatLng(mLat2, mLon2);
+        // 构建 route搜索参数
+        RouteParaOption para = new RouteParaOption()
+                .startPoint(pt1)
+                .startName(taskInfoAddress)
+                .endPoint(pt2)
+                .endName(address);
+        try {
+            BaiduMapRoutePlan.setSupportWebRoute(true);
+            BaiduMapRoutePlan.openBaiduMapDrivingRoute(para, context);
+        } catch (Exception e) {
+            e.printStackTrace();
+            showDialog();
+        }
+
+    }
+
+    /**
+     * 提示未安装百度地图app或app版本过低
+     */
+    public void showDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setMessage("您尚未安装百度地图app或app版本过低，点击确认安装？");
+        builder.setTitle("提示");
+        builder.setPositiveButton("确认", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+                OpenClientUtil.getLatestBaiduMapApp(context);
+            }
+        });
+
+        builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+
+        builder.create().show();
+
     }
 
     /**

@@ -10,7 +10,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.AdapterView;
+import android.widget.FrameLayout;
 import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
@@ -26,8 +28,6 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-
-
 import cn.xcom.helper.R;
 import cn.xcom.helper.activity.ReleaseActivity;
 import cn.xcom.helper.adapter.GroupAdapter;
@@ -35,11 +35,9 @@ import cn.xcom.helper.adapter.SaleAdapter;
 import cn.xcom.helper.bean.DictionaryList;
 import cn.xcom.helper.bean.Front;
 import cn.xcom.helper.constant.NetConstant;
-
 import cn.xcom.helper.utils.SingleVolleyRequest;
 import cn.xcom.helper.utils.StringPostRequest;
 import cn.xcom.helper.utils.ToastUtils;
-import cn.xcom.helper.wheel.widget.TosGallery;
 
 /**
  * Created by zhuchongkun on 16/5/27.
@@ -199,8 +197,6 @@ public class SaleFragment extends Fragment implements View.OnClickListener {
     }
 //获取字典并弹出popuwindow
     private void showWindow(View parent) {
-
-        if (popupWindow == null) {
             Log.d("=====显示", "" + "=================");
             LayoutInflater layoutInflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             view = layoutInflater.inflate(R.layout.group_list, null);
@@ -239,28 +235,27 @@ public class SaleFragment extends Fragment implements View.OnClickListener {
             request.putValue("type","3");
             SingleVolleyRequest.getInstance(getContext()).addToRequestQueue(request);
             // 创建一个PopuWidow对象
-            popupWindow = new PopupWindow(view, TosGallery.LayoutParams.MATCH_PARENT, TosGallery.LayoutParams.WRAP_CONTENT);
-        }
+            popupWindow = new PopupWindow(view, FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT);
+
         // 使其聚集
         popupWindow.setFocusable(true);
         // 设置允许在外点击消失
         popupWindow.setOutsideTouchable(true);
-
-
-        // 这个是为了点击“返回Back”也能使其消失，并且并不会影响你的背景
-//        ColorDrawable cd = new ColorDrawable(0x000000);
-//        popupWindow.setBackgroundDrawable(cd);
-        //  popupWindow.setBackgroundDrawable(new ColorDrawable());
-        // backgroundAlpha();
-//        WindowManager windowManager =
-//                (WindowManager) mContext.getSystemService(Context.WINDOW_SERVICE);
-//        popupWindow.setHeight(ViewGroup.LayoutParams.MATCH_PARENT);
-//        popupWindow.setWidth(ViewGroup.LayoutParams.MATCH_PARENT);
-        //      显示的位置为:屏幕的宽度的一半-PopupWindow的高度的一半
-//        int xPos = windowManager.getDefaultDisplay().getWidth() / 2
-//                - popupWindow.getWidth()/2 ;
-//        Log.i("coder", "xPos:" + xPos);
-        popupWindow.showAsDropDown(parent, -100, 0);
+        int[] location = new int[2];
+        parent.getLocationOnScreen(location);
+        popupWindow.showAsDropDown(parent);
+        // 设置背景颜色变暗
+        final WindowManager.LayoutParams lp = getActivity().getWindow().getAttributes();
+        lp.alpha = 0.7f;
+        getActivity().getWindow().setAttributes(lp);
+        //监听popwindow消失事件，取消遮盖层
+        popupWindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
+            @Override
+            public void onDismiss() {
+                lp.alpha = 1.0f;
+                getActivity().getWindow().setAttributes(lp);
+            }
+        });
         clickPopuwindow();
 
     }
@@ -285,12 +280,6 @@ public class SaleFragment extends Fragment implements View.OnClickListener {
                            Log.d("=== 其他", front.getType().toString());
                            aList.add(front);
                        }
-// else if (!front.getType().contains(dictionaryList.getId())){
-//                            Toast.makeText(getContext(),
-//                                    "您需要的还未上架，请等待....", Toast.LENGTH_SHORT)
-//                                    .show();
-//                        }
-
                    }
                }
 

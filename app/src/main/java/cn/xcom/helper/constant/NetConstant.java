@@ -362,5 +362,13 @@ public interface NetConstant extends HelperConstant {
      */
     public final static String UPDATE_USER_INSURANCE = NET_HOST_PREFIX + "a=UpdateUserInsurance&";
 
+    /**
+     * 获取用户开工收工状态
+     */
+    public final static String GET_WORKING_STATE = NET_HOST_PREFIX + "a=GetWorkingState&";
 
+    /**
+     * 切换开工收工状态
+     */
+    public final static String CHANGE_WORKING_STATE = NET_HOST_PREFIX + "a=BeginWorking&";
 }
