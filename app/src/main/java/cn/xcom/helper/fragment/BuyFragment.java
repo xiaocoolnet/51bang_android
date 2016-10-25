@@ -30,8 +30,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
+import cn.xcom.helper.HelperApplication;
 import cn.xcom.helper.R;
 import cn.xcom.helper.activity.AddressDetailActivity;
 import cn.xcom.helper.activity.AuthorizedActivity;
@@ -214,7 +216,7 @@ public class BuyFragment extends Fragment implements View.OnClickListener{
     private void getData() {
         if(SPUtils.get(getActivity(), HelperConstant.IS_HAD_AUTHENTICATION,"").equals("1")){
             RequestParams params=new RequestParams();
-            params.put("userid",userInfo.getUserId());
+            params.put("city",HelperApplication.getInstance().mDistrict);
             HelperAsyncHttpClient.get(NetConstant.GETTASKLIST, params, new JsonHttpResponseHandler() {
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
@@ -270,18 +272,29 @@ public class BuyFragment extends Fragment implements View.OnClickListener{
                 .setText(R.id.tv_address1,taskInfo.getAddress())
                 .setText(R.id.tv_address2,taskInfo.getSaddress())
                 .setText(R.id.tv_btn_grab,taskInfo.getState().equals("1")?"抢单":"已被抢")
+                .setImageByUrl(R.id.iv_avatar,taskInfo.getPhoto())
                 .setText(R.id.tv_price, taskInfo.getPrice());
         TextView btn_grab = holder.getView(R.id.tv_btn_grab);
         if(taskInfo.getState().equals("1")){
-            btn_grab.setClickable(true);
-            btn_grab.setText("抢单");
-            btn_grab.setTextColor(getResources().getColor(R.color.colorTheme));
-            btn_grab.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    updateState(taskInfo.getId());
-                }
-            });
+            if(Long.parseLong(taskInfo.getExpirydate()) * 1000 < new Date().getTime()){
+                btn_grab.setClickable(false);
+                btn_grab.setText("过期");
+                btn_grab.setTextColor(getResources().getColor(R.color.holo_red_light));
+            }else{
+                btn_grab.setClickable(true);
+                btn_grab.setText("抢单");
+                btn_grab.setTextColor(getResources().getColor(R.color.colorTheme));
+                btn_grab.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if(taskInfo.getUserid().equals(userInfo.getUserId())){
+                            ToastUtil.showShort(mContext,"不能抢自己发布的任务");
+                        }else{
+                            updateState(taskInfo.getId());
+                        }
+                    }
+                });
+            }
         }else{
             btn_grab.setClickable(false);
             btn_grab.setText("已被抢");
@@ -292,7 +305,7 @@ public class BuyFragment extends Fragment implements View.OnClickListener{
             holder.getView(R.id.ll_address).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    startRoutePlanDriving();
+                    startRoutePlanDriving(taskInfo.getLatitude(),taskInfo.getLongitude(),taskInfo.getAddress());
                 }
             });
         }
@@ -313,20 +326,23 @@ public class BuyFragment extends Fragment implements View.OnClickListener{
 
     /**
      * 启动百度地图驾车路线规划
+     * @param latitude
+     * @param longitude
+     * @param address
      */
-    public void startRoutePlanDriving() {
-        // 天安门坐标
-        double mLat1 = 39.915291;
-        double mLon1 = 116.403857;
-        // 百度大厦坐标
-        double mLat2 = 40.056858;
-        double mLon2 = 116.308194;
+    public void startRoutePlanDriving(String latitude, String longitude, String address) {
+        // 起点坐标
+        double mLat1 = HelperApplication.getInstance().mLocLat;
+        double mLon1 = HelperApplication.getInstance().mLocLon;
+        // 终点
+        double mLat2 = Double.parseDouble(latitude);
+        double mLon2 = Double.parseDouble(longitude);
         LatLng pt1 = new LatLng(mLat1, mLon1);
         LatLng pt2 = new LatLng(mLat2, mLon2);
         // 构建 导航参数
         NaviParaOption para = new NaviParaOption()
                 .startPoint(pt1).endPoint(pt2)
-                .startName("天安门").endName("百度大厦");
+                .startName(HelperApplication.getInstance().mLocAddress).endName(address);
         try {
         // 调起百度地图骑行导航
             BaiduMapNavigation.openBaiduMapBikeNavi(para, mContext);

@@ -62,9 +62,6 @@
                 android:layout_marginLeft="10dp"/>
         </LinearLayout>
     </RelativeLayout>
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -74,14 +71,12 @@
                 android:layout_width="match_parent"
                 android:layout_height="250dp">
             </com.baidu.mapapi.map.MapView>
-            <cn.xcom.helper.view.NoScrollListView
+            <ListView
                 android:id="@+id/lv_address"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:divider="@color/colorMainBackground"
                 android:dividerHeight="1dp">
-
-            </cn.xcom.helper.view.NoScrollListView>
+            </ListView>
         </LinearLayout>
-    </ScrollView>
 </LinearLayout>

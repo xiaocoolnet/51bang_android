@@ -10,6 +10,7 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.RelativeLayout;
 
 import com.baidu.mapapi.map.BaiduMap;
@@ -40,7 +41,6 @@ import cn.xcom.helper.R;
 import cn.xcom.helper.bean.PoiInformaiton;
 import cn.xcom.helper.utils.CommonAdapter;
 import cn.xcom.helper.utils.ViewHolder;
-import cn.xcom.helper.view.NoScrollListView;
 
 public class SelectMapPoiActivity extends BaseActivity implements OnGetGeoCoderResultListener {
 
@@ -53,7 +53,7 @@ public class SelectMapPoiActivity extends BaseActivity implements OnGetGeoCoderR
     @BindView(R.id.mapview)
     MapView mapview;
     @BindView(R.id.lv_address)
-    NoScrollListView lvAddress;
+    ListView lvAddress;
     private Context context;
 
     private double lat;
@@ -135,7 +135,7 @@ public class SelectMapPoiActivity extends BaseActivity implements OnGetGeoCoderR
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent intent = new Intent();
-                intent.putExtra("siteName", poiInformaitons.get(position).getName());
+                intent.putExtra("siteName", poiInformaitons.get(position).getAddress());
                 intent.putExtra("siteLat", poiInformaitons.get(position).getLat());
                 intent.putExtra("siteLon", poiInformaitons.get(position).getLon());
                 setResult(RESULT_OK, intent);

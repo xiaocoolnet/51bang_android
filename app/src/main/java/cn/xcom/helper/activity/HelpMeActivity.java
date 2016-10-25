@@ -46,6 +46,7 @@ import com.baoyz.actionsheet.ActionSheet;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 
+import org.feezu.liuli.timeselector.TimeSelector;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -85,15 +86,15 @@ import cz.msebera.android.httpclient.Header;
  * 帮我页
  */
 public class HelpMeActivity extends BaseActivity implements View.OnClickListener, OnGetGeoCoderResultListener {
-    private String TAG="HelpMeActivity";
+    private String TAG = "HelpMeActivity";
     private Context mContext;
     private RelativeLayout rl_back;
     private NoScrollGridView gv_skill;
     private ArrayList<SkillTagInfo> skillTagInfos;
     private HelpMeSkillAdapter mHelpMeSkillAdapter;
-    private EditText et_content,et_phone,et_site_location,et_service_location,et_wages,et_validity_period;
-    private TextView tv_time_unit,tv_service_charge;
-    private ImageView iv_site_location,iv_service_location,iv_validity_period;
+    private EditText et_content, et_phone, et_site_location, et_service_location, et_wages, et_validity_period;
+    private TextView tv_time_unit, tv_service_charge;
+    private ImageView iv_site_location, iv_service_location, iv_validity_period;
     private Button bt_submit;
     private SkillTagInfo selectTag;
     private UserInfo userInfo;
@@ -107,7 +108,7 @@ public class HelpMeActivity extends BaseActivity implements View.OnClickListener
     GeoCoder mSearch = null; // 搜索模块，也可去掉地图模块独立使用
     private LatLng mLat;
 
-    private RelativeLayout rl_photo,rl_voice,rl_grid_photo;
+    private RelativeLayout rl_photo, rl_voice, rl_grid_photo;
     private NoScrollGridView addsnPicGrid;
     private GalleryFinalUtil galleryFinalUtil;
     private final int REQUEST_CODE_CAMERA = 1000;
@@ -116,8 +117,8 @@ public class HelpMeActivity extends BaseActivity implements View.OnClickListener
     private LocalImgGridAdapter localImgGridAdapter;
     private List<String> nameList;//添加相册选取完返回的的list
 
-    private double mSiteLat,mSiteLon,mServiceLat,mServiewLon;
-    private String mSiteName,mServiceName;
+    private double mSiteLat, mSiteLon, mServiceLat, mServiewLon;
+    private String mSiteName, mServiceName;
 
 
     @Override
@@ -125,7 +126,7 @@ public class HelpMeActivity extends BaseActivity implements View.OnClickListener
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_help_me);
-        mContext=this;
+        mContext = this;
         userInfo = new UserInfo(mContext);
         userInfo.readData(mContext);
         mPhotoList = new ArrayList<>();
@@ -144,14 +145,18 @@ public class HelpMeActivity extends BaseActivity implements View.OnClickListener
     private void getData() {
         lat = getIntent().getDoubleExtra("lat", 0);
         lon = getIntent().getDoubleExtra("lon", 0);
+        mServiceLat = lat;
+        mSiteLat = lat;
+        mServiewLon = lon;
+        mSiteLon = lon;
         Log.e("hello", lat + lon + "");
-        mLat = new LatLng(lat,lon);
+        mLat = new LatLng(lat, lon);
         // 反Geo搜索
         mSearch.reverseGeoCode(new ReverseGeoCodeOption()
                 .location(mLat));
     }
 
-    private void initView(){
+    private void initView() {
         addsnPicGrid = (NoScrollGridView) findViewById(R.id.addsn_pic_grid);
         rl_grid_photo = (RelativeLayout) findViewById(R.id.rl_grid_photo);
         rl_photo = (RelativeLayout) findViewById(R.id.rl_photo);
@@ -161,13 +166,13 @@ public class HelpMeActivity extends BaseActivity implements View.OnClickListener
         bottom = (ScrollView) findViewById(R.id.bottom);
         ll_time = (LinearLayout) findViewById(R.id.ll_time);
         ll_time.setOnClickListener(this);
-        rl_back= (RelativeLayout) findViewById(R.id.rl_help_me_back);
+        rl_back = (RelativeLayout) findViewById(R.id.rl_help_me_back);
         rl_back.setOnClickListener(this);
-        et_content= (EditText) findViewById(R.id.et_help_me_content);
-        et_phone= (EditText) findViewById(R.id.et_help_me_phone);
-        et_site_location= (EditText) findViewById(R.id.et_help_me_site_location);
-        et_service_location= (EditText) findViewById(R.id.et_help_me_service_location);
-        et_wages= (EditText) findViewById(R.id.et_help_me_wages);
+        et_content = (EditText) findViewById(R.id.et_help_me_content);
+        et_phone = (EditText) findViewById(R.id.et_help_me_phone);
+        et_site_location = (EditText) findViewById(R.id.et_help_me_site_location);
+        et_service_location = (EditText) findViewById(R.id.et_help_me_service_location);
+        et_wages = (EditText) findViewById(R.id.et_help_me_wages);
         //监听单价的变化
         et_wages.addTextChangedListener(new TextWatcher() {
             @Override
@@ -185,29 +190,29 @@ public class HelpMeActivity extends BaseActivity implements View.OnClickListener
                 tv_service_charge.setText("¥" + et_wages.getText());
             }
         });
-        et_validity_period= (EditText) findViewById(R.id.et_help_me_validity_period);
-        tv_time_unit= (TextView) findViewById(R.id.tv_help_me_time_unit);
+        et_validity_period = (EditText) findViewById(R.id.et_help_me_validity_period);
+        tv_time_unit = (TextView) findViewById(R.id.tv_help_me_time_unit);
         tv_time_unit.setOnClickListener(this);
-        tv_service_charge= (TextView) findViewById(R.id.tv_help_me_service_charge);
-        iv_site_location= (ImageView) findViewById(R.id.iv_help_me_site_location);
+        tv_service_charge = (TextView) findViewById(R.id.tv_help_me_service_charge);
+        iv_site_location = (ImageView) findViewById(R.id.iv_help_me_site_location);
         iv_site_location.setOnClickListener(this);
-        iv_service_location= (ImageView) findViewById(R.id.iv_help_me_service_location);
+        iv_service_location = (ImageView) findViewById(R.id.iv_help_me_service_location);
         iv_service_location.setOnClickListener(this);
-        iv_validity_period= (ImageView) findViewById(R.id.iv_help_me_validity_period);
+        iv_validity_period = (ImageView) findViewById(R.id.iv_help_me_validity_period);
         iv_validity_period.setOnClickListener(this);
-        bt_submit= (Button) findViewById(R.id.bt_help_me_submit);
+        bt_submit = (Button) findViewById(R.id.bt_help_me_submit);
         bt_submit.setOnClickListener(this);
-        selectTag=new SkillTagInfo();
-        skillTagInfos=new ArrayList<SkillTagInfo>();
-        gv_skill= (NoScrollGridView) findViewById(R.id.gridView_help_me);
+        selectTag = new SkillTagInfo();
+        skillTagInfos = new ArrayList<SkillTagInfo>();
+        gv_skill = (NoScrollGridView) findViewById(R.id.gridView_help_me);
         gv_skill.setSelector(new ColorDrawable(Color.TRANSPARENT));
-        mHelpMeSkillAdapter=new HelpMeSkillAdapter(mContext,skillTagInfos);
+        mHelpMeSkillAdapter = new HelpMeSkillAdapter(mContext, skillTagInfos);
         gv_skill.setAdapter(mHelpMeSkillAdapter);
         gv_skill.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent intent = new Intent(HelpMeActivity.this,SelectTaskTypeActivity.class);
-                intent.putExtra("id",skillTagInfos.get(position).getSkill_id());
+                Intent intent = new Intent(HelpMeActivity.this, SelectTaskTypeActivity.class);
+                intent.putExtra("id", skillTagInfos.get(position).getSkill_id());
                 startActivity(intent);
             }
         });
@@ -220,7 +225,7 @@ public class HelpMeActivity extends BaseActivity implements View.OnClickListener
         super.onResume();
         selectList = HelperApplication.getInstance().getTaskTypes();
         Log.e("count", String.valueOf(selectList.size()));
-        for(int i=0;i<skillTagInfos.size();i++){
+        for (int i = 0; i < skillTagInfos.size(); i++) {
             skillTagInfos.get(i).setChecked(check(skillTagInfos.get(i).getSkill_id()));
         }
         mHelpMeSkillAdapter.notifyDataSetChanged();
@@ -228,12 +233,13 @@ public class HelpMeActivity extends BaseActivity implements View.OnClickListener
 
     /**
      * 判断大分类是否选中
+     *
      * @param id
      * @return
      */
-    private boolean check(String id){
-        for(int i=0;i<selectList.size();i++){
-            if(selectList.get(i).getParent().equals(id)){
+    private boolean check(String id) {
+        for (int i = 0; i < selectList.size(); i++) {
+            if (selectList.get(i).getParent().equals(id)) {
                 return true;
             }
         }
@@ -241,23 +247,23 @@ public class HelpMeActivity extends BaseActivity implements View.OnClickListener
         return false;
     }
 
-    private void getSkill(){
-        RequestParams params=new RequestParams();
-        params.put("id",0);
-        HelperAsyncHttpClient.get(NetConstant.NET_GET_TASKLIST,params,new JsonHttpResponseHandler(){
+    private void getSkill() {
+        RequestParams params = new RequestParams();
+        params.put("id", 0);
+        HelperAsyncHttpClient.get(NetConstant.NET_GET_TASKLIST, params, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                 super.onSuccess(statusCode, headers, response);
-                LogUtils.e(TAG,"--statusCode->"+statusCode+"==>"+response.toString());
-                if (response!=null){
+                LogUtils.e(TAG, "--statusCode->" + statusCode + "==>" + response.toString());
+                if (response != null) {
                     try {
-                        String state=response.getString("status");
-                        if (state.equals("success")){
-                            JSONArray data=response.getJSONArray("data");
+                        String state = response.getString("status");
+                        if (state.equals("success")) {
+                            JSONArray data = response.getJSONArray("data");
                             skillTagInfos.clear();
-                            for (int i=0;i<data.length();i++){
-                                SkillTagInfo info=new SkillTagInfo();
-                                JSONObject jsonObject=data.getJSONObject(i);
+                            for (int i = 0; i < data.length(); i++) {
+                                SkillTagInfo info = new SkillTagInfo();
+                                JSONObject jsonObject = data.getJSONObject(i);
                                 info.setSkill_id(jsonObject.getString("id"));
                                 info.setSkill_name(jsonObject.getString("name"));
                                 skillTagInfos.add(info);
@@ -274,29 +280,29 @@ public class HelpMeActivity extends BaseActivity implements View.OnClickListener
             @Override
             public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
                 super.onFailure(statusCode, headers, responseString, throwable);
-                LogUtils.e(TAG,"--statusCode->"+statusCode+"==>"+responseString);
+                LogUtils.e(TAG, "--statusCode->" + statusCode + "==>" + responseString);
             }
         });
     }
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
+        switch (v.getId()) {
             case R.id.rl_help_me_back:
                 finish();
                 break;
             //选择上门地址
             case R.id.iv_help_me_site_location:
-                Intent intent1 = new Intent(mContext,SelectMapPoiActivity.class);
-                intent1.putExtra("lat",lat);
-                intent1.putExtra("lon",lon);
+                Intent intent1 = new Intent(mContext, SelectMapPoiActivity.class);
+                intent1.putExtra("lat", lat);
+                intent1.putExtra("lon", lon);
                 startActivityForResult(intent1, 1);
                 break;
             //选择服务地址
             case R.id.iv_help_me_service_location:
-                Intent intent2 = new Intent(mContext,SelectMapPoiActivity.class);
-                intent2.putExtra("lat",lat);
-                intent2.putExtra("lon",lon);
+                Intent intent2 = new Intent(mContext, SelectMapPoiActivity.class);
+                intent2.putExtra("lat", lat);
+                intent2.putExtra("lon", lon);
                 startActivityForResult(intent2, 2);
                 break;
             case R.id.tv_help_me_time_unit:
@@ -304,7 +310,17 @@ public class HelpMeActivity extends BaseActivity implements View.OnClickListener
                 break;
             //选择有效时间
             case R.id.iv_help_me_validity_period:
-                showTimePicker();
+                //showTimePicker();
+                Date date = new Date();
+                String startStr = new SimpleDateFormat("yyyy-MM-dd HH:mm").format(date);
+                TimeSelector timeSelector = new TimeSelector(this, new TimeSelector.ResultHandler() {
+                    @Override
+                    public void handle(String time) {
+                        et_validity_period.setText(time);
+                        begintime = dataOne(time + ":00");
+                    }
+                },startStr, "2020-12-31 23:59");
+                timeSelector.show();
                 break;
             case R.id.bt_help_me_submit:
                 submit();
@@ -322,21 +338,21 @@ public class HelpMeActivity extends BaseActivity implements View.OnClickListener
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (resultCode!=RESULT_CANCELED){
+        if (resultCode != RESULT_CANCELED) {
             switch (requestCode) {
                 case 1:
-                    if (data!=null){
+                    if (data != null) {
                         mSiteName = data.getStringExtra("siteName");
                         mSiteLat = data.getDoubleExtra("siteLat", 0);
-                        mSiteLon = data.getDoubleExtra("siteLon",0);
+                        mSiteLon = data.getDoubleExtra("siteLon", 0);
                         et_site_location.setText(mSiteName);
                     }
                     break;
                 case 2:
-                    if (data!=null){
+                    if (data != null) {
                         mServiceName = data.getStringExtra("siteName");
                         mServiceLat = data.getDoubleExtra("siteLat", 0);
-                        mServiewLon = data.getDoubleExtra("siteLon",0);
+                        mServiewLon = data.getDoubleExtra("siteLon", 0);
                         et_service_location.setText(mServiceName);
                     }
                     break;
@@ -360,6 +376,7 @@ public class HelpMeActivity extends BaseActivity implements View.OnClickListener
                 addsnPicGrid.setAdapter(localImgGridAdapter);
             }
         }
+
         @Override
         public void onHanlderFailure(int requestCode, String errorMsg) {
             Toast.makeText(HelpMeActivity.this, errorMsg, Toast.LENGTH_SHORT).show();
@@ -419,51 +436,51 @@ public class HelpMeActivity extends BaseActivity implements View.OnClickListener
      * 上传任务
      */
     private void submit() {
-        if(selectList.size()==0){
-            ToastUtil.showShort(mContext,"请选择分类");
+        if (selectList.size() == 0) {
+            ToastUtil.showShort(mContext, "请选择分类");
             return;
         }
-        if(et_content.getText().toString().length()==0){
-            ToastUtil.showShort(mContext,"请输入任务描述");
+        if (et_content.getText().toString().length() == 0) {
+            ToastUtil.showShort(mContext, "请输入任务描述");
             return;
         }
-        if(et_phone.getText().toString().length()==0){
-            ToastUtil.showShort(mContext,"请输入联系方式");
+        if (et_phone.getText().toString().length() == 0) {
+            ToastUtil.showShort(mContext, "请输入联系方式");
             return;
         }
-        if(et_wages.getText().toString().length()==0){
-            ToastUtil.showShort(mContext,"请输入工资");
+        if (et_wages.getText().toString().length() == 0) {
+            ToastUtil.showShort(mContext, "请输入工资");
             return;
         }
-        if(begintime.length()==0){
-            ToastUtil.showShort(mContext,"请选择有效时间");
+        if (begintime.length() == 0) {
+            ToastUtil.showShort(mContext, "请选择有效时间");
             return;
         }
         //先上传图片再发布
-        new PushImageUtil().setPushIamge(getApplication(),mPhotoList , nameList, new PushImage() {
+        new PushImageUtil().setPushIamge(getApplication(), mPhotoList, nameList, new PushImage() {
             @Override
             public void success(boolean state) {
 
                 Toast.makeText(getApplication(), "图片上传成功", Toast.LENGTH_SHORT).show();
 
-                String url=NetConstant.PUBLISHTASK;
-                StringPostRequest request=new StringPostRequest(url, new Response.Listener<String>() {
+                String url = NetConstant.PUBLISHTASK;
+                StringPostRequest request = new StringPostRequest(url, new Response.Listener<String>() {
                     @Override
                     public void onResponse(String s) {
-                        if (s!=null){
+                        if (s != null) {
                             try {
                                 JSONObject object = new JSONObject(s);
-                                String state=object.getString("status");
-                                if (state.equals("success")){
-                                    String data=object.getString("data");
+                                String state = object.getString("status");
+                                if (state.equals("success")) {
+                                    String data = object.getString("data");
                                     HelperApplication.getInstance().getTaskTypes().clear();
                                     Log.d("发布任务", data);
                                     Toast.makeText(getApplication(), "发布成功", Toast.LENGTH_SHORT).show();
                                     Intent intent = new Intent(mContext, UploadContractActivity.class);
-                                    intent.putExtra("price",et_wages.getText().toString());
-                                    intent.putExtra("tradeNo",data);
+                                    intent.putExtra("price", et_wages.getText().toString());
+                                    intent.putExtra("tradeNo", data);
                                     startActivity(intent);
-                                }else{
+                                } else {
                                     HelperApplication.getInstance().getTaskTypes().clear();
                                 }
                             } catch (JSONException e) {
@@ -476,19 +493,22 @@ public class HelpMeActivity extends BaseActivity implements View.OnClickListener
                     @Override
                     public void onErrorResponse(VolleyError volleyError) {
                         HelperApplication.getInstance().getTaskTypes().clear();
-                        Toast.makeText(getApplication(),"网络错误，检查您的网络",Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplication(), "网络错误，检查您的网络", Toast.LENGTH_SHORT).show();
                     }
                 });
                 String s = StringJoint.arrayJointchar(nameList, ",");
                 request.putValue("picurl", s);
-                request.putValue("userid",userInfo.getUserId());
-                request.putValue("description",et_content.getText().toString());
-                request.putValue("expirydate",begintime);
-                request.putValue("price",et_wages.getText().toString());
-                request.putValue("type",getSelectString());
-                request.putValue("address",et_site_location.getText().toString());
-                request.putValue("longitude",lon + "");
-                request.putValue("latitude", lat + "");
+                request.putValue("userid", userInfo.getUserId());
+                request.putValue("description", et_content.getText().toString());
+                request.putValue("expirydate", begintime);
+                request.putValue("price", et_wages.getText().toString());
+                request.putValue("type", getSelectString());
+                request.putValue("address", et_site_location.getText().toString());
+                request.putValue("longitude", mSiteLon + "");
+                request.putValue("latitude", mSiteLat + "");
+                request.putValue("saddress", et_service_location.getText().toString());
+                request.putValue("slongitude", mServiewLon + "");
+                request.putValue("slatitude", mServiceLat + "");
                 SingleVolleyRequest.getInstance(getApplication()).addToRequestQueue(request);
 
 
@@ -503,14 +523,15 @@ public class HelpMeActivity extends BaseActivity implements View.OnClickListener
 
     /**
      * 根据选择分类得到分类拼接字符串
+     *
      * @return
      */
     private String getSelectString() {
         String str = "";
-        for(int i=0;i<selectList.size()-1;i++){
-            str += selectList.get(i).getId() + "," ;
+        for (int i = 0; i < selectList.size() - 1; i++) {
+            str += selectList.get(i).getId() + ",";
         }
-        str += selectList.get(selectList.size()-1).getId();
+        str += selectList.get(selectList.size() - 1).getId();
         return str;
     }
 
@@ -538,7 +559,7 @@ public class HelpMeActivity extends BaseActivity implements View.OnClickListener
             }
         });
         final WheelView wv = (WheelView) layout.findViewById(R.id.wheelView);
-        String[] PLANETS = new String[]{"按小时计费","按天计费","按月计费","按趟计费","按件计费","按重量计费"};
+        String[] PLANETS = new String[]{"按小时计费", "按天计费", "按月计费", "按趟计费", "按件计费", "按重量计费"};
         wv.setOffset(2);
         wv.setItems(Arrays.asList(PLANETS));
         wv.setSeletion(3);
@@ -595,11 +616,12 @@ public class HelpMeActivity extends BaseActivity implements View.OnClickListener
 
     /**
      * 时间转时间戳
+     *
      * @param time
      * @return
      */
     public String dataOne(String time) {
-        SimpleDateFormat sdr = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss",
+        SimpleDateFormat sdr = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss",
                 Locale.CHINA);
         Date date;
         String times = null;
@@ -621,13 +643,13 @@ public class HelpMeActivity extends BaseActivity implements View.OnClickListener
 
     @Override
     public void onGetReverseGeoCodeResult(ReverseGeoCodeResult result) {
-        Log.e("hello",result.getAddress());
+        Log.e("hello", result.getAddress());
         if (result == null || result.error != SearchResult.ERRORNO.NO_ERROR) {
             Toast.makeText(HelpMeActivity.this, "抱歉，未能找到结果", Toast.LENGTH_LONG)
                     .show();
             return;
         }
-        String address = result.getPoiList().get(0).name;
+        String address = result.getAddressDetail().city + result.getAddressDetail().district + result.getPoiList().get(0).name;
         et_service_location.setText(address);
         et_site_location.setText(address);
         /*mBaiduMap.addOverlay(new MarkerOptions().position(result.getLocation())
@@ -644,11 +666,12 @@ public class HelpMeActivity extends BaseActivity implements View.OnClickListener
     public class HelpMeSkillAdapter extends BaseAdapter {
         private Context mContext;
         private ArrayList<SkillTagInfo> mSkillTagInfos;
+
         public HelpMeSkillAdapter(Context context, ArrayList<SkillTagInfo> skillTagInfos) {
-            this.mContext=context;
-            if (skillTagInfos==null)
-                skillTagInfos=new ArrayList<SkillTagInfo>();
-            this.mSkillTagInfos=skillTagInfos;
+            this.mContext = context;
+            if (skillTagInfos == null)
+                skillTagInfos = new ArrayList<SkillTagInfo>();
+            this.mSkillTagInfos = skillTagInfos;
         }
 
         @Override
@@ -669,47 +692,49 @@ public class HelpMeActivity extends BaseActivity implements View.OnClickListener
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
             ViewHolder viewHolder;
-            if (convertView==null){
-                viewHolder=new ViewHolder();
-                convertView= LayoutInflater.from(mContext).inflate(R.layout.item_help_me_skill_tag,null);
-                viewHolder.tv_tag= (TextView) convertView.findViewById(R.id.tv_item_help_me_skill_tag);
+            if (convertView == null) {
+                viewHolder = new ViewHolder();
+                convertView = LayoutInflater.from(mContext).inflate(R.layout.item_help_me_skill_tag, null);
+                viewHolder.tv_tag = (TextView) convertView.findViewById(R.id.tv_item_help_me_skill_tag);
                 convertView.setTag(viewHolder);
-            }else{
-                viewHolder= (ViewHolder) convertView.getTag();
+            } else {
+                viewHolder = (ViewHolder) convertView.getTag();
             }
             viewHolder.tv_tag.setText(mSkillTagInfos.get(position).getSkill_name());
-            if (mSkillTagInfos.get(position).isChecked()){
+            if (mSkillTagInfos.get(position).isChecked()) {
                 viewHolder.tv_tag.setTextColor(mContext.getResources().getColor(R.color.colorTextWhite));
                 viewHolder.tv_tag.setBackgroundResource(R.drawable.tv_tag_select);
-            }else{
+            } else {
                 viewHolder.tv_tag.setTextColor(mContext.getResources().getColor(R.color.colorTheme));
                 viewHolder.tv_tag.setBackgroundResource(R.drawable.tv_tag);
             }
             return convertView;
         }
-        private  class ViewHolder{
+
+        private class ViewHolder {
             TextView tv_tag;
         }
     }
 
     /**
      * 授权权限
+     *
      * @param permsRequestCode
      * @param permissions
      * @param grantResults
      */
     @Override
-    public void onRequestPermissionsResult(int permsRequestCode, String[] permissions, int[] grantResults){
+    public void onRequestPermissionsResult(int permsRequestCode, String[] permissions, int[] grantResults) {
 
-        switch(permsRequestCode){
+        switch (permsRequestCode) {
 
             case 200:
 
-                boolean cameraAccepted = grantResults[0]== PackageManager.PERMISSION_GRANTED;
-                if(cameraAccepted){
+                boolean cameraAccepted = grantResults[0] == PackageManager.PERMISSION_GRANTED;
+                if (cameraAccepted) {
                     //授权成功之后，调用系统相机进行拍照操作等
                     galleryFinalUtil.openCamera(HelpMeActivity.this, mPhotoList, REQUEST_CODE_CAMERA, mOnHanlderResultCallback);
-                }else{
+                } else {
                     //用户授权拒绝之后，友情提示一下就可以了
                     ToastUtil.showShort(this, "已拒绝进入相机，如想开启请到设置中开启！");
                 }

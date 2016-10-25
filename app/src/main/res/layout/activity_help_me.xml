@@ -276,7 +276,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_toRightOf="@+id/tv_help_me_service_charge_text"
-                    android:text="¥26"
+                    android:text="¥0"
                     android:textColor="@color/colorHelpMe"
                     android:textSize="15dp"
                     android:layout_alignTop="@+id/tv_help_me_service_charge_text"

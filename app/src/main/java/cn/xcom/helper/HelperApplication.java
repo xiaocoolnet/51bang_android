@@ -27,6 +27,7 @@ import java.util.List;
 import cn.jpush.android.api.JPushInterface;
 import cn.xcom.helper.activity.HomeActivity;
 import cn.xcom.helper.bean.TaskType;
+import cn.xcom.helper.constant.HelperConstant;
 import cn.xcom.helper.utils.SPUtils;
 import cn.xcom.helper.utils.ToastUtil;
 import cn.xcom.helper.utils.ToolUtil;
@@ -101,18 +102,19 @@ public class HelperApplication extends Application {
             String state = SPUtils.get(context,"pushstate","").toString();
             String title = "";
             String message = "";
+            int type = 0;
             switch (key){
                 case "newTask":
                     title = "所在城市有新的任务";
                     if(state.equals("1")){
                         message = "是否去抢单？";
                     }
-                    popDialog(title,message);
+                    popDialog(title,message,type);
                     break;
                 case "newMessage":
                     title = "您有新的留言消息";
                     message ="是否立即查看？";
-                    popDialog(title,message);
+                    popDialog(title,message,type);
                     break;
                 case "sendTaskType":
                     title = "您的任务状态改变";
@@ -131,7 +133,7 @@ public class HelperApplication extends Application {
                     if(state.equals("5")){
                         message = "对方已评价";
                     }
-                    popDialog(title,message);
+                    popDialog(title,message,type);
                     break;
                 case "acceptTaskType":
                     title = "您接的任务状态改变";
@@ -147,12 +149,12 @@ public class HelperApplication extends Application {
                     if(state.equals("-1")){
                         message = "对方已取消";
                     }
-                    popDialog(title,message);
+                    popDialog(title,message,type);
                     break;
                 case "myWallet":
                     title = "钱包数据已更新";
                     message = "是否立即查看？";
-                    popDialog(title,message);
+                    popDialog(title,message,type);
                     break;
                 case "buyOrderType":
                     title = "您购买的商品订单状态已更新";
@@ -168,7 +170,7 @@ public class HelperApplication extends Application {
                     if(state.equals("4")){
                         message = "商家回复评论";
                     }
-                    popDialog(title,message);
+                    popDialog(title,message,type);
                     break;
                 case "businessOrderType":
                     title = "您发布的商品订单状态已更新";
@@ -187,7 +189,7 @@ public class HelperApplication extends Application {
                     if(state.equals("5")){
                         message = "对方已评论";
                     }
-                    popDialog(title,message);
+                    popDialog(title,message,type);
                     break;
                 case "loginFromOther":
                     title = "有人登陆您的账号";
@@ -200,6 +202,8 @@ public class HelperApplication extends Application {
                     title = "认证状态更新";
                     if(state.equals("1")){
                         message = "您已通过身份认证";
+                        type = 1;
+                        SPUtils.put(context, HelperConstant.IS_HAD_AUTHENTICATION,"1");
                     }
                     if(state.equals("2")){
                         message = "您未通过身份认证";
@@ -210,12 +214,12 @@ public class HelperApplication extends Application {
                     if(state.equals("4")){
                         message = "您未通过投保认证";
                     }
-                    popDialog(title,message);
+                    popDialog(title,message,type);
                     break;
                 case "prohibitVisit":
                     title = "封号";
                     message = "封号";
-                    popDialog(title,message);
+                    popDialog(title,message,type);
                     break;
             }
         }
@@ -228,7 +232,10 @@ public class HelperApplication extends Application {
      * @param title
      * @param message
      */
-    private void popDialog(String title, String message) {
+    private void popDialog(String title, String message , final int type) {
+        if(activities.size()==0){
+            return;
+        }
         final Activity activity = activities.get(activities.size()-1);
         if (activity==null){
             return;
@@ -237,6 +244,12 @@ public class HelperApplication extends Application {
             @Override
             public void onItemClick(Object o, int position) {
                 if (position == 0) {
+                    switch (type){
+                        case 1:
+                            activities.get(activities.size()-1).startActivity(new Intent(activities.get(activities.size()-1), HomeActivity.class));
+                            HelperApplication.getInstance().onTerminate();
+                            break;
+                    }
                     ToastUtil.showShort(activity, "确定");
                 }
             }
@@ -246,6 +259,11 @@ public class HelperApplication extends Application {
 
             }
         });
+        switch (type){
+            case 1:
+                mAlertView.setCancelable(false);
+                break;
+        }
         mAlertView.show();
     }
 

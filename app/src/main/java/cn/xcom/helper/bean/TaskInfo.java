@@ -63,6 +63,7 @@ public class TaskInfo implements Serializable{
     private String name;
     private String status;
     private String phone;
+    private String photo;
     private String typename;
     private String type_parentid;
     private String type_parentname;
@@ -86,6 +87,14 @@ public class TaskInfo implements Serializable{
 
     public String getOrder_num() {
         return order_num;
+    }
+
+    public String getPhoto() {
+        return photo;
+    }
+
+    public void setPhoto(String photo) {
+        this.photo = photo;
     }
 
     public void setOrder_num(String order_num) {
