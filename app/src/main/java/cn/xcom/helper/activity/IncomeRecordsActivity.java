@@ -66,7 +66,7 @@ public class IncomeRecordsActivity extends BaseActivity implements View.OnClickL
 
             @Override
             public void onLoadMore() {
-                mRecyclerView.refreshComplete();
+                mRecyclerView.loadMoreComplete();
             }
         });
         mRecyclerView.addItemDecoration(new DividerItemDecoration(this,LinearLayoutManager.VERTICAL));

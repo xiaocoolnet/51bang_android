@@ -67,7 +67,7 @@ public class PresentRecordActivity extends BaseActivity implements View.OnClickL
 
             @Override
             public void onLoadMore() {
-                mRecyclerView.refreshComplete();
+                mRecyclerView.loadMoreComplete();
             }
         });
         userInfo = new UserInfo(mContext);
