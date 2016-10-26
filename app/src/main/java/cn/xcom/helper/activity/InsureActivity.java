@@ -123,26 +123,25 @@ public class InsureActivity extends BaseActivity implements View.OnClickListener
                 super.onSuccess(statusCode, headers, response);
                 if(response.optString("status").equals("success")){
                     String data = response.optString("data");
-                    SPUtils.put(mContext, HelperConstant.IS_INSURANCE,response.optString("data"));
-                    if(data.equals("-1")){
-                        rl_state.setBackgroundResource(R.color.colorTheme);
-                        tv_state.setText("认证中");
-                        bt_insure.setVisibility(View.GONE);
-                        insureImg.setVisibility(View.GONE);
-                    }else if(data.equals("1")){
+                    if(data.equals("1")){
                         rl_state.setBackgroundResource(R.color.colorTheme);
                         tv_state.setText(getString(R.string.tv_insure_state_yes));
                         bt_insure.setVisibility(View.GONE);
                         insureImg.setVisibility(View.GONE);
-                    }else {
+                    }
+                }else if(response.optString("status").equals("error")){
+                    String data = response.optString("data");
+                    if(data.equals("待审核")){
+                        rl_state.setBackgroundResource(R.color.colorTheme);
+                        tv_state.setText(data);
+                        bt_insure.setVisibility(View.GONE);
+                        insureImg.setVisibility(View.GONE);
+                    }else{
                         rl_state.setBackgroundResource(R.color.colorTextGray);
-                        tv_state.setText(getString(R.string.tv_insure_state_no));
+                        tv_state.setText(data);
                         bt_insure.setVisibility(View.VISIBLE);
                     }
-                }else{
-                    rl_state.setBackgroundResource(R.color.colorTextGray);
-                    tv_state.setText(getString(R.string.tv_insure_state_no));
-                    bt_insure.setVisibility(View.VISIBLE);
+
                 }
             }
 
@@ -178,16 +177,16 @@ public class InsureActivity extends BaseActivity implements View.OnClickListener
         params.put("userid",userInfo.getUserId());
         params.put("photo",nameList.get(0));
         params.put("expirydate",time);
-        HelperAsyncHttpClient.get(NetConstant.Check_Insurance, params, new JsonHttpResponseHandler() {
+        HelperAsyncHttpClient.get(NetConstant.UPDATE_USER_INSURANCE, params, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                 super.onSuccess(statusCode, headers, response);
                 progressDialog.dismiss();
                 try {
                     if(response.getString("status").equals("success")){
-                        Toast.makeText(mContext,"上传成功,请等待验证",Toast.LENGTH_SHORT).show();
+                        Toast.makeText(mContext,"上传成功,请等待审核",Toast.LENGTH_SHORT).show();
                         rl_state.setBackgroundResource(R.color.colorTheme);
-                        tv_state.setText("认证中");
+                        tv_state.setText("待审核");
                         bt_insure.setVisibility(View.GONE);
                         insureImg.setVisibility(View.GONE);
                     }else{

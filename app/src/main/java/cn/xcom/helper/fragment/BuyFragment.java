@@ -174,7 +174,8 @@ public class BuyFragment extends Fragment implements View.OnClickListener{
     private void getData() {
         if(SPUtils.get(getActivity(), HelperConstant.IS_HAD_AUTHENTICATION,"").equals("1")){
             getWorkingState();
-            if(HelperApplication.getInstance().mDistrict.equals("")){
+            if(null != HelperApplication.getInstance().mDistrict  &&
+                    HelperApplication.getInstance().mDistrict.equals("")){
                 flag = 1;
             }
             RequestParams params=new RequestParams();
