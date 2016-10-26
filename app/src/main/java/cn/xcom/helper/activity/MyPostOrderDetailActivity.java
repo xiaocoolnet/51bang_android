@@ -1,11 +1,16 @@
 package cn.xcom.helper.activity;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.view.View;
 import android.widget.Button;
@@ -214,11 +219,7 @@ public class MyPostOrderDetailActivity extends BaseActivity implements View.OnCl
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.iv_to_phone:
-                Intent intent = new Intent();
-                intent.setAction(Intent.ACTION_CALL);
-                intent.setData(Uri.parse("tel:" + taskItemInfo.getApply().getPhone()));
-                //开启系统拨号器
-                startActivity(intent);
+                requestPermission();
                 break;
             case R.id.iv_to_chat:
                 Intent chatIntent = new Intent(this,ChatActivity.class);
@@ -228,4 +229,62 @@ public class MyPostOrderDetailActivity extends BaseActivity implements View.OnCl
                 break;
         }
     }
+
+    private void callPhone(){
+        Intent intent = new Intent();
+        intent.setAction(Intent.ACTION_CALL);
+        intent.setData(Uri.parse("tel:" + taskItemInfo.getApply().getPhone()));
+        //开启系统拨号器
+        startActivity(intent);
+    }
+
+    int PHONE_REQUEST_CODE = 1;
+
+    private void requestPermission(){
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE)
+                != PackageManager.PERMISSION_GRANTED) {
+            // 第一次请求权限时，用户如果拒绝，下一次请求shouldShowRequestPermissionRationale()返回true
+            // 向用户解释为什么需要这个权限
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.CALL_PHONE)) {
+                new AlertDialog.Builder(this)
+                        .setMessage("申请电话权限")
+                        .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                //申请电话权限
+                                ActivityCompat.requestPermissions(MyPostOrderDetailActivity.this,
+                                        new String[]{Manifest.permission.CALL_PHONE}, PHONE_REQUEST_CODE);
+                            }
+                        })
+                        .show();
+            } else {
+                //申请电话权限
+                ActivityCompat.requestPermissions(this,
+                        new String[]{Manifest.permission.CALL_PHONE}, PHONE_REQUEST_CODE);
+            }
+        } else{
+            callPhone();
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        if (requestCode == PHONE_REQUEST_CODE) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                callPhone();
+            } else {
+                //用户勾选了不再询问
+                //提示用户手动打开权限
+                if (!ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.CALL_PHONE)) {
+                    Toast.makeText(this, "拨打电话权限已被禁止", Toast.LENGTH_SHORT).show();
+                }
+            }
+        }
+
+    }
+
+
+
 }
