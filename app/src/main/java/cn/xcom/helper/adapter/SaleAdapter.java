@@ -3,8 +3,6 @@ package cn.xcom.helper.adapter;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Paint;
-import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,9 +33,7 @@ public class SaleAdapter extends BaseAdapter {
 
     @Override
     public int getCount() {
-        Log.e("=======shipei1qi", "" + addList.size());
         return addList.size();
-
     }
 
     @Override
@@ -53,7 +49,6 @@ public class SaleAdapter extends BaseAdapter {
 
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
-        Log.e("========shipeiqi", "ZOUBUZOU");
         ViewHolder viewHolder = null;
         if (convertView == null) {
             viewHolder = new ViewHolder();
@@ -64,13 +59,13 @@ public class SaleAdapter extends BaseAdapter {
             viewHolder.textView3 = (TextView) convertView.findViewById(R.id.price);
             viewHolder.textView4 = (TextView) convertView.findViewById(R.id.oldprice);
             viewHolder.textView5 = (TextView) convertView.findViewById(R.id.havesell);
+            viewHolder.tv_name = (TextView) convertView.findViewById(R.id.tv_name);
+            viewHolder.tv_comment_count = (TextView) convertView.findViewById(R.id.commen_count);
             convertView.setTag(viewHolder);
         } else {
             viewHolder = (ViewHolder) convertView.getTag();
         }
         final Front front = addList.get(position);
-        Log.e("========shipeiqi", "" + addList.size());
-        Log.e("========shipeiqi8989", "" + front.getPicturelist().size());
         if (front.getPicturelist().size() > 0) {
             MyImageLoader.display(NetConstant.NET_DISPLAY_IMG +
                     front.getPicturelist().get(0).getFile(), viewHolder.imageView);
@@ -83,6 +78,7 @@ public class SaleAdapter extends BaseAdapter {
         viewHolder.textView4.setText(front.getOprice());
         viewHolder.textView4.getPaint().setFlags(Paint.STRIKE_THRU_TEXT_FLAG); //中划线
         viewHolder.textView5.setText("已售" + front.getSellnumber());
+        viewHolder.tv_name.setText(front.getUsername());
         //对cinvertview进行监听
         convertView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -99,6 +95,6 @@ public class SaleAdapter extends BaseAdapter {
 
     public class ViewHolder {
         private ImageView imageView;
-        private TextView textView1, textView2, textView3, textView4, textView5;
+        private TextView textView1, textView2, textView3, textView4, textView5,tv_name,tv_comment_count;
     }
 }

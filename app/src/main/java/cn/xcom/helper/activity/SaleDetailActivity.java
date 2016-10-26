@@ -18,6 +18,8 @@ import android.widget.Toast;
 
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.baidu.mapapi.model.LatLng;
+import com.baidu.mapapi.utils.DistanceUtil;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.tencent.mm.sdk.modelmsg.SendMessageToWX;
@@ -32,11 +34,11 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
+import cn.xcom.helper.HelperApplication;
 import cn.xcom.helper.R;
 import cn.xcom.helper.WXpay.Constants;
-import cn.xcom.helper.adapter.ViewPageAdapter;
+import cn.xcom.helper.adapter.MyViewPageAdapter;
 import cn.xcom.helper.bean.Collection;
-import cn.xcom.helper.bean.Front;
 import cn.xcom.helper.bean.ShopGoodInfo;
 import cn.xcom.helper.bean.UserInfo;
 import cn.xcom.helper.constant.NetConstant;
@@ -50,11 +52,11 @@ import cn.xcom.helper.view.SharePopupWindow;
 public class SaleDetailActivity extends BaseActivity implements View.OnClickListener {
     private ViewPager vp;
     private ImageView imageView,collect;
-    private TextView tvContent,price,tvprice,adress,buy;
+    private TextView tvContent,price,tvprice,adress,buy,tv_city_name;
     private RelativeLayout backImage;
     private RelativeLayout shopPublish;
     private List addViewList;//添加图片的list
-    private ViewPageAdapter viewPageAdapter;
+    private MyViewPageAdapter viewPageAdapter;
 //    private Front front;
     private ShopGoodInfo shopGoodInfo;
     private Context context;
@@ -85,23 +87,33 @@ public class SaleDetailActivity extends BaseActivity implements View.OnClickList
         tvContent.setText(shopGoodInfo.getDescription());
         price.setText("￥" + shopGoodInfo.getPrice());
         tvprice.setText("￥" + shopGoodInfo.getPrice());
-        adress.setText(shopGoodInfo.getAddress());
+        tv_city_name.setText(shopGoodInfo.getAddress());
+        if(!shopGoodInfo.getLongitude().equals("")&&!shopGoodInfo.getLatitude().equals("")&&!String.valueOf(HelperApplication.getInstance().mLocLat).equals("")&&!String.valueOf(HelperApplication.getInstance().mLocLon).equals("")){
+            adress.setText((int) DistanceUtil.getDistance(
+                    new LatLng(Double.parseDouble(shopGoodInfo.getLatitude()),
+                            Double.parseDouble(shopGoodInfo.getLongitude())),
+                    new LatLng(HelperApplication.getInstance().mLocLat,
+                            HelperApplication.getInstance().mLocLon)) + "米");
+        }
         Log.e("========shipeiqiwocao", "" + shopGoodInfo.getPicturelist().size());
+        ArrayList<String> imgs = new ArrayList<>();
         if (shopGoodInfo.getPicturelist().size()>0){
             for (int i=0;i<shopGoodInfo.getPicturelist().size();i++){
+                imgs.add(shopGoodInfo.getPicturelist().get(i).getFile());
                 imageView=new ImageView(this);
                 MyImageLoader.display(NetConstant.NET_DISPLAY_IMG +shopGoodInfo.getPicturelist().get(i).getFile(),
                         imageView);
-                imageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
+                imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
                 addViewList.add(imageView);
             }
         }else{
+            imgs.add(NetConstant.NET_DISPLAY_IMG);
             imageView=new ImageView(this);
             MyImageLoader.display(NetConstant.NET_DISPLAY_IMG,imageView);
-            imageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
+            imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
             addViewList.add(imageView);
         }
-        viewPageAdapter=new ViewPageAdapter(addViewList);
+        viewPageAdapter=new MyViewPageAdapter(imgs,addViewList,context);
         vp.setAdapter(viewPageAdapter);
         vp.setCurrentItem(0);
     }
@@ -127,6 +139,7 @@ public class SaleDetailActivity extends BaseActivity implements View.OnClickList
         buy.setOnClickListener(this);
         rl_share = (RelativeLayout) findViewById(R.id.rl_share);
         rl_share.setOnClickListener(this);
+        tv_city_name = (TextView) findViewById(R.id.tv_city_name);
     }
     //根据商品的id得到商家的id
     public void addGood(){

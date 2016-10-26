@@ -75,6 +75,7 @@ public class AddressListActivity extends BaseActivity implements View.OnClickLis
         bt_address= (Button) findViewById(R.id.bt_address_list_add);
         bt_address.setOnClickListener(this);
         lv_address_list= (ListView) findViewById(R.id.lv_address_list);
+
     }
     //获取地址列表
     public void adressList(){
@@ -92,6 +93,16 @@ public class AddressListActivity extends BaseActivity implements View.OnClickLis
                         adressAdapter=new AdressAdapter(adressesList,mContext);
                         lv_address_list.setAdapter(adressAdapter);
                         adressAdapter.notifyDataSetChanged();
+                        /*lv_address_list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                            @Override
+                            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                                Intent intent = new Intent();
+                                Log.e("address", "yes");
+                                intent.putExtra("address", adressesList.get(position).getAddress());
+                                setResult(RESULT_OK, intent);
+                                finish();
+                            }
+                        });*/
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -211,6 +222,16 @@ public class AddressListActivity extends BaseActivity implements View.OnClickLis
                     Log.d("userid", userInfo.getUserId());
                     request.putValue("userid",userInfo.getUserId());
                     SingleVolleyRequest.getInstance(context).addToRequestQueue(request);
+                }
+            });
+            convertView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent();
+                    Log.e("address", "yes");
+                    intent.putExtra("address", adressesList.get(position).getAddress());
+                    setResult(RESULT_OK, intent);
+                    finish();
                 }
             });
             return convertView;

@@ -13,8 +13,6 @@ import android.widget.Toast;
 
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -23,7 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import cn.xcom.helper.R;
-import cn.xcom.helper.adapter.ViewPageAdapter;
+import cn.xcom.helper.adapter.MyViewPageAdapter;
 import cn.xcom.helper.bean.Collection;
 import cn.xcom.helper.bean.Front;
 import cn.xcom.helper.bean.ShopGoodInfo;
@@ -44,7 +42,7 @@ public class ShopActivity extends BaseActivity implements View.OnClickListener {
     private TextView tvContent, price, adress,buyTv;
     private RelativeLayout backImage;
     private List addViewList;//添加图片的list
-    private ViewPageAdapter viewPageAdapter;
+    private MyViewPageAdapter viewPageAdapter;
     private Front front;
     private ShopGoodInfo shopGoodInfo;
     private Context context;
@@ -69,9 +67,10 @@ public class ShopActivity extends BaseActivity implements View.OnClickListener {
         }else{
             buyTv.setVisibility(View.VISIBLE);
         }
-
+        ArrayList<String> imgs = new ArrayList<>();
         if (front.getPicturelist().size() > 0) {
             for (int i = 0; i < front.getPicturelist().size(); i++) {
+                imgs.add(shopGoodInfo.getPicturelist().get(i).getFile());
                 imageView = new ImageView(this);
                 MyImageLoader.display(NetConstant.NET_DISPLAY_IMG + front.getPicturelist().get(i).getFile(),
                         imageView);
@@ -79,12 +78,13 @@ public class ShopActivity extends BaseActivity implements View.OnClickListener {
                 addViewList.add(imageView);
             }
         } else {
+            imgs.add(NetConstant.NET_DISPLAY_IMG);
             imageView = new ImageView(this);
             MyImageLoader.display(NetConstant.NET_DISPLAY_IMG, imageView);
             imageView.setScaleType(ImageView.ScaleType.FIT_XY);
             addViewList.add(imageView);
         }
-        viewPageAdapter = new ViewPageAdapter(addViewList);
+        viewPageAdapter = new MyViewPageAdapter(imgs,addViewList,context);
         vp.setAdapter(viewPageAdapter);
         vp.setCurrentItem(0);
         getCollectedState();

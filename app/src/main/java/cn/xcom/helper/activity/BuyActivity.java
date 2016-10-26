@@ -1,10 +1,12 @@
 package cn.xcom.helper.activity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -13,14 +15,20 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+
 import cn.xcom.helper.R;
-import cn.xcom.helper.bean.Front;
 import cn.xcom.helper.bean.ShopGoodInfo;
+import cn.xcom.helper.bean.UserInfo;
+import cn.xcom.helper.constant.NetConstant;
+import cn.xcom.helper.utils.SingleVolleyRequest;
+import cn.xcom.helper.utils.StringPostRequest;
 
 public class BuyActivity extends BaseActivity implements View.OnClickListener {
     private RelativeLayout back;
     private TextView buy_phone;
-    private TextView buy_price;
+    private TextView buy_price,tv_name,tv_good_name,address_choose;
     private Button btnDecrease;
     private EditText etAmount;
     private Button btnIncrease;
@@ -31,6 +39,8 @@ public class BuyActivity extends BaseActivity implements View.OnClickListener {
     private LinearLayout buy_address;
     private RelativeLayout buy_commit;
     private ShopGoodInfo shopGoodInfo;
+    private Context context;
+    private UserInfo userInfo;
     int amount=1;//初始化购买数量
     private TextWatcher textWatcher=new TextWatcher() {
         @Override
@@ -57,15 +67,24 @@ public class BuyActivity extends BaseActivity implements View.OnClickListener {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_buy);
+        context = this;
+        userInfo = new UserInfo(context);
+        userInfo.readData(context);
         initView();
         Intent intent=getIntent();
         shopGoodInfo= (ShopGoodInfo) intent.getSerializableExtra("price");
-        buy_price.setText("￥"+shopGoodInfo.getPrice());
+        buy_price.setText("￥" + shopGoodInfo.getPrice());
         buy_total.setText(shopGoodInfo.getPrice());
         buy_deliver.setText(shopGoodInfo.getDelivery());
+        tv_name.setText(shopGoodInfo.getName());
+        tv_good_name.setText(shopGoodInfo.getGoodsname());
+        buy_phone.setText(shopGoodInfo.getPhone());
     }
 
     private void initView() {
+        address_choose = (TextView) findViewById(R.id.address_choose);
+        tv_name = (TextView) findViewById(R.id.tv_name);
+        tv_good_name = (TextView) findViewById(R.id.tv_good_name);
         back = (RelativeLayout) findViewById(R.id.back);
         back.setOnClickListener(this);
         buy_phone = (TextView) findViewById(R.id.buy_phone);
@@ -105,17 +124,33 @@ public class BuyActivity extends BaseActivity implements View.OnClickListener {
                 etAmount.setText(amount+"");
                 break;
             case R.id.buy_commit:
-                Intent intent=new Intent(BuyActivity.this,PaymentActivity.class);
-                intent.putExtra("price", buy_total.getText().toString());
-                startActivity(intent);
+                submit();
+//                Intent intent=new Intent(BuyActivity.this,PaymentActivity.class);
+//                intent.putExtra("price", buy_total.getText().toString());
+//                startActivity(intent);
                 break;
             case R.id.back:
                 finish();
                 break;
             case R.id.buy_address:
                 Intent intent1=new Intent(BuyActivity.this,AddressListActivity.class);
-                startActivity(intent1);
+                startActivityForResult(intent1, 0x110);
         }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if(resultCode!=RESULT_CANCELED){
+            switch (requestCode) {
+                case 0X110:
+                    if (data != null) {
+                        address_choose.setText(data.getStringExtra("address"));
+                    }
+                    break;
+            }
+        }
+
+        super.onActivityResult(requestCode, resultCode, data);
     }
 
     private void submit() {
@@ -131,9 +166,29 @@ public class BuyActivity extends BaseActivity implements View.OnClickListener {
             Toast.makeText(this, "您可以在此留言", Toast.LENGTH_SHORT).show();
             return;
         }
-
-
-
+        //提交商品订单
+        String url = NetConstant.SUBMIT_GOOD_ORDER;
+        StringPostRequest request = new StringPostRequest(url, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String s) {
+                Log.d("===更新发布", s);
+                Toast.makeText(getApplication(), "更新成功", Toast.LENGTH_SHORT).show();
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError volleyError) {
+                Toast.makeText(getApplication(), "网络错误，检查您的网络", Toast.LENGTH_SHORT).show();
+            }
+        });
+        request.putValue("userid",userInfo.getUserId());
+        request.putValue("goodsid",shopGoodInfo.getId());
+        request.putValue("goodnum",etAmountString);
+        request.putValue("mobile",shopGoodInfo.getPhone());
+        request.putValue("remark",message);
+        request.putValue("money",buy_total.getText().toString());
+        request.putValue("delivery",buy_deliver.getText().toString());
+        request.putValue("address",address_choose.getText().toString());
+        SingleVolleyRequest.getInstance(getApplication()).addToRequestQueue(request);
 
     }
 }

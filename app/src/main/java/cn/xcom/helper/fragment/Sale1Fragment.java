@@ -10,11 +10,12 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.AdapterView;
+import android.widget.FrameLayout;
 import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -37,14 +38,13 @@ import cn.xcom.helper.constant.NetConstant;
 import cn.xcom.helper.utils.SingleVolleyRequest;
 import cn.xcom.helper.utils.StringPostRequest;
 import cn.xcom.helper.utils.ToastUtils;
-import cn.xcom.helper.view.SaleTypePopupWindow;
 
 /**
  * Created by zhuchongkun on 16/5/27.
  * 主页面——特卖
  *
  */
-public class SaleFragment extends Fragment implements View.OnClickListener {
+public class Sale1Fragment extends Fragment implements View.OnClickListener {
     private String TAG = "SaleFragment";
     private Context mContext;
     private PopupWindow popupWindow;
@@ -55,8 +55,7 @@ public class SaleFragment extends Fragment implements View.OnClickListener {
     private List<Front> addlist = new ArrayList<>();
     private SaleAdapter saleAdapter;
     private GroupAdapter groupAdapter;
-    private SaleTypePopupWindow saleTypePopupWindow;
-    private TextView tv_typeName;
+    private List <DictionaryList>addAllList=new ArrayList<>();
     private Handler handler=new Handler();
     private Runnable runnable=new Runnable() {
         @Override
@@ -177,44 +176,16 @@ public class SaleFragment extends Fragment implements View.OnClickListener {
         rl_classification.setOnClickListener(this);
         rl_release = (RelativeLayout) getView().findViewById(R.id.rl_fragment_sale_release);
         rl_release.setOnClickListener(this);
-        tv_typeName = (TextView) getView().findViewById(R.id.tv_sale_type);
+        DictionaryList dictionaryList=new DictionaryList();
+        dictionaryList.setId("1000");
+        dictionaryList.setName("全部");
+        addAllList.add(dictionaryList);
     }
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.rl_fragment_sale_classification:
-                saleTypePopupWindow = new SaleTypePopupWindow(mContext, new AdapterView.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                        final List aList=new ArrayList();
-                        DictionaryList dictionaryList = saleTypePopupWindow.addAllList.get(position);
-                        if (dictionaryList.getName().equals("全部")) {
-                            aList.addAll(addlist);
-                        } else {
-                            for (int i = 0; i < addlist.size(); i++) {
-                                Front front = addlist.get(i);
-                                if (dictionaryList.getId().equals(front.getType())) {
-                                    Log.d("=== 数据", front.getId());
-                                    aList.add(front);
-                                } else if (dictionaryList.getName().equals("其他") && front.getType().length() <= 0) {
-                                    Log.d("=== 其他", front.getType().toString());
-                                    aList.add(front);
-                                }
-                            }
-                        }
-                        tv_typeName.setText(dictionaryList.getName());
-                        saleAdapter = new SaleAdapter(aList, mContext);
-                        listView.setAdapter(saleAdapter);
-                        saleAdapter.notifyDataSetChanged();
-                        if (saleTypePopupWindow != null) {
-                            saleTypePopupWindow.dismiss();
-                        }
-                    }
-                });
-                //设置弹出位置
-                int[] location = new int[2];
-                rl_classification.getLocationOnScreen(location);
-                saleTypePopupWindow.showAsDropDown(rl_classification);
+                showWindow(v);
                 break;
             case R.id.rl_fragment_sale_release:
                 Intent intent=new Intent(getActivity(), ReleaseActivity.class);
@@ -225,7 +196,7 @@ public class SaleFragment extends Fragment implements View.OnClickListener {
 
     }
 //获取字典并弹出popuwindow
-/*    private void showWindow(View parent) {
+    private void showWindow(View parent) {
             Log.d("=====显示", "" + "=================");
             LayoutInflater layoutInflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             view = layoutInflater.inflate(R.layout.group_list, null);
@@ -287,8 +258,9 @@ public class SaleFragment extends Fragment implements View.OnClickListener {
         });
         clickPopuwindow();
 
-    }*/
-   /*public void clickPopuwindow(){
+    }
+//popuwindow的点击事件,同时刷新listview
+   public void clickPopuwindow(){
        final List aList=new ArrayList();
        lv_group.setOnItemClickListener(new AdapterView.OnItemClickListener() {
            @Override
@@ -324,5 +296,9 @@ public class SaleFragment extends Fragment implements View.OnClickListener {
                }
            }
        });
-   }*/
+   }
+
+
+
+
 }

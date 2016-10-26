@@ -63,6 +63,18 @@
             android:textSize="16sp"/>
 
         <TextView
+            android:id="@+id/commen_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/oldprice"
+            android:layout_toLeftOf="@id/havesell"
+            android:layout_alignParentBottom="true"
+            android:layout_marginLeft="10dp"
+            android:text="评价0条"
+            android:textColor="@color/colorTheme"
+            android:textSize="16sp"/>
+
+        <TextView
             android:id="@+id/havesell"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -71,5 +83,13 @@
             android:layout_alignParentBottom="true"
             android:layout_alignParentRight="true"
             />
+        <TextView
+            android:id="@+id/tv_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/text_grey"
+            android:textSize="14sp"
+            android:text="51帮"
+            android:layout_alignParentRight="true"/>
     </RelativeLayout>
 </LinearLayout>

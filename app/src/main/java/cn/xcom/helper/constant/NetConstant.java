@@ -377,4 +377,9 @@ public interface NetConstant extends HelperConstant {
      * 切换开工收工状态
      */
     public final static String CHANGE_WORKING_STATE = NET_HOST_PREFIX + "a=BeginWorking&";
+
+    /**
+     * 提交商品订单
+     */
+    public final static String SUBMIT_GOOD_ORDER = NET_HOST_PREFIX + "a=bookingshopping&";
 }
