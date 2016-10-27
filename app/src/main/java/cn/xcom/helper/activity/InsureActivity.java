@@ -35,19 +35,20 @@ import cn.xcom.helper.utils.GalleryFinalUtil;
 import cn.xcom.helper.utils.PushImage;
 import cn.xcom.helper.utils.PushImageUtil;
 import cn.xcom.helper.utils.SPUtils;
+import cn.xcom.helper.utils.StringUtils;
 import cz.msebera.android.httpclient.Header;
 
 /**
  * Created by zhuchongkun on 16/6/12.
  * 投保页
  */
-public class InsureActivity extends BaseActivity implements View.OnClickListener{
+public class InsureActivity extends BaseActivity implements View.OnClickListener {
     private final int REQUEST_CODE_GALLERY = 1001;
 
-    private String TAG="InsureActivity";
+    private String TAG = "InsureActivity";
     private Context mContext;
-    private RelativeLayout rl_back,rl_state;
-    private TextView tv_state;
+    private RelativeLayout rl_back, rl_state;
+    private TextView tv_state,tv_warning_word;
     private Button bt_insure;
     private UserInfo userInfo;
     private ImageView insureImg;
@@ -62,36 +63,37 @@ public class InsureActivity extends BaseActivity implements View.OnClickListener
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_insure);
-        mContext=this;
+        mContext = this;
         userInfo = new UserInfo(this);
         initView();
-        galleryFinalUtil = new GalleryFinalUtil(1);
+        galleryFinalUtil = new GalleryFinalUtil(3);
         mPhotoList = new ArrayList<>();
         nameList = new ArrayList<>();
         checkInsurance();
     }
 
-    private void initView(){
-        rl_back= (RelativeLayout) findViewById(R.id.rl_insure_back);
+    private void initView() {
+        rl_back = (RelativeLayout) findViewById(R.id.rl_insure_back);
         rl_back.setOnClickListener(this);
-        rl_state= (RelativeLayout) findViewById(R.id.rl_insure_state);
-        tv_state= (TextView) findViewById(R.id.tv_insure_state);
-        bt_insure= (Button) findViewById(R.id.bt_insure);
+        rl_state = (RelativeLayout) findViewById(R.id.rl_insure_state);
+        tv_state = (TextView) findViewById(R.id.tv_insure_state);
+        bt_insure = (Button) findViewById(R.id.bt_insure);
         bt_insure.setOnClickListener(this);
-        insureImg  = (ImageView) findViewById(R.id.iv_insure);
+        insureImg = (ImageView) findViewById(R.id.iv_insure);
         progressDialog = new ProgressDialog(this);
         progressDialog.setCancelable(true);
+        tv_warning_word = (TextView) findViewById(R.id.tv_warning_word);
     }
 
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
+        switch (v.getId()) {
             case R.id.rl_insure_back:
                 finish();
                 break;
             case R.id.bt_insure:
-                galleryFinalUtil.openAblum(mContext,mPhotoList,REQUEST_CODE_GALLERY,mOnHanlderResultCallback);
+                galleryFinalUtil.openAblum(mContext, mPhotoList, REQUEST_CODE_GALLERY, mOnHanlderResultCallback);
                 break;
         }
     }
@@ -103,45 +105,51 @@ public class InsureActivity extends BaseActivity implements View.OnClickListener
                 mPhotoList.clear();
                 mPhotoList.addAll(resultList);
 //                uploadImg();
-                Intent intent = new Intent(mContext,InsureDetailActivity.class);
-                intent.putExtra("url",mPhotoList.get(0).getPhotoPath());
-                startActivityForResult(intent,1);
+                Intent intent = new Intent(mContext, InsureDetailActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("photos", mPhotoList);
+                intent.putExtra("bundle", bundle);
+                startActivityForResult(intent, 1);
             }
         }
+
         @Override
         public void onHanlderFailure(int requestCode, String errorMsg) {
             Toast.makeText(InsureActivity.this, errorMsg, Toast.LENGTH_SHORT).show();
         }
     };
 
-    private void checkInsurance(){
-        RequestParams params=new RequestParams();
-        params.put("userid",userInfo.getUserId());
+    private void checkInsurance() {
+        RequestParams params = new RequestParams();
+        params.put("userid", userInfo.getUserId());
         HelperAsyncHttpClient.get(NetConstant.Check_Insurance, params, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                 super.onSuccess(statusCode, headers, response);
-                if(response.optString("status").equals("success")){
+                if (response.optString("status").equals("success")) {
                     String data = response.optString("data");
-                    if(data.equals("1")){
+                    if (data.equals("1")) {
                         rl_state.setBackgroundResource(R.color.colorTheme);
                         tv_state.setText(getString(R.string.tv_insure_state_yes));
                         bt_insure.setVisibility(View.GONE);
                         insureImg.setVisibility(View.GONE);
-                    }
-                }else if(response.optString("status").equals("error")){
-                    String data = response.optString("data");
-                    if(data.equals("待审核")){
+                        tv_warning_word.setVisibility(View.GONE);
+                    }else if(data.equals("-1")){
                         rl_state.setBackgroundResource(R.color.colorTheme);
-                        tv_state.setText(data);
+                        tv_state.setText("待审核");
                         bt_insure.setVisibility(View.GONE);
                         insureImg.setVisibility(View.GONE);
+                        tv_warning_word.setVisibility(View.GONE);
+
                     }else{
                         rl_state.setBackgroundResource(R.color.colorTextGray);
-                        tv_state.setText(data);
+                        tv_state.setText("未投保");
                         bt_insure.setVisibility(View.VISIBLE);
+                        tv_warning_word.setVisibility(View.VISIBLE);
                     }
-
+                } else {
+                    String data = response.optString("data");
+                    Toast.makeText(InsureActivity.this, data, Toast.LENGTH_SHORT).show();
                 }
             }
 
@@ -153,10 +161,10 @@ public class InsureActivity extends BaseActivity implements View.OnClickListener
 
     }
 
-    private void uploadImg(){
+    private void uploadImg() {
         progressDialog.setMessage("正在上传图片");
         progressDialog.show();
-        new PushImageUtil().setPushIamge(getApplication(),mPhotoList,nameList, new PushImage() {
+        new PushImageUtil().setPushIamge(getApplication(), mPhotoList, nameList, new PushImage() {
 
             @Override
             public void success(boolean state) {
@@ -172,30 +180,33 @@ public class InsureActivity extends BaseActivity implements View.OnClickListener
 
     }
 
-    private void updateInsure(){
-        RequestParams params=new RequestParams();
-        params.put("userid",userInfo.getUserId());
-        params.put("photo",nameList.get(0));
-        params.put("expirydate",time);
+    private void updateInsure() {
+        RequestParams params = new RequestParams();
+        params.put("userid", userInfo.getUserId());
+        String names = StringUtils.listToString(nameList,",");
+        params.put("photo", names);
+        params.put("expirydate", time);
         HelperAsyncHttpClient.get(NetConstant.UPDATE_USER_INSURANCE, params, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                 super.onSuccess(statusCode, headers, response);
                 progressDialog.dismiss();
                 try {
-                    if(response.getString("status").equals("success")){
-                        Toast.makeText(mContext,"上传成功,请等待审核",Toast.LENGTH_SHORT).show();
+                    if (response.getString("status").equals("success")) {
+                        Toast.makeText(mContext, "上传成功,请等待审核", Toast.LENGTH_SHORT).show();
                         rl_state.setBackgroundResource(R.color.colorTheme);
                         tv_state.setText("待审核");
                         bt_insure.setVisibility(View.GONE);
                         insureImg.setVisibility(View.GONE);
-                    }else{
-                        Toast.makeText(mContext,response.getString("data"),Toast.LENGTH_SHORT).show();
+                        tv_warning_word.setVisibility(View.GONE);
+                    } else {
+                        Toast.makeText(mContext, response.getString("data"), Toast.LENGTH_SHORT).show();
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
             }
+
             @Override
             public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
                 super.onFailure(statusCode, headers, responseString, throwable);
@@ -208,9 +219,9 @@ public class InsureActivity extends BaseActivity implements View.OnClickListener
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode ==1){
-            if ((resultCode == RESULT_OK)){
-                 time = data.getStringExtra("time");
+        if (requestCode == 1) {
+            if ((resultCode == RESULT_OK)) {
+                time = data.getStringExtra("time");
                 uploadImg();
             }
         }

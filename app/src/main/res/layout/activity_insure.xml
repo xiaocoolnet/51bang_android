@@ -84,6 +84,16 @@
                 android:textColor="@color/colorTextWhite"
                 android:textSize="15dp" />
 
+            <TextView
+                android:id="@+id/tv_warning_word"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/insure_warning_word"
+                android:padding="10dp"
+                android:gravity="center"
+                android:textColor="@color/msg_red"
+                />
+
 
             <ImageView
                 android:id="@+id/iv_insure"

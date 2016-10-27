@@ -90,6 +90,7 @@ public class SaleFragment extends Fragment implements View.OnClickListener {
                              String state = jsonObject.getString("status");
                              if (state.equals("success")) {
                                  String jsonObject1 = jsonObject.getString("data");
+                                 tv_typeName.setText("全部分类");
                                  Gson gson = new Gson();
                                  addlist = gson.fromJson(jsonObject1,
                                          new TypeToken<ArrayList<Front>>() {
@@ -188,7 +189,7 @@ public class SaleFragment extends Fragment implements View.OnClickListener {
                     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                         final List aList=new ArrayList();
                         DictionaryList dictionaryList = saleTypePopupWindow.addAllList.get(position);
-                        if (dictionaryList.getName().equals("全部")) {
+                        if (dictionaryList.getName().equals("全部分类")) {
                             aList.addAll(addlist);
                         } else {
                             for (int i = 0; i < addlist.size(); i++) {

@@ -317,4 +317,6 @@
     <string name="tv_fragment_me_real_baoxian">保险认证</string>
     <!--MeFragment-->
 
+    <string name="insure_warning_word">请上传包括手持身份证，身份证正面，投保凭证3张图片，谢谢合作</string>
+
 </resources>
