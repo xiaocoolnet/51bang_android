@@ -4,8 +4,6 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -25,9 +23,6 @@ import android.widget.Toast;
 import com.alipay.sdk.app.PayTask;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.tencent.mm.sdk.modelmsg.SendMessageToWX;
-import com.tencent.mm.sdk.modelmsg.WXMediaMessage;
-import com.tencent.mm.sdk.modelmsg.WXWebpageObject;
 import com.tencent.mm.sdk.modelpay.PayReq;
 import com.tencent.mm.sdk.openapi.IWXAPI;
 import com.tencent.mm.sdk.openapi.WXAPIFactory;
@@ -73,7 +68,7 @@ public class PaymentActivity extends BaseActivity implements View.OnClickListene
     public static final String RSA_PRIVATE = "MIICdgIBADANBgkqhkiG9w0BAQEFAASCAmAwggJcAgEAAoGBAM2arVc/DULOrVn5VVdkALDETOa1sznxviFaDD/+bZJI+3C7ls1HVZzKNCj7uwKKk02fRnLU70twRMifdhbIwEpqIFQLZW2HXbbif9+74BhetsQiQ/kyzRAhWEqeppNv/KTCtPM5d99S74diQuHHIH0cz4g7Xy9i/9RH8oS315bDAgMBAAECgYEAqpiO/3dXn3kxqRgS0aIuWH1oeX2GKqwE4FOBGpAXhmt8BfwAkm9//8pfISpN7zvgIWXo5Fr9+pA64mQ9bYZA1YDMLxcebn6uRqXZGoa0iZmx0n8/JpTw9L9A0Jt2HBJltrW5vsHqwOkjNL3sPxeeLOnNT9kVRSpp2gRFQuqZPoECQQDvYBpPUOeQ9KC1nouv3ngXOZg0Pw/vJbxaQWwqCAjN/l2m6sBjU6lP2dVB6QSVbD4V6rNABX63PW69uo8V5e1jAkEA2+ImfhcdSM1zS3QnKeyNd0HCKNvXXWXhjnAZ22pHI7tApIexsa/IlbQYNGbL14ZyRD6jq64P2FPwxt4hHUcfIQJAbSBdviz+9GlhXorh2ZJNIyFhjuf05qxIWskae2rgQLCmlzLL9DwuorWG8B4/tbL79tfhUd1vcC/0bVBAbNY+SwJACG2SrCKWrMOzN6EsHx9CDOAoYQiMKLhO/PavBwn70BLNV4Eb/oOOXK6afuexyIEOwC7mdx4k3VXaVMUO3+BqAQJAeMQtg/QEDZJb+frQLOlElYpsUS/J+bASiHHb6j0UTgUYfEtC34oJDd5lX1ZkiaQV5lnGUT8T0da+bzomkZ5xSA==";
     private PayReq req;
     private String price,tradeNumber,tradeNo;
-    private int orderType; //1--任务,2--商品
+    private String type; //1--任务,2--商品
     private boolean tag;
 
 
@@ -114,12 +109,17 @@ public class PaymentActivity extends BaseActivity implements View.OnClickListene
      * 更新任务状态
      */
     private void UpdateTradeState() {
-        String url= NetConstant.UPDATETASKPAY;
+        String url = "";
+        if(type.equals("1")){
+            url= NetConstant.UPDATETASKPAY;
+        }else if(type.equals("2")){
+            url = NetConstant.UPDATESHOPPAY;
+        }
         StringPostRequest request=new StringPostRequest(url, new Response.Listener<String>() {
             @Override
             public void onResponse(String s) {
                 Log.d("更新支付状态", s);
-                Toast.makeText(getApplication(), "订单生成！", Toast.LENGTH_SHORT).show();
+                finish();
             }
         }, new Response.ErrorListener() {
             @Override
@@ -171,7 +171,7 @@ public class PaymentActivity extends BaseActivity implements View.OnClickListene
                 }
             }
         });
-        //3----银行卡
+        /*//3----银行卡
         cb_yinhangka.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -180,7 +180,7 @@ public class PaymentActivity extends BaseActivity implements View.OnClickListene
                     cb_weixin.setChecked(false);
                 }
             }
-        });
+        });*/
     }
 
     /**
@@ -189,7 +189,7 @@ public class PaymentActivity extends BaseActivity implements View.OnClickListene
     private void getInfo() {
         price = getIntent().getStringExtra("price");
         tradeNumber = getIntent().getStringExtra("tradeNo");
-        orderType = getIntent().getIntExtra("orderType",1);
+        type = getIntent().getStringExtra("type");
         tradeNo = getOutTradeNo(tradeNumber);
     }
 
@@ -218,7 +218,7 @@ public class PaymentActivity extends BaseActivity implements View.OnClickListene
                 if(cb_weixin.isChecked()){
                     wxpay();
                 }
-                if(cb_yinhangka.isChecked()){
+                /*if(cb_yinhangka.isChecked()){
                     WXWebpageObject webpage =new WXWebpageObject();
                     webpage.webpageUrl="www.baidu.com";
                     WXMediaMessage msg =new WXMediaMessage(webpage);
@@ -231,7 +231,7 @@ public class PaymentActivity extends BaseActivity implements View.OnClickListene
                     req.message = msg;
                     req.scene = SendMessageToWX.Req.WXSceneSession;
                     msgApi.sendReq(req);
-                }
+                }*/
                 break;
         }
     }

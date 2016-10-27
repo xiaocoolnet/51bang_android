@@ -18,6 +18,9 @@ import android.widget.Toast;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import cn.xcom.helper.R;
 import cn.xcom.helper.bean.ShopGoodInfo;
 import cn.xcom.helper.bean.UserInfo;
@@ -171,8 +174,20 @@ public class BuyActivity extends BaseActivity implements View.OnClickListener {
         StringPostRequest request = new StringPostRequest(url, new Response.Listener<String>() {
             @Override
             public void onResponse(String s) {
-                Log.d("===更新发布", s);
-                Toast.makeText(getApplication(), "更新成功", Toast.LENGTH_SHORT).show();
+                Log.d("===特卖订单", s);
+                Toast.makeText(getApplication(), "订单生成", Toast.LENGTH_SHORT).show();
+                JSONObject object = null;
+                try {
+                    object = new JSONObject(s);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                String orderNumber = object.optString("data");
+                Intent intent = new Intent(BuyActivity.this,PaymentActivity.class);
+                intent.putExtra("price", buy_total.getText().toString());
+                intent.putExtra("tradeNo", orderNumber);
+                intent.putExtra("type","2");
+                startActivity(intent);
             }
         }, new Response.ErrorListener() {
             @Override

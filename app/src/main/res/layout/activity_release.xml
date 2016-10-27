@@ -238,9 +238,10 @@
                     android:textColor="#201717"
                     android:textSize="16sp" />
                 <RelativeLayout
+                    android:id="@+id/rl_select_address"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
-                    <EditText
+                    <TextView
                         android:id="@+id/ed_location"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -250,7 +251,7 @@
                         android:layout_marginLeft="220dp"
                         android:background="@null"
                         android:textSize="16sp"
-                        android:hint="请输入位置" />
+                        android:hint="请选择位置" />
                 </RelativeLayout>
             </LinearLayout>
 

@@ -7,6 +7,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,24 +31,22 @@ import cn.xcom.helper.activity.BillActivity;
 import cn.xcom.helper.activity.CollectionActivity;
 import cn.xcom.helper.activity.EditPersonalActivity;
 import cn.xcom.helper.activity.InsureActivity;
-import cn.xcom.helper.activity.MessageActivity;
 import cn.xcom.helper.activity.MoreServiceActivity;
 import cn.xcom.helper.activity.MyOrderActivity;
 import cn.xcom.helper.activity.OrderActivity;
 import cn.xcom.helper.activity.OrderTakingActivity;
 import cn.xcom.helper.activity.ShareQRCodeActivity;
-import cn.xcom.helper.activity.ShopBuyActivity;
-import cn.xcom.helper.activity.ShoppingCartActivity;
 import cn.xcom.helper.activity.SignActivity;
 import cn.xcom.helper.activity.UserMessageActivity;
 import cn.xcom.helper.activity.VerifyShoppingCodeActivity;
 import cn.xcom.helper.activity.WalletActivity;
-import cn.xcom.helper.adapter.MyOrderAdapter;
 import cn.xcom.helper.bean.OrderHelper;
 import cn.xcom.helper.bean.UserInfo;
+import cn.xcom.helper.constant.HelperConstant;
 import cn.xcom.helper.constant.NetConstant;
 import cn.xcom.helper.net.HelperAsyncHttpClient;
 import cn.xcom.helper.utils.LogUtils;
+import cn.xcom.helper.utils.SPUtils;
 import cn.xcom.helper.view.CircleImageView;
 import cz.msebera.android.httpclient.Header;
 
@@ -62,7 +61,7 @@ public class MeFragment extends Fragment implements View.OnClickListener{
     private ImageView iv_gender;
     private TextView tv_name,tv_phone,tv_realName,tv_wallet,tv_sign,tv_message,
             tv_bill,tv_coupon,tv_order,tv_collection,tv_shoppingCart,tv_share2,tv_shopBuy,tv_orderTaking,
-            tv_insure,tv_moreService,tv_adress;
+            tv_insure,tv_moreService,tv_adress,tv_fragment_me_real_baoxian,tv_fragment_me_real_name;
     private ImageLoader imageLoader=ImageLoader.getInstance();
     private DisplayImageOptions options;
     private UserInfo userInfo;
@@ -80,11 +79,87 @@ public class MeFragment extends Fragment implements View.OnClickListener{
         super.onActivityCreated(savedInstanceState);
         mContext=getActivity();
         initView();
+        getInsurance();
+        getNameAuthentication(userInfo.getUserId());
+    }
+
+    @Override
+    public void onHiddenChanged(boolean hidden) {
+        super.onHiddenChanged(hidden);
+        getInsurance();
+        getNameAuthentication(userInfo.getUserId());
+    }
+
+    /**
+     * 获取实名认证
+     */
+    private void getNameAuthentication(final String userid) {
+        RequestParams params=new RequestParams();
+        params.put("userid", userid);
+        HelperAsyncHttpClient.get(NetConstant.Check_Had_Authentication, params, new JsonHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                super.onSuccess(statusCode, headers, response);
+                Log.e("认证", response.toString());
+                if (response.optString("status").equals("success")) {
+                    SPUtils.put(mContext, HelperConstant.IS_HAD_AUTHENTICATION, "1");
+                    tv_fragment_me_real_name.setText("实名认证");
+                    tv_fragment_me_real_name.setTextColor(mContext.getResources().getColor(R.color.white));
+                } else {
+                    SPUtils.put(mContext, HelperConstant.IS_HAD_AUTHENTICATION, "0");
+                    tv_fragment_me_real_name.setText("未实名认证");
+                    tv_fragment_me_real_name.setTextColor(mContext.getResources().getColor(R.color.holo_red_light));
+                }
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                super.onFailure(statusCode, headers, responseString, throwable);
+                Log.e("认证", responseString);
+            }
+        });
+    }
+
+    /**
+     * 获取保险认证
+     */
+    private void getInsurance() {
+        RequestParams params=new RequestParams();
+        params.put("userid",userInfo.getUserId());
+        HelperAsyncHttpClient.get(NetConstant.Check_Insurance, params, new JsonHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                super.onSuccess(statusCode, headers, response);
+                Log.e("认证", response.toString());
+                String data = response.optString("data");
+                if(response.optString("status").equals("success")){
+                    SPUtils.put(mContext,HelperConstant.IS_INSURANCE,data);
+                }
+                switch (data){
+                    case "1":
+                        tv_fragment_me_real_baoxian.setText("保险认证");
+                        tv_fragment_me_real_baoxian.setTextColor(mContext.getResources().getColor(R.color.white));
+                        break;
+                    default:
+                        tv_fragment_me_real_baoxian.setText("未保险认证");
+                        tv_fragment_me_real_baoxian.setTextColor(mContext.getResources().getColor(R.color.holo_red_light));
+                        break;
+                }
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                super.onFailure(statusCode, headers, responseString, throwable);
+                Log.e("认证", responseString);
+            }
+        });
     }
 
     private void initView(){
         iv_head= (CircleImageView) getView().findViewById(R.id.iv_fragment_me_head);
         iv_head.setOnClickListener(this);
+        tv_fragment_me_real_baoxian = (TextView) getView().findViewById(R.id.tv_fragment_me_real_baoxian);
+        tv_fragment_me_real_name = (TextView) getView().findViewById(R.id.tv_fragment_me_real_name);
         iv_gender= (ImageView) getView().findViewById(R.id.iv_fragment_me_gender);
         tv_name= (TextView) getView().findViewById(R.id.tv_fragment_me_name);
         tv_phone= (TextView) getView().findViewById(R.id.tv_fragment_me_phone);

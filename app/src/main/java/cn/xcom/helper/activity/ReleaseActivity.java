@@ -43,6 +43,7 @@ import java.util.List;
 
 import cn.finalteam.galleryfinal.GalleryFinal;
 import cn.finalteam.galleryfinal.model.PhotoInfo;
+import cn.xcom.helper.HelperApplication;
 import cn.xcom.helper.R;
 import cn.xcom.helper.adapter.ChoosePhotoListAdapter;
 import cn.xcom.helper.adapter.GridViewAdapter;
@@ -57,12 +58,13 @@ import cn.xcom.helper.utils.PushImageUtil;
 import cn.xcom.helper.utils.SingleVolleyRequest;
 import cn.xcom.helper.utils.StringJoint;
 import cn.xcom.helper.utils.StringPostRequest;
+import cn.xcom.helper.utils.ToastUtil;
 import cn.xcom.helper.utils.WheelView;
 
 
 public class ReleaseActivity extends BaseActivity implements View.OnClickListener {
     private Context context;
-    private RelativeLayout rl_i_help_back;
+    private RelativeLayout rl_i_help_back,rl_select_address;
     private List<PhotoInfo> addImageList;
     private List<String> nameList;//添加相册选取完返回的的list
     private ArrayList<PhotoWithPath> photoWithPaths;
@@ -73,12 +75,12 @@ public class ReleaseActivity extends BaseActivity implements View.OnClickListene
     private ImageView tupian,ima_dismiss,id_dismiss11;
     private LinearLayout divide ;
     private EditText ed_price;
-    private EditText ed_oldprice,ed_location;
+    private EditText ed_oldprice;
     private GridView gridView;
     private GridViewAdapter gridViewAdapter;
     private LinearLayout location,image_linearLayout;
     private LinearLayout transport;
-    private TextView telephone,tv_divide,text_transport;
+    private TextView telephone,tv_divide,text_transport,ed_location;
     private LinearLayout release;
     private Button bt_login_release;
     private ChoosePhotoListAdapter choosePhotoListAdapter;
@@ -100,6 +102,8 @@ public class ReleaseActivity extends BaseActivity implements View.OnClickListene
     private UserInfo info=new UserInfo();
 
     String a[]={"同城自取","送货上门","凭劵消费"};
+    private double mSiteLat;
+    private double mSiteLon;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -133,6 +137,8 @@ public class ReleaseActivity extends BaseActivity implements View.OnClickListene
         galleryFinalUtil=new GalleryFinalUtil(9);
         rl_i_help_back = (RelativeLayout) findViewById(R.id.rl_i_help_back);
         rl_i_help_back.setOnClickListener(this);
+        rl_select_address = (RelativeLayout) findViewById(R.id.rl_select_address);
+        rl_select_address.setOnClickListener(this);
         goodName = (EditText) findViewById(R.id.goodName);
         description = (EditText) findViewById(R.id.description);
         view_line=findViewById(R.id.view_line);
@@ -145,7 +151,7 @@ public class ReleaseActivity extends BaseActivity implements View.OnClickListene
         tupian = (ImageView) findViewById(R.id.tupian);
         tupian.setOnClickListener(this);
         text_transport= (TextView) findViewById(R.id.text_transport);
-        ed_location= (EditText) findViewById(R.id.ed_location);
+        ed_location= (TextView) findViewById(R.id.ed_location);
         //  delete= (ImageView) findViewById(R.id.delete);
      //   delete.setOnClickListener(this);
         divide = (LinearLayout) findViewById(R.id.divide);
@@ -192,6 +198,13 @@ public class ReleaseActivity extends BaseActivity implements View.OnClickListene
             case R.id.transport:
                 popoDialog(a);
                 break;
+            //选择地址
+            case R.id.rl_select_address:
+                Intent intent1 = new Intent(context, SelectMapPoiActivity.class);
+                intent1.putExtra("lat", HelperApplication.getInstance().mLocLat);
+                intent1.putExtra("lon", HelperApplication.getInstance().mLocLon);
+                startActivityForResult(intent1, 0x110);
+                break;
         }
     }
 
@@ -205,6 +218,13 @@ public class ReleaseActivity extends BaseActivity implements View.OnClickListene
             }
 
         }
+        if(requestCode == 0x110){
+            if(data!=null){
+                ed_location.setText(data.getStringExtra("siteName"));
+                mSiteLat = data.getDoubleExtra("siteLat", 0);
+                mSiteLon = data.getDoubleExtra("siteLon", 0);
+            }
+        }
         super.onActivityResult(requestCode, resultCode, data);
     }
     //更新发布
@@ -212,30 +232,34 @@ public class ReleaseActivity extends BaseActivity implements View.OnClickListene
         // validate
         final String goodNameString = goodName.getText().toString().trim();
         if (TextUtils.isEmpty(goodNameString)) {
-            Toast.makeText(this, "goodNameString不能为空", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "商品名称不能为空", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if(goodNameString.length()>35){
+            ToastUtil.showShort(this,"商品名称不能超过35字");
             return;
         }
 
         final String descriptionString = description.getText().toString().trim();
         if (TextUtils.isEmpty(descriptionString)) {
-            Toast.makeText(this, "descriptionString不能为空", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "商品描述不能为空", Toast.LENGTH_SHORT).show();
             return;
         }
 
         final String price = ed_price.getText().toString().trim();
         if (TextUtils.isEmpty(price)) {
-            Toast.makeText(this, "price不能为空", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "价格不能为空", Toast.LENGTH_SHORT).show();
             return;
         }
 
         final String oldprice = ed_oldprice.getText().toString().trim();
         if (TextUtils.isEmpty(oldprice)) {
-            Toast.makeText(this, "oldprice不能为空", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "原价不能为空", Toast.LENGTH_SHORT).show();
             return;
         }
         final String location = ed_location.getText().toString().trim();
         if (TextUtils.isEmpty(oldprice)) {
-            Toast.makeText(this, "ed_location不能为空", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "地址不能为空", Toast.LENGTH_SHORT).show();
             return;
         }
         //先上传图片再发布
@@ -268,9 +292,9 @@ public class ReleaseActivity extends BaseActivity implements View.OnClickListene
                 request.putValue("oprice", oldprice);
                 request.putValue("description", descriptionString);
                 request.putValue("unit", "个");
-                request.putValue("address", "北京市朝阳区");
-                request.putValue("longitude", location);
-                request.putValue("latitude", location);
+                request.putValue("address", location);
+                request.putValue("longitude", String.valueOf(mSiteLon));
+                request.putValue("latitude", String.valueOf(mSiteLat));
                 request.putValue("delivery", text_transport.getText().toString());
                 SingleVolleyRequest.getInstance(getApplication()).addToRequestQueue(request);
             }
@@ -299,9 +323,9 @@ public class ReleaseActivity extends BaseActivity implements View.OnClickListene
                 request.putValue("oprice", oldprice);
                 request.putValue("description", descriptionString);
                 request.putValue("unit", "个");
-                request.putValue("address", "北京市朝阳区");
-                request.putValue("longitude", location);
-                request.putValue("latitude", location);
+                request.putValue("address", location);
+                request.putValue("longitude", String.valueOf(mSiteLon));
+                request.putValue("latitude", String.valueOf(mSiteLat));
                 request.putValue("delivery", text_transport.getText().toString());
                 SingleVolleyRequest.getInstance(getApplication()).addToRequestQueue(request);
             }
@@ -318,6 +342,11 @@ public class ReleaseActivity extends BaseActivity implements View.OnClickListene
         final String goodNameString = goodName.getText().toString().trim();
         if (TextUtils.isEmpty(goodNameString)) {
             Toast.makeText(this, "goodNameString不能为空", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        if(goodNameString.length()>35){
+            ToastUtil.showShort(this, "商品名称不能超过35字");
             return;
         }
 
@@ -373,9 +402,9 @@ public class ReleaseActivity extends BaseActivity implements View.OnClickListene
                 request.putValue("oprice",oldprice);
                 request.putValue("description",descriptionString);
                 request.putValue("unit","个");
-                request.putValue("address","北京市朝阳区");
-                request.putValue("longitude",location);
-                request.putValue("latitude",location);
+                request.putValue("address", location);
+                request.putValue("longitude", String.valueOf(mSiteLon));
+                request.putValue("latitude", String.valueOf(mSiteLat));
                 request.putValue("delivery",text_transport.getText().toString());
                 SingleVolleyRequest.getInstance(getApplication()).addToRequestQueue(request);
 
@@ -404,9 +433,9 @@ public class ReleaseActivity extends BaseActivity implements View.OnClickListene
                 request.putValue("oprice",oldprice);
                 request.putValue("description",descriptionString);
                 request.putValue("unit","个");
-                request.putValue("address","北京市朝阳区");
-                request.putValue("longitude",location);
-                request.putValue("latitude",location);
+                request.putValue("address", location);
+                request.putValue("longitude", String.valueOf(mSiteLon));
+                request.putValue("latitude", String.valueOf(mSiteLat));
                 request.putValue("delivery",text_transport.getText().toString());
                 SingleVolleyRequest.getInstance(getApplication()).addToRequestQueue(request);
             }

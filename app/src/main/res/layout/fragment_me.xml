@@ -72,7 +72,7 @@
 
             <TextView
                 android:id="@+id/tv_fragment_me_real_name"
-                android:layout_width="103dip"
+                android:layout_width="wrap_content"
                 android:layout_height="31dip"
                 android:layout_alignParentRight="true"
                 android:layout_marginTop="25dip"
@@ -81,13 +81,14 @@
                 android:drawablePadding="10dip"
                 android:gravity="center_vertical"
                 android:paddingLeft="10dip"
+                android:paddingRight="10dp"
                 android:text="@string/tv_fragment_me_real_name"
                 android:textColor="@color/colorTextWhite"
                 android:textSize="14dip" />
 
             <TextView
                 android:id="@+id/tv_fragment_me_real_baoxian"
-                android:layout_width="103dip"
+                android:layout_width="wrap_content"
                 android:layout_height="31dip"
                 android:layout_alignParentRight="true"
                 android:layout_marginTop="60dp"
@@ -95,6 +96,7 @@
                 android:drawableLeft="@mipmap/ic_me_real_name"
                 android:drawablePadding="10dip"
                 android:gravity="center_vertical"
+                android:paddingRight="10dp"
                 android:paddingLeft="10dip"
                 android:text="@string/tv_fragment_me_real_baoxian"
                 android:textColor="@color/colorTextWhite"
