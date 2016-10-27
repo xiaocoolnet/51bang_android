@@ -238,7 +238,7 @@ public interface NetConstant extends HelperConstant {
     /**
      * 绑定支付宝账号
      */
-    public final static String BIND_ALIPAY_ACCOUNT = NET_HOST_PREFIX + "a=UpdateUserBank&";
+    public final static String BIND_ALIPAY_ACCOUNT = NET_HOST_PREFIX + "a=UpdateUserAlipay&";
 
     /**
      * 提现申请

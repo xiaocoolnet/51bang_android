@@ -44,7 +44,6 @@ public class ShopActivity extends BaseActivity implements View.OnClickListener {
     private List addViewList;//添加图片的list
     private MyViewPageAdapter viewPageAdapter;
     private Front front;
-    private ShopGoodInfo shopGoodInfo;
     private Context context;
     private UserInfo userInfo;
     private List<Collection> addList;
@@ -70,7 +69,7 @@ public class ShopActivity extends BaseActivity implements View.OnClickListener {
         ArrayList<String> imgs = new ArrayList<>();
         if (front.getPicturelist().size() > 0) {
             for (int i = 0; i < front.getPicturelist().size(); i++) {
-                imgs.add(shopGoodInfo.getPicturelist().get(i).getFile());
+                imgs.add(front.getPicturelist().get(i).getFile());
                 imageView = new ImageView(this);
                 MyImageLoader.display(NetConstant.NET_DISPLAY_IMG + front.getPicturelist().get(i).getFile(),
                         imageView);
