@@ -10,15 +10,19 @@ import android.util.Log;
 import android.view.View;
 import android.widget.DatePicker;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
+import cn.finalteam.galleryfinal.model.PhotoInfo;
 import cn.xcom.helper.R;
 
 
@@ -27,20 +31,29 @@ import cn.xcom.helper.R;
  */
 
 public class InsureDetailActivity extends BaseActivity implements View.OnClickListener {
-    private ImageView imageView;
+    private LinearLayout imagesLL;
     private TextView timeTv;
-    private String url;
-    String data_new;
+    private String data_new;
+    private ArrayList<PhotoInfo> mPhotoInfos;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_insure_detail);
-        url = getIntent().getStringExtra("url");
-        imageView = (ImageView) findViewById(R.id.iv_insure);
+        mPhotoInfos = (ArrayList<PhotoInfo>) getIntent().getBundleExtra("bundle").getSerializable("photos");
         timeTv = (TextView) findViewById(R.id.tv_time);
         timeTv.setOnClickListener(this);
-        Bitmap bm = BitmapFactory.decodeFile(url);
-        imageView.setImageBitmap(bm);
+        imagesLL = (LinearLayout) findViewById(R.id.ll_images);
+
+        for (int i = 0; i < mPhotoInfos.size(); i++) {
+            PhotoInfo p = mPhotoInfos.get(i);
+            String url = p.getPhotoPath();
+            Bitmap bm = BitmapFactory.decodeFile(url);
+            ImageView imageView = new ImageView(this);
+            imageView.setImageBitmap(bm);
+            imagesLL.addView(imageView,i);
+        }
+
+
         findViewById(R.id.confirm).setOnClickListener(this);
     }
 
@@ -93,6 +106,11 @@ public class InsureDetailActivity extends BaseActivity implements View.OnClickLi
                 showTimePicker();
                 break;
             case R.id.confirm:
+                if(mPhotoInfos.size() < 3){
+                    Toast.makeText(this, "最少传入三张图片，请返回重试", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
                 if(timeTv.getText().equals("")){
                     Toast.makeText(this, "请选择有限期", Toast.LENGTH_SHORT).show();
                     return;

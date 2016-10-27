@@ -15,6 +15,9 @@ import com.loopj.android.http.RequestParams;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import cn.xcom.helper.R;
 import cn.xcom.helper.bean.OrderHelper;
 import cn.xcom.helper.bean.ShopGoodInfo;
@@ -25,7 +28,7 @@ import cz.msebera.android.httpclient.Header;
 
 /**
  * Created by Administrator on 2016/10/18 0018.
- * 我的订单 详情页
+ * 我的订单 商家订单 详情页
  */
 
 public class MyOrderDetailActivity extends BaseActivity implements View.OnClickListener {
@@ -36,7 +39,7 @@ public class MyOrderDetailActivity extends BaseActivity implements View.OnClickL
 
     private ShopGoodInfo goodInfo;
     private TextView userNameTv, mobileTv, goodNameTv, priceTv, goodsCountTv, moneyTv, deliveryTv,
-            remarksTv, addressTv, toPaytv, cancelPaymentTv, trackingTv, commentTv, sendOutTv;
+            remarksTv, addressTv, toPaytv, cancelPaymentTv, trackingTv, commentTv, sendOutTv,timeTv;
     private View backView;
     private UserInfo userInfo;
     private int orderType;
@@ -73,6 +76,7 @@ public class MyOrderDetailActivity extends BaseActivity implements View.OnClickL
         commentTv.setOnClickListener(this);
         sendOutTv = (TextView) findViewById(R.id.tv_send_out);
         sendOutTv.setOnClickListener(this);
+        timeTv = (TextView) findViewById(R.id.tv_time);
     }
 
     private void setView() {
@@ -153,6 +157,10 @@ public class MyOrderDetailActivity extends BaseActivity implements View.OnClickL
                 sendOutTv.setVisibility(View.GONE);
             }
         }
+
+        Date date = new Date();
+        date.setTime(Long.parseLong(goodInfo.getTime()) * 1000);
+        timeTv.setText(new SimpleDateFormat("yyyy-MM-dd  HH:mm:ss").format(date));
 
     }
 

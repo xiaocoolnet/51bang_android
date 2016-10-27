@@ -102,7 +102,7 @@ public class MyOrderFragment extends Fragment {
         requestParams.put("userid", userInfo.getUserId());
         switch (orderState) {
             case 1:
-                requestParams.put("state", "");
+                requestParams.put("state", "1，2，3，4，5，10");
                 break;
             case 2:
                 requestParams.put("state", "1");
