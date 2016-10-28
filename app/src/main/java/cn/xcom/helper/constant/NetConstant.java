@@ -387,4 +387,14 @@ public interface NetConstant extends HelperConstant {
      * 提交商品订单
      */
     public final static String SUBMIT_GOOD_ORDER = NET_HOST_PREFIX + "a=bookingshopping&";
+
+    /**
+     * 我的二维码
+     */
+    public final static String MY_QR_CODE = "http://www.my51bang.com/index.php?g=portal&m=article&a=qr&type=1";
+
+    /**
+     * 获取我的推广人员列表
+     */
+    public final static String GET_MY_WORK = NET_HOST_PREFIX + "a=getMyIntroduceList&";
 }

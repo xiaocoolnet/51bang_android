@@ -165,6 +165,7 @@ public class ReleaseActivity extends BaseActivity implements View.OnClickListene
         transport = (LinearLayout) findViewById(R.id.transport);
         transport.setOnClickListener(this);
         telephone = (TextView) findViewById(R.id.telephone);
+        telephone.setText(info.getUserPhone());
         release = (LinearLayout) findViewById(R.id.release);
         bt_login_release = (Button) findViewById(R.id.bt_login_release);
         bt_login_release.setOnClickListener(this);

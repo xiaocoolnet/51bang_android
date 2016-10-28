@@ -12,7 +12,7 @@
             android:layout_height="46dip"
             android:background="@color/colorTheme"
             android:gravity="center"
-            android:text="确认订单"
+            android:text="分享"
             android:textColor="@color/colorTextWhite"
             android:textSize="17dp" />
         <RelativeLayout
@@ -43,42 +43,66 @@
         </RelativeLayout>
 
     </RelativeLayout>
-    <RelativeLayout
-        android:id="@+id/rl_bottom"
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:orientation="vertical">
-            <ImageView
-                android:layout_width="200dp"
-                android:layout_height="200dp"
-                android:src="@drawable/ease_default_image"/>
-            <TextView
+        <RelativeLayout
+            android:id="@+id/rl_bottom"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <WebView
+                android:id="@+id/webView"
+                android:layout_width="250dp"
+                android:layout_height="250dp"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="100dp"></WebView>
+
+            <LinearLayout
+                android:id="@+id/ll_referral"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:text="扫码下载客户端"
-                android:textSize="16sp"
-                android:layout_gravity="center"
-                android:textColor="@color/text_black"
-                />
-        </LinearLayout>
-        <!--<TextView
-            android:layout_width="match_parent"
-            android:layout_height="40dp"
-            android:text="分享"
-            android:textColor="@color/white"
-            android:textSize="16sp"
-            android:gravity="center"
-            android:layout_alignParentBottom="true"
-            android:background="@color/title_bg_color"/>-->
-        <View
-            android:id="@+id/main_view"
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_alignParentBottom="true"></View>
-    </RelativeLayout>
+                android:orientation="horizontal"
+                android:layout_below="@id/webView"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="20dp">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="我的邀请码是："
+                    android:textColor="@color/colorTheme"
+                    android:textSize="15sp"/>
+                <TextView
+                    android:id="@+id/tv_referral"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="2740512"
+                    android:textColor="@color/colorTheme"
+                    android:layout_marginLeft="3dp"
+                    android:textSize="15sp"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/ll_jizhi"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_below="@id/ll_referral"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="20dp">
+                <TextView
+                    android:id="@+id/tv_jizhi"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="查看业务员机制"
+                    android:textColor="@color/msg_red"
+                    android:textSize="15sp"/>
+            </LinearLayout>
+            <View
+                android:id="@+id/main_view"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_alignParentBottom="true"></View>
+        </RelativeLayout>
+    </ScrollView>
+
 </LinearLayout>

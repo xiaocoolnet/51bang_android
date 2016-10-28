@@ -9,7 +9,7 @@
     <string name="tv_login_phone_hint">请输入手机号</string>
     <string name="tv_login_password">密码</string>
     <string name="tv_login_password_hint">请输入密码</string>
-    <string name="tv_login_register_ask">你还没有停车缴费的账号？</string>
+    <string name="tv_login_register_ask">你还没有51帮的账号？</string>
     <string name="tv_login_register">立即注册</string>
     <string name="tv_login_forget_password">忘记密码？</string>
     <string name="bt_login">登录</string>

@@ -247,6 +247,35 @@
 
             </LinearLayout>
 
+            <LinearLayout
+                android:id="@+id/ll_wallet_my_work"
+                android:layout_width="match_parent"
+                android:layout_height="46dip"
+                android:background="@color/colorTextWhite">
+                <ImageView
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
+                    android:src="@drawable/wodeyewu"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="10dp"/>
+                <TextView
+                    android:layout_width="0dip"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="5dip"
+                    android:layout_weight="1.0"
+                    android:drawablePadding="7dip"
+                    android:gravity="center_vertical"
+                    android:text="我的业务"
+                    android:textSize="14dp" />
+
+                <ImageView
+                    android:layout_width="40dip"
+                    android:layout_height="match_parent"
+                    android:scaleType="center"
+                    android:src="@mipmap/ic_arrow_right" />
+
+            </LinearLayout>
+
             <Button
                 android:id="@+id/bt_wallet_present"
                 android:layout_width="match_parent"

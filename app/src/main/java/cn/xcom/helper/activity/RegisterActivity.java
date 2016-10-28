@@ -64,7 +64,7 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
     private RelativeLayout rl_back;
     private CircleImageView iv_head;
     private int gender=1;
-    private EditText et_phone,et_verification,et_password;
+    private EditText et_phone,et_verification,et_password,et_register_referral;
     private TextView tv_getVerification;
     private ImageView iv_password;
     private Button bt_submit;
@@ -106,6 +106,7 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
         initView();
     }
     private void initView(){
+        et_register_referral = (EditText) findViewById(R.id.et_register_referral);
         rl_back= (RelativeLayout) findViewById(R.id.rl_register_back);
         rl_back.setOnClickListener(this);
         iv_head= (CircleImageView) findViewById(R.id.iv_register_head);
@@ -562,6 +563,7 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
 //        params.put("address",address);
         params.put("password",password);
         params.put("code",verification);
+        params.put("referral",et_register_referral.getText().toString());
         params.put("devicestate", HelperConstant.DEVICE_STATE);
         LogUtils.e(TAG,"--params->"+params.toString());
         HelperAsyncHttpClient.get(NetConstant.NET_REGISTER,params,new JsonHttpResponseHandler(){

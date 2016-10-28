@@ -20,6 +20,7 @@ public class UserInfo implements Serializable {
     private String userGender;// 性别(0=>女 1=>男)
     private String userID;//身份证
     private String userAddress;//地址
+    private String myReferral;//我的邀请码
     private String userCity;
     private String userRealName;
     private String userContactName;
@@ -93,6 +94,19 @@ public class UserInfo implements Serializable {
             return "";
         }
         return userPassword;
+    }
+
+    public String getMyReferral() {
+        if (myReferral==null){
+            return "";
+        }else if (myReferral.equals("null")){
+            return "";
+        }
+        return myReferral;
+    }
+
+    public void setMyReferral(String myReferral) {
+        this.myReferral = myReferral;
     }
 
     public void setUserPassword(String userPassword) {

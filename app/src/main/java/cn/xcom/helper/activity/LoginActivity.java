@@ -172,6 +172,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
                                 userInfo.setUserID(jsonObject.getString("idcard"));
                                 userInfo.setUserPhone(jsonObject.getString("phone"));
                                 userInfo.setUserGender(jsonObject.getString("sex"));
+                                userInfo.setMyReferral(jsonObject.getString("myreferral"));
                                 userId = userInfo.getUserId();
                                 userInfo.writeData(mContext);
                                 getNameAuthentication(userInfo.getUserId());
