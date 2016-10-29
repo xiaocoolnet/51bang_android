@@ -164,9 +164,9 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
 //        if (!userInfo.getUserAddress().equals("")){
 //            et_address.setText(userInfo.getUserAddress());
 //        }
-        if (!userInfo.getUserPhone().equals("")){
-            et_phone.setText(userInfo.getUserPhone());
-        }
+//        if (!userInfo.getUserPhone().equals("")){
+//            et_phone.setText(userInfo.getUserPhone());
+//        }
 
     }
 

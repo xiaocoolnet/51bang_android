@@ -1,95 +1,118 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="horizontal"
     android:layout_width="match_parent"
-    android:layout_height="100dp"
-    android:padding="10dp"
-    >
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:padding="10dp">
+
     <ImageView
+        android:id="@+id/imgview"
         android:layout_width="100dp"
         android:layout_height="80dp"
         android:layout_gravity="center"
-        android:src="@mipmap/morenimage"
         android:scaleType="fitXY"
-        android:id="@+id/imgview"/>
+        android:src="@mipmap/morenimage" />
+
     <RelativeLayout
+        android:id="@+id/linlayout"
         android:layout_width="match_parent"
         android:layout_height="80dp"
-        android:id="@+id/linlayout"
-        android:layout_gravity="center"
-        android:orientation="vertical"
-        android:layout_marginLeft="10dp"
-        >
-        <TextView
-            android:id="@+id/title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentLeft="true"
-            android:text="披萨自助"
-            android:textSize="18sp"
-            android:textColor="@color/text_black"
-            android:textStyle="bold"
-            android:singleLine="true"
-            />
-        <TextView
-            android:id="@+id/content"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_alignParentLeft="true"
-            android:text="单人自助餐，可享受大量优惠"
-            android:singleLine="true"
-            android:ellipsize="end"
-            android:textSize="16sp"
-            />
-        <TextView
-            android:id="@+id/price"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentLeft="true"
-            android:text="￥45.5"
-            android:textColor="@color/price"
-            android:textSize="18sp"/>
-        <TextView
-            android:id="@+id/oldprice"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_toRightOf="@id/price"
-            android:layout_alignParentBottom="true"
-            android:layout_marginLeft="10dp"
-            android:text="60.0"
-            android:textSize="16sp"/>
+        android:layout_marginLeft="10dp">
 
-        <TextView
-            android:id="@+id/commen_count"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_toRightOf="@id/oldprice"
-            android:layout_toLeftOf="@id/havesell"
-            android:layout_alignParentBottom="true"
-            android:layout_marginLeft="10dp"
-            android:text="评价0条"
-            android:textColor="@color/colorTheme"
-            android:textSize="16sp"/>
-
-        <TextView
-            android:id="@+id/havesell"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="已售23"
-            android:textSize="16sp"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentRight="true"
-            />
         <TextView
             android:id="@+id/tv_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/text_grey"
-            android:textSize="14sp"
+            android:layout_alignParentRight="true"
             android:text="51帮"
-            android:layout_alignParentRight="true"/>
+            android:textColor="@color/text_grey"
+            android:textSize="14sp" />
+
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:text="披萨自助"
+            android:textColor="@color/text_black"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:layout_toLeftOf="@+id/tv_name" />
+
+        <TextView
+            android:id="@+id/content"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:text="单人自助餐，可享受大量优惠"
+            android:textSize="14sp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_alignParentBottom="true"
+            >
+
+            <TextView
+                android:id="@+id/price"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="￥45.5"
+                android:textColor="@color/price"
+                android:textSize="16sp"
+                android:maxLines="1"
+                android:ellipsize="end"
+                android:gravity="center"
+                />
+
+            <TextView
+                android:id="@+id/oldprice"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="60.0"
+                android:textSize="14sp"
+                android:maxLines="1"
+                android:ellipsize="end"
+                android:gravity="center"
+
+                />
+
+            <TextView
+                android:id="@+id/commen_count"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="评价0条"
+                android:textColor="@color/colorTheme"
+                android:textSize="14sp"
+                android:maxLines="1"
+                android:gravity="left"
+                android:ellipsize="end"
+                />
+
+            <TextView
+                android:id="@+id/havesell"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="已售23"
+                android:textSize="14sp"
+                android:maxLines="1"
+                android:gravity="center"
+                android:ellipsize="end"
+                />
+        </LinearLayout>
+
+
+
     </RelativeLayout>
 </LinearLayout>

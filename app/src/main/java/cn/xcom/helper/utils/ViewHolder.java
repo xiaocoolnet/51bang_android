@@ -121,6 +121,12 @@ public class ViewHolder {
         return this;
     }
 
+    public ViewHolder setImageByLocalPath(int viewId,String local){
+        ImageView view = getView(viewId);
+        MyImageLoader.displayForLocal(local,view);
+        return this;
+    }
+
 
 
     /*public ViewHolder setItemImages(final Context mContext,int oneview,int gridview, final ArrayList<String> images){

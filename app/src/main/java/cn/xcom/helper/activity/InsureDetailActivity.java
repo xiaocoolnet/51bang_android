@@ -9,8 +9,10 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.View;
 import android.widget.DatePicker;
+import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -24,6 +26,10 @@ import java.util.Locale;
 
 import cn.finalteam.galleryfinal.model.PhotoInfo;
 import cn.xcom.helper.R;
+import cn.xcom.helper.adapter.CommentsListAdapter;
+import cn.xcom.helper.adapter.GridViewAdapter;
+import cn.xcom.helper.utils.CommonAdapter;
+import cn.xcom.helper.utils.ViewHolder;
 
 
 /**
@@ -31,30 +37,41 @@ import cn.xcom.helper.R;
  */
 
 public class InsureDetailActivity extends BaseActivity implements View.OnClickListener {
-    private LinearLayout imagesLL;
     private TextView timeTv;
     private String data_new;
     private ArrayList<PhotoInfo> mPhotoInfos;
+    private ListView listView;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_insure_detail);
         mPhotoInfos = (ArrayList<PhotoInfo>) getIntent().getBundleExtra("bundle").getSerializable("photos");
+
+
+//        for (int i = 0; i < mPhotoInfos.size(); i++) {
+//            PhotoInfo p = mPhotoInfos.get(i);
+//            String url = p.getPhotoPath();
+//            Bitmap bm = BitmapFactory.decodeFile(url);
+//            ImageView imageView = new ImageView(this);
+//            imageView.setImageBitmap(bm);
+//        }
+        initView();
+    }
+
+    private void initView() {
         timeTv = (TextView) findViewById(R.id.tv_time);
         timeTv.setOnClickListener(this);
-        imagesLL = (LinearLayout) findViewById(R.id.ll_images);
-
-        for (int i = 0; i < mPhotoInfos.size(); i++) {
-            PhotoInfo p = mPhotoInfos.get(i);
-            String url = p.getPhotoPath();
-            Bitmap bm = BitmapFactory.decodeFile(url);
-            ImageView imageView = new ImageView(this);
-            imageView.setImageBitmap(bm);
-            imagesLL.addView(imageView,i);
-        }
-
-
         findViewById(R.id.confirm).setOnClickListener(this);
+        listView = (ListView) findViewById(R.id.lv_images);
+
+        CommonAdapter<PhotoInfo> adapter = new CommonAdapter<PhotoInfo>(this, mPhotoInfos, R.layout.item_insure_img) {
+            @Override
+            public void convert(ViewHolder holder, PhotoInfo photoInfo) {
+                holder.setImageByLocalPath(R.id.image, photoInfo.getPhotoPath());
+            }
+        };
+        listView.setAdapter(adapter);
     }
 
 
@@ -87,7 +104,7 @@ public class InsureDetailActivity extends BaseActivity implements View.OnClickLi
                     time = simpleDateFormat.parse(data);
                     long ts = time.getTime();
                     String s = String.valueOf(ts);
-                    data_new =s.substring(0, 10);
+                    data_new = s.substring(0, 10);
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
@@ -98,32 +115,31 @@ public class InsureDetailActivity extends BaseActivity implements View.OnClickLi
     }
 
 
-
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
+        switch (v.getId()) {
             case R.id.tv_time:
                 showTimePicker();
                 break;
             case R.id.confirm:
-                if(mPhotoInfos.size() < 3){
+                if (mPhotoInfos.size() < 3) {
                     Toast.makeText(this, "最少传入三张图片，请返回重试", Toast.LENGTH_SHORT).show();
                     return;
                 }
 
-                if(timeTv.getText().equals("")){
+                if (timeTv.getText().equals("")) {
                     Toast.makeText(this, "请选择有限期", Toast.LENGTH_SHORT).show();
                     return;
                 }
                 Intent intent = new Intent();
-                intent.putExtra("time",data_new);
-                setResult(RESULT_OK,intent);
+                intent.putExtra("time", data_new);
+                setResult(RESULT_OK, intent);
                 finish();
                 break;
         }
     }
 
-    public void onBack(View v){
+    public void onBack(View v) {
         finish();
     }
 }

@@ -435,8 +435,10 @@ public class MapFragment extends Fragment implements View.OnClickListener, OnGet
                 break;
             case R.id.tv_fragment_map_help_me:
                 Intent intent = new Intent(mContext, HelpMeActivity.class);
-                intent.putExtra("lat", currentPt.latitude);
-                intent.putExtra("lon", currentPt.longitude);
+                if(currentPt != null){
+                    intent.putExtra("lat", currentPt.latitude);
+                    intent.putExtra("lon", currentPt.longitude);
+                }
                 startActivity(intent);
                 break;
             case R.id.tv_fragment_map_city_interaction:

@@ -140,13 +140,13 @@ public class InsureActivity extends BaseActivity implements View.OnClickListener
                         bt_insure.setVisibility(View.GONE);
                         insureImg.setVisibility(View.GONE);
                         tv_warning_word.setVisibility(View.GONE);
-
                     }else{
                         rl_state.setBackgroundResource(R.color.colorTextGray);
                         tv_state.setText("未投保");
                         bt_insure.setVisibility(View.VISIBLE);
                         tv_warning_word.setVisibility(View.VISIBLE);
                     }
+                    SPUtils.put(mContext,HelperConstant.IS_INSURANCE,data);
                 } else {
                     String data = response.optString("data");
                     Toast.makeText(InsureActivity.this, data, Toast.LENGTH_SHORT).show();

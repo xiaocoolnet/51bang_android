@@ -20,6 +20,9 @@ import com.loopj.android.http.RequestParams;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import cn.xcom.helper.HelperApplication;
 import cn.xcom.helper.R;
 import cn.xcom.helper.adapter.SignCouponAdapter;
@@ -43,8 +46,7 @@ public class SignActivity extends BaseActivity implements View.OnClickListener{
     private XRecyclerView mRecyclerView;
     private SignCouponAdapter mAdapter;
     private UserInfo userInfo;
-
-
+    private String todayTime;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -83,6 +85,7 @@ public class SignActivity extends BaseActivity implements View.OnClickListener{
         mAdapter=new SignCouponAdapter();
         mRecyclerView.setAdapter(mAdapter);
         userInfo=new UserInfo(mContext);
+        getNowTimeStemp();
         isSign();
     }
 
@@ -102,7 +105,7 @@ public class SignActivity extends BaseActivity implements View.OnClickListener{
     private void isSign() {
         RequestParams requestParams=new RequestParams();
         requestParams.put("userid",userInfo.getUserId());
-        requestParams.put("day", TimeUtils.getNowTime()/1000);
+        requestParams.put("day", todayTime);
         HelperAsyncHttpClient.get(NetConstant.NET_GET_SIGN_STATE,requestParams,new JsonHttpResponseHandler(){
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
@@ -130,7 +133,7 @@ public class SignActivity extends BaseActivity implements View.OnClickListener{
     private void toSign() {
         RequestParams requestParams=new RequestParams();
         requestParams.put("userid",userInfo.getUserId());
-        requestParams.put("day", TimeUtils.getNowTime()/1000);
+        requestParams.put("day", todayTime);
         LogUtils.e(TAG,"--requestParams->"+requestParams.toString());
         HelperAsyncHttpClient.get(NetConstant.NET_TO_SIGN,requestParams,new JsonHttpResponseHandler(){
             @Override
@@ -156,4 +159,12 @@ public class SignActivity extends BaseActivity implements View.OnClickListener{
             }
         });
     }
+
+    private void getNowTimeStemp(){
+        Date date = new Date();
+        long time = date.getTime();
+        String s = String.valueOf(time);
+        todayTime =s.substring(0, 10);
+    }
+
 }

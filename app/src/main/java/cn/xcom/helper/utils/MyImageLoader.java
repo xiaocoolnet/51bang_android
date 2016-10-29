@@ -34,6 +34,11 @@ public class MyImageLoader {
     public static void display(String uri,ImageView imageView){
         ImageLoader.getInstance().displayImage(uri,imageView,options);
     }
+
+    public static void displayForLocal(String localPath,ImageView imageView){
+        ImageLoader.getInstance().displayImage("file://"+localPath,imageView,options);
+
+    }
     public static void imgLoaderInit(Context context){
         ImageLoaderConfiguration config=new ImageLoaderConfiguration.Builder(context)
                                .denyCacheImageMultipleSizesInMemory()

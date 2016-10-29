@@ -22,8 +22,7 @@
             android:layout_width="50dip"
             android:layout_height="fill_parent"
             android:gravity="center"
-            android:onClick="onBack"
-            >
+            android:onClick="onBack">
 
             <ImageView
                 android:layout_width="20dp"
@@ -43,54 +42,73 @@
             android:textSize="15sp" />
     </RelativeLayout>
 
-
-    <LinearLayout
-        android:id="@+id/ll_images"
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        >
+        android:layout_height="match_parent">
 
 
-    </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
-    <LinearLayout
-        android:id="@+id/ll_time"
-        android:layout_width="match_parent"
-        android:layout_height="46dip"
-        android:layout_marginTop="10dip"
-        android:background="@color/colorTextWhite">
+            <cn.xcom.helper.view.NoScrollListView
+                android:id="@+id/lv_images"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:dividerHeight="2dp"
+                android:divider="@null"
+                >
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:drawableLeft="@mipmap/ic_validity_period"
-            android:drawablePadding="10dip"
-            android:gravity="center"
-            android:paddingLeft="10dip"
-            android:text="@string/tv_help_me_validity_period"
-            android:textSize="15dp" />
 
-        <TextView
-            android:id="@+id/tv_time"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_marginLeft="10dip"
-            android:layout_weight="1.0"
-            android:background="@null"
-            android:gravity="center_vertical"
-            android:hint="@string/et_help_me_validity_period_hint"
-            android:textSize="14dp" />
 
-        <ImageView
-            android:id="@+id/iv_help_me_validity_period"
-            android:layout_width="60dip"
-            android:layout_height="match_parent"
-            android:layout_marginRight="5dip"
-            android:paddingLeft="8dp"
-            android:scaleType="center"
-            android:src="@mipmap/ic_arrow_right" />
+            </cn.xcom.helper.view.NoScrollListView>
 
-    </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/ll_time"
+                android:layout_width="match_parent"
+                android:layout_height="46dip"
+                android:layout_marginTop="10dip"
+                android:background="@color/colorTextWhite">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:drawableLeft="@mipmap/ic_validity_period"
+                    android:drawablePadding="10dip"
+                    android:gravity="center"
+                    android:paddingLeft="10dip"
+                    android:text="@string/tv_help_me_validity_period"
+                    android:textSize="15dp" />
+
+                <TextView
+                    android:id="@+id/tv_time"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="10dip"
+                    android:layout_weight="1.0"
+                    android:background="@null"
+                    android:gravity="center_vertical"
+                    android:hint="@string/et_help_me_validity_period_hint"
+                    android:textSize="14dp" />
+
+                <ImageView
+                    android:id="@+id/iv_help_me_validity_period"
+                    android:layout_width="60dip"
+                    android:layout_height="match_parent"
+                    android:layout_marginRight="5dip"
+                    android:paddingLeft="8dp"
+                    android:scaleType="center"
+                    android:src="@mipmap/ic_arrow_right" />
+
+            </LinearLayout>
+
+
+        </LinearLayout>
+
+
+    </ScrollView>
+
 
 </LinearLayout>
