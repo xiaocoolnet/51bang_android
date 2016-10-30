@@ -7,6 +7,7 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.Window;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -43,6 +44,7 @@ public class OrderTakingActivity extends BaseActivity {
     ListView taskList;
     @BindView(R.id.task_srl)
     SwipeRefreshLayout taskSrl;
+    private TextView tvCount;
     private String TAG = "OrderTakingActivity";
     private Context mContext;
     private UserInfo userInfo;
@@ -57,9 +59,10 @@ public class OrderTakingActivity extends BaseActivity {
         ButterKnife.bind(this);
         mContext = this;
         setRefresh();
-        userInfo=new UserInfo(mContext);
+        userInfo = new UserInfo(mContext);
         userInfo.readData(mContext);
         myApplyTasks = new ArrayList<>();
+        tvCount = (TextView) findViewById(R.id.tv_count);
     }
 
     /**
@@ -87,7 +90,7 @@ public class OrderTakingActivity extends BaseActivity {
      * 获取数据
      */
     private void getData() {
-        RequestParams params=new RequestParams();
+        RequestParams params = new RequestParams();
         params.put("userid", userInfo.getUserId());
         //params.put("state", "2");
         HelperAsyncHttpClient.get(NetConstant.GET_MY_TASK, params, new JsonHttpResponseHandler() {
@@ -113,15 +116,17 @@ public class OrderTakingActivity extends BaseActivity {
 
     /**
      * 根据请求数据
+     *
      * @param response
      */
     private void setAdapter(JSONObject response) {
         myApplyTasks.clear();
         myApplyTasks.addAll(getBeanFromJson(response));
-        adapter = new CommonAdapter<MyApplyTask>(mContext,myApplyTasks,R.layout.item_my_task) {
+        tvCount.setText(myApplyTasks.size()+"");
+        adapter = new CommonAdapter<MyApplyTask>(mContext, myApplyTasks, R.layout.item_my_task) {
             @Override
             public void convert(ViewHolder holder, MyApplyTask myApplyTask) {
-                setItem(holder,myApplyTask);
+                setItem(holder, myApplyTask);
             }
         };
         taskList.setAdapter(adapter);
@@ -129,19 +134,21 @@ public class OrderTakingActivity extends BaseActivity {
 
     /**
      * 为item填充内容
+     *
      * @param holder
      * @param myApplyTask
      */
     private void setItem(ViewHolder holder, MyApplyTask myApplyTask) {
-        holder.setText(R.id.tv_tradeNo,myApplyTask.getOrder_num())
-                .setTimeTextWithStr(R.id.tv_time,myApplyTask.getTime(),"")
-                .setText(R.id.tv_trade_name,myApplyTask.getDescription())
-                .setText(R.id.tv_service_address,myApplyTask.getSaddress())
-                .setText(R.id.tv_price,myApplyTask.getPrice());
+        holder.setText(R.id.tv_tradeNo, myApplyTask.getOrder_num())
+                .setTimeTextWithStr(R.id.tv_time, myApplyTask.getTime(), "")
+                .setText(R.id.tv_trade_name, myApplyTask.getDescription())
+                .setText(R.id.tv_service_address, myApplyTask.getSaddress())
+                .setText(R.id.tv_price, myApplyTask.getPrice());
     }
 
     /**
      * 字符串转模型集合
+     *
      * @param response
      * @return
      */
@@ -152,7 +159,8 @@ public class OrderTakingActivity extends BaseActivity {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        return new Gson().fromJson(data,new TypeToken<List<MyApplyTask>>(){}.getType());
+        return new Gson().fromJson(data, new TypeToken<List<MyApplyTask>>() {
+        }.getType());
     }
 
     @OnClick(R.id.rl_order_taking_back)

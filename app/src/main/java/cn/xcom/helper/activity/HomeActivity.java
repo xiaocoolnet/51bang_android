@@ -145,6 +145,18 @@ public class HomeActivity extends BaseActivity{
         currentTanIndex=index;
     }
 
+    public void checkToSecond(){
+        FragmentTransaction trx =getSupportFragmentManager().beginTransaction();
+        trx.hide(fragments[currentTanIndex]);
+        if(!fragments[1].isAdded()){
+            trx.add(R.id.rl_home_fragment_container,fragments[1]);
+        }
+        trx.show(fragments[1]).commit();
+        mTabs[currentTanIndex].setSelected(false);
+        mTabs[1].setSelected(true);
+        currentTanIndex=1;
+    }
+
     @Override
     protected void onResume() {
         super.onResume();

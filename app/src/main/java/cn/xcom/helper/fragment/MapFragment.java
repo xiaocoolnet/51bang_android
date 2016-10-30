@@ -1,5 +1,6 @@
 package cn.xcom.helper.fragment;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -55,7 +56,7 @@ import cn.xcom.helper.activity.AuthenticationActivity;
 import cn.xcom.helper.activity.CityPickerActivity;
 import cn.xcom.helper.activity.ConvenienceActivity;
 import cn.xcom.helper.activity.HelpMeActivity;
-import cn.xcom.helper.activity.IHelpActivity;
+import cn.xcom.helper.activity.HomeActivity;
 import cn.xcom.helper.bean.AuthenticationList;
 import cn.xcom.helper.constant.NetConstant;
 import cn.xcom.helper.utils.SingleVolleyRequest;
@@ -94,6 +95,8 @@ public class MapFragment extends Fragment implements View.OnClickListener, OnGet
 
     private NiceDialog mDialog;
 
+    private HomeActivity homeActivity;
+
 
     @Nullable
     @Override
@@ -130,6 +133,12 @@ public class MapFragment extends Fragment implements View.OnClickListener, OnGet
             }
         });
         initView();
+    }
+
+    @Override
+    public void onAttach(Activity activity) {
+        this.homeActivity = (HomeActivity) activity;
+        super.onAttach(activity);
     }
 
     @Override
@@ -431,7 +440,8 @@ public class MapFragment extends Fragment implements View.OnClickListener, OnGet
                 startActivity(new Intent(mContext, AuthenticationActivity.class));
                 break;
             case R.id.tv_fragment_map_I_help:
-                startActivity(new Intent(mContext, IHelpActivity.class));
+                homeActivity.checkToSecond();
+                //startActivity(new Intent(mContext, IHelpActivity.class));
                 break;
             case R.id.tv_fragment_map_help_me:
                 Intent intent = new Intent(mContext, HelpMeActivity.class);

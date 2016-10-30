@@ -179,8 +179,8 @@ public class BuyFragment extends Fragment implements View.OnClickListener{
                 flag = 1;
             }
             RequestParams params=new RequestParams();
-//            params.put("city",HelperApplication.getInstance().mDistrict);
-            params.put("city","芝罘区");
+            params.put("city",HelperApplication.getInstance().mDistrict);
+            //params.put("city","芝罘区");
             params.put("userid",userInfo.getUserId());
             HelperAsyncHttpClient.get(NetConstant.GETTASKLIST, params, new JsonHttpResponseHandler() {
                 @Override

@@ -90,7 +90,7 @@ public class ConvenienceAdapter extends BaseAdapter {
 
           MyImageLoader.display(NetConstant.NET_DISPLAY_IMG + convenience.getPhoto(), viewHolder.convenience_photo);
           viewHolder.convenience_name.setText(convenience.getName());
-          viewHolder.convenience_time.setText(TimeUtils.getDateToString(convenience.getCreate_time()));
+          viewHolder.convenience_time.setText(TimeUtils.getDateToString(convenience.getCreate_time()*1000));
           viewHolder.convenience_content.setText(convenience.getContent());
           addList=new ArrayList<>();
           if (convenience.getPic().size()>0){
