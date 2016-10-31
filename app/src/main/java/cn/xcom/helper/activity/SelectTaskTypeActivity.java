@@ -28,7 +28,6 @@ import cn.xcom.helper.bean.TaskType;
 import cn.xcom.helper.constant.NetConstant;
 import cn.xcom.helper.net.HelperAsyncHttpClient;
 import cn.xcom.helper.utils.LogUtils;
-import cn.xcom.helper.view.NoScrollGridView;
 import cz.msebera.android.httpclient.Header;
 
 public class SelectTaskTypeActivity extends BaseActivity implements View.OnClickListener {
@@ -179,6 +178,17 @@ public class SelectTaskTypeActivity extends BaseActivity implements View.OnClick
             }
             holder.tv_name.setText(taskTypes.get(position).getName());
             holder.cb_type.setChecked(taskTypes.get(position).isChecked());
+            convertView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (holder.cb_type.isChecked()) {
+                        holder.cb_type.setChecked(false);
+                    } else {
+                        holder.cb_type.setChecked(true);
+                    }
+                    taskTypes.get(position).setChecked(holder.cb_type.isChecked());
+                }
+            });
             holder.cb_type.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

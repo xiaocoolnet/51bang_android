@@ -527,10 +527,10 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
 //        String address=et_address.getText().toString().trim();
         String password=et_password.getText().toString().trim();
         String verification=et_verification.getText().toString().trim();
-        if (userInfo.getUserImg().equals("")){
+        /*if (userInfo.getUserImg().equals("")){
             Toast.makeText(mContext,"请添加头像！",Toast.LENGTH_LONG).show();
             return;
-        }
+        }*/
 //        if (!RegexUtil.IsChineseOrEnglish(name)){
 //            Toast.makeText(mContext,"请正确填写姓名！",Toast.LENGTH_LONG).show();
 //            return;

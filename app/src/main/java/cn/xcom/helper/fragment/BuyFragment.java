@@ -26,6 +26,9 @@ import com.baidu.mapapi.utils.DistanceUtil;
 import com.baidu.mapapi.utils.OpenClientUtil;
 import com.baidu.mapapi.utils.route.BaiduMapRoutePlan;
 import com.baidu.mapapi.utils.route.RouteParaOption;
+import com.bigkoo.alertview.AlertView;
+import com.bigkoo.alertview.OnDismissListener;
+import com.bigkoo.alertview.OnItemClickListener;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.kyleduo.switchbutton.SwitchButton;
@@ -43,6 +46,7 @@ import cn.xcom.helper.HelperApplication;
 import cn.xcom.helper.R;
 import cn.xcom.helper.activity.AuthorizedActivity;
 import cn.xcom.helper.activity.ChangeSkillsActivity;
+import cn.xcom.helper.activity.InsureActivity;
 import cn.xcom.helper.activity.MyTaskActivity;
 import cn.xcom.helper.activity.TaskDetailActivity;
 import cn.xcom.helper.bean.TaskInfo;
@@ -212,15 +216,15 @@ public class BuyFragment extends Fragment implements View.OnClickListener{
      */
     private void getWorkingState() {
         RequestParams params=new RequestParams();
-        params.put("userid",userInfo.getUserId());
+        params.put("userid", userInfo.getUserId());
         HelperAsyncHttpClient.get(NetConstant.GET_WORKING_STATE, params, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                 super.onSuccess(statusCode, headers, response);
                 String state = response.optString("data");
-                if(state.equals("0")){
+                if (state.equals("0")) {
                     sb_change.setChecked(false);
-                }else if(state.equals("1")){
+                } else if (state.equals("1")) {
                     sb_change.setChecked(true);
                 }
                 sb_change.setOnClickListener(new View.OnClickListener() {
@@ -228,13 +232,14 @@ public class BuyFragment extends Fragment implements View.OnClickListener{
                     public void onClick(View v) {
                         if (sb_change.isChecked()) {
                             changeWorkingState("1");
-                        }else{
+                        } else {
                             changeWorkingState("0");
                         }
                     }
                 });
 
             }
+
             @Override
             public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
                 super.onFailure(statusCode, headers, responseString, throwable);
@@ -252,13 +257,14 @@ public class BuyFragment extends Fragment implements View.OnClickListener{
         params.put("address",HelperApplication.getInstance().mLocAddress);
         params.put("longitude",HelperApplication.getInstance().mLocLon);
         params.put("latitude",HelperApplication.getInstance().mLocLat);
-        params.put("isworking",state);
+        params.put("isworking", state);
         HelperAsyncHttpClient.get(NetConstant.CHANGE_WORKING_STATE, params, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                 super.onSuccess(statusCode, headers, response);
                 Log.e(TAG, String.valueOf(response));
             }
+
             @Override
             public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
                 super.onFailure(statusCode, headers, responseString, throwable);
@@ -323,10 +329,14 @@ public class BuyFragment extends Fragment implements View.OnClickListener{
                 btn_grab.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        if(taskInfo.getUserid().equals(userInfo.getUserId())){
-                            ToastUtil.showShort(mContext,"不能抢自己发布的任务");
+                        if(!SPUtils.get(mContext,HelperConstant.IS_INSURANCE,"").equals("1")){
+                            popDialog(mContext,"提示","您未通过保险认证，不能抢单，是否跳转到保险认证页面进行验证？");
                         }else{
-                            updateState(taskInfo.getId());
+                            if(taskInfo.getUserid().equals(userInfo.getUserId())){
+                                ToastUtil.showShort(mContext,"不能抢自己发布的任务");
+                            }else{
+                                updateState(taskInfo.getId());
+                            }
                         }
                     }
                 });
@@ -358,6 +368,29 @@ public class BuyFragment extends Fragment implements View.OnClickListener{
                 }
             });
         }
+    }
+
+    /**
+     * 弹框
+     * @param context
+     * @param title
+     * @param message
+     */
+    private void popDialog(final Context context, String title, String message) {
+        AlertView mAlertView = new AlertView(title, message, "取消", new String[]{"确定"}, null, context, AlertView.Style.Alert, new OnItemClickListener() {
+            @Override
+            public void onItemClick(Object o, int position) {
+                if (position == 0) {
+                    startActivity(new Intent(mContext, InsureActivity.class));
+                }
+            }
+        }).setCancelable(true).setOnDismissListener(new OnDismissListener() {
+            @Override
+            public void onDismiss(Object o) {
+
+            }
+        });
+        mAlertView.show();
     }
 
     /**

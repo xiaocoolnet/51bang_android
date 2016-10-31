@@ -27,6 +27,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
+import cn.xcom.helper.HelperApplication;
 import cn.xcom.helper.R;
 import cn.xcom.helper.activity.ReleaseActivity;
 import cn.xcom.helper.adapter.GroupAdapter;
@@ -115,9 +116,59 @@ public class SaleFragment extends Fragment implements View.OnClickListener {
                          ToastUtils.showToast(mContext, "网络连接错误，请检查您的网络");
                      }
                  });
+                 request.putValue("city", HelperApplication.getInstance().mDistrict);
                  SingleVolleyRequest.getInstance(getContext()).addToRequestQueue(request);
              }
          });
+//        String url = NetConstant.GOODSLIST;
+//        StringPostRequest request = new StringPostRequest(url, new Response.Listener<String>() {
+//            @Override
+//            public void onResponse(String s) {
+//                try {
+//                    Log.d("=====显示111",""+s);
+//                    JSONObject jsonObject = new JSONObject(s);
+//                    String state = jsonObject.getString("status");
+//                    if (state.equals("success")) {
+//                        String jsonObject1 = jsonObject.getString("data");
+//                        Gson gson = new Gson();
+//                        addlist = gson.fromJson(jsonObject1,
+//                                new TypeToken<ArrayList<Front>>() {
+//                                }.getType());
+//                        Log.e("========fragment", "" + addlist.size());
+//                        saleAdapter = new SaleAdapter(addlist, mContext);
+//                        listView.setAdapter(saleAdapter);
+//                        saleAdapter.notifyDataSetChanged();
+//
+//
+//
+//                    }
+//
+//                } catch (JSONException e) {
+//                    e.printStackTrace();
+//                }
+//
+//            }
+//        }, new Response.ErrorListener() {
+//            @Override
+//            public void onErrorResponse(VolleyError volleyError) {
+//                ToastUtils.showToast(mContext, "网络连接错误，请检查您的网络");
+//            }
+//        });
+//        request.putValue("city", HelperApplication.getInstance().mDistrict);
+//        SingleVolleyRequest.getInstance(getContext()).addToRequestQueue(request);
+        return view;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        getData();
+    }
+
+    /**
+     * 获取数据列表
+     */
+    private void getData() {
         String url = NetConstant.GOODSLIST;
         StringPostRequest request = new StringPostRequest(url, new Response.Listener<String>() {
             @Override
@@ -152,21 +203,10 @@ public class SaleFragment extends Fragment implements View.OnClickListener {
                 ToastUtils.showToast(mContext, "网络连接错误，请检查您的网络");
             }
         });
+        request.putValue("city", HelperApplication.getInstance().mDistrict);
         SingleVolleyRequest.getInstance(getContext()).addToRequestQueue(request);
-//        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//            @Override
-//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//                Intent intent1=new Intent(getActivity(),SaleDetailActivity.class);
-//                Bundle bundle=new Bundle();
-//                bundle.putSerializable("item",addlist.get(position));
-//                intent1.putExtras(bundle);
-//                Log.i("---", position + "");
-//               // intent1.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-//                startActivity(intent1);
-//            }
-//        });
-        return view;
     }
+
     @Override
     public void onActivityCreated( Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);

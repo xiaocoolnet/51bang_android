@@ -33,6 +33,13 @@ import android.widget.Toast;
 
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.baidu.mapapi.model.LatLng;
+import com.baidu.mapapi.search.core.SearchResult;
+import com.baidu.mapapi.search.geocode.GeoCodeResult;
+import com.baidu.mapapi.search.geocode.GeoCoder;
+import com.baidu.mapapi.search.geocode.OnGetGeoCoderResultListener;
+import com.baidu.mapapi.search.geocode.ReverseGeoCodeOption;
+import com.baidu.mapapi.search.geocode.ReverseGeoCodeResult;
 import com.baoyz.actionsheet.ActionSheet;
 
 import java.io.File;
@@ -62,7 +69,7 @@ import cn.xcom.helper.utils.ToastUtil;
 import cn.xcom.helper.utils.WheelView;
 
 
-public class ReleaseActivity extends BaseActivity implements View.OnClickListener {
+public class ReleaseActivity extends BaseActivity implements View.OnClickListener, OnGetGeoCoderResultListener {
     private Context context;
     private RelativeLayout rl_i_help_back,rl_select_address;
     private List<PhotoInfo> addImageList;
@@ -98,12 +105,14 @@ public class ReleaseActivity extends BaseActivity implements View.OnClickListene
     private Front front;
     private  String type="";
     private int requestCode1;
+    GeoCoder mSearch = null; // 搜索模块，也可去掉地图模块独立使用
 
     private UserInfo info=new UserInfo();
 
     String a[]={"同城自取","送货上门","凭劵消费"};
     private double mSiteLat;
     private double mSiteLon;
+    private String sitename;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -113,6 +122,9 @@ public class ReleaseActivity extends BaseActivity implements View.OnClickListene
                 WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         setContentView(R.layout.activity_release);
         context=this;
+        // 初始化搜索模块，注册事件监听
+        mSearch = GeoCoder.newInstance();
+        mSearch.setOnGetGeoCodeResultListener(this);
         initView();
         Intent intent=getIntent();
         s2=intent.getStringExtra("judge").toString();
@@ -221,9 +233,13 @@ public class ReleaseActivity extends BaseActivity implements View.OnClickListene
         }
         if(requestCode == 0x110){
             if(data!=null){
-                ed_location.setText(data.getStringExtra("siteName"));
+                //ed_location.setText(data.getStringExtra("siteName"));
+                sitename = data.getStringExtra("siteName");
                 mSiteLat = data.getDoubleExtra("siteLat", 0);
                 mSiteLon = data.getDoubleExtra("siteLon", 0);
+                // 反Geo搜索
+                mSearch.reverseGeoCode(new ReverseGeoCodeOption()
+                        .location(new LatLng(mSiteLat,mSiteLon)));
             }
         }
         super.onActivityResult(requestCode, resultCode, data);
@@ -302,33 +318,8 @@ public class ReleaseActivity extends BaseActivity implements View.OnClickListene
 
             @Override
             public void error() {
-                String url = NetConstant.UPDATA;
-                StringPostRequest request = new StringPostRequest(url, new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String s) {
-                        Log.d("++++我的更新", s);
-                        Toast.makeText(getApplication(), "更新成功", Toast.LENGTH_SHORT).show();
-
-                    }
-                }, new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError volleyError) {
-                        Toast.makeText(getApplication(), "网络错误，检查您的网络", Toast.LENGTH_SHORT).show();
-                    }
-                });
-            //    request.putValue("userid", info.getUserId());
-                request.putValue("id", front.getId());
-                request.putValue("goodsname", goodNameString);
-                request.putValue("type", type);
-                request.putValue("price", price);
-                request.putValue("oprice", oldprice);
-                request.putValue("description", descriptionString);
-                request.putValue("unit", "个");
-                request.putValue("address", location);
-                request.putValue("longitude", String.valueOf(mSiteLon));
-                request.putValue("latitude", String.valueOf(mSiteLat));
-                request.putValue("delivery", text_transport.getText().toString());
-                SingleVolleyRequest.getInstance(getApplication()).addToRequestQueue(request);
+                ToastUtil.showShort(context,"图片上传失败");
+                finish();
             }
         });
 
@@ -342,7 +333,7 @@ public class ReleaseActivity extends BaseActivity implements View.OnClickListene
         // validate
         final String goodNameString = goodName.getText().toString().trim();
         if (TextUtils.isEmpty(goodNameString)) {
-            Toast.makeText(this, "goodNameString不能为空", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "商品名不能为空", Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -353,24 +344,24 @@ public class ReleaseActivity extends BaseActivity implements View.OnClickListene
 
         final String descriptionString = description.getText().toString().trim();
         if (TextUtils.isEmpty(descriptionString)) {
-            Toast.makeText(this, "descriptionString不能为空", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "商品描述不能为空", Toast.LENGTH_SHORT).show();
             return;
         }
 
         final String price = ed_price.getText().toString().trim();
         if (TextUtils.isEmpty(price)) {
-            Toast.makeText(this, "price不能为空", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "价格不能为空", Toast.LENGTH_SHORT).show();
             return;
         }
 
         final String oldprice = ed_oldprice.getText().toString().trim();
         if (TextUtils.isEmpty(oldprice)) {
-            Toast.makeText(this, "oldprice不能为空", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "原价不能为空", Toast.LENGTH_SHORT).show();
             return;
         }
         final String location = ed_location.getText().toString().trim();
         if (TextUtils.isEmpty(oldprice)) {
-            Toast.makeText(this, "ed_location不能为空", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "地址不能为空", Toast.LENGTH_SHORT).show();
             return;
         }
        //先上传图片再发布
@@ -384,7 +375,7 @@ public class ReleaseActivity extends BaseActivity implements View.OnClickListene
                     public void onResponse(String s) {
                         Log.d("===我的发布",s);
                         Toast.makeText(getApplication(),"发布成功",Toast.LENGTH_SHORT).show();
-
+                        finish();
                     }
                 }, new Response.ErrorListener() {
                     @Override
@@ -413,32 +404,8 @@ public class ReleaseActivity extends BaseActivity implements View.OnClickListene
 
             @Override
             public void error() {
-                String url=NetConstant.RELEASE;
-                StringPostRequest request=new StringPostRequest(url, new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String s) {
-                        Log.d("++++我的发布",s);
-                        Toast.makeText(getApplication(),"发布成功",Toast.LENGTH_SHORT).show();
-
-                    }
-                }, new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError volleyError) {
-                        Toast.makeText(getApplication(),"网络错误，检查您的网络",Toast.LENGTH_SHORT).show();
-                    }
-                });
-                request.putValue("userid",info.getUserId());
-                request.putValue("goodsname",goodNameString);
-                request.putValue("type",type);
-                request.putValue("price",price);
-                request.putValue("oprice",oldprice);
-                request.putValue("description",descriptionString);
-                request.putValue("unit","个");
-                request.putValue("address", location);
-                request.putValue("longitude", String.valueOf(mSiteLon));
-                request.putValue("latitude", String.valueOf(mSiteLat));
-                request.putValue("delivery",text_transport.getText().toString());
-                SingleVolleyRequest.getInstance(getApplication()).addToRequestQueue(request);
+                ToastUtil.showShort(context,"图片上传失败");
+                finish();
             }
         });
 
@@ -652,5 +619,22 @@ public class ReleaseActivity extends BaseActivity implements View.OnClickListene
     //点击返回键
     public void backImage(){
         finish();
+    }
+
+    @Override
+    public void onGetGeoCodeResult(GeoCodeResult geoCodeResult) {
+
+    }
+
+    @Override
+    public void onGetReverseGeoCodeResult(ReverseGeoCodeResult result) {
+        Log.e("hello", result.getAddress());
+        if (result == null || result.error != SearchResult.ERRORNO.NO_ERROR) {
+            Toast.makeText(ReleaseActivity.this, "抱歉，未能找到结果", Toast.LENGTH_LONG)
+                    .show();
+            return;
+        }
+        String address = result.getAddressDetail().city + result.getAddressDetail().district + sitename;
+        ed_location.setText(address);
     }
 }

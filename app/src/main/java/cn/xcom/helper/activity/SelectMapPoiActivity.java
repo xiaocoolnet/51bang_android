@@ -135,7 +135,7 @@ public class SelectMapPoiActivity extends BaseActivity implements OnGetGeoCoderR
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent intent = new Intent();
-                intent.putExtra("siteName", poiInformaitons.get(position).getAddress());
+                intent.putExtra("siteName", poiInformaitons.get(position).getName());
                 intent.putExtra("siteLat", poiInformaitons.get(position).getLat());
                 intent.putExtra("siteLon", poiInformaitons.get(position).getLon());
                 setResult(RESULT_OK, intent);

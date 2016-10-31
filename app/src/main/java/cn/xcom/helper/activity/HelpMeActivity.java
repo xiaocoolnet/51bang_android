@@ -119,6 +119,7 @@ public class HelpMeActivity extends BaseActivity implements View.OnClickListener
 
     private double mSiteLat, mSiteLon, mServiceLat, mServiewLon;
     private String mSiteName, mServiceName;
+    private int type = 1;
 
 
     @Override
@@ -342,18 +343,25 @@ public class HelpMeActivity extends BaseActivity implements View.OnClickListener
             switch (requestCode) {
                 case 1:
                     if (data != null) {
+                        type = 2;
                         mSiteName = data.getStringExtra("siteName");
                         mSiteLat = data.getDoubleExtra("siteLat", 0);
                         mSiteLon = data.getDoubleExtra("siteLon", 0);
-                        et_site_location.setText(mSiteName);
+                        // 反Geo搜索
+                        mSearch.reverseGeoCode(new ReverseGeoCodeOption()
+                                .location(new LatLng(mSiteLat, mSiteLon)));
+                        //et_site_location.setText(mSiteName);
                     }
                     break;
                 case 2:
                     if (data != null) {
+                        type = 3;
                         mServiceName = data.getStringExtra("siteName");
                         mServiceLat = data.getDoubleExtra("siteLat", 0);
                         mServiewLon = data.getDoubleExtra("siteLon", 0);
-                        et_service_location.setText(mServiceName);
+                        mSearch.reverseGeoCode(new ReverseGeoCodeOption()
+                                .location(new LatLng(mServiceLat, mServiewLon)));
+                        //et_service_location.setText(mServiceName);
                     }
                     break;
             }
@@ -479,6 +487,7 @@ public class HelpMeActivity extends BaseActivity implements View.OnClickListener
                                     Intent intent = new Intent(mContext, PaymentActivity.class);
                                     intent.putExtra("price", et_wages.getText().toString());
                                     intent.putExtra("tradeNo", data);
+                                    intent.putExtra("body","任务费用");
                                     intent.putExtra("type","1");
                                     startActivity(intent);
                                 } else {
@@ -650,14 +659,15 @@ public class HelpMeActivity extends BaseActivity implements View.OnClickListener
                     .show();
             return;
         }
-        String address = result.getAddressDetail().city + result.getAddressDetail().district + result.getPoiList().get(0).name;
-        et_service_location.setText(address);
-        et_site_location.setText(address);
-        /*mBaiduMap.addOverlay(new MarkerOptions().position(result.getLocation())
-                .icon(BitmapDescriptorFactory
-                        .fromResource(R.drawable.icon_marka)));
-        mBaiduMap.setMapStatus(MapStatusUpdateFactory.newLatLng(result
-                .getLocation()));*/
+        String address = result.getAddressDetail().city + result.getAddressDetail().district ;
+        if(type == 1){
+            et_service_location.setText(address+ result.getPoiList().get(0).name);
+            et_site_location.setText(address+ result.getPoiList().get(0).name);
+        }else if(type == 2){
+            et_site_location.setText(address+mSiteName);
+        }else if(type == 3){
+            et_service_location.setText(address+mServiceName);
+        }
 
     }
 

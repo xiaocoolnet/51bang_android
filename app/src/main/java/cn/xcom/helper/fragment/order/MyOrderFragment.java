@@ -24,7 +24,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import cn.xcom.helper.R;
-import cn.xcom.helper.activity.MyOrderDetailActivity;
 import cn.xcom.helper.adapter.MyOrderAdapter;
 import cn.xcom.helper.bean.OrderHelper;
 import cn.xcom.helper.bean.ShopGoodInfo;
@@ -102,7 +101,7 @@ public class MyOrderFragment extends Fragment {
         requestParams.put("userid", userInfo.getUserId());
         switch (orderState) {
             case 1:
-                requestParams.put("state", "1，2，3，4，5，10");
+                requestParams.put("state", "1,2,3,4,5,10");
                 break;
             case 2:
                 requestParams.put("state", "1");

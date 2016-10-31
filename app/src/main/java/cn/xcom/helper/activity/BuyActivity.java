@@ -186,6 +186,7 @@ public class BuyActivity extends BaseActivity implements View.OnClickListener {
                 Intent intent = new Intent(BuyActivity.this,PaymentActivity.class);
                 intent.putExtra("price", buy_total.getText().toString());
                 intent.putExtra("tradeNo", orderNumber);
+                intent.putExtra("body",shopGoodInfo.getGoodsname());
                 intent.putExtra("type","2");
                 startActivity(intent);
             }

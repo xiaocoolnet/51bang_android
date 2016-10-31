@@ -156,7 +156,8 @@ public class MyOrderAdapter extends RecyclerView.Adapter<MyOrderAdapter.ViewHold
                 Intent intent = new Intent(mContext, PaymentActivity.class);
                 intent.putExtra("price",goodInfo.getMoney());
                 intent.putExtra("tradeNo",goodInfo.getOrder_num());
-                intent.putExtra("orderType",2);//1--任务,2--商品
+                intent.putExtra("body",goodInfo.getGoodsname());
+                intent.putExtra("type",2);//1--任务,2--商品
                 fragment.startActivityForResult(intent, MyOrderFragment.MY_ORDER_REQUEST);
             }
         });

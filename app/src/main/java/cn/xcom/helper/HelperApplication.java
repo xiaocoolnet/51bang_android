@@ -54,6 +54,10 @@ public class HelperApplication extends Application {
     //是否强退标识
     public String flag = "false";
 
+    //支付相关参数
+    public String tradeNo;
+    public String payType;
+
     /**
      * 打开的activity
      **/
