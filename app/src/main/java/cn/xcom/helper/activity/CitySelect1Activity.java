@@ -72,6 +72,7 @@ public class CitySelect1Activity extends BaseActivity implements OnClickListener
 		btn_back = (Button) findViewById(R.id.btn_back);
 		btn_right = (Button) findViewById(R.id.btn_right);
 		btn_right.setText("确认");
+		btn_right.setVisibility(View.GONE);
 
 		findViewById(R.id.scrollview).setVisibility(View.GONE);
 
@@ -79,7 +80,7 @@ public class CitySelect1Activity extends BaseActivity implements OnClickListener
 		util.initProvince();
 		lv_city = (ListView) findViewById(R.id.lv_city);
 
-		regions = new ArrayList<MyRegion>();
+		regions = new ArrayList<>();
 		adapter = new CityAdapter(this);
 		lv_city.setAdapter(adapter);
 
@@ -90,7 +91,7 @@ public class CitySelect1Activity extends BaseActivity implements OnClickListener
 		lv_city.setOnItemClickListener(onItemClickListener);
 		btn_back.setOnClickListener(this);
 		btn_right.setOnClickListener(this);
-	};
+	}
 
 
 
@@ -131,6 +132,8 @@ public class CitySelect1Activity extends BaseActivity implements OnClickListener
 		public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
 				long arg3) {
 
+			last = current;
+
 			if (current == PROVINCE) {
 				String newProvince = regions.get(arg2).getName();
 				if (!newProvince.equals(city.getProvince())) {
@@ -162,9 +165,13 @@ public class CitySelect1Activity extends BaseActivity implements OnClickListener
 				city.setDistrictCode(regions.get(arg2).getId());
 				city.setRegionId(regions.get(arg2).getId());
 				city.setDistrict(regions.get(arg2).getName());
+
+				Intent in = new Intent();
+				in.putExtra("city", city);
+				setResult(8,in);
+				finish();
 			}
 
-			last = current;
 		}
 	};
 

@@ -258,7 +258,7 @@
     <string name="tv_shopping_cart_title">我的购物车</string>
     <!--AddressListActivity-->
     <string name="tv_address_list_title">我的地址</string>
-    <string name="bt_address_list_add">添加新收获地址</string>
+    <string name="bt_address_list_add">添加新地址</string>
     <!--EditAddressActivity-->
     <string name="tv_edit_address_title">编辑地址</string>
     <string name="tv_edit_address_save">保存</string>

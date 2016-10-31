@@ -40,7 +40,7 @@ public class InsureDetailActivity extends BaseActivity implements View.OnClickLi
     private TextView timeTv;
     private String data_new;
     private ArrayList<PhotoInfo> mPhotoInfos;
-    private ListView listView;
+    private GridView gridView;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -63,7 +63,7 @@ public class InsureDetailActivity extends BaseActivity implements View.OnClickLi
         timeTv = (TextView) findViewById(R.id.tv_time);
         timeTv.setOnClickListener(this);
         findViewById(R.id.confirm).setOnClickListener(this);
-        listView = (ListView) findViewById(R.id.lv_images);
+        gridView = (GridView) findViewById(R.id.lv_images);
 
         CommonAdapter<PhotoInfo> adapter = new CommonAdapter<PhotoInfo>(this, mPhotoInfos, R.layout.item_insure_img) {
             @Override
@@ -71,7 +71,7 @@ public class InsureDetailActivity extends BaseActivity implements View.OnClickLi
                 holder.setImageByLocalPath(R.id.image, photoInfo.getPhotoPath());
             }
         };
-        listView.setAdapter(adapter);
+        gridView.setAdapter(adapter);
     }
 
 
