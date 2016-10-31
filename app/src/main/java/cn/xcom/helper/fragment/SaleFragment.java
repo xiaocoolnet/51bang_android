@@ -20,6 +20,8 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.loopj.android.http.JsonHttpResponseHandler;
+import com.loopj.android.http.RequestParams;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -27,22 +29,28 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
+import cn.xcom.helper.HelperApplication;
 import cn.xcom.helper.R;
+import cn.xcom.helper.activity.BindAccountAuthorizedActivity;
 import cn.xcom.helper.activity.ReleaseActivity;
 import cn.xcom.helper.adapter.GroupAdapter;
 import cn.xcom.helper.adapter.SaleAdapter;
 import cn.xcom.helper.bean.DictionaryList;
 import cn.xcom.helper.bean.Front;
+import cn.xcom.helper.bean.UserInfo;
+import cn.xcom.helper.constant.HelperConstant;
 import cn.xcom.helper.constant.NetConstant;
+import cn.xcom.helper.net.HelperAsyncHttpClient;
+import cn.xcom.helper.utils.SPUtils;
 import cn.xcom.helper.utils.SingleVolleyRequest;
 import cn.xcom.helper.utils.StringPostRequest;
 import cn.xcom.helper.utils.ToastUtils;
 import cn.xcom.helper.view.SaleTypePopupWindow;
+import cz.msebera.android.httpclient.Header;
 
 /**
  * Created by zhuchongkun on 16/5/27.
  * 主页面——特卖
- *
  */
 public class SaleFragment extends Fragment implements View.OnClickListener {
     private String TAG = "SaleFragment";
@@ -115,56 +123,10 @@ public class SaleFragment extends Fragment implements View.OnClickListener {
                         ToastUtils.showToast(mContext, "网络连接错误，请检查您的网络");
                     }
                 });
+                request.putValue("city", HelperApplication.getInstance().mDistrict);
                 SingleVolleyRequest.getInstance(getContext()).addToRequestQueue(request);
             }
         });
-                     }
-                 }, new Response.ErrorListener() {
-                     @Override
-                     public void onErrorResponse(VolleyError volleyError) {
-                         ToastUtils.showToast(mContext, "网络连接错误，请检查您的网络");
-                     }
-                 });
-                 request.putValue("city", HelperApplication.getInstance().mDistrict);
-                 SingleVolleyRequest.getInstance(getContext()).addToRequestQueue(request);
-             }
-         });
-//        String url = NetConstant.GOODSLIST;
-//        StringPostRequest request = new StringPostRequest(url, new Response.Listener<String>() {
-//            @Override
-//            public void onResponse(String s) {
-//                try {
-//                    Log.d("=====显示111",""+s);
-//                    JSONObject jsonObject = new JSONObject(s);
-//                    String state = jsonObject.getString("status");
-//                    if (state.equals("success")) {
-//                        String jsonObject1 = jsonObject.getString("data");
-//                        Gson gson = new Gson();
-//                        addlist = gson.fromJson(jsonObject1,
-//                                new TypeToken<ArrayList<Front>>() {
-//                                }.getType());
-//                        Log.e("========fragment", "" + addlist.size());
-//                        saleAdapter = new SaleAdapter(addlist, mContext);
-//                        listView.setAdapter(saleAdapter);
-//                        saleAdapter.notifyDataSetChanged();
-//
-//
-//
-//                    }
-//
-//                } catch (JSONException e) {
-//                    e.printStackTrace();
-//                }
-//
-//            }
-//        }, new Response.ErrorListener() {
-//            @Override
-//            public void onErrorResponse(VolleyError volleyError) {
-//                ToastUtils.showToast(mContext, "网络连接错误，请检查您的网络");
-//            }
-//        });
-//        request.putValue("city", HelperApplication.getInstance().mDistrict);
-//        SingleVolleyRequest.getInstance(getContext()).addToRequestQueue(request);
         return view;
     }
 
@@ -273,46 +235,12 @@ public class SaleFragment extends Fragment implements View.OnClickListener {
         }
 
     }
-//获取字典并弹出popuwindow
-/*    private void showWindow(View parent) {
-            Log.d("=====显示", "" + "=================");
-            LayoutInflater layoutInflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            view = layoutInflater.inflate(R.layout.group_list, null);
-            lv_group = (ListView) view.findViewById(R.id.lvGroup);
-            String url1=NetConstant.DICTIONARYS_LIST;
-            StringPostRequest request=new StringPostRequest(url1, new Response.Listener<String>() {
-                @Override
-                public void onResponse(String s) {
-                    try {
-                        Log.d("=====显示", "" + s);
-                        JSONObject jsonObject=new JSONObject(s);
-                        String state = jsonObject.getString("status");
-                        if (state.equals("success")){
-                            String jsonObject1 = jsonObject.getString("data");
-                            Gson gson = new Gson();
-                           List<DictionaryList>  groups=gson.fromJson(jsonObject1,
-                                    new TypeToken<ArrayList<DictionaryList>>() {
-                                    }.getType());
-                            addAllList.addAll(groups);
-                            Log.d("=====显示后面",""+addAllList.size());
-                            groupAdapter = new GroupAdapter(mContext, addAllList);
-                            lv_group.setAdapter(groupAdapter);
-                            groupAdapter.notifyDataSetChanged();
-                        }
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-
-                }
-            }, new Response.ErrorListener() {
-                @Override
-                public void onErrorResponse(VolleyError volleyError) {
 
     /**
      * 获取实名认证
      */
     private void getNameAuthentication(final String userid) {
-        RequestParams params=new RequestParams();
+        RequestParams params = new RequestParams();
         params.put("userid", userid);
         HelperAsyncHttpClient.get(NetConstant.Check_Had_Authentication, params, new JsonHttpResponseHandler() {
             @Override
@@ -349,14 +277,4 @@ public class SaleFragment extends Fragment implements View.OnClickListener {
         startActivity(intent);
     }
 
-//               Toast.makeText(getContext(),
-//                       "您点击的位置是"+position, Toast.LENGTH_SHORT)
-//                       .show();
-
-               if (popupWindow != null) {
-                   popupWindow.dismiss();
-               }
-           }
-       });
-   }*/
 }
