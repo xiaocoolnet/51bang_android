@@ -137,6 +137,7 @@ public class BuyActivity extends BaseActivity implements View.OnClickListener {
                 break;
             case R.id.buy_address:
                 Intent intent1=new Intent(BuyActivity.this,AddressListActivity.class);
+                intent1.putExtra("from",1);
                 startActivityForResult(intent1, 0x110);
         }
     }

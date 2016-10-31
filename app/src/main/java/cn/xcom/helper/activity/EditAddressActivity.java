@@ -32,14 +32,14 @@ import cn.xcom.helper.utils.StringPostRequest;
  * Created by zhuchongkun on 16/6/17.
  */
 public class EditAddressActivity extends BaseActivity implements View.OnClickListener {
-    private String TAG="EditAddressActivity";
+    private String TAG = "EditAddressActivity";
     private Context mContext;
-    private RelativeLayout rl_back,rl_save;
-    private EditText et_consignee,et_phone,et_detail;
-    private LinearLayout ll_city,ll_street;
-    private TextView tv_city,tv_street;
+    private RelativeLayout rl_back, rl_save;
+    private EditText et_detail;
+    private LinearLayout ll_city, ll_street;
+    private TextView tv_city, tv_street;
     private String provinces;
-    private City1 city ;
+    private City1 city;
     private ArrayList<City1> toCitys;
     private UserInfo userInfo;
     private CheckBox cb_checked;
@@ -50,75 +50,64 @@ public class EditAddressActivity extends BaseActivity implements View.OnClickLis
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_edit_address);
-        mContext=this;
+        mContext = this;
 
         initView();
 
 
     }
 
-    private void  initView(){
-        userInfo=new UserInfo();
+    private void initView() {
+        userInfo = new UserInfo();
         userInfo.readData(mContext);
         city = new City1();
-        toCitys = new ArrayList<City1>();
-        rl_back= (RelativeLayout) findViewById(R.id.rl_edit_address_back);
+        toCitys = new ArrayList<>();
+        rl_back = (RelativeLayout) findViewById(R.id.rl_edit_address_back);
         rl_back.setOnClickListener(this);
-        cb_checked= (CheckBox) findViewById(R.id.cb_checked);
-        rl_save= (RelativeLayout) findViewById(R.id.rl_edit_address_save);
+        cb_checked = (CheckBox) findViewById(R.id.cb_checked);
+        rl_save = (RelativeLayout) findViewById(R.id.rl_edit_address_save);
         rl_save.setOnClickListener(this);
-        et_consignee= (EditText) findViewById(R.id.et_edit_address_consignee);
-        et_phone= (EditText) findViewById(R.id.et_edit_address_phone);
-        et_detail= (EditText) findViewById(R.id.et_edit_address_detail);
-        tv_city= (TextView) findViewById(R.id.tv_edit_address_city);
-      //  tv_street= (TextView) findViewById(R.id.tv_edit_address_street);
-        ll_city= (LinearLayout) findViewById(R.id.ll_edit_address_city);
+        et_detail = (EditText) findViewById(R.id.et_edit_address_detail);
+        tv_city = (TextView) findViewById(R.id.tv_edit_address_city);
+        //  tv_street= (TextView) findViewById(R.id.tv_edit_address_street);
+        ll_city = (LinearLayout) findViewById(R.id.ll_edit_address_city);
         ll_city.setOnClickListener(this);
-       // ll_street= (LinearLayout) findViewById(R.id.ll_edit_address_street);
-       // ll_street.setOnClickListener(this);
+        // ll_street= (LinearLayout) findViewById(R.id.ll_edit_address_street);
+        // ll_street.setOnClickListener(this);
     }
-    private void addAdress(){
-        String personName=et_consignee.getText().toString().trim();
-        if (TextUtils.isEmpty(personName)) {
-            Toast.makeText(this, "请填写收货人", Toast.LENGTH_SHORT).show();
-            return;
-        }
-        String phone=et_phone.getText().toString().trim();
-        if (TextUtils.isEmpty(phone)) {
-            Toast.makeText(this, "请填写电话", Toast.LENGTH_SHORT).show();
-            return;
-        }
-        String detailAdress=et_detail.getText().toString().trim();
+
+    private void addAdress() {
+        String detailAdress = et_detail.getText().toString().trim();
         if (TextUtils.isEmpty(detailAdress)) {
             Toast.makeText(this, "请填写详细地址", Toast.LENGTH_SHORT).show();
             return;
         }
-        String url= NetConstant.ADD_ADRESS;
-        StringPostRequest request=new StringPostRequest(url, new Response.Listener<String>() {
+        String url = NetConstant.ADD_ADRESS;
+        StringPostRequest request = new StringPostRequest(url, new Response.Listener<String>() {
             @Override
             public void onResponse(String s) {
-                Log.d("==返回的地址",s);
-             Toast.makeText(mContext,"保存成功",Toast.LENGTH_SHORT).show();
+                Log.d("==返回的地址", s);
+                Toast.makeText(mContext, "保存成功", Toast.LENGTH_SHORT).show();
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError volleyError) {
-                Toast.makeText(mContext,"保存失败",Toast.LENGTH_SHORT).show();
+                Toast.makeText(mContext, "保存失败", Toast.LENGTH_SHORT).show();
             }
         });
         request.putValue("userid", userInfo.getUserId());
-        request.putValue("address",detailAdress);
-        request.putValue("longitude","123.1232");
-        request.putValue("latitude","123.1232");
-     //   request.putValue("isdefault","1");
+        request.putValue("address", detailAdress);
+        request.putValue("longitude", "123.1232");
+        request.putValue("latitude", "123.1232");
+        //   request.putValue("isdefault","1");
         SingleVolleyRequest.getInstance(mContext).addToRequestQueue(request);
-        Intent intent = new Intent(EditAddressActivity.this,AddressListActivity.class);
-        setResult(9, intent);
+        setResult(9);
         finish();
     }
+
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
+        switch (v.getId()) {
             case R.id.rl_edit_address_back:
                 finish();
                 break;
@@ -127,7 +116,7 @@ public class EditAddressActivity extends BaseActivity implements View.OnClickLis
 
                 break;
             case R.id.ll_edit_address_city:
-                Intent in=new Intent(EditAddressActivity.this,CitySelect1Activity.class);
+                Intent in = new Intent(EditAddressActivity.this, CitySelect1Activity.class);
                 in.putExtra("city", city);
                 startActivityForResult(in, 1);
                 break;
@@ -137,22 +126,23 @@ public class EditAddressActivity extends BaseActivity implements View.OnClickLis
         }
 
     }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(resultCode == 8){
-            if(requestCode == 1){
+        if (resultCode == 8) {
+            if (requestCode == 1) {
                 city = data.getParcelableExtra("city");
-                tv_city.setText(city.getProvince()+city.getCity()+city.getDistrict());
+                tv_city.setText(city.getProvince() + city.getCity() + city.getDistrict());
 
-            }else if(requestCode == 2){
+            } else if (requestCode == 2) {
                 toCitys = data.getParcelableArrayListExtra("toCitys");
                 StringBuffer ab = new StringBuffer();
                 for (int i = 0; i < toCitys.size(); i++) {
-                    if(i==toCitys.size()-1){//如果是最后一个城市就不需要逗号
+                    if (i == toCitys.size() - 1) {//如果是最后一个城市就不需要逗号
                         ab.append(toCitys.get(i).getCity());
-                    }else{
-                        StringBuffer a = ab.append(toCitys.get(i).getCity()+"， ");//如果不是最后一个城市就需要逗号
+                    } else {
+                        StringBuffer a = ab.append(toCitys.get(i).getCity() + "， ");//如果不是最后一个城市就需要逗号
                         tv_city.setText(a);
                     }
                 }

@@ -52,17 +52,17 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <cn.xcom.helper.view.NoScrollListView
+            <cn.xcom.helper.view.NoScrollGridView
                 android:id="@+id/lv_images"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:dividerHeight="2dp"
+                android:dividerHeight="1dp"
                 android:divider="@null"
+                android:numColumns="3"
+                android:stretchMode="columnWidth"
                 >
 
-
-
-            </cn.xcom.helper.view.NoScrollListView>
+            </cn.xcom.helper.view.NoScrollGridView>
 
 
             <LinearLayout

@@ -10,6 +10,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import cn.jpush.android.api.JPushInterface;
+import cn.xcom.helper.activity.HomeActivity;
 
 /**
  * Created by Administrator on 2016/9/8.
@@ -151,6 +152,48 @@ public class PushReceiver extends BroadcastReceiver {
             Log.i(TAG, "[PushReceiver] Unhandled intent - " + intent.getAction());
         }
     }
+
+    private void openNotification(Context context, String key,String value) {
+        Intent intent;
+        switch (key) {
+            case "newTask":
+                intent = new Intent(context,HomeActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+
+
+                break;
+            case "newMessage":
+
+                break;
+            case "sendTaskType":
+
+                break;
+            case "acceptTaskType":
+
+                break;
+            case "myWallet":
+
+                break;
+            case "buyOrderType":
+
+                break;
+            case "businessOrderType":
+
+                break;
+            case "loginFromOther":
+
+                break;
+            case "certificationType":
+
+                break;
+            case "prohibitVisit":
+
+                break;
+        }
+
+
+    }
+
 
     // 打印所有的 intent extra 数据
     private static String printBundle(Bundle bundle) {
