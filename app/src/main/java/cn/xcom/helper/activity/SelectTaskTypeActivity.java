@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.BaseAdapter;
 import android.widget.CheckBox;
+import android.widget.GridView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -36,7 +37,7 @@ public class SelectTaskTypeActivity extends BaseActivity implements View.OnClick
     private RelativeLayout rl_back;
     private String id;
     private TextView tv_submit;
-    private NoScrollGridView gv_task;
+    private GridView gv_task;
     private List<TaskType> allTaskTypes;
     private TaskAdapter adapter;
     private List<TaskType> selectTaskType;
@@ -112,7 +113,7 @@ public class SelectTaskTypeActivity extends BaseActivity implements View.OnClick
         rl_back.setOnClickListener(this);
         tv_submit = (TextView) findViewById(R.id.tv_submit);
         tv_submit.setOnClickListener(this);
-        gv_task = (NoScrollGridView) findViewById(R.id.gv_type);
+        gv_task = (GridView) findViewById(R.id.gv_type);
     }
 
     @Override

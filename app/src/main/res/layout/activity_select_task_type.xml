@@ -34,7 +34,7 @@
                 android:src="@mipmap/ic_back_white_left" />
         </RelativeLayout>
     </RelativeLayout>
-    <cn.xcom.helper.view.NoScrollGridView
+    <GridView
         android:id="@+id/gv_type"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -44,5 +44,5 @@
         android:background="@color/colorMainBackground"
         android:numColumns="2">
 
-    </cn.xcom.helper.view.NoScrollGridView>
+    </GridView>
     </LinearLayout>
