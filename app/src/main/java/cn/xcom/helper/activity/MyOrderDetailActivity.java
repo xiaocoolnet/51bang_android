@@ -112,7 +112,7 @@ public class MyOrderDetailActivity extends BaseActivity implements View.OnClickL
                 case OrderHelper.UN_SEND_OUT:
                     trackingTv.setVisibility(View.VISIBLE);
                     toPaytv.setVisibility(View.GONE);
-                    cancelPaymentTv.setVisibility(View.VISIBLE);
+                    cancelPaymentTv.setVisibility(View.GONE);
                     commentTv.setVisibility(View.GONE);
                     sendOutTv.setVisibility(View.GONE);
                     break;

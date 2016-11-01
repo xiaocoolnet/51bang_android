@@ -175,7 +175,7 @@ public class InsureActivity extends BaseActivity implements View.OnClickListener
             public void error() {
                 progressDialog.dismiss();
             }
-        });
+        },false);
 
 
     }

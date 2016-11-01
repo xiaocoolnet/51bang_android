@@ -3,6 +3,7 @@ package cn.xcom.helper.utils;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
@@ -51,7 +52,7 @@ public class PushImageUtil {
     private boolean isOk;
     private PushImage pushIamge;
     private List<String> arrayList=new ArrayList<>();
-
+    private boolean needCompress = true;//是否需要压缩
 
     public void setPushIamge(Context context,List<PhotoInfo> p,List<String> list,PushImage pushIamge) {
         this.photoWithPaths = p;
@@ -64,6 +65,11 @@ public class PushImageUtil {
             pushIamge.error();
         }
 
+    }
+
+    public void setPushIamge(Context context,List<PhotoInfo> p,List<String> list,PushImage pushIamge,boolean needCompress) {
+        this.setPushIamge(context,p,list,pushIamge);
+        this.needCompress = needCompress;
     }
 
     private Handler handler = new Handler() {
@@ -232,7 +238,36 @@ public class PushImageUtil {
     }
 
     public void pushImg(final String picPath,int  addImgKey){
-        convertBitmap(convertToBitmap(picPath, 200, 200), addImgKey);
+        if(needCompress){
+            convertBitmap(convertToBitmap(picPath, 200, 200), addImgKey);
+        }else{
+            ImageCompress compress = new ImageCompress();
+            ImageCompress.CompressOptions options = new ImageCompress.CompressOptions();
+            options.uri = Uri.fromFile(new File(picPath));
+            Bitmap bitmap = compress.compressFromUri(mContext, options);
+
+            File appDir = new File(Environment.getExternalStorageDirectory(), "51helper");
+            if (!appDir.exists()) {
+                appDir.mkdir();
+            }
+            Random random=new Random();
+            String fileName ="yyy"+ random.nextInt(10000)+System.currentTimeMillis() + ".jpg";
+            arrayList.add(fileName);
+
+            File file = new File(appDir, fileName);
+            try {
+                FileOutputStream fos = new FileOutputStream(file);
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos);
+                fos.flush();
+                fos.close();
+                updatePhoto(file, addImgKey);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+        }
 
     }
     public void updatePhoto(final File f,final int KEY){
@@ -275,6 +310,9 @@ public class PushImageUtil {
         }.start();
 
     }
+
+
+
     public void convertBitmap(Bitmap bitmap,int  addImgKey){
         File appDir = new File(Environment.getExternalStorageDirectory(), "51helper");
         if (!appDir.exists()) {
@@ -297,6 +335,8 @@ public class PushImageUtil {
             e.printStackTrace();
         }
     }
+
+
     //将图片路径转换为bitmap格式
     public Bitmap convertToBitmap(String path, int w, int h) {
         BitmapFactory.Options opts = new BitmapFactory.Options();
@@ -319,5 +359,6 @@ public class PushImageUtil {
         WeakReference<Bitmap> weak = new WeakReference<Bitmap>(BitmapFactory.decodeFile(path, opts));
         return Bitmap.createScaledBitmap(weak.get(), w, h, true);
     }
+
 
 }

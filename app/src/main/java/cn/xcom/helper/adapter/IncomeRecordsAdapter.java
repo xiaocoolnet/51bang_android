@@ -42,6 +42,7 @@ public class IncomeRecordsAdapter extends RecyclerView.Adapter<IncomeRecordsAdap
             holder.tv_time.setText(new SimpleDateFormat("yyyy-MM-dd  HH:mm:ss").format(date));
 
             holder.tv_balance.setText("余额:"+jsonObject.getString("balance"));
+            holder.tv_type.setText(jsonObject.getString("info"));
         } catch (JSONException e) {
             e.printStackTrace();
         }

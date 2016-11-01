@@ -214,13 +214,15 @@ public class PhotoAuthorizedFragment extends Fragment implements View.OnClickLis
                     if (state.equals(Environment.MEDIA_MOUNTED)) {
                         File path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM);
                         File tempFile = new File(path, "51helper.jpg");
-                        startPhotoZoom(Uri.fromFile(tempFile));
+//                        startPhotoZoom(Uri.fromFile(tempFile));
+                        showImageToView(Uri.fromFile(tempFile));
                     } else {
                         Toast.makeText(mContext, "未找到存储卡，无法存储照片！", Toast.LENGTH_SHORT).show();
                     }
                     break;
                 case PHOTO_REQUEST_ALBUM:// 图库
-                    startPhotoZoom(data.getData());
+//                    startPhotoZoom(data.getData());
+                    showImageToView(data.getData());
                     break;
 
                 case PHOTO_REQUEST_CUT: // 图片缩放完成后
@@ -377,6 +379,19 @@ public class PhotoAuthorizedFragment extends Fragment implements View.OnClickLis
     }
 
     /**
+     * 不进行压缩 直接显示图片
+     */
+    private void showImageToView(Uri uri){
+        try {
+            Bitmap bitmap = BitmapFactory.decodeStream(mContext.getContentResolver().openInputStream(uri));
+            storeImageToSDCARD(bitmap);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    /**
      * storeImageToSDCARD 将bitmap存放到sdcard中
      */
     public void storeImageToSDCARD(Bitmap bm) {
@@ -398,6 +413,8 @@ public class PhotoAuthorizedFragment extends Fragment implements View.OnClickLis
             e.printStackTrace();
         }
     }
+
+
 
     private void uploadImg(File f) {
 //        http://bang.xiaocool.net/index.php?g=apps&m=index&a=uploadimg
