@@ -68,8 +68,8 @@ public class PushImageUtil {
     }
 
     public void setPushIamge(Context context,List<PhotoInfo> p,List<String> list,PushImage pushIamge,boolean needCompress) {
-        this.setPushIamge(context,p,list,pushIamge);
         this.needCompress = needCompress;
+        this.setPushIamge(context,p,list,pushIamge);
     }
 
     private Handler handler = new Handler() {
@@ -241,32 +241,7 @@ public class PushImageUtil {
         if(needCompress){
             convertBitmap(convertToBitmap(picPath, 200, 200), addImgKey);
         }else{
-            ImageCompress compress = new ImageCompress();
-            ImageCompress.CompressOptions options = new ImageCompress.CompressOptions();
-            options.uri = Uri.fromFile(new File(picPath));
-            Bitmap bitmap = compress.compressFromUri(mContext, options);
-
-            File appDir = new File(Environment.getExternalStorageDirectory(), "51helper");
-            if (!appDir.exists()) {
-                appDir.mkdir();
-            }
-            Random random=new Random();
-            String fileName ="yyy"+ random.nextInt(10000)+System.currentTimeMillis() + ".jpg";
-            arrayList.add(fileName);
-
-            File file = new File(appDir, fileName);
-            try {
-                FileOutputStream fos = new FileOutputStream(file);
-                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos);
-                fos.flush();
-                fos.close();
-                updatePhoto(file, addImgKey);
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
+            compressImageWithRatio(picPath,addImgKey);
         }
 
     }
@@ -334,6 +309,19 @@ public class PushImageUtil {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public void compressImageWithRatio(String srcPath,int addImgKey){
+        File appDir = new File(Environment.getExternalStorageDirectory(), "51helper");
+        if (!appDir.exists()) {
+            appDir.mkdir();
+        }
+        Random random=new Random();
+        String fileName ="yyy"+ random.nextInt(10000)+System.currentTimeMillis() + ".jpg";
+        arrayList.add(fileName);
+        File file = new File(appDir, fileName);
+        updatePhoto(ImageCompress.compressPicture(srcPath,file),addImgKey);
+
     }
 
 

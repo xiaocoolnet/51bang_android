@@ -51,6 +51,7 @@ import cn.xcom.helper.activity.SetCityActivity;
 import cn.xcom.helper.bean.UserInfo;
 import cn.xcom.helper.constant.NetConstant;
 import cn.xcom.helper.net.HelperAsyncHttpClient;
+import cn.xcom.helper.utils.ImageCompress;
 import cn.xcom.helper.utils.LogUtils;
 import cn.xcom.helper.utils.RegexUtil;
 import cn.xcom.helper.utils.StringUtils;
@@ -214,21 +215,19 @@ public class PhotoAuthorizedFragment extends Fragment implements View.OnClickLis
                     if (state.equals(Environment.MEDIA_MOUNTED)) {
                         File path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM);
                         File tempFile = new File(path, "51helper.jpg");
-//                        startPhotoZoom(Uri.fromFile(tempFile));
-                        showImageToView(Uri.fromFile(tempFile));
+                        compressImgByUri(Uri.fromFile(tempFile));
                     } else {
                         Toast.makeText(mContext, "未找到存储卡，无法存储照片！", Toast.LENGTH_SHORT).show();
                     }
                     break;
                 case PHOTO_REQUEST_ALBUM:// 图库
-//                    startPhotoZoom(data.getData());
-                    showImageToView(data.getData());
+                    compressImgByUri(data.getData());
                     break;
 
                 case PHOTO_REQUEST_CUT: // 图片缩放完成后
-                    if (data != null) {
-                        getImageToView(data);
-                    }
+//                    if (data != null) {
+//                        getImageToView(data);
+//                    }
                     break;
                 case 4://选择城市
                     if (data != null) {
@@ -327,96 +326,18 @@ public class PhotoAuthorizedFragment extends Fragment implements View.OnClickLis
     }
 
 
-    /**
-     * 裁剪图片方法实现
-     *
-     * @param uri
-     */
-    Uri uritempFile;
-    public void startPhotoZoom(Uri uri) {
-        Intent intent = new Intent("com.android.camera.action.CROP");
-        intent.setDataAndType(uri, "image/*");
-        // 设置裁剪
-        intent.putExtra("crop", "true");
-        // aspectX aspectY 是宽高的比例
-        intent.putExtra("aspectX", 4);
-        intent.putExtra("aspectY", 3);
-        // outputX outputY 是裁剪图片宽高
-        intent.putExtra("outputX", 400);
-        intent.putExtra("outputY", 300);
-
-        //此方法返回的图片只能是小图片（sumsang测试为高宽160px的图片）
-        //故将图片保存在Uri中，调用时将Uri转换为Bitmap，此方法还可解决miui系统不能return data的问题
-        // intent.putExtra("return-data", true);
-
-        //uritempFile为Uri类变量，实例化uritempFile
-        uritempFile = Uri.parse("file://" + "/" + Environment.getExternalStorageDirectory().getPath() + "/" + "small.jpg");
-        intent.putExtra(MediaStore.EXTRA_OUTPUT, uritempFile);
-        intent.putExtra("outputFormat", Bitmap.CompressFormat.JPEG.toString());
-
-        startActivityForResult(intent, PHOTO_REQUEST_CUT);
-    }
-
-    /**
-     * 保存裁剪之后的图片数据
-     *
-     * @param data
-     */
-    private void getImageToView(Intent data) {
-        Bundle extras = data.getExtras();
-        if (extras != null) {
-            //将Uri图片转换为Bitmap
-            Bitmap bitmap = null;
-            try {
-                bitmap = BitmapFactory.decodeStream(mContext.getContentResolver().openInputStream(uritempFile));
-                storeImageToSDCARD(bitmap);
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            }
-        } else {
-
-        }
-    }
-
-    /**
-     * 不进行压缩 直接显示图片
-     */
-    private void showImageToView(Uri uri){
+    private void compressImgByUri(Uri uri){
         try {
-            Bitmap bitmap = BitmapFactory.decodeStream(mContext.getContentResolver().openInputStream(uri));
-            storeImageToSDCARD(bitmap);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-    }
-
-
-    /**
-     * storeImageToSDCARD 将bitmap存放到sdcard中
-     */
-    public void storeImageToSDCARD(Bitmap bm) {
-        File appDir = new File(Environment.getExternalStorageDirectory(), "51helper");
-        if (!appDir.exists()) {
-            appDir.mkdir();
-        }
-        String fileName = System.currentTimeMillis() + ".jpg";
-        File file = new File(appDir, fileName);
-        try {
-            FileOutputStream fos = new FileOutputStream(file);
-            bm.compress(Bitmap.CompressFormat.JPEG, 100, fos);
-            fos.flush();
-            fos.close();
+            Bitmap bitmap = ImageCompress.getBitmapFormUri(mContext,uri);
+            File file = ImageCompress.saveBitmapFile(bitmap);
             uploadImg(file);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }
+
     }
 
-
-
-    private void uploadImg(File f) {
+    private void  uploadImg(File f) {
 //        http://bang.xiaocool.net/index.php?g=apps&m=index&a=uploadimg
         dialog.setMessage("正在上传。。。");
         dialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
