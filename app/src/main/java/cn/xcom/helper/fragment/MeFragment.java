@@ -54,15 +54,15 @@ import cz.msebera.android.httpclient.Header;
  * Created by zhuchongkun on 16/5/27.
  * 主页面——我
  */
-public class MeFragment extends Fragment implements View.OnClickListener{
-    private String TAG="MeFragment";
+public class MeFragment extends Fragment implements View.OnClickListener {
+    private String TAG = "MeFragment";
     private Context mContext;
     private CircleImageView iv_head;
     private ImageView iv_gender;
-    private TextView tv_name,tv_phone,tv_realName,tv_wallet,tv_sign,tv_message,
-            tv_bill,tv_coupon,tv_order,tv_collection,tv_shoppingCart,tv_share2,tv_shopBuy,tv_orderTaking,
-            tv_insure,tv_moreService,tv_adress,tv_fragment_me_real_baoxian,tv_fragment_me_real_name;
-    private ImageLoader imageLoader=ImageLoader.getInstance();
+    private TextView tv_name, tv_phone, tv_realName, tv_wallet, tv_sign, tv_message,
+            tv_bill, tv_coupon, tv_order, tv_collection, tv_shoppingCart, tv_share2, tv_shopBuy, tv_orderTaking,
+            tv_insure, tv_moreService, tv_adress, tv_fragment_me_real_baoxian, tv_fragment_me_real_name;
+    private ImageLoader imageLoader = ImageLoader.getInstance();
     private DisplayImageOptions options;
     private UserInfo userInfo;
     private LinearLayout ll_serviceConsulting;
@@ -70,14 +70,14 @@ public class MeFragment extends Fragment implements View.OnClickListener{
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_me,container,false);
+        return inflater.inflate(R.layout.fragment_me, container, false);
 
     }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        mContext=getActivity();
+        mContext = getActivity();
         initView();
         getInsurance();
         getNameAuthentication(userInfo.getUserId());
@@ -94,7 +94,7 @@ public class MeFragment extends Fragment implements View.OnClickListener{
      * 获取实名认证
      */
     private void getNameAuthentication(final String userid) {
-        RequestParams params=new RequestParams();
+        RequestParams params = new RequestParams();
         params.put("userid", userid);
         HelperAsyncHttpClient.get(NetConstant.Check_Had_Authentication, params, new JsonHttpResponseHandler() {
             @Override
@@ -124,18 +124,18 @@ public class MeFragment extends Fragment implements View.OnClickListener{
      * 获取保险认证
      */
     private void getInsurance() {
-        RequestParams params=new RequestParams();
-        params.put("userid",userInfo.getUserId());
+        RequestParams params = new RequestParams();
+        params.put("userid", userInfo.getUserId());
         HelperAsyncHttpClient.get(NetConstant.Check_Insurance, params, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                 super.onSuccess(statusCode, headers, response);
                 Log.e("认证", response.toString());
                 String data = response.optString("data");
-                if(response.optString("status").equals("success")){
-                    SPUtils.put(mContext,HelperConstant.IS_INSURANCE,data);
+                if (response.optString("status").equals("success")) {
+                    SPUtils.put(mContext, HelperConstant.IS_INSURANCE, data);
                 }
-                switch (data){
+                switch (data) {
                     case "1":
                         tv_fragment_me_real_baoxian.setText("保险认证");
                         tv_fragment_me_real_baoxian.setTextColor(mContext.getResources().getColor(R.color.white));
@@ -155,48 +155,48 @@ public class MeFragment extends Fragment implements View.OnClickListener{
         });
     }
 
-    private void initView(){
-        iv_head= (CircleImageView) getView().findViewById(R.id.iv_fragment_me_head);
+    private void initView() {
+        iv_head = (CircleImageView) getView().findViewById(R.id.iv_fragment_me_head);
         iv_head.setOnClickListener(this);
         tv_fragment_me_real_baoxian = (TextView) getView().findViewById(R.id.tv_fragment_me_real_baoxian);
         tv_fragment_me_real_name = (TextView) getView().findViewById(R.id.tv_fragment_me_real_name);
-        iv_gender= (ImageView) getView().findViewById(R.id.iv_fragment_me_gender);
-        tv_name= (TextView) getView().findViewById(R.id.tv_fragment_me_name);
-        tv_phone= (TextView) getView().findViewById(R.id.tv_fragment_me_phone);
-        tv_realName= (TextView) getView().findViewById(R.id.tv_fragment_me_real_name);
+        iv_gender = (ImageView) getView().findViewById(R.id.iv_fragment_me_gender);
+        tv_name = (TextView) getView().findViewById(R.id.tv_fragment_me_name);
+        tv_phone = (TextView) getView().findViewById(R.id.tv_fragment_me_phone);
+        tv_realName = (TextView) getView().findViewById(R.id.tv_fragment_me_real_name);
         tv_realName.setOnClickListener(this);
-        tv_wallet= (TextView) getView().findViewById(R.id.tv_fragment_me_wallet);
+        tv_wallet = (TextView) getView().findViewById(R.id.tv_fragment_me_wallet);
         tv_wallet.setOnClickListener(this);
-        tv_sign= (TextView) getView().findViewById(R.id.tv_fragment_me_sign);
+        tv_sign = (TextView) getView().findViewById(R.id.tv_fragment_me_sign);
         tv_sign.setOnClickListener(this);
-        tv_message= (TextView) getView().findViewById(R.id.tv_fragment_me_message);
+        tv_message = (TextView) getView().findViewById(R.id.tv_fragment_me_message);
         tv_message.setOnClickListener(this);
-        tv_bill= (TextView) getView().findViewById(R.id.tv_fragment_me_bill);
+        tv_bill = (TextView) getView().findViewById(R.id.tv_fragment_me_bill);
         tv_bill.setOnClickListener(this);
-        tv_coupon= (TextView) getView().findViewById(R.id.tv_fragment_me_coupon);
+        tv_coupon = (TextView) getView().findViewById(R.id.tv_fragment_me_coupon);
         tv_coupon.setOnClickListener(this);
-        tv_order= (TextView) getView().findViewById(R.id.tv_fragment_me_order);
+        tv_order = (TextView) getView().findViewById(R.id.tv_fragment_me_order);
         tv_order.setOnClickListener(this);
-        tv_collection= (TextView) getView().findViewById(R.id.tv_fragment_me_collection);
+        tv_collection = (TextView) getView().findViewById(R.id.tv_fragment_me_collection);
         tv_collection.setOnClickListener(this);
-        tv_shoppingCart= (TextView) getView().findViewById(R.id.tv_fragment_me_shopping_cart);
+        tv_shoppingCart = (TextView) getView().findViewById(R.id.tv_fragment_me_shopping_cart);
         tv_shoppingCart.setOnClickListener(this);
-        tv_share2= (TextView) getView().findViewById(R.id.tv_fragment_me_share2);
+        tv_share2 = (TextView) getView().findViewById(R.id.tv_fragment_me_share2);
         tv_share2.setOnClickListener(this);
-        tv_shopBuy= (TextView) getView().findViewById(R.id.tv_fragment_me_shopBuy);
+        tv_shopBuy = (TextView) getView().findViewById(R.id.tv_fragment_me_shopBuy);
         tv_shopBuy.setOnClickListener(this);
-        tv_orderTaking= (TextView) getView().findViewById(R.id.tv_fragment_me_order_taking);
+        tv_orderTaking = (TextView) getView().findViewById(R.id.tv_fragment_me_order_taking);
         tv_orderTaking.setOnClickListener(this);
-        tv_insure= (TextView) getView().findViewById(R.id.tv_fragment_me_insure);
+        tv_insure = (TextView) getView().findViewById(R.id.tv_fragment_me_insure);
         tv_insure.setOnClickListener(this);
-        ll_serviceConsulting= (LinearLayout) getView().findViewById(R.id.ll_fragment_me_service_consulting);
+        ll_serviceConsulting = (LinearLayout) getView().findViewById(R.id.ll_fragment_me_service_consulting);
         ll_serviceConsulting.setOnClickListener(this);
-        tv_moreService= (TextView) getView().findViewById(R.id.tv_fragment_me_more_service);
+        tv_moreService = (TextView) getView().findViewById(R.id.tv_fragment_me_more_service);
         tv_moreService.setOnClickListener(this);
-        tv_adress= (TextView) getView().findViewById(R.id.tv_fragment_me_adress);
+        tv_adress = (TextView) getView().findViewById(R.id.tv_fragment_me_adress);
         tv_adress.setOnClickListener(this);
-        userInfo=new UserInfo(mContext);
-        options=new DisplayImageOptions.Builder()
+        userInfo = new UserInfo(mContext);
+        options = new DisplayImageOptions.Builder()
                 .bitmapConfig(Bitmap.Config.RGB_565)
                 .imageScaleType(ImageScaleType.IN_SAMPLE_INT)
                 .showImageOnLoading(R.mipmap.ic_deafult_head)
@@ -214,12 +214,12 @@ public class MeFragment extends Fragment implements View.OnClickListener{
         getData();
     }
 
-    private void displayDate(){
-        if (userInfo!=null){
-            imageLoader.displayImage(NetConstant.NET_DISPLAY_IMG+userInfo.getUserImg(),iv_head,options);
-            if (userInfo.getUserGender().equals("0")){
+    private void displayDate() {
+        if (userInfo != null) {
+            imageLoader.displayImage(NetConstant.NET_DISPLAY_IMG + userInfo.getUserImg(), iv_head, options);
+            if (userInfo.getUserGender().equals("0")) {
                 iv_gender.setImageResource(R.mipmap.ic_me_gender_woman);
-            }else if (userInfo.getUserGender().equals("1")){
+            } else if (userInfo.getUserGender().equals("1")) {
                 iv_gender.setImageResource(R.mipmap.ic_me_gender_man);
             }
             tv_name.setText(userInfo.getUserName());
@@ -228,19 +228,19 @@ public class MeFragment extends Fragment implements View.OnClickListener{
 
     }
 
-    private void getData(){
-        RequestParams params=new RequestParams();
-        params.put("userid",userInfo.getUserId());
-        HelperAsyncHttpClient.get(NetConstant.NET_GET_USER_INFO,params,new JsonHttpResponseHandler(){
+    private void getData() {
+        RequestParams params = new RequestParams();
+        params.put("userid", userInfo.getUserId());
+        HelperAsyncHttpClient.get(NetConstant.NET_GET_USER_INFO, params, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                 super.onSuccess(statusCode, headers, response);
-                LogUtils.e(TAG,"--statusCode->"+statusCode+"==>"+response.toString());
-                if (response!=null){
+                LogUtils.e(TAG, "--statusCode->" + statusCode + "==>" + response.toString());
+                if (response != null) {
                     try {
-                        String state=response.getString("status");
-                        if (state.equals("success")){
-                            JSONObject jsonObject=response.getJSONObject("data");
+                        String state = response.getString("status");
+                        if (state.equals("success")) {
+                            JSONObject jsonObject = response.getJSONObject("data");
                             userInfo.setUserId(jsonObject.getString("id"));
                             userInfo.setUserName(jsonObject.getString("name"));
                             userInfo.setUserImg(jsonObject.getString("photo"));
@@ -250,9 +250,10 @@ public class MeFragment extends Fragment implements View.OnClickListener{
                             userInfo.setUserGender(jsonObject.getString("sex"));
                             userInfo.writeData(mContext);
                             displayDate();
-                        }if(state.equals("error")){
-                            String data=response.getString("data");
-                            Toast.makeText(mContext,data,Toast.LENGTH_LONG).show();
+                        }
+                        if (state.equals("error")) {
+                            String data = response.getString("data");
+                            Toast.makeText(mContext, data, Toast.LENGTH_LONG).show();
                         }
                     } catch (JSONException e) {
                         e.printStackTrace();
@@ -262,9 +263,10 @@ public class MeFragment extends Fragment implements View.OnClickListener{
         });
 
     }
+
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
+        switch (v.getId()) {
             case R.id.iv_fragment_me_head:
                 startActivity(new Intent(mContext, EditPersonalActivity.class));
                 break;
@@ -304,7 +306,7 @@ public class MeFragment extends Fragment implements View.OnClickListener{
                 break;
             case R.id.tv_fragment_me_shopBuy:
                 startActivity(new Intent(mContext, MyOrderActivity.class).
-                        putExtra("order_type",OrderHelper.SellerOrder));
+                        putExtra("order_type", OrderHelper.SellerOrder));
                 break;
             case R.id.tv_fragment_me_order_taking:
                 startActivity(new Intent(mContext, OrderTakingActivity.class));
@@ -314,14 +316,14 @@ public class MeFragment extends Fragment implements View.OnClickListener{
                 break;
             case R.id.ll_fragment_me_service_consulting:
                 //用intent启动拨打电话
-                String number=getResources().getString(R.string.tv_fragment_me_customer_number);
-                Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:"+number));
+                String number = getResources().getString(R.string.tv_fragment_me_customer_number);
+                Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + number));
                 startActivity(intent);
                 break;
             case R.id.tv_fragment_me_more_service:
                 startActivity(new Intent(mContext, MoreServiceActivity.class));
                 break;
-            case R.id. tv_fragment_me_share2:
+            case R.id.tv_fragment_me_share2:
                 startActivity(new Intent(mContext, ShareQRCodeActivity.class));
                 break;
         }

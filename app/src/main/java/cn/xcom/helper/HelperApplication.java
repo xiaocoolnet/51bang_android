@@ -51,9 +51,6 @@ public class HelperApplication extends Application {
     public double mLocLat, mLocLon;
     public String mLocAddress;
 
-    //是否强退标识
-    public String flag = "false";
-
     //支付相关参数
     public String tradeNo;
     public String payType;
@@ -83,8 +80,6 @@ public class HelperApplication extends Application {
         mContext = this;
         instance = this;
         taskTypes = new ArrayList<>();
-        IntentFilter filter = new IntentFilter("com.USER_ACTION");
-        this.registerReceiver(new Receiver(), filter);
 
         //初始化极光
         setPush();
@@ -97,179 +92,6 @@ public class HelperApplication extends Application {
 
     }
 
-     public class Receiver extends BroadcastReceiver {
-
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            Log.i("Recevier1", "接收到:");
-            String key = SPUtils.get(context, "push", "").toString();
-            String state = SPUtils.get(context,"pushstate","").toString();
-            String title = "";
-            String message = "";
-            int type = 0;
-            switch (key){
-                case "newTask":
-                    title = "所在城市有新的任务";
-                    if(state.equals("1")){
-                        message = "是否去抢单？";
-                    }
-                    popDialog(title,message,type);
-                    break;
-                case "newMessage":
-                    title = "您有新的留言消息";
-                    message ="是否立即查看？";
-                    popDialog(title,message,type);
-                    break;
-                case "sendTaskType":
-                    title = "您的任务状态改变";
-                    if(state.equals("1")){
-                        message = "已被抢";
-                    }
-                    if(state.equals("2")){
-                        message = "对方已上门";
-                    }
-                    if(state.equals("3")){
-                        message = "对方已申请付款";
-                    }
-                    if(state.equals("4")){
-                        message = "对方已上门";
-                    }
-                    if(state.equals("5")){
-                        message = "对方已评价";
-                    }
-                    popDialog(title,message,type);
-                    break;
-                case "acceptTaskType":
-                    title = "您接的任务状态改变";
-                    if(state.equals("1")){
-                        message = "对方已同意您接单";
-                    }
-                    if(state.equals("2")){
-                        message = "对方已付款";
-                    }
-                    if(state.equals("3")){
-                        message = "对方已评价";
-                    }
-                    if(state.equals("-1")){
-                        message = "对方已取消";
-                    }
-                    popDialog(title,message,type);
-                    break;
-                case "myWallet":
-                    title = "钱包数据已更新";
-                    message = "是否立即查看？";
-                    popDialog(title,message,type);
-                    break;
-                case "buyOrderType":
-                    title = "您购买的商品订单状态已更新";
-                    if(state.equals("1")){
-                        message = "商家已接单";
-                    }
-                    if(state.equals("2")){
-                        message = "商家已发货";
-                    }
-                    if(state.equals("3")){
-                        message = "商品已送达/订单已消费";
-                    }
-                    if(state.equals("4")){
-                        message = "商家回复评论";
-                    }
-                    popDialog(title,message,type);
-                    break;
-                case "businessOrderType":
-                    title = "您发布的商品订单状态已更新";
-                    if(state.equals("1")){
-                        message = "有人购买您的商品";
-                    }
-                    if(state.equals("2")){
-                        message = "对方已取消订单";
-                    }
-                    if(state.equals("3")){
-                        message = "对方已付款";
-                    }
-                    if(state.equals("4")){
-                        message = "订单已消费";
-                    }
-                    if(state.equals("5")){
-                        message = "对方已评论";
-                    }
-                    popDialog(title,message,type);
-                    break;
-                case "loginFromOther":
-                    title = "有人登陆您的账号";
-                    message ="您需要重新登陆";
-                    Intent loginIntent = new Intent(context,HomeActivity.class);
-                    HelperApplication.getInstance().flag = "true";
-                    startActivity(loginIntent);
-                    break;
-                case "certificationType":
-                    title = "认证状态更新";
-                    if(state.equals("1")){
-                        message = "您已通过身份认证";
-                        type = 1;
-                        SPUtils.put(context, HelperConstant.IS_HAD_AUTHENTICATION,"1");
-                    }
-                    if(state.equals("2")){
-                        message = "您未通过身份认证";
-                    }
-                    if(state.equals("3")){
-                        message = "您已通过投保认证";
-                    }
-                    if(state.equals("4")){
-                        message = "您未通过投保认证";
-                    }
-                    popDialog(title,message,type);
-                    break;
-                case "prohibitVisit":
-                    title = "封号";
-                    message = "封号";
-                    popDialog(title,message,type);
-                    break;
-            }
-        }
-
-    }
-
-    /**
-     * 接受推送弹出提示框
-     *
-     * @param title
-     * @param message
-     */
-    private void popDialog(String title, String message , final int type) {
-        if(activities.size()==0){
-            return;
-        }
-        final Activity activity = activities.get(activities.size()-1);
-        if (activity==null){
-            return;
-        }
-        AlertView mAlertView = new AlertView(title, message, "取消", new String[]{"确定"}, null, activity, AlertView.Style.Alert, new OnItemClickListener() {
-            @Override
-            public void onItemClick(Object o, int position) {
-                if (position == 0) {
-                    switch (type){
-                        case 1:
-                            activities.get(activities.size()-1).startActivity(new Intent(activities.get(activities.size()-1), HomeActivity.class));
-                            HelperApplication.getInstance().onTerminate();
-                            break;
-                    }
-                    ToastUtil.showShort(activity, "确定");
-                }
-            }
-        }).setCancelable(true).setOnDismissListener(new OnDismissListener() {
-            @Override
-            public void onDismiss(Object o) {
-
-            }
-        });
-        switch (type){
-            case 1:
-                mAlertView.setCancelable(false);
-                break;
-        }
-        mAlertView.show();
-    }
 
     /**
      * 新建了一个activity
@@ -406,4 +228,11 @@ public class HelperApplication extends Application {
         ImageLoader.getInstance().init(configuration);// 全局初始化此配置
     }
 
+    public List<Activity> getActivities() {
+        return activities;
+    }
+
+    public void setActivities(List<Activity> activities) {
+        this.activities = activities;
+    }
 }

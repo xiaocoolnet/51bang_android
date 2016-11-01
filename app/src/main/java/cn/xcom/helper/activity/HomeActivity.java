@@ -37,79 +37,82 @@ import cz.msebera.android.httpclient.Header;
  * Created by zhuchongkun on 16/5/27.
  * 主页面
  */
-public class HomeActivity extends BaseActivity{
+public class HomeActivity extends BaseActivity {
     private Context mContext;
     private Button[] mTabs;
-    private TextView unReadMap, unReadBuy, unReadSale,unReadMe;
+    private TextView unReadMap, unReadBuy, unReadSale, unReadMe;
     private MapFragment mapFragment;
     private BuyFragment buyFragment;
     private SaleFragment saleFragment;
     private MeFragment meFragment;
     private Fragment[] fragments;
     private UserInfo userInfo;
-
-    private int a=0;
+    private int a = 0;
     private int index;
     private int currentTanIndex;
+    private String from = "";
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_home);
-        mContext=this;
+        mContext = this;
         userInfo = new UserInfo(mContext);
         userInfo.readData(mContext);
         initView();
         initFragment();
     }
-    private void initView(){
+
+    private void initView() {
         unReadMap = (TextView) findViewById(R.id.tv_home_map_red);
         unReadBuy = (TextView) findViewById(R.id.tv_home_buy_red);
         unReadSale = (TextView) findViewById(R.id.tv_home_sale_red);
-        unReadMe= (TextView) findViewById(R.id.tv_home_me_red);
-        mTabs=new Button[4];
-        mTabs[0]= (Button) findViewById(R.id.bt_home_map);
-        mTabs[1]= (Button) findViewById(R.id.bt_home_buy);
-        mTabs[2]= (Button) findViewById(R.id.bt_home_sale);
-        mTabs[3]= (Button) findViewById(R.id.bt_home_me);
+        unReadMe = (TextView) findViewById(R.id.tv_home_me_red);
+        mTabs = new Button[4];
+        mTabs[0] = (Button) findViewById(R.id.bt_home_map);
+        mTabs[1] = (Button) findViewById(R.id.bt_home_buy);
+        mTabs[2] = (Button) findViewById(R.id.bt_home_sale);
+        mTabs[3] = (Button) findViewById(R.id.bt_home_me);
         mTabs[a].setSelected(true);
     }
-    private void initFragment(){
-        mapFragment=new MapFragment();
-        buyFragment=new BuyFragment();
-        saleFragment=new SaleFragment();
-        meFragment=new MeFragment();
-        fragments=new Fragment[]{mapFragment,buyFragment,saleFragment,meFragment};
-        switch (a){
+
+    private void initFragment() {
+        mapFragment = new MapFragment();
+        buyFragment = new BuyFragment();
+        saleFragment = new SaleFragment();
+        meFragment = new MeFragment();
+        fragments = new Fragment[]{mapFragment, buyFragment, saleFragment, meFragment};
+        switch (a) {
             case 0:
                 getSupportFragmentManager().beginTransaction()
-                        .add(R.id.rl_home_fragment_container,mapFragment)
-                        .add(R.id.rl_home_fragment_container,buyFragment)
+                        .add(R.id.rl_home_fragment_container, mapFragment)
+                        .add(R.id.rl_home_fragment_container, buyFragment)
                         .hide(buyFragment)
                         .show(mapFragment).commit();
                 break;
             case 1:
                 getSupportFragmentManager().beginTransaction()
-                        .add(R.id.rl_home_fragment_container,mapFragment)
-                        .add(R.id.rl_home_fragment_container,buyFragment)
-                        .add(R.id.rl_home_fragment_container,saleFragment)
+                        .add(R.id.rl_home_fragment_container, mapFragment)
+                        .add(R.id.rl_home_fragment_container, buyFragment)
+                        .add(R.id.rl_home_fragment_container, saleFragment)
                         .hide(mapFragment)
                         .show(buyFragment)
                         .hide(saleFragment).commit();
                 break;
             case 2:
                 getSupportFragmentManager().beginTransaction()
-                        .add(R.id.rl_home_fragment_container,buyFragment)
-                        .add(R.id.rl_home_fragment_container,saleFragment)
-                        .add(R.id.rl_home_fragment_container,meFragment)
+                        .add(R.id.rl_home_fragment_container, buyFragment)
+                        .add(R.id.rl_home_fragment_container, saleFragment)
+                        .add(R.id.rl_home_fragment_container, meFragment)
                         .hide(buyFragment)
                         .show(saleFragment)
                         .hide(meFragment).commit();
                 break;
             case 3:
                 getSupportFragmentManager().beginTransaction()
-                        .add(R.id.rl_home_fragment_container,saleFragment)
-                        .add(R.id.rl_home_fragment_container,meFragment)
+                        .add(R.id.rl_home_fragment_container, saleFragment)
+                        .add(R.id.rl_home_fragment_container, meFragment)
                         .hide(saleFragment)
                         .show(meFragment).commit();
                 break;
@@ -117,87 +120,68 @@ public class HomeActivity extends BaseActivity{
         }
 
     }
-    public void onTabClicked(View view){
-        switch (view.getId()){
+
+    public void onTabClicked(View view) {
+        switch (view.getId()) {
             case R.id.bt_home_map:
-                index=0;
+                index = 0;
                 break;
             case R.id.bt_home_buy:
-                index=1;
+                index = 1;
                 break;
             case R.id.bt_home_sale:
-                index=2;
+                index = 2;
                 break;
             case R.id.bt_home_me:
-                index=3;
+                index = 3;
                 break;
         }
-        if (currentTanIndex!=index){
-            FragmentTransaction trx =getSupportFragmentManager().beginTransaction();
+        if (currentTanIndex != index) {
+            FragmentTransaction trx = getSupportFragmentManager().beginTransaction();
             trx.hide(fragments[currentTanIndex]);
-            if(!fragments[index].isAdded()){
-                trx.add(R.id.rl_home_fragment_container,fragments[index]);
+            if (!fragments[index].isAdded()) {
+                trx.add(R.id.rl_home_fragment_container, fragments[index]);
             }
             trx.show(fragments[index]).commit();
         }
         mTabs[currentTanIndex].setSelected(false);
         mTabs[index].setSelected(true);
-        currentTanIndex=index;
+        currentTanIndex = index;
     }
 
-    public void checkToSecond(){
-        FragmentTransaction trx =getSupportFragmentManager().beginTransaction();
+    public void checkToSecond() {
+        FragmentTransaction trx = getSupportFragmentManager().beginTransaction();
         trx.hide(fragments[currentTanIndex]);
-        if(!fragments[1].isAdded()){
-            trx.add(R.id.rl_home_fragment_container,fragments[1]);
+        if (!fragments[1].isAdded()) {
+            trx.add(R.id.rl_home_fragment_container, fragments[1]);
         }
         trx.show(fragments[1]).commit();
         mTabs[currentTanIndex].setSelected(false);
         mTabs[1].setSelected(true);
-        currentTanIndex=1;
+        currentTanIndex = 1;
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         getInsurance();
-        if(HelperApplication.getInstance().flag.equals("true")){
-            popDialog();
-        }
     }
 
-    /**
-     * 弹出退出提示框
-     */
-    private void popDialog() {
-        final AlertView mAlertView = new AlertView("提示", "您的账号在另一个设备登录，请重新登陆", null, new String[]{"确定"}, null, this, AlertView.Style.Alert, new OnItemClickListener() {
-            @Override
-            public void onItemClick(Object o, int position) {
-                UserInfo userInfo=new UserInfo();
-                userInfo.clearDataExceptPhone(mContext);
-                SPUtils.clear(mContext);
-                JPushInterface.stopPush(mContext);
-                startActivity(new Intent(mContext, LoginActivity.class));
-                HelperApplication.getInstance().onTerminate();
-            }
-        });
-        mAlertView.setCancelable(false);
-        mAlertView.show();
-    }
+
 
     /**
      * 获取保险认证
      */
     private void getInsurance() {
-        RequestParams params=new RequestParams();
-        params.put("userid",userInfo.getUserId());
+        RequestParams params = new RequestParams();
+        params.put("userid", userInfo.getUserId());
         HelperAsyncHttpClient.get(NetConstant.Check_Insurance, params, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                 super.onSuccess(statusCode, headers, response);
-                Log.e("认证",response.toString());
-                if(response.optString("status").equals("success")){
-                    SPUtils.put(mContext,HelperConstant.IS_INSURANCE,response.optString("data"));
+                Log.e("认证", response.toString());
+                if (response.optString("status").equals("success")) {
+                    SPUtils.put(mContext, HelperConstant.IS_INSURANCE, response.optString("data"));
                 }
             }
 
@@ -207,5 +191,17 @@ public class HomeActivity extends BaseActivity{
                 Log.e("认证", responseString);
             }
         });
+    }
+
+    @Override
+    protected void onResumeFragments() {//在onResumeFragment里做fragment transaction操作
+        super.onResumeFragments();
+        from = getIntent().getStringExtra("from");
+        Log.d("HomeActivity","out");
+        if("push".equals(from)){
+            Log.d("HomeActivity","in");
+            onTabClicked(findViewById(R.id.bt_home_buy));
+        }
+
     }
 }
