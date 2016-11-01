@@ -50,14 +50,15 @@ public class ChatActivity extends BaseActivity implements View.OnClickListener {
     private UserInfo userInfo;
     private String receiverId;
     private ChatAdapter chatAdapter;
-    private String chatName;
+    private String chatName = "";
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
-        getWindow().setSoftInputMode( WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
         receiverId = getIntent().getStringExtra("id");
-        chatName  = getIntent().getStringExtra("name");
+        chatName = getIntent().getStringExtra("name");
         mContext = this;
         userInfo = new UserInfo(this);
         initView();
@@ -66,7 +67,9 @@ public class ChatActivity extends BaseActivity implements View.OnClickListener {
 
     private void initView() {
         titleNameTv = (TextView) findViewById(R.id.tv_title_name);
-        titleNameTv.setText(chatName);
+        if (chatName != null && !"".equals(chatName)) {
+            titleNameTv.setText(chatName);
+        }
         sendBtn = (Button) findViewById(R.id.btn_send);
         sendBtn.setOnClickListener(this);
         contentEdt = (EditText) findViewById(R.id.edt_content);
@@ -111,7 +114,7 @@ public class ChatActivity extends BaseActivity implements View.OnClickListener {
         final String content = contentEdt.getText().toString();
         if (content.equals("")) {
             return;
-        }else{
+        } else {
             contentEdt.setText("");
         }
         RequestParams params = new RequestParams();
@@ -249,7 +252,7 @@ public class ChatActivity extends BaseActivity implements View.OnClickListener {
 
     }
 
-    public void onBack(View v){
+    public void onBack(View v) {
         finish();
     }
 }
