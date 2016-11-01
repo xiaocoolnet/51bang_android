@@ -507,7 +507,7 @@ public class HelpMeActivity extends BaseActivity implements View.OnClickListener
                             String data = object.getString("data");
                             HelperApplication.getInstance().getTaskTypes().clear();
                             Log.d("发布任务", data);
-                            Toast.makeText(getApplication(), "发布成功", Toast.LENGTH_SHORT).show();
+                           // Toast.makeText(getApplication(), "发布成功", Toast.LENGTH_SHORT).show();
                             Intent intent = new Intent(mContext, PaymentActivity.class);
                             intent.putExtra("price", et_wages.getText().toString());
                             intent.putExtra("tradeNo", data);

@@ -230,10 +230,14 @@ public class BuyFragment extends Fragment implements View.OnClickListener{
                 sb_change.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        if (sb_change.isChecked()) {
-                            changeWorkingState("1");
-                        } else {
-                            changeWorkingState("0");
+                        if(!SPUtils.get(mContext,HelperConstant.IS_INSURANCE,"").equals("1")){
+                            popDialog(mContext, "提示", "您未通过保险认证，不能开工，是否跳转到保险认证页面进行验证？");
+                        }else{
+                            if (sb_change.isChecked()) {
+                                changeWorkingState("1");
+                            } else {
+                                changeWorkingState("0");
+                            }
                         }
                     }
                 });

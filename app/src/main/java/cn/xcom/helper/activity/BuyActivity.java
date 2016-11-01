@@ -22,7 +22,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import cn.xcom.helper.R;
-import cn.xcom.helper.bean.ShopGoodInfo;
+import cn.xcom.helper.bean.ShopGoodInfoNew;
 import cn.xcom.helper.bean.UserInfo;
 import cn.xcom.helper.constant.NetConstant;
 import cn.xcom.helper.utils.SingleVolleyRequest;
@@ -41,7 +41,7 @@ public class BuyActivity extends BaseActivity implements View.OnClickListener {
     private TextView adress;
     private LinearLayout buy_address;
     private RelativeLayout buy_commit;
-    private ShopGoodInfo shopGoodInfo;
+    private ShopGoodInfoNew shopGoodInfo;
     private Context context;
     private UserInfo userInfo;
     int amount=1;//初始化购买数量
@@ -75,7 +75,7 @@ public class BuyActivity extends BaseActivity implements View.OnClickListener {
         userInfo.readData(context);
         initView();
         Intent intent=getIntent();
-        shopGoodInfo= (ShopGoodInfo) intent.getSerializableExtra("price");
+        shopGoodInfo= (ShopGoodInfoNew) intent.getSerializableExtra("price");
         buy_price.setText("￥" + shopGoodInfo.getPrice());
         buy_total.setText(shopGoodInfo.getPrice());
         buy_deliver.setText(shopGoodInfo.getDelivery());
@@ -166,10 +166,10 @@ public class BuyActivity extends BaseActivity implements View.OnClickListener {
         }
 
         String message = buy_message.getText().toString().trim();
-        if (TextUtils.isEmpty(message)) {
+/*        if (TextUtils.isEmpty(message)) {
             Toast.makeText(this, "您可以在此留言", Toast.LENGTH_SHORT).show();
             return;
-        }
+        }*/
         String address = address_choose.getText().toString().trim();
         if (TextUtils.isEmpty(address)) {
             Toast.makeText(this, "请选择地址", Toast.LENGTH_SHORT).show();

@@ -79,6 +79,7 @@ public class SaleAdapter extends BaseAdapter {
         viewHolder.textView4.getPaint().setFlags(Paint.STRIKE_THRU_TEXT_FLAG); //中划线
         viewHolder.textView5.setText("已售" + front.getSellnumber());
         viewHolder.tv_name.setText(front.getUsername());
+        viewHolder.tv_comment_count.setText("评价"+front.getCommentlist().size()+"条");
         //对cinvertview进行监听
         convertView.setOnClickListener(new View.OnClickListener() {
             @Override

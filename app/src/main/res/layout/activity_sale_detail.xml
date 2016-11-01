@@ -192,9 +192,26 @@
 
             <View
                 android:layout_width="match_parent"
+                android:layout_height="6dp"
+                android:background="@color/divider"></View>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="35dp"
+                android:background="@color/background_white"
+                android:text="评价"
+                android:textColor="@color/colorTextSale"
+                android:gravity="center_vertical"
+                android:textSize="16sp"
+                android:paddingLeft="10dp"/>
+            <View
+                android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:background="@color/divider"></View>
-
+            <cn.xcom.helper.view.NoScrollListView
+                android:id="@+id/sale_detail_comment"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+            </cn.xcom.helper.view.NoScrollListView>
         </LinearLayout>
     </ScrollView>
 

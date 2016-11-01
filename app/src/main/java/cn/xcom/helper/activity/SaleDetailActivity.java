@@ -12,6 +12,8 @@ import android.view.Gravity;
 import android.view.View;
 import android.view.Window;
 import android.widget.ImageView;
+import android.widget.ListView;
+import android.widget.RatingBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -39,14 +41,16 @@ import cn.xcom.helper.R;
 import cn.xcom.helper.WXpay.Constants;
 import cn.xcom.helper.adapter.MyViewPageAdapter;
 import cn.xcom.helper.bean.Collection;
-import cn.xcom.helper.bean.ShopGoodInfo;
+import cn.xcom.helper.bean.ShopGoodInfoNew;
 import cn.xcom.helper.bean.UserInfo;
 import cn.xcom.helper.constant.NetConstant;
+import cn.xcom.helper.utils.CommonAdapter;
 import cn.xcom.helper.utils.MyImageLoader;
 import cn.xcom.helper.utils.SingleVolleyRequest;
 import cn.xcom.helper.utils.StringPostRequest;
 import cn.xcom.helper.utils.ToastUtil;
 import cn.xcom.helper.utils.ToastUtils;
+import cn.xcom.helper.utils.ViewHolder;
 import cn.xcom.helper.view.SharePopupWindow;
 
 public class SaleDetailActivity extends BaseActivity implements View.OnClickListener {
@@ -58,7 +62,7 @@ public class SaleDetailActivity extends BaseActivity implements View.OnClickList
     private List addViewList;//添加图片的list
     private MyViewPageAdapter viewPageAdapter;
 //    private Front front;
-    private ShopGoodInfo shopGoodInfo;
+    private ShopGoodInfoNew shopGoodInfo;
     private Context context;
     private UserInfo userInfo;
     private List<Collection>addList;
@@ -68,6 +72,8 @@ public class SaleDetailActivity extends BaseActivity implements View.OnClickList
     private RelativeLayout rl_share;
     IWXAPI msgApi;
     private String goodsId;
+    private ListView sale_detail_comment;
+    private CommonAdapter<ShopGoodInfoNew.CommentlistBean> adapter;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -116,6 +122,25 @@ public class SaleDetailActivity extends BaseActivity implements View.OnClickList
         viewPageAdapter=new MyViewPageAdapter(imgs,addViewList,context);
         vp.setAdapter(viewPageAdapter);
         vp.setCurrentItem(0);
+        setAdapter();
+    }
+
+    /**
+     * 设置评论适配器
+     */
+    private void setAdapter() {
+        adapter = new CommonAdapter<ShopGoodInfoNew.CommentlistBean>(context,shopGoodInfo.getCommentlist(),R.layout.item_comment_info) {
+            @Override
+            public void convert(ViewHolder holder, ShopGoodInfoNew.CommentlistBean commentlistBean) {
+                holder.setImageByUrl(R.id.iv_avatar,commentlistBean.getPhoto())
+                        .setText(R.id.tv_name,commentlistBean.getName())
+                        .setTimeText(R.id.tv_time,commentlistBean.getAdd_time())
+                        .setText(R.id.tv_content,commentlistBean.getContent());
+                RatingBar ratingBar = holder.getView(R.id.rating_bar);
+                ratingBar.setNumStars(Integer.valueOf(commentlistBean.getScore()));
+            }
+        };
+        sale_detail_comment.setAdapter(adapter);
     }
 
     //初始化控件
@@ -140,6 +165,7 @@ public class SaleDetailActivity extends BaseActivity implements View.OnClickList
         rl_share = (RelativeLayout) findViewById(R.id.rl_share);
         rl_share.setOnClickListener(this);
         tv_city_name = (TextView) findViewById(R.id.tv_city_name);
+        sale_detail_comment = (ListView) findViewById(R.id.sale_detail_comment);
     }
     //根据商品的id得到商家的id
     public void addGood(){
@@ -156,7 +182,7 @@ public class SaleDetailActivity extends BaseActivity implements View.OnClickList
                         Log.d("data",data);
                         Gson gson=new Gson();
                         shopGoodInfo=gson.fromJson(data,
-                                new TypeToken<ShopGoodInfo>() {
+                                new TypeToken<ShopGoodInfoNew>() {
                                 }.getType());
                         setData();
                         collectionList();
