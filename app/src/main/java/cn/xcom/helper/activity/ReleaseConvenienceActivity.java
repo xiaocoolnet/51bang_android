@@ -82,6 +82,7 @@ public class ReleaseConvenienceActivity extends BaseActivity implements View.OnC
         cnnvenience_release.setOnClickListener(this);
         voice_button= (Button) findViewById(R.id.voice_button);
         convenience_phone= (TextView) findViewById(R.id.convenience_phone);
+        convenience_phone.setText(userInfo.getUserPhone());
         description = (EditText) findViewById(R.id.description);
         gridview = (GridView) findViewById(R.id.gridview);
         image_linearLayout = (LinearLayout) findViewById(R.id.image_linearLayout);

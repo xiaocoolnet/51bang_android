@@ -146,6 +146,10 @@ public class HelpMeActivity extends BaseActivity implements View.OnClickListener
     private void getData() {
         lat = getIntent().getDoubleExtra("lat", 0);
         lon = getIntent().getDoubleExtra("lon", 0);
+        if(lat == 0||lon == 0){
+            lon = HelperApplication.getInstance().mLocLon;
+            lat = HelperApplication.getInstance().mLocLat;
+        }
         mServiceLat = lat;
         mSiteLat = lat;
         mServiewLon = lon;
