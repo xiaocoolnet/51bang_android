@@ -148,7 +148,7 @@ public interface NetConstant extends HelperConstant {
     /*
         快递查询
     */
-    public static final String DELIEVER = "http://m.kuaidi100.com/index_all.html";
+    public static final String DELIEVER = "http://m.kuaidi100.com/all";
     /*
         发布便民圈信息
      */
