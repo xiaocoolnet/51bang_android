@@ -345,7 +345,6 @@
                     android:layout_toRightOf="@id/tv_register_verification"
                     android:hint="请输入邀请码（选填）"
                     android:background="@null"
-                    android:inputType="phone"
                     android:textSize="14dp"
                     android:paddingLeft="25dip">
                 </EditText>

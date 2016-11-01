@@ -171,6 +171,7 @@ public class HelpMeActivity extends BaseActivity implements View.OnClickListener
         rl_back.setOnClickListener(this);
         et_content = (EditText) findViewById(R.id.et_help_me_content);
         et_phone = (EditText) findViewById(R.id.et_help_me_phone);
+        et_phone.setText(userInfo.getUserPhone());
         et_site_location = (EditText) findViewById(R.id.et_help_me_site_location);
         et_service_location = (EditText) findViewById(R.id.et_help_me_service_location);
         et_wages = (EditText) findViewById(R.id.et_help_me_wages);
@@ -464,71 +465,84 @@ public class HelpMeActivity extends BaseActivity implements View.OnClickListener
             ToastUtil.showShort(mContext, "请选择有效时间");
             return;
         }
-        //先上传图片再发布
-        new PushImageUtil().setPushIamge(getApplication(), mPhotoList, nameList, new PushImage() {
+        if(mPhotoList.size()==0){
+            //传入1表示没有图片
+            submitTask(1);
+        }else{
+            //先上传图片再发布
+            new PushImageUtil().setPushIamge(getApplication(), mPhotoList, nameList, new PushImage() {
+                @Override
+                public void success(boolean state) {
+                    Toast.makeText(getApplication(), "图片上传成功", Toast.LENGTH_SHORT).show();
+                    //传入2表示有图片
+                    submitTask(2);
+                }
+
+                @Override
+                public void error() {
+                    //Toast.makeText(getApplication(), "图片上传失败", Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
+    }
+
+    /**
+     * 上传任务
+     * @param i 1表示没有图片，2表示有图片
+     */
+    private void submitTask(int i) {
+        String url = NetConstant.PUBLISHTASK;
+        StringPostRequest request = new StringPostRequest(url, new Response.Listener<String>() {
             @Override
-            public void success(boolean state) {
-
-                Toast.makeText(getApplication(), "图片上传成功", Toast.LENGTH_SHORT).show();
-
-                String url = NetConstant.PUBLISHTASK;
-                StringPostRequest request = new StringPostRequest(url, new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String s) {
-                        if (s != null) {
-                            try {
-                                JSONObject object = new JSONObject(s);
-                                String state = object.getString("status");
-                                if (state.equals("success")) {
-                                    String data = object.getString("data");
-                                    HelperApplication.getInstance().getTaskTypes().clear();
-                                    Log.d("发布任务", data);
-                                    Toast.makeText(getApplication(), "发布成功", Toast.LENGTH_SHORT).show();
-                                    Intent intent = new Intent(mContext, PaymentActivity.class);
-                                    intent.putExtra("price", et_wages.getText().toString());
-                                    intent.putExtra("tradeNo", data);
-                                    intent.putExtra("body","任务费用");
-                                    intent.putExtra("type","1");
-                                    startActivity(intent);
-                                } else {
-                                    HelperApplication.getInstance().getTaskTypes().clear();
-                                }
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                            }
+            public void onResponse(String s) {
+                if (s != null) {
+                    try {
+                        JSONObject object = new JSONObject(s);
+                        String state = object.getString("status");
+                        if (state.equals("success")) {
+                            String data = object.getString("data");
+                            HelperApplication.getInstance().getTaskTypes().clear();
+                            Log.d("发布任务", data);
+                            Toast.makeText(getApplication(), "发布成功", Toast.LENGTH_SHORT).show();
+                            Intent intent = new Intent(mContext, PaymentActivity.class);
+                            intent.putExtra("price", et_wages.getText().toString());
+                            intent.putExtra("tradeNo", data);
+                            intent.putExtra("body","任务费用");
+                            intent.putExtra("type","1");
+                            startActivity(intent);
+                        } else {
+                            HelperApplication.getInstance().getTaskTypes().clear();
                         }
-
+                    } catch (JSONException e) {
+                        e.printStackTrace();
                     }
-                }, new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError volleyError) {
-                        HelperApplication.getInstance().getTaskTypes().clear();
-                        Toast.makeText(getApplication(), "网络错误，检查您的网络", Toast.LENGTH_SHORT).show();
-                    }
-                });
-                String s = StringJoint.arrayJointchar(nameList, ",");
-                request.putValue("picurl", s);
-                request.putValue("userid", userInfo.getUserId());
-                request.putValue("description", et_content.getText().toString());
-                request.putValue("expirydate", begintime);
-                request.putValue("price", et_wages.getText().toString());
-                request.putValue("type", getSelectString());
-                request.putValue("address", et_site_location.getText().toString());
-                request.putValue("longitude", mSiteLon + "");
-                request.putValue("latitude", mSiteLat + "");
-                request.putValue("saddress", et_service_location.getText().toString());
-                request.putValue("slongitude", mServiewLon + "");
-                request.putValue("slatitude", mServiceLat + "");
-                SingleVolleyRequest.getInstance(getApplication()).addToRequestQueue(request);
-
+                }
 
             }
-
+        }, new Response.ErrorListener() {
             @Override
-            public void error() {
-                Toast.makeText(getApplication(), "上传失败", Toast.LENGTH_SHORT).show();
+            public void onErrorResponse(VolleyError volleyError) {
+                HelperApplication.getInstance().getTaskTypes().clear();
+                Toast.makeText(getApplication(), "网络错误，检查您的网络", Toast.LENGTH_SHORT).show();
             }
         });
+        //用户选择图片后上传图片字符串
+        if(i==2){
+            String s = StringJoint.arrayJointchar(nameList, ",");
+            request.putValue("picurl", s);
+        }
+        request.putValue("userid", userInfo.getUserId());
+        request.putValue("description", et_content.getText().toString());
+        request.putValue("expirydate", begintime);
+        request.putValue("price", et_wages.getText().toString());
+        request.putValue("type", getSelectString());
+        request.putValue("address", et_site_location.getText().toString());
+        request.putValue("longitude", mSiteLon + "");
+        request.putValue("latitude", mSiteLat + "");
+        request.putValue("saddress", et_service_location.getText().toString());
+        request.putValue("slongitude", mServiewLon + "");
+        request.putValue("slatitude", mServiceLat + "");
+        SingleVolleyRequest.getInstance(getApplication()).addToRequestQueue(request);
     }
 
     /**

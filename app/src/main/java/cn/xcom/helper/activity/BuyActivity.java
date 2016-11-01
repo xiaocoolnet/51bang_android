@@ -79,9 +79,9 @@ public class BuyActivity extends BaseActivity implements View.OnClickListener {
         buy_price.setText("￥" + shopGoodInfo.getPrice());
         buy_total.setText(shopGoodInfo.getPrice());
         buy_deliver.setText(shopGoodInfo.getDelivery());
-        tv_name.setText(shopGoodInfo.getName());
+        tv_name.setText(userInfo.getUserName());
         tv_good_name.setText(shopGoodInfo.getGoodsname());
-        buy_phone.setText(shopGoodInfo.getPhone());
+        buy_phone.setText(userInfo.getUserPhone());
     }
 
     private void initView() {
@@ -161,13 +161,18 @@ public class BuyActivity extends BaseActivity implements View.OnClickListener {
         // validate
         String etAmountString = etAmount.getText().toString().trim();
         if (TextUtils.isEmpty(etAmountString)) {
-            Toast.makeText(this, "etAmountString不能为空", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "数量不能为空", Toast.LENGTH_SHORT).show();
             return;
         }
 
         String message = buy_message.getText().toString().trim();
         if (TextUtils.isEmpty(message)) {
             Toast.makeText(this, "您可以在此留言", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        String address = address_choose.getText().toString().trim();
+        if (TextUtils.isEmpty(address)) {
+            Toast.makeText(this, "请选择地址", Toast.LENGTH_SHORT).show();
             return;
         }
         //提交商品订单
@@ -204,7 +209,7 @@ public class BuyActivity extends BaseActivity implements View.OnClickListener {
         request.putValue("remark",message);
         request.putValue("money",buy_total.getText().toString());
         request.putValue("delivery",buy_deliver.getText().toString());
-        request.putValue("address",address_choose.getText().toString());
+        request.putValue("address",address);
         SingleVolleyRequest.getInstance(getApplication()).addToRequestQueue(request);
 
     }
