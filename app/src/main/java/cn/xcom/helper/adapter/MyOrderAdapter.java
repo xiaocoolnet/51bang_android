@@ -121,6 +121,13 @@ public class MyOrderAdapter extends RecyclerView.Adapter<MyOrderAdapter.ViewHold
                     holder.payBtn.setVisibility(View.GONE);
                     holder.cancelPaymentBtn.setVisibility(View.GONE);
                     holder.commentBtn.setVisibility(View.GONE);
+                    break;
+                case OrderHelper.COMPLETED:
+                    holder.orderState.setText("已完成");
+                    holder.payBtn.setVisibility(View.GONE);
+                    holder.cancelPaymentBtn.setVisibility(View.GONE);
+                    holder.commentBtn.setVisibility(View.GONE);
+                    break;
             }
 
         } else { //orderType == OrderHelper.SellerOrder 卖家
@@ -145,6 +152,9 @@ public class MyOrderAdapter extends RecyclerView.Adapter<MyOrderAdapter.ViewHold
                     break;
                 case OrderHelper.SELLER_UNCOMMENT:
                     holder.orderState.setText("待评价");
+                    break;
+                case OrderHelper.COMPLETED:
+                    holder.orderState.setText("已完成");
             }
 
         }

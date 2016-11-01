@@ -110,7 +110,7 @@ public class MyOrderFragment extends Fragment {
                 requestParams.put("state", "2,3");
                 break;
             case 4:
-                requestParams.put("state", "4,5,10");
+                requestParams.put("state", "4");
                 break;
         }
         String url;
