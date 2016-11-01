@@ -79,10 +79,10 @@ public class ImageCompress {
                 compressOptions.maxWidth, actualHeight, actualWidth);
 
         options.inJustDecodeBounds = false;
-//        options.inSampleSize = findBestSampleSize(actualWidth, actualHeight,
-//                desiredWidth, desiredHeight);
+        options.inSampleSize = findBestSampleSize(actualWidth, actualHeight,
+                desiredWidth, desiredHeight);
 
-        options.inSampleSize = 1;
+//        options.inSampleSize = 1;
         Bitmap bitmap = null;
 
         Bitmap destBitmap = BitmapFactory.decodeFile(filePath, options);
