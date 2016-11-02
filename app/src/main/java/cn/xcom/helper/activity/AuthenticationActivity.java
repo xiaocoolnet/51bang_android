@@ -34,6 +34,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import cn.xcom.helper.HelperApplication;
 import cn.xcom.helper.R;
 import cn.xcom.helper.bean.AuthenticationList;
 import cn.xcom.helper.bean.SkillTagInfo;
@@ -143,7 +144,7 @@ public class AuthenticationActivity extends BaseActivity {
                 srlAuthentication.setRefreshing(false);
             }
         });
-        request.putValue("cityname", "芝罘区");
+        request.putValue("cityname", HelperApplication.getInstance().mDistrict);
         request.putValue("latitude", "");
         request.putValue("longitude", "");
         request.putValue("sort", sort);

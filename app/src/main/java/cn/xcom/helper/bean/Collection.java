@@ -7,19 +7,18 @@ import java.util.List;
  * Created by Administrator on 2016/9/29 0029.
  */
 public class Collection implements Serializable {
-
     /**
-     * id : 190
-     * userid : 578
-     * title :
-     * description : 4445456
+     * id : 311
+     * userid : 663
+     * title : 手表
+     * description : 测试
      * type : 3
-     * object_id : 12
-     * createtime : 1475120389
-     * longitude : 119.65475202844
-     * latitude : 27.0908246596745
-     * price : 0
-     * goodspicture : []
+     * object_id : 466
+     * createtime : 1478076609
+     * longitude : 119.65502152009266
+     * latitude : 27.091081961262333
+     * price : 0.01
+     * goodspicture : [{"id":"1063","goodsid":"466","file":"yyy49151477982505492.jpg","time":null}]
      */
 
     private String id;
@@ -32,7 +31,14 @@ public class Collection implements Serializable {
     private String longitude;
     private String latitude;
     private String price;
-    private List<?> goodspicture;
+    /**
+     * id : 1063
+     * goodsid : 466
+     * file : yyy49151477982505492.jpg
+     * time : null
+     */
+
+    private List<GoodspictureBean> goodspicture;
 
     public String getId() {
         return id;
@@ -114,11 +120,50 @@ public class Collection implements Serializable {
         this.price = price;
     }
 
-    public List<?> getGoodspicture() {
+    public List<GoodspictureBean> getGoodspicture() {
         return goodspicture;
     }
 
-    public void setGoodspicture(List<?> goodspicture) {
+    public void setGoodspicture(List<GoodspictureBean> goodspicture) {
         this.goodspicture = goodspicture;
+    }
+
+    public static class GoodspictureBean {
+        private String id;
+        private String goodsid;
+        private String file;
+        private Object time;
+
+        public String getId() {
+            return id;
+        }
+
+        public void setId(String id) {
+            this.id = id;
+        }
+
+        public String getGoodsid() {
+            return goodsid;
+        }
+
+        public void setGoodsid(String goodsid) {
+            this.goodsid = goodsid;
+        }
+
+        public String getFile() {
+            return file;
+        }
+
+        public void setFile(String file) {
+            this.file = file;
+        }
+
+        public Object getTime() {
+            return time;
+        }
+
+        public void setTime(Object time) {
+            this.time = time;
+        }
     }
 }

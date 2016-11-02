@@ -304,7 +304,7 @@ public class BuyFragment extends Fragment implements View.OnClickListener{
      */
     private void setItem(ViewHolder holder, final TaskInfo taskInfo) {
         holder.setText(R.id.tv_name, taskInfo.getName())
-                .setText(R.id.tv_task_name, taskInfo.getDescription())
+                .setText(R.id.tv_task_name, taskInfo.getTitle().equals("")?taskInfo.getDescription():taskInfo.getTitle())
                 .setTimeText(R.id.tv_task_time, taskInfo.getTime())
                 .setTimeTextWithStr(R.id.tv_expiry_time, taskInfo.getExpirydate(), "前有效")
                 .setText(R.id.tv_type_name, taskInfo.getTypename())

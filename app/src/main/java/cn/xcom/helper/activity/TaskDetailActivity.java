@@ -70,7 +70,7 @@ public class TaskDetailActivity extends BaseActivity {
         if (type.equals("1")) {
             tvName.setText(taskInfo.getName());
             tvTradeNo.setText(taskInfo.getOrder_num());
-            tvTradeName.setText(taskInfo.getDescription());
+            tvTradeName.setText(taskInfo.getTitle());
             tvPrice.setText(taskInfo.getPrice());
             tvAddress.setText(taskInfo.getAddress());
             Date date = new Date();

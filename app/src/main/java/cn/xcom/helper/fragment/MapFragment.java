@@ -549,7 +549,7 @@ public class MapFragment extends Fragment implements View.OnClickListener, OnGet
             //currentLocPt = new LatLng(location.getLatitude(),location.getLongitude());
             HelperApplication.getInstance().mLocLat = location.getLatitude();
             HelperApplication.getInstance().mLocLon = location.getLongitude();
-            HelperApplication.getInstance().mLocAddress = location.getAddrStr(); 
+            HelperApplication.getInstance().mLocAddress = location.getCity()+location.getDistrict()+location.getPoiList().get(0).getName();
             if(isFirstIn){
                 LatLng ll = new LatLng(mLatitude, mLongtitude);
                 MapStatusUpdate msu = MapStatusUpdateFactory.newLatLngZoom(ll, 18.0f);
