@@ -35,7 +35,7 @@ public class WalletActivity extends BaseActivity implements View.OnClickListener
     private RelativeLayout rl_back;
     private TextView tv_momeny,tv_month_singular,tv_month_income,tv_all_singular,tv_all_income,tv_know_more;
     private Button bt_present;
-    private LinearLayout ll_present,ll_income,ll_my_work;
+    private LinearLayout ll_present,ll_income,ll_my_work,ll_bind;
     private UserInfo userInfo;
     private WalletInfo walletInfo;
 
@@ -68,6 +68,8 @@ public class WalletActivity extends BaseActivity implements View.OnClickListener
         walletInfo=new WalletInfo();
         tv_know_more = (TextView) findViewById(R.id.tv_know_more);
         tv_know_more.setOnClickListener(this);
+        ll_bind = (LinearLayout) findViewById(R.id.ll_band_account);
+        ll_bind.setOnClickListener(this);
     }
 
     @Override
@@ -99,6 +101,9 @@ public class WalletActivity extends BaseActivity implements View.OnClickListener
 
             case R.id.ll_wallet_my_work:
                 startActivity(new Intent(mContext,MyWorkActivity.class));
+                break;
+            case R.id.ll_band_account:
+                startActivity(new Intent(mContext,BindAccountActivity.class));
                 break;
         }
     }

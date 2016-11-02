@@ -207,7 +207,8 @@
                     android:drawablePadding="7dp"
                     android:gravity="center_vertical"
                     android:text="@string/tv_wallet_present_records"
-                    android:textSize="14dp" />
+                    android:textSize="14dp"
+                    android:id="@+id/textView3" />
 
                 <ImageView
                     android:layout_width="40dip"
@@ -246,6 +247,41 @@
                     android:src="@mipmap/ic_arrow_right" />
 
             </LinearLayout>
+
+            <View
+                android:layout_width="fill_parent"
+                android:layout_height="1dip"
+                android:background="@color/colorLine" />
+
+            <LinearLayout
+                android:id="@+id/ll_band_account"
+                android:layout_width="match_parent"
+                android:layout_height="46dip"
+                android:background="@color/colorTextWhite">
+
+                <TextView
+                    android:layout_width="0dip"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="10dip"
+                    android:layout_weight="1.0"
+                    android:drawableLeft="@drawable/ic_bangdingyinhangka"
+                    android:drawablePadding="7dip"
+                    android:gravity="center_vertical"
+                    android:text="绑定提现账户"
+                    android:textSize="14dp" />
+
+                <ImageView
+                    android:layout_width="40dip"
+                    android:layout_height="match_parent"
+                    android:scaleType="center"
+                    android:src="@mipmap/ic_arrow_right" />
+
+            </LinearLayout>
+
+            <View
+                android:layout_width="fill_parent"
+                android:layout_height="1dip"
+                android:background="@color/colorLine" />
 
             <LinearLayout
                 android:id="@+id/ll_wallet_my_work"
