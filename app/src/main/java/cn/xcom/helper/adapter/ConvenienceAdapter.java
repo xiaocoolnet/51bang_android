@@ -117,7 +117,7 @@ public class ConvenienceAdapter extends BaseAdapter {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(context,ChatActivity.class);
-                intent.putExtra("id",convenience.getMid());
+                intent.putExtra("id",convenience.getUserid());
                 intent.putExtra("name",convenience.getName());
                 context.startActivity(intent);
             }
