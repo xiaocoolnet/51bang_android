@@ -173,7 +173,7 @@ public class MeFragment extends Fragment implements View.OnClickListener {
         tv_message.setOnClickListener(this);
         tv_bill = (TextView) getView().findViewById(R.id.tv_fragment_me_bill);
         tv_bill.setOnClickListener(this);
-        tv_coupon = (TextView) getView().findViewById(R.id.tv_fragment_me_bill);
+        tv_coupon = (TextView) getView().findViewById(R.id.tv_fragment_me_coupon);
         tv_coupon.setOnClickListener(this);
         tv_order = (TextView) getView().findViewById(R.id.tv_fragment_me_order);
         tv_order.setOnClickListener(this);
