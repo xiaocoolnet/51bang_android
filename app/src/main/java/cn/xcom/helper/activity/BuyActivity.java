@@ -195,6 +195,7 @@ public class BuyActivity extends BaseActivity implements View.OnClickListener {
                 intent.putExtra("body",shopGoodInfo.getGoodsname());
                 intent.putExtra("type","2");
                 startActivity(intent);
+                finish();
             }
         }, new Response.ErrorListener() {
             @Override

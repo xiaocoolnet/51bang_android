@@ -477,7 +477,6 @@ public class HelpMeActivity extends BaseActivity implements View.OnClickListener
             new PushImageUtil().setPushIamge(getApplication(), mPhotoList, nameList, new PushImage() {
                 @Override
                 public void success(boolean state) {
-                    Toast.makeText(getApplication(), "图片上传成功", Toast.LENGTH_SHORT).show();
                     //传入2表示有图片
                     submitTask(2);
                 }
@@ -514,6 +513,7 @@ public class HelpMeActivity extends BaseActivity implements View.OnClickListener
                             intent.putExtra("body","任务费用");
                             intent.putExtra("type","1");
                             startActivity(intent);
+                            finish();
                         } else {
                             HelperApplication.getInstance().getTaskTypes().clear();
                         }

@@ -27,7 +27,9 @@ import butterknife.OnClick;
 import cn.xcom.helper.R;
 import cn.xcom.helper.WXpay.Constants;
 import cn.xcom.helper.bean.UserInfo;
+import cn.xcom.helper.constant.HelperConstant;
 import cn.xcom.helper.constant.NetConstant;
+import cn.xcom.helper.utils.SPUtils;
 import cn.xcom.helper.utils.ToastUtils;
 import cn.xcom.helper.view.SharePopupWindow;
 
@@ -74,7 +76,7 @@ public class ShareQRCodeActivity extends BaseActivity {
         tvJizhi.getPaint().setFlags(Paint. UNDERLINE_TEXT_FLAG ); //下划线
         tvJizhi.getPaint().setAntiAlias(true);//抗锯齿
         url = NetConstant.MY_QR_CODE + "&uid=" + userInfo.getUserId();
-        tvReferral.setText(userInfo.getMyReferral());
+        tvReferral.setText(SPUtils.get(context, HelperConstant.MY_REFERAL,"").toString());
         webView.getSettings().setJavaScriptEnabled(true);
         webView.getSettings().setUseWideViewPort(true);
         webView.getSettings().setLoadWithOverviewMode(true);

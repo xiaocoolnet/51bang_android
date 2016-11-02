@@ -234,6 +234,7 @@ public class SaleDetailActivity extends BaseActivity implements View.OnClickList
                 bundle.putSerializable("price", shopGoodInfo);
                 intent.putExtras(bundle);
                 startActivity(intent);
+                finish();
                 break;
             case R.id.rl_share:
                 showPopFormBottom(v);

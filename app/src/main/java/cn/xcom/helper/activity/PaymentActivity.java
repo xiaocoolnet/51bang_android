@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -46,6 +47,7 @@ import cn.xcom.helper.R;
 import cn.xcom.helper.WXpay.Constants;
 import cn.xcom.helper.WXpay.MD5;
 import cn.xcom.helper.WXpay.Util;
+import cn.xcom.helper.bean.OrderHelper;
 import cn.xcom.helper.constant.NetConstant;
 import cn.xcom.helper.utils.SingleVolleyRequest;
 import cn.xcom.helper.utils.StringPostRequest;
@@ -121,6 +123,12 @@ public class PaymentActivity extends BaseActivity implements View.OnClickListene
             public void onResponse(String s) {
                 Log.d("更新支付状态", s);
                 finish();
+                if(type.equals("2")){
+                    startActivity(new Intent(mContext, MyOrderActivity.class).
+                            putExtra("order_type", OrderHelper.BuyerOrder));
+                }else if(type.equals("1")){
+                    startActivity(new Intent(mContext, BillActivity.class));
+                }
             }
         }, new Response.ErrorListener() {
             @Override
@@ -521,7 +529,7 @@ public class PaymentActivity extends BaseActivity implements View.OnClickListene
         msgApi.registerApp(Constants.APP_ID);
         Log.e("orion4", "----" + signParams.toString());
         msgApi.sendReq(req);
-//        finish();
+        finish();
     }
     private long genTimeStamp() {
         return System.currentTimeMillis() / 1000;

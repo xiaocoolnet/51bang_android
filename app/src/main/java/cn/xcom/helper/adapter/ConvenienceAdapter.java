@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import cn.xcom.helper.R;
+import cn.xcom.helper.activity.ChatActivity;
 import cn.xcom.helper.bean.Convenience;
 import cn.xcom.helper.bean.UserInfo;
 import cn.xcom.helper.constant.NetConstant;
@@ -77,6 +78,7 @@ public class ConvenienceAdapter extends BaseAdapter {
             viewHolder.convenience_name = (TextView) convertView.findViewById(R.id.convenience_name);
             viewHolder.convenience_time = (TextView) convertView.findViewById(R.id.convenience_time);
             viewHolder.convenience_content = (TextView) convertView.findViewById(R.id.convenience_content);
+            viewHolder.convenience_message = (ImageView) convertView.findViewById(R.id.convenience_message);
             viewHolder.iv_shanchu = (ImageView) convertView.findViewById(R.id.iv_shanchu);
             viewHolder.iv_jubao = (ImageView) convertView.findViewById(R.id.iv_jubao);
           //  viewHolder.convenience_image = (ImageView) convertView.findViewById(R.id.convenience_image);
@@ -107,6 +109,16 @@ public class ConvenienceAdapter extends BaseAdapter {
                 Intent intent = new Intent();
                 intent.setAction(Intent.ACTION_DIAL);
                 intent.setData(Uri.parse("tel:" + list.get(position).getPhone()));
+                context.startActivity(intent);
+            }
+        });
+        //聊天
+        viewHolder.convenience_message.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(context,ChatActivity.class);
+                intent.putExtra("id",convenience.getMid());
+                intent.putExtra("name",convenience.getName());
                 context.startActivity(intent);
             }
         });
@@ -216,7 +228,7 @@ public class ConvenienceAdapter extends BaseAdapter {
         public TextView convenience_time;
         public TextView convenience_content;
         public ImageView convenience_image;
-        public ImageView convenience_phone;
+        public ImageView convenience_phone,convenience_message;
         public NoScrollGridView noScrollGridView;
         public ImageView iv_shanchu,iv_jubao;
 

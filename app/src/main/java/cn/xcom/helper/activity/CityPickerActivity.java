@@ -1,6 +1,5 @@
 package cn.xcom.helper.activity;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -167,13 +166,13 @@ public class CityPickerActivity extends BaseActivity implements View.OnClickList
      */
     private void initCity(JSONObject response) {
         JSONArray array = response.optJSONArray("data");
-        City city = new City();
+        /*City city = new City();
         city.setName(array.optJSONObject(0).optString("name"));
         city.setPinyin(Pinyin4jUtils.getPingYin(array.optJSONObject(0).optString("name")));
         city.setLatitude(array.optJSONObject(0).optString("latitude"));
         city.setLongitude(array.optJSONObject(0).optString("longitude"));
         city.setStatus(array.optJSONObject(0).optString("status"));
-        mAllCities.add(city);
+        mAllCities.add(city);*/
         for(int i=1;i<array.length();i++){
             JSONArray cityArray = array.optJSONArray(i);
             for(int j = 0; j<cityArray.length();j++){
@@ -240,11 +239,11 @@ public class CityPickerActivity extends BaseActivity implements View.OnClickList
         mResultListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent intent = new Intent();
+                /*Intent intent = new Intent();
                 intent.putExtra("siteName",mResultAdapter.getItem(position).getName());
                 setResult(RESULT_OK, intent);
                 finish();
-                back(mResultAdapter.getItem(position).getName());
+                back(mResultAdapter.getItem(position).getName());*/
             }
         });
 

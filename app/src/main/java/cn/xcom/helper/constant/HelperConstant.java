@@ -32,4 +32,9 @@ public interface HelperConstant {
      */
     public static final String IS_INSURANCE = "IS_INSURANCE";
 
+    /**
+     * 邀请码
+     */
+    public static final String MY_REFERAL = "MY_REFERAL";
+
 }

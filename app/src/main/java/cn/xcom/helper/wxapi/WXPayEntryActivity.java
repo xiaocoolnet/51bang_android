@@ -17,6 +17,9 @@ import com.tencent.mm.sdk.openapi.IWXAPIEventHandler;
 import com.tencent.mm.sdk.openapi.WXAPIFactory;
 
 import cn.xcom.helper.HelperApplication;
+import cn.xcom.helper.activity.BillActivity;
+import cn.xcom.helper.activity.MyOrderActivity;
+import cn.xcom.helper.bean.OrderHelper;
 import cn.xcom.helper.constant.NetConstant;
 import cn.xcom.helper.utils.SingleVolleyRequest;
 import cn.xcom.helper.utils.StringPostRequest;
@@ -84,6 +87,13 @@ public class WXPayEntryActivity extends Activity implements IWXAPIEventHandler {
             @Override
             public void onResponse(String s) {
                 Log.d("更新支付状态", s);
+                //跳转到我的订单页面
+                if(HelperApplication.getInstance().payType.equals("2")){
+                    startActivity(new Intent(mContext, MyOrderActivity.class).
+                            putExtra("order_type", OrderHelper.BuyerOrder));
+                }else if(HelperApplication.getInstance().payType.equals("1")){
+                    startActivity(new Intent(mContext, BillActivity.class));
+                }
                 HelperApplication.getInstance().payType = "";
                 HelperApplication.getInstance().tradeNo = "";
                 finish();

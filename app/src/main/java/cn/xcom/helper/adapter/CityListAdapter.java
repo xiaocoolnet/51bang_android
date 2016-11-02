@@ -5,9 +5,9 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -16,14 +16,13 @@ import cn.xcom.helper.R;
 import cn.xcom.helper.bean.City;
 import cn.xcom.helper.bean.LocateState;
 import cn.xcom.helper.utils.PinyinUtils;
-import cn.xcom.helper.view.WrapHeightGridView;
 
 
 /**
  * Created by zhuchongkun.
  */
 public class CityListAdapter extends BaseAdapter {
-    private static final int VIEW_TYPE_COUNT = 3;
+    private static final int VIEW_TYPE_COUNT = 2;
 
     private Context mContext;
     private LayoutInflater inflater;
@@ -42,7 +41,7 @@ public class CityListAdapter extends BaseAdapter {
             mCities = new ArrayList<>();
         }
         mCities.add(0, new City("定位", "0"));
-        mCities.add(1, new City("热门", "1"));
+        //mCities.add(1, new City("热门", "1"));
         int size = mCities.size();
         letterIndexes = new HashMap<>();
         sections = new String[size];
@@ -140,7 +139,7 @@ public class CityListAdapter extends BaseAdapter {
                     }
                 });
                 break;
-            case 1:     //热门
+            /*case 1:     //热门
                 view = inflater.inflate(R.layout.view_hot_city, parent, false);
                 WrapHeightGridView gridView = (WrapHeightGridView) view.findViewById(R.id.gridview_hot_city);
                 final HotCityGridAdapter hotCityGridAdapter = new HotCityGridAdapter(mContext);
@@ -148,13 +147,13 @@ public class CityListAdapter extends BaseAdapter {
                 gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                     @Override
                     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                        if (onCityClickListener != null){
+                        if (onCityClickListener != null) {
                             onCityClickListener.onCityClick(hotCityGridAdapter.getItem(position));
                         }
                     }
                 });
-                break;
-            case 2:     //所有
+                break;*/
+            case 1:     //所有
                 if (view == null){
                     view = inflater.inflate(R.layout.item_city_listview, parent, false);
                     holder = new CityViewHolder();
