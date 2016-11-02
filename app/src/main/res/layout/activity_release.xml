@@ -53,7 +53,7 @@
                 android:layout_marginLeft="10dp"
                 android:background="@null"
                 android:hint="@string/tv_i_relsase_good"
-                android:textSize="16sp" />
+                android:textSize="15sp" />
 
             <View
                 android:layout_width="match_parent"
@@ -64,19 +64,19 @@
                 android:id="@+id/description"
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
-                android:padding="10dp"
                 android:background="@null"
                 android:gravity="top"
                 android:hint="@string/tv_i_relsase_content"
-                android:textSize="16sp" />
+                android:padding="10dp"
+                android:textSize="15sp" />
 
 
             <ImageView
                 android:id="@+id/tupian"
                 android:layout_width="20dp"
                 android:layout_height="20dp"
-                android:layout_marginLeft="10dip"
                 android:layout_marginBottom="5dp"
+                android:layout_marginLeft="10dip"
                 android:src="@mipmap/ic_tupian" />
 
             <View
@@ -112,38 +112,27 @@
             <LinearLayout
                 android:id="@+id/divide"
                 android:layout_width="match_parent"
-                android:layout_height="45dp"
-                android:orientation="horizontal">
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="10dp"
+                >
 
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_marginLeft="10dp"
+                    android:layout_weight="1"
                     android:text="@string/tv_i_relsase_divide"
-                    android:textColor="#201717"
-                    android:textSize="15sp" />
-                <!--<ImageView-->
-                <!--android:id="@+id/ima_dissmis"-->
-                <!--android:layout_width="20dp"-->
-                <!--android:layout_height="20dp"-->
-                <!--android:layout_gravity="center"-->
-                <!--android:src="@mipmap/ic_arrow_right"-->
-                <!--android:layout_marginTop="5dp"-->
-                <!--android:layout_marginLeft="280dp"/>-->
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent">
-                    <TextView
-                        android:id="@+id/text_divide"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentRight="true"
-                        android:layout_centerVertical="true"
-                        android:layout_marginRight="10dp"
-                        android:text="@string/tv_i_relsase_choose"
-                        android:textSize="16sp" />
-                </RelativeLayout>
+                    android:textColor="@color/text_black"
+                    android:textSize="14sp" />
+
+                <TextView
+                    android:id="@+id/text_divide"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="3"
+                    android:gravity="right"
+                    android:text="@string/tv_i_relsase_choose"
+                    android:textSize="14sp" />
             </LinearLayout>
 
             <View
@@ -153,32 +142,29 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="45dp"
-                android:orientation="horizontal">
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="10dp"
+                >
 
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_marginLeft="10dp"
-                    android:text="@string/tv_i_relsase_price"
-                    android:textColor="#201717"
-                    android:textSize="16sp" />
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent">
-                    <EditText
-                        android:id="@+id/ed_price"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentRight="true"
-                        android:layout_centerVertical="true"
-                        android:layout_marginRight="10dp"
-                        android:background="@null"
-                        android:hint="@string/tv_i_relsase_printprice"
-                        android:textSize="16sp"
-                        android:textColor="#a19e9e" />
-                </RelativeLayout>
+                    android:layout_weight="1"
+                    android:text="价格"
+                    android:textColor="@color/text_black"
+                    android:textSize="14sp" />
+                <EditText
+                    android:id="@+id/ed_price"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="3"
+                    android:gravity="right"
+                    android:background="@null"
+                    android:hint="@string/tv_i_relsase_printprice"
+                    android:textColor="@color/text_black"
+                    android:textSize="14sp" />
+
             </LinearLayout>
 
             <View
@@ -188,34 +174,29 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="45dp"
-                android:orientation="horizontal">
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="10dp"
+                >
 
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_marginLeft="10dp"
+                    android:layout_weight="1"
                     android:text="@string/tv_i_relsase_oldprintprice"
-                    android:textColor="#201717"
-                    android:textSize="16sp" />
+                    android:textColor="@color/text_black"
+                    android:textSize="14sp" />
 
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent">
-                    <EditText
-                        android:id="@+id/ed_oldprice"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentRight="true"
-                        android:layout_centerVertical="true"
-                        android:layout_marginRight="10dp"
-                        android:layout_marginLeft="220dp"
-                        android:background="@null"
-                        android:hint="@string/tv_i_relsase_printprice"
-                        android:textSize="16sp"
-                        android:textColor="#a19e9e" />
-                </RelativeLayout>
+                <EditText
+                    android:id="@+id/ed_oldprice"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="3"
+                    android:background="@null"
+                    android:hint="@string/tv_i_relsase_printprice"
+                    android:gravity="right"
+                    android:textColor="#a19e9e"
+                    android:textSize="14sp" />
             </LinearLayout>
 
             <View
@@ -226,31 +207,32 @@
             <LinearLayout
                 android:id="@+id/location"
                 android:layout_width="match_parent"
-                android:layout_height="45dp"
-                android:orientation="horizontal">
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="10dp"
+                >
 
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_marginLeft="10dp"
+                    android:layout_weight="1"
                     android:text="@string/tv_i_relsase_location"
-                    android:textColor="#201717"
-                    android:textSize="16sp" />
+                    android:textColor="@color/text_black"
+                    android:textSize="14sp" />
+
                 <RelativeLayout
                     android:id="@+id/rl_select_address"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent">
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="3"
+                    >
                     <TextView
                         android:id="@+id/ed_location"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentRight="true"
-                        android:layout_centerVertical="true"
-                        android:layout_marginRight="10dp"
-                        android:layout_marginLeft="220dp"
                         android:background="@null"
-                        android:textSize="16sp"
+                        android:textSize="14sp"
                         android:hint="请选择位置" />
                 </RelativeLayout>
             </LinearLayout>
@@ -263,31 +245,35 @@
             <LinearLayout
                 android:id="@+id/transport"
                 android:layout_width="match_parent"
-                android:layout_height="45dp"
-                android:orientation="horizontal">
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="10dp"
+                >
 
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_marginLeft="10dp"
+                    android:layout_weight="1"
                     android:text="@string/tv_i_relsase_transport"
-                    android:textColor="#201717"
-                    android:textSize="16sp" />
-
+                    android:textColor="@color/text_black"
+                    android:textSize="14sp" />
 
 
                 <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent">
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="2"
+                    >
+
                     <ImageView
                         android:id="@+id/id_dismiss11"
                         android:layout_width="15dp"
                         android:layout_height="15dp"
-                        android:layout_centerVertical="true"
                         android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
                         android:layout_marginRight="10dp"
                         android:src="@mipmap/ic_arrow_right" />
+
                     <TextView
                         android:id="@+id/text_transport"
                         android:layout_width="wrap_content"
@@ -295,7 +281,7 @@
                         android:layout_alignParentRight="true"
                         android:layout_centerVertical="true"
                         android:layout_marginRight="10dp"
-                        android:textSize="16sp" />
+                        android:textSize="14sp" />
                 </RelativeLayout>
 
             </LinearLayout>
@@ -308,31 +294,26 @@
             <LinearLayout
                 android:id="@+id/release"
                 android:layout_width="match_parent"
-                android:layout_height="45dp"
-                android:orientation="horizontal">
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="10dp">
 
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_marginLeft="10dp"
+                    android:layout_weight="1"
                     android:text="@string/tv_i_relsase_contactPhone"
-                    android:textColor="#201717"
-                    android:textSize="16sp" />
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent">
-                    <TextView
-                        android:id="@+id/telephone"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentRight="true"
-                        android:layout_centerVertical="true"
-                        android:layout_marginRight="10dp"
-                        android:text="18865623775"
-                        android:textColor="#201717"
-                        android:textSize="16sp" />
-                </RelativeLayout>
+                    android:textColor="@color/text_black"
+                    android:textSize="14sp" />
+
+                <TextView
+                    android:id="@+id/telephone"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="right"
+                    android:textColor="@color/text_black"
+                    android:textSize="14sp" />
             </LinearLayout>
 
             <View
