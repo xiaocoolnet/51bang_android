@@ -24,6 +24,7 @@ android {
         targetSdkVersion 23
         versionCode 1
         versionName "1.0"
+
     }
     buildTypes {
         release {
@@ -86,4 +87,5 @@ dependencies {
     compile files('libs/pinyin4j-2.5.0.jar')
     compile 'com.bigkoo:alertview:1.0.3' //仿ios弹出框
     compile 'com.feezu.liuli:timeselector:1.0.8+' //仿ios时间选择器
+    compile 'com.tencent.bugly:crashreport:latest.release' //其中latest.release指代最新Bugly SDK版本号，也可以指定明确的版本号，例如2.1.9
 }
