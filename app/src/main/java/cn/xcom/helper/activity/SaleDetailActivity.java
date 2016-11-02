@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.view.ViewPager;
@@ -73,6 +74,7 @@ public class SaleDetailActivity extends BaseActivity implements View.OnClickList
     IWXAPI msgApi;
     private String goodsId;
     private ListView sale_detail_comment;
+    private ImageView iv_phone;
     private CommonAdapter<ShopGoodInfoNew.CommentlistBean> adapter;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -119,6 +121,15 @@ public class SaleDetailActivity extends BaseActivity implements View.OnClickList
             imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
             addViewList.add(imageView);
         }
+        iv_phone.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent();
+                intent.setAction(Intent.ACTION_DIAL);
+                intent.setData(Uri.parse("tel:" + shopGoodInfo.getPhone()));
+                context.startActivity(intent);
+            }
+        });
         viewPageAdapter=new MyViewPageAdapter(imgs,addViewList,context);
         vp.setAdapter(viewPageAdapter);
         vp.setCurrentItem(0);
@@ -166,6 +177,7 @@ public class SaleDetailActivity extends BaseActivity implements View.OnClickList
         rl_share.setOnClickListener(this);
         tv_city_name = (TextView) findViewById(R.id.tv_city_name);
         sale_detail_comment = (ListView) findViewById(R.id.sale_detail_comment);
+        iv_phone = (ImageView) findViewById(R.id.iv_phone);
     }
     //根据商品的id得到商家的id
     public void addGood(){

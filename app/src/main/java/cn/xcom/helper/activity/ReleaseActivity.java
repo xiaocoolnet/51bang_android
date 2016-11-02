@@ -164,6 +164,10 @@ public class ReleaseActivity extends BaseActivity implements View.OnClickListene
         tupian.setOnClickListener(this);
         text_transport= (TextView) findViewById(R.id.text_transport);
         ed_location= (TextView) findViewById(R.id.ed_location);
+        //初始化当前位置信息
+        ed_location.setText(HelperApplication.getInstance().mLocAddress);
+        mSiteLat = HelperApplication.getInstance().mLocLat;
+        mSiteLon = HelperApplication.getInstance().mLocLon;
         //  delete= (ImageView) findViewById(R.id.delete);
      //   delete.setOnClickListener(this);
         divide = (LinearLayout) findViewById(R.id.divide);
@@ -399,7 +403,6 @@ public class ReleaseActivity extends BaseActivity implements View.OnClickListene
                 request.putValue("latitude", String.valueOf(mSiteLat));
                 request.putValue("delivery",text_transport.getText().toString());
                 SingleVolleyRequest.getInstance(getApplication()).addToRequestQueue(request);
-
             }
 
             @Override
