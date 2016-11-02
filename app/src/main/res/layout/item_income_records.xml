@@ -6,20 +6,12 @@
     android:layout_height="60dp"
     android:padding="10dip"
     android:background="@color/colorTextWhite">
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="在线支付"
-        android:textSize="15dp"
-        android:id="@+id/tv_item_income_records_type"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentLeft="true"
-        />
+
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="余额：1000.00"
+        android:text="收入"
         android:textSize="12dp"
         android:layout_marginTop="10dip"
         android:id="@+id/tv_item_income_records_balance"
@@ -28,14 +20,14 @@
         />
 
     <TextView
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:hint="2016-06-14"
         android:textSize="11dp"
         android:gravity="right"
         android:id="@+id/tv_item_income_records_time"
-        android:layout_alignParentRight="true"
         android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true"
         />
 
     <TextView
@@ -48,6 +40,16 @@
         android:id="@+id/tv_item_income_records_money"
         android:layout_alignParentRight="true"
         android:layout_alignParentBottom="true"
+        />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="在线支付"
+        android:textSize="15dp"
+        android:id="@+id/tv_item_income_records_type"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_toLeftOf="@id/tv_item_income_records_time"
         />
 
 </RelativeLayout>
