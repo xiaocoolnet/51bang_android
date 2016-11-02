@@ -2,11 +2,16 @@ package cn.xcom.helper.utils;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
 import com.bigkoo.alertview.AlertView;
@@ -18,8 +23,10 @@ import org.json.JSONObject;
 
 import java.util.List;
 
+import cn.jpush.android.api.BasicPushNotificationBuilder;
 import cn.jpush.android.api.JPushInterface;
 import cn.xcom.helper.HelperApplication;
+import cn.xcom.helper.R;
 import cn.xcom.helper.activity.BillActivity;
 import cn.xcom.helper.activity.ChatActivity;
 import cn.xcom.helper.activity.HomeActivity;
@@ -47,6 +54,7 @@ public class PushReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
+
         Bundle bundle = intent.getExtras();
         String type = bundle.getString(JPushInterface.EXTRA_EXTRA);
 
@@ -69,6 +77,7 @@ public class PushReceiver extends BroadcastReceiver {
             Log.i(TAG, "[PushReceiver] 接收Registeration Id : " + regId);
         } else if (JPushInterface.ACTION_MESSAGE_RECEIVED.equals(intent.getAction())) {
             Log.i(TAG, "[PushReceiver] 接收到推送下来的自定义消息: " + bundle.getString(JPushInterface.EXTRA_MESSAGE));
+//            processCustomMessage(context,bundle);
         } else if (JPushInterface.ACTION_NOTIFICATION_RECEIVED.equals(intent.getAction())) {
             Log.i(TAG, "[PushReceiver] 接收到推送下来的通知");
             int notifactionId = bundle.getInt(JPushInterface.EXTRA_NOTIFICATION_ID);
@@ -211,6 +220,36 @@ public class PushReceiver extends BroadcastReceiver {
         });
         builder.show();
 
+    }
+
+
+    private void processCustomMessage(Context context,Bundle bundle){
+        NotificationManager manger=(NotificationManager)context.getSystemService(Context.NOTIFICATION_SERVICE);
+        //为了版本兼容  选择V7包下的NotificationCompat进行构造
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
+        //Ticker是状态栏显示的提示
+        builder.setTicker(bundle.getString(JPushInterface.EXTRA_TITLE));
+        //第一行内容  通常作为通知栏标题
+        builder.setContentTitle(bundle.getString(JPushInterface.EXTRA_TITLE));
+        //第二行内容 通常是通知正文
+        builder.setContentText(bundle.getString(JPushInterface.EXTRA_MESSAGE));
+        //可以点击通知栏的删除按钮删除
+        builder.setAutoCancel(true);
+        //系统状态栏显示的小图标
+        builder.setSmallIcon(R.mipmap.ic_logo);
+        Notification notification = builder.build();
+        notification.sound = Uri.parse("android.resource://"
+                + context.getPackageName() + "/" + R.raw.timeout);
+        builder.setDefaults(NotificationCompat.DEFAULT_VIBRATE|NotificationCompat.DEFAULT_LIGHTS);
+        notification.flags |= Notification.FLAG_AUTO_CANCEL;
+        Intent clickIntent = new Intent(); //点击通知之后要发送的广播
+        int id = (int) (System.currentTimeMillis() / 1000);
+        clickIntent.addCategory(context.getPackageName());
+        clickIntent.setAction(JPushInterface.ACTION_NOTIFICATION_OPENED);
+        clickIntent.putExtra(JPushInterface.EXTRA_EXTRA,bundle.getString(JPushInterface.EXTRA_EXTRA));
+        PendingIntent contentIntent = PendingIntent.getBroadcast(context, id, clickIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        notification.contentIntent = contentIntent;
+        manger.notify(id,notification);
     }
 
 }
