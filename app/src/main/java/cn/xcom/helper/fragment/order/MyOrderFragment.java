@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -50,6 +51,7 @@ public class MyOrderFragment extends Fragment {
     private UserInfo userInfo;
     private List<ShopGoodInfo> shopGoodInfos;
     private MyOrderAdapter myOrderAdapter;
+    private boolean firstIn = true;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -69,6 +71,15 @@ public class MyOrderFragment extends Fragment {
         return view;
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (!firstIn){
+            getOrder();
+            Log.d("order","refresh");
+        }
+        firstIn = false;
+    }
 
     private void initView(View v) {
         mRecyclerView = (XRecyclerView) v.findViewById(R.id.rv_order);
