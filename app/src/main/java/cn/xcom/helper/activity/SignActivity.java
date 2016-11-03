@@ -43,7 +43,6 @@ public class SignActivity extends BaseActivity implements View.OnClickListener{
     private RelativeLayout rl_back;
     private TextView tv_integral;
     private Button bt_sign;
-    private XRecyclerView mRecyclerView;
     private SignCouponAdapter mAdapter;
     private UserInfo userInfo;
     private String todayTime;
@@ -63,27 +62,6 @@ public class SignActivity extends BaseActivity implements View.OnClickListener{
         tv_integral= (TextView) findViewById(R.id.tv_sign_integral);
         bt_sign= (Button) findViewById(R.id.bt_sign_sign);
         bt_sign.setOnClickListener(this);
-        mRecyclerView = (XRecyclerView)this.findViewById(R.id.lv_sign);
-        GridLayoutManager layoutManager = new GridLayoutManager(this,2);
-
-        mRecyclerView.setLayoutManager(layoutManager);
-
-        mRecyclerView.setRefreshProgressStyle(ProgressStyle.BallSpinFadeLoader);
-        mRecyclerView.setLoadingMoreProgressStyle(ProgressStyle.BallRotate);
-//        mRecyclerView.setArrowImageView(R.drawable.iconfont_downgrey);
-        mRecyclerView.setLoadingListener(new XRecyclerView.LoadingListener() {
-            @Override
-            public void onRefresh() {
-
-            }
-
-            @Override
-            public void onLoadMore() {
-
-            }
-        });
-        mAdapter=new SignCouponAdapter();
-        mRecyclerView.setAdapter(mAdapter);
         userInfo=new UserInfo(mContext);
         getNowTimeStemp();
         isSign();

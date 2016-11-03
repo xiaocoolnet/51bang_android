@@ -55,32 +55,49 @@ public class MoreServiceActivity extends BaseActivity implements View.OnClickLis
         ll_clear_cache.setOnClickListener(this);
         tv_exit= (TextView) findViewById(R.id.tv_more_service_exit);
         tv_exit.setOnClickListener(this);
-
+        findViewById(R.id.ll_about).setOnClickListener(this);
     }
     @Override
     public void onClick(View v) {
+        Intent intent;
         switch (v.getId()){
             case R.id.rl_more_service_back:
                 finish();
                 break;
             case R.id.ll_more_service_training_course:
-                startActivity(new Intent(mContext,TrainingCourseActivity.class));
+                intent = new Intent(mContext,WebViewActivity.class);
+                intent.putExtra("title","培训教程");
+                intent.putExtra("url","http://www.my51bang.com/index.php?g=portal&m=article&a=index&id=6");
+                startActivity(intent);
                 break;
             case R.id.ll_more_service_common_problem:
-                startActivity(new Intent(mContext,CommonProblemActivity.class));
+                intent = new Intent(mContext,WebViewActivity.class);
+                intent.putExtra("title","常见问题");
+                intent.putExtra("url","http://www.my51bang.com/index.php?g=portal&m=article&a=index&id=5");
+                startActivity(intent);
                 break;
             case R.id.ll_more_service_legal_agreement:
-                startActivity(new Intent(mContext,LegalAgreementActivity.class));
+                intent = new Intent(mContext,WebViewActivity.class);
+                intent.putExtra("title","用户者服务协议");
+                intent.putExtra("url","http://www.my51bang.com/index.php?g=portal&m=article&a=index&id=4");
+                startActivity(intent);
                 break;
             case R.id.ll_more_service_score:
                 toScore();
                 break;
             case R.id.ll_more_service_clear_cache:
-                Toast.makeText(mContext,"未开发",Toast.LENGTH_SHORT).show();
+                Toast.makeText(mContext,"清楚缓存成功",Toast.LENGTH_SHORT).show();
                 break;
             case R.id.tv_more_service_exit:
                 toExit();
                 break;
+            case R.id.ll_about:
+                intent = new Intent(mContext,WebViewActivity.class);
+                intent.putExtra("title","关于51帮");
+                intent.putExtra("url","http://www.my51bang.com/index.php?g=portal&m=article&a=index&id=8");
+                startActivity(intent);
+                break;
+
         }
     }
     private void toScore(){
