@@ -16,6 +16,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.jcodecraeer.xrecyclerview.XRecyclerView;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -39,26 +40,18 @@ public class ConvenienceActivity extends BaseActivity implements View.OnClickLis
 
     private RelativeLayout back;
     private TextView cnnvenience_release;
-    private ListView listView_Convenience;
     private Button convenience_deliver;
     private List<Convenience> addlist;
     private ConvenienceAdapter convenienceAdapter;
     private Context context;
-    private SwipeRefreshLayout swipeRefreshLayout;
-    private Handler handler=new Handler();
-    private Runnable runnable=new Runnable() {
-        @Override
-        public void run() {
-            swipeRefreshLayout.setRefreshing(false);
-        }
-    };
+    private XRecyclerView xRecyclerView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_convenience);
         initView();
-        swipeRefresh();
+        getNewDatas();
     }
 
     private void initView() {
@@ -68,17 +61,28 @@ public class ConvenienceActivity extends BaseActivity implements View.OnClickLis
         back.setOnClickListener(this);
         cnnvenience_release = (TextView) findViewById(R.id.cnnvenience_release);
         cnnvenience_release.setOnClickListener(this);
-        listView_Convenience = (ListView) findViewById(R.id.listView_Convenience);
         convenience_deliver= (Button) findViewById(R.id.convenience_deliver);
         convenience_deliver.setOnClickListener(this);
-        swipeRefreshLayout= (SwipeRefreshLayout) findViewById(R.id.convenience_refelsh);
+        xRecyclerView = (XRecyclerView) findViewById(R.id.recycler_view);
+        xRecyclerView.setLoadingListener(new XRecyclerView.LoadingListener(){
 
+            @Override
+            public void onRefresh() {
+                getNewDatas();
+            }
+
+            @Override
+            public void onLoadMore() {
+                getMoreDatas();
+            }
+        });
+        convenienceAdapter = new ConvenienceAdapter(addlist,context);
+        xRecyclerView.setAdapter(convenienceAdapter);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        addData();
     }
 
     @Override
@@ -110,7 +114,7 @@ public class ConvenienceActivity extends BaseActivity implements View.OnClickLis
         startActivity(intent);
     }
 
-    public void addData(){
+    public void getNewDatas(){
         String url= NetConstant.CONVENIENCE;
         StringPostRequest request=new StringPostRequest(url, new Response.Listener<String>() {
             @Override
@@ -121,21 +125,24 @@ public class ConvenienceActivity extends BaseActivity implements View.OnClickLis
                     if (status.equals("success")){
                         String data=jsonObject.getString("data");
                         Gson gson=new Gson();
-                        addlist=gson.fromJson(data,new TypeToken<ArrayList<Convenience>>(){}.getType());
-                        convenienceAdapter=new ConvenienceAdapter(addlist,context);
-                        listView_Convenience.setAdapter(convenienceAdapter);
+                        List<Convenience> lists=gson.fromJson(data,new TypeToken<ArrayList<Convenience>>(){}.getType());
+                        addlist.clear();
+                        addlist.addAll(lists);
                         convenienceAdapter.notifyDataSetChanged();
 
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
+                xRecyclerView.refreshComplete();
 
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError volleyError) {
                 ToastUtil.Toast(context,"网络错误，请检查");
+                xRecyclerView.refreshComplete();
+
             }
         });
         request.putValue("beginid","0");
@@ -144,18 +151,43 @@ public class ConvenienceActivity extends BaseActivity implements View.OnClickLis
         Log.e("获取便民圈",HelperApplication.getInstance().mDistrict);
         SingleVolleyRequest.getInstance(context).addToRequestQueue(request);
     }
-    public void swipeRefresh(){
-        swipeRefreshLayout.setProgressBackgroundColorSchemeResource(R.color.colorTheme);
-        swipeRefreshLayout.setSize(SwipeRefreshLayout.LARGE);
-        swipeRefreshLayout.setColorSchemeColors(getResources().getColor(R.color.colorTextWhite));
-        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+
+    private void getMoreDatas(){
+        String url= NetConstant.CONVENIENCE;
+        StringPostRequest request=new StringPostRequest(url, new Response.Listener<String>() {
             @Override
-            public void onRefresh() {
-                handler.removeCallbacks(runnable);
-                handler.postDelayed(runnable, 1000);
-                addData();
-                ToastUtils.showToast(context, "刷新成功");
+            public void onResponse(String s) {
+                try {
+                    JSONObject jsonObject=new JSONObject(s);
+                    String status=jsonObject.getString("status");
+                    if (status.equals("success")){
+                        String data=jsonObject.getString("data");
+                        Gson gson=new Gson();
+                        List<Convenience> lists=gson.fromJson(data,new TypeToken<ArrayList<Convenience>>(){}.getType());
+                        addlist.addAll(lists);
+                        convenienceAdapter.notifyDataSetChanged();
+
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                xRecyclerView.refreshComplete();
+
             }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError volleyError) {
+                ToastUtil.Toast(context,"网络错误，请检查");
+                xRecyclerView.refreshComplete();
+            }
+
         });
+        Convenience lastConV =addlist.get(addlist.size()-1);
+        request.putValue("beginid",lastConV.getMid());
+        request.putValue("type","1");
+        request.putValue("city", HelperApplication.getInstance().mDistrict);
+        Log.e("获取便民圈",HelperApplication.getInstance().mDistrict);
+        SingleVolleyRequest.getInstance(context).addToRequestQueue(request);
+
     }
 }

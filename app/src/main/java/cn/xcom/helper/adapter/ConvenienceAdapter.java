@@ -3,6 +3,7 @@ package cn.xcom.helper.adapter;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -38,13 +39,14 @@ import cn.xcom.helper.utils.ToastUtil;
 /**
  * Created by Administrator on 2016/9/25 0025.
  */
-public class ConvenienceAdapter extends BaseAdapter {
+public class ConvenienceAdapter extends RecyclerView.Adapter<ConvenienceAdapter.ViewHolder> {
     private List<Convenience> list;
-    private List<String>addList;
+    private List<String> addList;
     private Context context;
     private ImageView imageView;
     private ListGridview listGridview;
     private UserInfo userInfo;
+
 
     public ConvenienceAdapter(List<Convenience> list, Context context) {
         this.list = list;
@@ -53,57 +55,31 @@ public class ConvenienceAdapter extends BaseAdapter {
         userInfo.readData(context);
     }
 
+
     @Override
-    public int getCount() {
-        return list.size();
+    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(context).inflate(R.layout.convenience_layout, parent,false);
+        return new ViewHolder(view);
     }
 
     @Override
-    public Object getItem(int position) {
-        return list.get(position);
-    }
+    public void onBindViewHolder(ViewHolder holder, final int position) {
+        final Convenience convenience = list.get(position);
 
-    @Override
-    public long getItemId(int position) {
-        return 0;
-    }
-
-    @Override
-    public View getView(final int position, View convertView, ViewGroup parent) {
-        ViewHolder viewHolder=null;
-        if (convertView==null){
-            viewHolder=new ViewHolder();
-            convertView = LayoutInflater.from(context).inflate(R.layout.convenience_layout, null);
-            viewHolder.convenience_photo = (RoundImageView) convertView.findViewById(R.id.convenience_photo);
-            viewHolder.convenience_name = (TextView) convertView.findViewById(R.id.convenience_name);
-            viewHolder.convenience_time = (TextView) convertView.findViewById(R.id.convenience_time);
-            viewHolder.convenience_content = (TextView) convertView.findViewById(R.id.convenience_content);
-            viewHolder.convenience_message = (ImageView) convertView.findViewById(R.id.convenience_message);
-            viewHolder.iv_shanchu = (ImageView) convertView.findViewById(R.id.iv_shanchu);
-            viewHolder.iv_jubao = (ImageView) convertView.findViewById(R.id.iv_jubao);
-          //  viewHolder.convenience_image = (ImageView) convertView.findViewById(R.id.convenience_image);
-            viewHolder.convenience_phone= (ImageView) convertView.findViewById(R.id.convenience_phone);
-            viewHolder.noScrollGridView= (NoScrollGridView) convertView.findViewById(R.id.gridview);
-            convertView.setTag(viewHolder);
-        }else {
-           viewHolder= (ViewHolder) convertView.getTag();
+        MyImageLoader.display(NetConstant.NET_DISPLAY_IMG + convenience.getPhoto(), holder.convenience_photo);
+        holder.convenience_name.setText(convenience.getName());
+        holder.convenience_time.setText(TimeUtils.getDateToString(convenience.getCreate_time() * 1000));
+        holder.convenience_content.setText(convenience.getContent());
+        addList = new ArrayList<>();
+        if (convenience.getPic().size() > 0) {
+            for (int i = 0; i < convenience.getPic().size(); i++) {
+                addList.add(NetConstant.NET_DISPLAY_IMG + convenience.getPic().get(i).getPictureurl());
+            }
         }
-          final Convenience convenience=list.get(position);
-
-          MyImageLoader.display(NetConstant.NET_DISPLAY_IMG + convenience.getPhoto(), viewHolder.convenience_photo);
-          viewHolder.convenience_name.setText(convenience.getName());
-          viewHolder.convenience_time.setText(TimeUtils.getDateToString(convenience.getCreate_time()*1000));
-          viewHolder.convenience_content.setText(convenience.getContent());
-          addList=new ArrayList<>();
-          if (convenience.getPic().size()>0){
-              for (int i=0;i<convenience.getPic().size();i++){
-                  addList.add(NetConstant.NET_DISPLAY_IMG +convenience.getPic().get(i).getPictureurl());
-              }
-          }
-          listGridview=new ListGridview(context,addList);
-          viewHolder.noScrollGridView.setAdapter(listGridview);
+        listGridview = new ListGridview(context, addList);
+        holder.noScrollGridView.setAdapter(listGridview);
         //监听打电话
-        viewHolder.convenience_phone.setOnClickListener(new View.OnClickListener() {
+        holder.convenience_phone.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent();
@@ -113,20 +89,20 @@ public class ConvenienceAdapter extends BaseAdapter {
             }
         });
         //聊天
-        viewHolder.convenience_message.setOnClickListener(new View.OnClickListener() {
+        holder.convenience_message.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(context,ChatActivity.class);
-                intent.putExtra("id",convenience.getUserid());
-                intent.putExtra("name",convenience.getName());
+                Intent intent = new Intent(context, ChatActivity.class);
+                intent.putExtra("id", convenience.getUserid());
+                intent.putExtra("name", convenience.getName());
                 context.startActivity(intent);
             }
         });
         //显示删除按钮
-        if(convenience.getUserid().equals(userInfo.getUserId())){
-            viewHolder.iv_jubao.setVisibility(View.GONE);
-            viewHolder.iv_shanchu.setVisibility(View.VISIBLE);
-            viewHolder.iv_shanchu.setOnClickListener(new View.OnClickListener() {
+        if (convenience.getUserid().equals(userInfo.getUserId())) {
+            holder.iv_jubao.setVisibility(View.GONE);
+            holder.iv_shanchu.setVisibility(View.VISIBLE);
+            holder.iv_shanchu.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     AlertView mAlertView = new AlertView("提示", "你确定删除自己的便民圈？", "取消", new String[]{"确定"}, null, context, AlertView.Style.Alert, new OnItemClickListener() {
@@ -171,10 +147,10 @@ public class ConvenienceAdapter extends BaseAdapter {
             });
         }
         //显示举报按钮
-        if(!convenience.getUserid().equals(userInfo.getUserId())){
-            viewHolder.iv_jubao.setVisibility(View.VISIBLE);
-            viewHolder.iv_shanchu.setVisibility(View.GONE);
-            viewHolder.iv_jubao.setOnClickListener(new View.OnClickListener() {
+        if (!convenience.getUserid().equals(userInfo.getUserId())) {
+            holder.iv_jubao.setVisibility(View.VISIBLE);
+            holder.iv_shanchu.setVisibility(View.GONE);
+            holder.iv_jubao.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     AlertView mAlertView = new AlertView("提示", "你确定举报这条便民圈？", "取消", new String[]{"确定"}, null, context, AlertView.Style.Alert, new OnItemClickListener() {
@@ -219,20 +195,41 @@ public class ConvenienceAdapter extends BaseAdapter {
                 }
             });
         }
-        return convertView;
+
+
     }
 
-    public class ViewHolder {
-        public RoundImageView convenience_photo;
-        public TextView convenience_name;
-        public TextView convenience_time;
-        public TextView convenience_content;
-        public ImageView convenience_image;
-        public ImageView convenience_phone,convenience_message;
-        public NoScrollGridView noScrollGridView;
-        public ImageView iv_shanchu,iv_jubao;
+    @Override
+    public int getItemCount() {
+        return list.size();
+    }
 
 
+    class ViewHolder extends RecyclerView.ViewHolder {
+        private RoundImageView convenience_photo;
+        private TextView convenience_name;
+        private TextView convenience_time;
+        private TextView convenience_content;
+        private ImageView convenience_image;
+        private ImageView convenience_phone, convenience_message;
+        private NoScrollGridView noScrollGridView;
+        private ImageView iv_shanchu, iv_jubao;
+
+        public ViewHolder(View itemView) {
+            super(itemView);
+            convenience_photo = (RoundImageView) itemView.findViewById(R.id.convenience_photo);
+            convenience_name = (TextView) itemView.findViewById(R.id.convenience_name);
+            convenience_time = (TextView) itemView.findViewById(R.id.convenience_time);
+            convenience_content = (TextView) itemView.findViewById(R.id.convenience_content);
+            convenience_message = (ImageView) itemView.findViewById(R.id.convenience_message);
+            iv_shanchu = (ImageView) itemView.findViewById(R.id.iv_shanchu);
+            iv_jubao = (ImageView) itemView.findViewById(R.id.iv_jubao);
+            //  viewHolder.convenience_image = (ImageView) convertView.findViewById(R.id.convenience_image);
+            convenience_phone = (ImageView) itemView.findViewById(R.id.convenience_phone);
+            noScrollGridView = (NoScrollGridView) itemView.findViewById(R.id.gridview);
+
+
+        }
 
     }
 }

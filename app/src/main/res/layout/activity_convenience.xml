@@ -57,4 +57,12 @@
            android:id="@+id/listView_Convenience">
        </ListView>
     </android.support.v4.widget.SwipeRefreshLayout>
+
+    <com.jcodecraeer.xrecyclerview.XRecyclerView
+        android:id="@+id/recycler_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+    </com.jcodecraeer.xrecyclerview.XRecyclerView>
+
 </LinearLayout>
