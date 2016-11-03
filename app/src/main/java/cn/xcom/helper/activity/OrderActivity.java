@@ -265,15 +265,18 @@ public class OrderActivity extends BaseActivity implements View.OnClickListener 
             convertView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent intent = new Intent(context, ShopActivity.class);
-                    Bundle bundle = new Bundle();
-                    bundle.putSerializable("item1", addlist.get(position));
-                    intent.putExtras(bundle);
-                    intent.putExtra("from", 1);
-                    // intent.putExtra("item",bundle);
-                    Log.i("---", position + "");
-                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    context.startActivity(intent);
+//                    Intent intent = new Intent(context, ShopActivity.class);
+//                    Bundle bundle = new Bundle();
+//                    bundle.putSerializable("item1", addlist.get(position));
+//                    intent.putExtras(bundle);
+//                    intent.putExtra("from", 1);
+//                    // intent.putExtra("item",bundle);
+//                    Log.i("---", position + "");
+//                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//                    context.startActivity(intent);
+                    Intent intent = new Intent(context,SaleDetailActivity.class);
+                    intent.putExtra("id",addlist.get(position).getId());
+                    startActivity(intent);
                 }
             });
             return convertView;

@@ -309,6 +309,10 @@ public class SaleDetailActivity extends BaseActivity implements View.OnClickList
                 }
                 break;
             case R.id.buy:
+                if(userInfo.getUserId().equals(shopGoodInfo.getUserid())){
+                    Toast.makeText(context, "不能购买自己发布的产品", Toast.LENGTH_SHORT).show();
+                    return;
+                }
                 Intent intent = new Intent(context, BuyActivity.class);
                 Bundle bundle = new Bundle();
                 bundle.putSerializable("price", shopGoodInfo);
