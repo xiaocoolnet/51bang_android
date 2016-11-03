@@ -15,6 +15,12 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.alipay.share.sdk.openapi.APAPIFactory;
+import com.alipay.share.sdk.openapi.APMediaMessage;
+import com.alipay.share.sdk.openapi.APTextObject;
+import com.alipay.share.sdk.openapi.APWebPageObject;
+import com.alipay.share.sdk.openapi.IAPApi;
+import com.alipay.share.sdk.openapi.SendMessageToZFB;
 import com.tencent.mm.sdk.modelmsg.SendMessageToWX;
 import com.tencent.mm.sdk.modelmsg.WXMediaMessage;
 import com.tencent.mm.sdk.modelmsg.WXWebpageObject;
@@ -108,6 +114,7 @@ public class ShareQRCodeActivity extends BaseActivity {
                 case R.id.dongtai:
                     ToastUtils.showToast(ShareQRCodeActivity.this, "微信朋友圈");
                     history();
+//                    toAlipay();
                     break;
             }
         }
@@ -152,6 +159,23 @@ public class ShareQRCodeActivity extends BaseActivity {
         shareWX();
         takePhotoPopWin.dismiss();
     }
+
+    private void toAlipay(){
+        //创建工具对象实例，此处的APPID为上文提到的，申请应用生效后，在应用详情页中可以查到的支付宝应用唯一标识
+        IAPApi api = APAPIFactory.createZFBApi(getApplicationContext(),"2016083001821606",false);
+        APWebPageObject webPageObject = new APWebPageObject(NetConstant.SHARE_QRCODE_H5 + userInfo.getUserId());
+        //组装分享消息对象
+        APMediaMessage mediaMessage = new APMediaMessage();
+        mediaMessage.title = "我注册了51bang，发布了商品，来加入吧";
+        mediaMessage.description = "基于同城个人，商户服务 。商品购买。给个人，商户提供交流与服务平台";
+        mediaMessage.mediaObject = webPageObject;
+        //将分享消息对象包装成请求对象
+        SendMessageToZFB.Req req = new SendMessageToZFB.Req();
+        req.message = mediaMessage;
+        //发送请求
+        api.sendReq(req);
+    }
+
 
     @OnClick({R.id.back, R.id.rl_share})
     public void onClick(View view) {

@@ -9,6 +9,9 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.AssetFileDescriptor;
+import android.content.res.AssetManager;
+import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
@@ -17,6 +20,7 @@ import android.util.Log;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.util.List;
 
 import cn.jpush.android.api.JPushInterface;
@@ -46,10 +50,11 @@ public class PushReceiver extends BroadcastReceiver {
     private static final String JPUSHLEAVE = "JPUSHLEAVE";
     private static final String JPUSHACTIVITY = "JPUSHACTIVITY";
     private static final String JPUSHCOMMENT = "JPUSHCOMMENT";
+    private MediaPlayer mediaPlayer;
+    private boolean flag = true; //播放音乐标记
 
     @Override
     public void onReceive(Context context, Intent intent) {
-
         Bundle bundle = intent.getExtras();
         String type = bundle.getString(JPushInterface.EXTRA_EXTRA);
 
@@ -77,26 +82,52 @@ public class PushReceiver extends BroadcastReceiver {
             Log.i(TAG, "[PushReceiver] 接收到推送下来的通知");
             int notifactionId = bundle.getInt(JPushInterface.EXTRA_NOTIFICATION_ID);
             Log.i(TAG, "[PushReceiver] 接收到推送下来的通知的ID: " + notifactionId);
-
-            switch (key){
-
+            switch (key) {
+                case "certificationType":
+                    if (v.equals("1")) {
+                        SPUtils.put(context, HelperConstant.IS_HAD_AUTHENTICATION, "1");
+                    }
+                    break;
                 case "loginFromOther":
                     String title = "您的账号再异地登录";
-                    String message ="您需要重新登陆";
-                    popLogOutDialog(title,message);
+                    String message = "您需要重新登陆";
+                    popLogOutDialog(title, message);
                     break;
 
                 case "prohibitVisit":
                     title = "封号";
                     message = "您的账号因为言论已被封停";
-                    popLogOutDialog(title,message);
+                    popLogOutDialog(title, message);
                     break;
 
                 case "deleteUser":
                     title = "删除";
                     message = "您的账号被系统删除，如有疑问请拨打4000608856!";
-                    popLogOutDialog(title,message);
+                    popLogOutDialog(title, message);
                     break;
+
+                case "acceptTaskType":
+                    if(v.equals("-1")){
+                        playNotificationSound(context,"task_cancel");
+                    }
+                    break;
+                case "sendTaskType":
+                    if(v.equals("1")){
+                        playNotificationSound(context,"task_taked");
+                    }
+                    break;
+                case "businessOrderType":
+                    if(v.equals("1")){
+                        playNotificationSound(context,"buy_goods");
+                    }
+                    break;
+                case "TaskTimeOut":
+                    playNotificationSound(context,"timeout");
+                    break;
+                case "system":
+                    playNotificationSound(context,"system");
+                    break;
+
             }
 
         } else if (JPushInterface.ACTION_NOTIFICATION_OPENED.equals(intent.getAction())) {
@@ -159,19 +190,26 @@ public class PushReceiver extends BroadcastReceiver {
                 context.startActivity(intent);
                 break;
             case "loginFromOther":
-
+                UserInfo userInfo = new UserInfo();
+                userInfo.clearDataExceptPhone(context);
+                SPUtils.clear(context);
+                JPushInterface.stopPush(context);
+                context.startActivity(new Intent(context, LoginActivity.class));
+                HelperApplication.getInstance().onTerminate();
                 break;
             case "certificationType":
-                if(value.equals("1")){
-                    SPUtils.put(context, HelperConstant.IS_HAD_AUTHENTICATION,"1");
-                }
                 intent = new Intent(context, HomeActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 intent.putExtra("from", "push");
                 context.startActivity(intent);
                 break;
             case "prohibitVisit":
-
+                UserInfo userInfo1 = new UserInfo();
+                userInfo1.clearDataExceptPhone(context);
+                SPUtils.clear(context);
+                JPushInterface.stopPush(context);
+                context.startActivity(new Intent(context, LoginActivity.class));
+                HelperApplication.getInstance().onTerminate();
                 break;
         }
 
@@ -203,11 +241,11 @@ public class PushReceiver extends BroadcastReceiver {
      */
     private void popLogOutDialog(String title, String message) {
         List<Activity> activities = HelperApplication.getInstance().getActivities();
-        if(activities.size()==0){
+        if (activities.size() == 0) {
             return;
         }
-        final Activity activity = activities.get(activities.size()-1);
-        if (activity==null){
+        final Activity activity = activities.get(activities.size() - 1);
+        if (activity == null) {
             return;
         }
         AlertDialog.Builder builder = new AlertDialog.Builder(activity);
@@ -227,8 +265,8 @@ public class PushReceiver extends BroadcastReceiver {
     }
 
 
-    private void processCustomMessage(Context context,Bundle bundle){
-        NotificationManager manger=(NotificationManager)context.getSystemService(Context.NOTIFICATION_SERVICE);
+    private void processCustomMessage(Context context, Bundle bundle,String key) {
+        NotificationManager manger = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         //为了版本兼容  选择V7包下的NotificationCompat进行构造
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
         //Ticker是状态栏显示的提示
@@ -242,18 +280,85 @@ public class PushReceiver extends BroadcastReceiver {
         //系统状态栏显示的小图标
         builder.setSmallIcon(R.mipmap.ic_logo);
         Notification notification = builder.build();
-        notification.sound = Uri.parse("android.resource://"
-                + context.getPackageName() + "/" + R.raw.timeout);
-        builder.setDefaults(NotificationCompat.DEFAULT_VIBRATE|NotificationCompat.DEFAULT_LIGHTS);
+//        notification.sound = Uri.parse("android.resource://"
+//                + context.getPackageName() + "/" + R.raw.timeout);
+        builder.setDefaults(NotificationCompat.DEFAULT_VIBRATE | NotificationCompat.DEFAULT_LIGHTS);
         notification.flags |= Notification.FLAG_AUTO_CANCEL;
         Intent clickIntent = new Intent(); //点击通知之后要发送的广播
         int id = (int) (System.currentTimeMillis() / 1000);
         clickIntent.addCategory(context.getPackageName());
         clickIntent.setAction(JPushInterface.ACTION_NOTIFICATION_OPENED);
-        clickIntent.putExtra(JPushInterface.EXTRA_EXTRA,bundle.getString(JPushInterface.EXTRA_EXTRA));
+        clickIntent.putExtra(JPushInterface.EXTRA_EXTRA, bundle.getString(JPushInterface.EXTRA_EXTRA));
         PendingIntent contentIntent = PendingIntent.getBroadcast(context, id, clickIntent, PendingIntent.FLAG_UPDATE_CURRENT);
         notification.contentIntent = contentIntent;
-        manger.notify(id,notification);
+        manger.notify(id, notification);
+    }
+
+
+    private void playNotificationSound(Context context,String type){
+        if (flag) {
+            flag = false;
+            mediaPlayer = new MediaPlayer();
+//                if (mediaPlayer != null /*&& !mediaPlayer.isPlaying()*/) {
+//                }
+            playMusic(context,type);
+
+        }
+    }
+
+
+    /**
+     * 播放提示音
+     * @param context
+     */
+    protected void playMusic(Context context,String type) {
+        if(mediaPlayer == null){
+            return;
+        }
+        AssetManager assetManager = context.getAssets();
+        AssetFileDescriptor fileDescriptor = null;
+        try {
+            switch (type){
+                case "timeout":
+                    fileDescriptor = assetManager.openFd("timeout.mp3");
+                    break;
+                case "task_cancel":
+                    fileDescriptor = assetManager.openFd("task_cancel.mp3");
+                    break;
+                case "task_taked":
+                    fileDescriptor = assetManager.openFd("task_taked.mp3");
+                    break;
+                case "buy_goods":
+                    fileDescriptor = assetManager.openFd("buy_goods.mp3");
+                    break;
+                case "system":
+                    fileDescriptor = assetManager.openFd("system_new.mp3");
+                    break;
+            }
+
+            mediaPlayer
+                    .setDataSource(fileDescriptor.getFileDescriptor(),
+                            fileDescriptor.getStartOffset(),
+                            fileDescriptor.getLength());
+            mediaPlayer.prepare();
+            mediaPlayer.start();
+            mediaPlayer
+                    .setOnCompletionListener(new MediaPlayer.OnCompletionListener() {//播出完毕事件
+                        @Override
+                        public void onCompletion(MediaPlayer arg0) {
+                            mediaPlayer.stop();
+                            mediaPlayer.reset();
+                            mediaPlayer.release();
+                            flag = true;
+                        }
+                    });
+        } catch (IllegalArgumentException e) {
+            e.printStackTrace();
+        } catch (IllegalStateException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
 }
