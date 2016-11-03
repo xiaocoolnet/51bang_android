@@ -3,6 +3,9 @@ package cn.xcom.helper.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
@@ -31,6 +34,10 @@ import com.baidu.mapapi.search.geocode.GeoCoder;
 import com.baidu.mapapi.search.geocode.OnGetGeoCoderResultListener;
 import com.baidu.mapapi.search.geocode.ReverseGeoCodeOption;
 import com.baidu.mapapi.search.geocode.ReverseGeoCodeResult;
+import com.baidu.mapapi.search.sug.OnGetSuggestionResultListener;
+import com.baidu.mapapi.search.sug.SuggestionResult;
+import com.baidu.mapapi.search.sug.SuggestionSearch;
+import com.baidu.mapapi.search.sug.SuggestionSearchOption;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,6 +45,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import cn.xcom.helper.HelperApplication;
 import cn.xcom.helper.R;
 import cn.xcom.helper.bean.PoiInformaiton;
 import cn.xcom.helper.utils.CommonAdapter;
@@ -66,11 +74,17 @@ public class SelectMapPoiActivity extends BaseActivity implements OnGetGeoCoderR
     GeoCoder mSearch = null; // 搜索模块，也可去掉地图模块独立使用
     private LatLng mLat;
     BaiduMap mBaiduMap = null;
+
     private List<PoiInformaiton> poiInformaitons;
     private CommonAdapter<PoiInformaiton> adapter;
+
+    private List<SuggestionResult.SuggestionInfo> suggestionInfos;
+    private CommonAdapter<SuggestionResult.SuggestionInfo> suggestionInfoCommonAdapter;
     private LatLng currentPt;
     private Marker marker;
     private boolean isFisrtIn = true;
+    private SuggestionSearch mSuggestionSearch;
+    private int flag=0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,6 +94,9 @@ public class SelectMapPoiActivity extends BaseActivity implements OnGetGeoCoderR
         ButterKnife.bind(this);
         context = this;
         poiInformaitons = new ArrayList<>();
+        suggestionInfos = new ArrayList<>();
+        mSuggestionSearch = SuggestionSearch.newInstance();
+        mSuggestionSearch.setOnGetSuggestionResultListener(listener);
         mBaiduMap = mapview.getMap();
         initEvent();
         initListener();
@@ -147,22 +164,70 @@ public class SelectMapPoiActivity extends BaseActivity implements OnGetGeoCoderR
                 finish();
             }
         });
-        // editText 离开监听
-        /*etSearch.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+        etSearch.addTextChangedListener(new TextWatcher() {
             @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                // hasFocus 为false时表示点击了别的控件，离开当前editText控件
-                if (!hasFocus) {
-                    if ("".equals(etSearch.getText().toString())) {
-                        layoutDefault.setVisibility(View.VISIBLE);
-                    }
-                }
-                else {
-                    layoutDefault.setVisibility(View.GONE);
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                String keyword = etSearch.getText().toString();
+                Log.e("keyword",keyword);
+                if (TextUtils.isEmpty(keyword)) {
+                    ivSearchClear.setVisibility(View.GONE);
+                    listviewSearchResult.setVisibility(View.GONE);
+                } else {
+                    ivSearchClear.setVisibility(View.VISIBLE);
+                    mSuggestionSearch.requestSuggestion((new SuggestionSearchOption())
+                            .keyword(keyword).city(HelperApplication.getInstance().mDistrict));
+                    /*List<City> result = searchCity(mAllCities, keyword);
+                    if (result == null || result.size() == 0) {
+                        emptyView.setVisibility(View.VISIBLE);
+                    } else {
+                        mResultAdapter = new ResultListAdapter(CityPickerActivity.this, result);
+                        mResultListView.setAdapter(mResultAdapter);
+                        // mResultAdapter.changeData(result);
+                    }*/
                 }
             }
-        });*/
+        });
     }
+
+
+    OnGetSuggestionResultListener listener = new OnGetSuggestionResultListener() {
+        public void onGetSuggestionResult(SuggestionResult res) {
+            if (res == null || res.getAllSuggestions() == null) {
+                return;
+                //未找到相关结果
+            }
+            suggestionInfos = res.getAllSuggestions();
+            listviewSearchResult.setVisibility(View.VISIBLE);
+            suggestionInfoCommonAdapter = new CommonAdapter<SuggestionResult.SuggestionInfo>(context,suggestionInfos,R.layout.item_search_info) {
+                @Override
+                public void convert(ViewHolder holder, SuggestionResult.SuggestionInfo suggestionInfo) {
+                    holder.setText(R.id.tv_name,suggestionInfo.key);
+                }
+            };
+            listviewSearchResult.setAdapter(suggestionInfoCommonAdapter);
+            listviewSearchResult.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    flag = 1;
+                    etSearch.setText("");
+                    ivSearchClear.setVisibility(View.GONE);
+                    listviewSearchResult.setVisibility(View.GONE);
+                    mSearch.reverseGeoCode(new ReverseGeoCodeOption()
+                            .location(suggestionInfos.get(position).pt));
+                    mLat = suggestionInfos.get(position).pt;
+
+                }
+            });
+        }
+    };
 
 
     @Override
@@ -260,6 +325,7 @@ public class SelectMapPoiActivity extends BaseActivity implements OnGetGeoCoderR
     @Override
     protected void onDestroy() {
         mapview.onDestroy();
+        mSuggestionSearch.destroy();
         super.onDestroy();
     }
 
@@ -270,6 +336,9 @@ public class SelectMapPoiActivity extends BaseActivity implements OnGetGeoCoderR
                 finish();
                 break;
             case R.id.iv_search_clear:
+                etSearch.setText("");
+                ivSearchClear.setVisibility(View.GONE);
+                listviewSearchResult.setVisibility(View.GONE);
                 break;
         }
     }

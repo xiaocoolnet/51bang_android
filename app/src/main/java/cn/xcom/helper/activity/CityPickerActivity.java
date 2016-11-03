@@ -239,11 +239,20 @@ public class CityPickerActivity extends BaseActivity implements View.OnClickList
         mResultListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                /*Intent intent = new Intent();
-                intent.putExtra("siteName",mResultAdapter.getItem(position).getName());
-                setResult(RESULT_OK, intent);
-                finish();
-                back(mResultAdapter.getItem(position).getName());*/
+                type = 2;
+                String name = mResultAdapter.getItem(position).getName();
+                City city = new City();
+                for(int i=0;i<mAllCities.size();i++){
+                    if(mAllCities.get(i).getName().equals(name)){
+                        city = mAllCities.get(i);
+                    }
+                }
+                HelperApplication.getInstance().mCurrentLocLat = Double.parseDouble(city.getLatitude());
+                HelperApplication.getInstance().mCurrentLocLon = Double.parseDouble(city.getLongitude());
+                HelperApplication.getInstance().status = city.getStatus();
+                Log.e("result",HelperApplication.getInstance().status);
+                mSearch.reverseGeoCode(new ReverseGeoCodeOption()
+                        .location(new LatLng(Double.parseDouble(city.getLatitude()), Double.parseDouble(city.getLongitude()))));
             }
         });
 

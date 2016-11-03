@@ -14,29 +14,24 @@ import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
-import com.bigkoo.alertview.AlertView;
-import com.bigkoo.alertview.OnDismissListener;
-import com.bigkoo.alertview.OnItemClickListener;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.List;
 
-import cn.jpush.android.api.BasicPushNotificationBuilder;
 import cn.jpush.android.api.JPushInterface;
 import cn.xcom.helper.HelperApplication;
 import cn.xcom.helper.R;
 import cn.xcom.helper.activity.BillActivity;
 import cn.xcom.helper.activity.ChatActivity;
 import cn.xcom.helper.activity.HomeActivity;
-import cn.xcom.helper.activity.InsureActivity;
 import cn.xcom.helper.activity.LoginActivity;
 import cn.xcom.helper.activity.MyOrderActivity;
 import cn.xcom.helper.activity.OrderTakingActivity;
 import cn.xcom.helper.activity.WalletActivity;
 import cn.xcom.helper.bean.OrderHelper;
 import cn.xcom.helper.bean.UserInfo;
+import cn.xcom.helper.constant.HelperConstant;
 
 /**
  * Created by Administrator on 2016/9/8.
@@ -97,6 +92,11 @@ public class PushReceiver extends BroadcastReceiver {
                     popLogOutDialog(title,message);
                     break;
 
+                case "deleteUser":
+                    title = "删除";
+                    message = "您的账号被系统删除，如有疑问请拨打4000608856!";
+                    popLogOutDialog(title,message);
+                    break;
             }
 
         } else if (JPushInterface.ACTION_NOTIFICATION_OPENED.equals(intent.getAction())) {
@@ -162,8 +162,12 @@ public class PushReceiver extends BroadcastReceiver {
 
                 break;
             case "certificationType":
-                intent = new Intent(context, InsureActivity.class);
+                if(value.equals("1")){
+                    SPUtils.put(context, HelperConstant.IS_HAD_AUTHENTICATION,"1");
+                }
+                intent = new Intent(context, HomeActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                intent.putExtra("from", "push");
                 context.startActivity(intent);
                 break;
             case "prohibitVisit":

@@ -10,7 +10,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -41,7 +40,6 @@ import org.json.JSONObject;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -289,6 +287,7 @@ public class PhotoAuthorizedFragment extends Fragment implements View.OnClickLis
         } else {
             types = StringUtils.listToString(checkedTypeLists, ",");
         }
+        Log.e("type",types);
 
         dialog.setMessage("正在提交认证");
         dialog.show();
@@ -302,7 +301,7 @@ public class PhotoAuthorizedFragment extends Fragment implements View.OnClickLis
         requestParams.put("positive_pic", userInfo.getUserIDCard());
         requestParams.put("opposite_pic", userInfo.getUserHandIDCard());
         requestParams.put("driver_pic", userInfo.getUserDrivingLicense());
-        requestParams.put("tipe", types);
+        requestParams.put("type", types);
         HelperAsyncHttpClient.get(NetConstant.NET_IDENTITY_AUTHENTICATION, requestParams, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {

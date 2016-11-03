@@ -86,7 +86,7 @@ public class MoreServiceActivity extends BaseActivity implements View.OnClickLis
                 toScore();
                 break;
             case R.id.ll_more_service_clear_cache:
-                Toast.makeText(mContext,"清楚缓存成功",Toast.LENGTH_SHORT).show();
+                Toast.makeText(mContext,"清除缓存成功",Toast.LENGTH_SHORT).show();
                 break;
             case R.id.tv_more_service_exit:
                 toExit();

@@ -27,7 +27,9 @@ import cn.xcom.helper.HelperApplication;
 import cn.xcom.helper.R;
 import cn.xcom.helper.adapter.ConvenienceAdapter;
 import cn.xcom.helper.bean.Convenience;
+import cn.xcom.helper.constant.HelperConstant;
 import cn.xcom.helper.constant.NetConstant;
+import cn.xcom.helper.utils.SPUtils;
 import cn.xcom.helper.utils.SingleVolleyRequest;
 import cn.xcom.helper.utils.StringPostRequest;
 import cn.xcom.helper.utils.ToastUtil;
@@ -87,14 +89,27 @@ public class ConvenienceActivity extends BaseActivity implements View.OnClickLis
                 break;
             //发布便民消息
             case R.id.cnnvenience_release:
-                startActivity(new Intent(ConvenienceActivity.this,ReleaseConvenienceActivity.class));
+                if(SPUtils.get(context, HelperConstant.IS_HAD_AUTHENTICATION,"").equals("1")){
+                    goPublish();
+                }else {
+                    goAuthorized();
+                }
                 break;
-
             case R.id. convenience_deliver:
                 startActivity(new Intent(ConvenienceActivity.this,DeliverActivity.class));
                 break;
         }
     }
+
+    private void goPublish() {
+        startActivity(new Intent(ConvenienceActivity.this,ReleaseConvenienceActivity.class));
+    }
+
+    private void goAuthorized() {
+        Intent intent = new Intent(ConvenienceActivity.this, BindAccountAuthorizedActivity.class);
+        startActivity(intent);
+    }
+
     public void addData(){
         String url= NetConstant.CONVENIENCE;
         StringPostRequest request=new StringPostRequest(url, new Response.Listener<String>() {
