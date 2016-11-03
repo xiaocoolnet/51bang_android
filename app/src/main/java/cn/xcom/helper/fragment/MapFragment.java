@@ -478,6 +478,9 @@ public class MapFragment extends Fragment implements View.OnClickListener, OnGet
 
         @Override
         public void onReceiveLocation(BDLocation location) {
+            if(location==null){
+                return;
+            }
             //Receive Location
             StringBuffer sb = new StringBuffer(256);
             sb.append("time : ");

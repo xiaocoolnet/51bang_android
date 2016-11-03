@@ -9,12 +9,18 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.animation.AlphaAnimation;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import com.loopj.android.http.JsonHttpResponseHandler;
+import com.loopj.android.http.RequestParams;
+
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,6 +30,12 @@ import cn.xcom.helper.R;
 import cn.xcom.helper.adapter.ViewPageAdapter;
 import cn.xcom.helper.bean.AppInfo;
 import cn.xcom.helper.bean.UserInfo;
+import cn.xcom.helper.constant.HelperConstant;
+import cn.xcom.helper.constant.NetConstant;
+import cn.xcom.helper.net.HelperAsyncHttpClient;
+import cn.xcom.helper.utils.GetUniqueNumber;
+import cn.xcom.helper.utils.SPUtils;
+import cz.msebera.android.httpclient.Header;
 
 /**
  * Created by zhuchongkun on 16/6/17.
@@ -42,7 +54,6 @@ public class SplashActivity extends BaseActivity  implements View.OnClickListene
     private int currentIndex;
     private UserInfo userInfo;
     SharedPreferences sp;
-
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -150,53 +161,69 @@ public class SplashActivity extends BaseActivity  implements View.OnClickListene
 
     }
     private void LoginIn(){
-            UserInfo userInfo=new UserInfo(mContext);
+            final UserInfo userInfo=new UserInfo(mContext);
             userInfo.readData(mContext);
             if (!userInfo.getUserId().isEmpty()){
-                startActivity(new Intent(mContext,HomeActivity.class));
-                /*RequestParams params=new RequestParams();
-                params.put("phone",userInfo.getUserPhone());
-                params.put("password",userInfo.getUserPassword());
-                HelperAsyncHttpClient.get(NetConstant.NET_LOGIN,params,new JsonHttpResponseHandler(){
+                RequestParams params = new RequestParams();
+                params.put("userid", userInfo.getUserId());
+                HelperAsyncHttpClient.get(NetConstant.CHECK_LOGIN, params, new JsonHttpResponseHandler() {
                     @Override
                     public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                         super.onSuccess(statusCode, headers, response);
-                        LogUtils.e(TAG,"--statusCode->"+statusCode+"==>"+response.toString());
-                        if (response!=null){
-                            try {
-                                String state=response.getString("status");
-                                if (state.equals("success")){
-                                    JSONObject jsonObject=response.getJSONObject("data");
-                                    UserInfo userInfo=new UserInfo(mContext);
-                                    userInfo.setUserId(jsonObject.getString("id"));
-                                    userInfo.setUserName(jsonObject.getString("name"));
-                                    userInfo.setUserImg(jsonObject.getString("photo"));
-                                    userInfo.setUserAddress(jsonObject.getString("address"));
-                                    userInfo.setUserID(jsonObject.getString("idcard"));
-                                    userInfo.setUserPhone(jsonObject.getString("phone"));
-                                    userInfo.writeData(mContext);
-                                    userInfo.setUserGender(jsonObject.getString("sex"));
-                                    SharedPreferences.Editor editor = sp.edit();
-                                    editor.putString("password",userInfo.getUserPassword());
-                                    startActivity(new Intent(mContext,HomeActivity.class));
-                                    finish();
-                                }if(state.equals("error")){
-                                    String data=response.getString("data");
-                                    Toast.makeText(mContext,data,Toast.LENGTH_LONG).show();
-                                    startActivity(new Intent(mContext,LoginActivity.class));
-                                    finish();
-                                }
-                            } catch (JSONException e) {
-                                e.printStackTrace();
+                        String id = GetUniqueNumber.getInstance().getNumber();
+                        if (response.optString("status").equals("success")) {
+                            if(response.optString("data").equals(id)){
+                                getNameAuthentication(userInfo.getUserId());
+                            }else{
+                                startActivity(new Intent(mContext, LoginActivity.class));
                             }
+
+                        } else {
+                            startActivity(new Intent(mContext, LoginActivity.class));
                         }
                     }
-                });*/
+
+                    @Override
+                    public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                        super.onFailure(statusCode, headers, responseString, throwable);
+
+                    }
+                });
             }else{
-                startActivity(new Intent(mContext,LoginActivity.class));
+                startActivity(new Intent(mContext, LoginActivity.class));
                 finish();
             }
 
+    }
+
+    /**
+     * 获取实名认证
+     */
+    private void getNameAuthentication(final String userid) {
+        RequestParams params=new RequestParams();
+        params.put("userid",userid);
+        HelperAsyncHttpClient.get(NetConstant.Check_Had_Authentication, params, new JsonHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                super.onSuccess(statusCode, headers, response);
+                Log.e("认证", response.toString());
+                if (response.optString("status").equals("success")) {
+                    SPUtils.put(mContext, HelperConstant.IS_HAD_AUTHENTICATION, "1");
+                } else {
+                    SPUtils.put(mContext, HelperConstant.IS_HAD_AUTHENTICATION, "0");
+                }
+                Intent intent = new Intent(mContext, HomeActivity.class);
+                intent.putExtra("userid", userid);
+                startActivity(intent);
+                finish();
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                super.onFailure(statusCode, headers, responseString, throwable);
+                Log.e("认证", responseString);
+            }
+        });
     }
     private void setCurrentDat(int i) {
         if (i<0||i>pics.length-1||currentIndex==i){

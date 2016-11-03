@@ -18,6 +18,10 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.baidu.location.BDLocation;
+import com.baidu.location.BDLocationListener;
+import com.baidu.location.LocationClient;
+import com.baidu.location.LocationClientOption;
 import com.baidu.mapapi.model.LatLng;
 import com.baidu.mapapi.navi.BaiduMapAppNotSupportNaviException;
 import com.baidu.mapapi.navi.BaiduMapNavigation;
@@ -80,6 +84,11 @@ public class BuyFragment extends Fragment implements View.OnClickListener{
     private List<TaskInfo> taskInfos;
     private CommonAdapter<TaskInfo> adapter;
     private MenuPopupWindow menuPopupWindow;
+    // 定位相关
+    LocationClient mLocClient;
+    public BDLocationListener myListener = new MyLocationListener();
+    private String district;
+    private boolean isFirstIn = true;
 
     int flag = 0;
     @Nullable
@@ -95,11 +104,35 @@ public class BuyFragment extends Fragment implements View.OnClickListener{
         return view;
     }
 
+    /**
+     * 开始定位
+     */
+    private void initLocation() {
+        LocationClientOption option = new LocationClientOption();
+        option.setLocationMode(LocationClientOption.LocationMode.Hight_Accuracy);//可选，默认高精度，设置定位模式，高精度，低功耗，仅设备
+        option.setCoorType("bd09ll");//可选，默认gcj02，设置返回的定位结果坐标系
+        int span = 1000;
+        option.setScanSpan(span);//可选，默认0，即仅定位一次，设置发起定位请求的间隔需要大于等于1000ms才是有效的
+        option.setIsNeedAddress(true);//可选，设置是否需要地址信息，默认不需要
+        option.setOpenGps(true);//可选，默认false,设置是否使用gps
+        option.setLocationNotify(true);//可选，默认false，设置是否当GPS有效时按照1S/1次频率输出GPS结果
+        option.setIsNeedLocationDescribe(true);//可选，默认false，设置是否需要位置语义化结果，可以在BDLocation.getLocationDescribe里得到，结果类似于“在北京天安门附近”
+        option.setIsNeedLocationPoiList(true);//可选，默认false，设置是否需要POI结果，可以在BDLocation.getPoiList里得到
+        option.setIgnoreKillProcess(false);//可选，默认true，定位SDK内部是一个SERVICE，并放到了独立进程，设置是否在stop的时候杀死这个进程，默认不杀死
+        option.SetIgnoreCacheException(false);//可选，默认false，设置是否收集CRASH信息，默认收集
+        option.setEnableSimulateGps(false);//可选，默认false，设置是否需要过滤GPS仿真结果，默认需要
+        mLocClient.setLocOption(option);
+        mLocClient.start();
+    }
+
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         mContext=getActivity();
         taskInfos = new ArrayList<>();
+        mLocClient = new LocationClient(mContext);     //声明LocationClient类
+        mLocClient.registerLocationListener(myListener);    //注册监听函数
+        initLocation();
         initView();
     }
     private void initView(){
@@ -116,7 +149,7 @@ public class BuyFragment extends Fragment implements View.OnClickListener{
             srl_task.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
                 @Override
                 public void onRefresh() {
-                    getData();
+                    getData(HelperApplication.getInstance().mDistrict);
                 }
             });
             lv_task.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -142,8 +175,10 @@ public class BuyFragment extends Fragment implements View.OnClickListener{
     public void onResume() {
         super.onResume();
         userInfo.readData(mContext);
-        getData();
-        getIdentity();
+        if(!isFirstIn){
+            getData(HelperApplication.getInstance().mDistrict);
+        }
+        //getIdentity();
     }
 
     /**
@@ -175,31 +210,23 @@ public class BuyFragment extends Fragment implements View.OnClickListener{
     /**
      * 加载数据
      */
-    private void getData() {
+    private void getData(String district) {
         if(SPUtils.get(getActivity(), HelperConstant.IS_HAD_AUTHENTICATION,"").equals("1")){
             getWorkingState();
-            if(null != HelperApplication.getInstance().mDistrict  &&
-                    HelperApplication.getInstance().mDistrict.equals("")){
-                flag = 1;
-            }
             RequestParams params=new RequestParams();
-            params.put("city",HelperApplication.getInstance().mDistrict);
+            params.put("city",district);
+            Log.e("city",HelperApplication.getInstance().mDistrict);
             //params.put("city","芝罘区");
             params.put("userid",userInfo.getUserId());
             HelperAsyncHttpClient.get(NetConstant.GETTASKLIST, params, new JsonHttpResponseHandler() {
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                     super.onSuccess(statusCode, headers, response);
-                    if(flag == 1){
-                        getData();
-                        flag = 2;
-                    }else{
-                        srl_task.setRefreshing(false);
-                        if (response.optString("status").equals("success")) {
-                            setAdapter(response);
-                        }
-                        LogUtils.e(TAG, response.toString());
+                    srl_task.setRefreshing(false);
+                    if (response.optString("status").equals("success")) {
+                        setAdapter(response);
                     }
+                    LogUtils.e(TAG, response.toString());
                 }
 
                 @Override
@@ -508,7 +535,7 @@ public class BuyFragment extends Fragment implements View.OnClickListener{
                 super.onSuccess(statusCode, headers, response);
                 if (response.optString("status").equals("success")) {
                     ToastUtil.showShort(mContext,"抢单");
-                    getData();
+                    getData(HelperApplication.getInstance().mDistrict);
                 }
             }
 
@@ -562,6 +589,20 @@ public class BuyFragment extends Fragment implements View.OnClickListener{
             case R.id.ll_task:
                 showPopupMenu();
         }
+    }
 
+    public class MyLocationListener implements BDLocationListener {
+
+        @Override
+        public void onReceiveLocation(BDLocation location) {
+            if(location!=null){
+                district = location.getDistrict();
+                mLocClient.stop();
+                if(isFirstIn){
+                    isFirstIn = false;
+                    getData(district);
+                }
+            }
+        }
     }
 }
