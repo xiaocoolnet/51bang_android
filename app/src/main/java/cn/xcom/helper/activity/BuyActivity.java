@@ -206,7 +206,7 @@ public class BuyActivity extends BaseActivity implements View.OnClickListener {
         request.putValue("userid",userInfo.getUserId());
         request.putValue("goodsid",shopGoodInfo.getId());
         request.putValue("goodnum",etAmountString);
-        request.putValue("mobile",shopGoodInfo.getPhone());
+        request.putValue("mobile",buy_phone.getText().toString());
         request.putValue("remark",message);
         request.putValue("money",buy_total.getText().toString());
         request.putValue("delivery",buy_deliver.getText().toString());

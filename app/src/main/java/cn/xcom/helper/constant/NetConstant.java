@@ -317,7 +317,7 @@ public interface NetConstant extends HelperConstant {
     /**
      * 用户二维码h5
      */
-    public final static String SHARE_QRCODE_H5 = "http://www.my51bang.com/index.php?g=portal&m=article&a=server&id=";
+    public final static String SHARE_QRCODE_H5 = "http://www.my51bang.com/index.php?g=portal&m=article&a=server&usid=";
 
 
     /**
@@ -397,4 +397,9 @@ public interface NetConstant extends HelperConstant {
      * 获取我的推广人员列表
      */
     public final static String GET_MY_WORK = NET_HOST_PREFIX + "a=getMyIntroduceList&";
+
+    /**
+     * 进入app检验封号情况
+     */
+    public final static String CHECK_LOGIN = NET_HOST_PREFIX + "a=checkLogin&";
 }
