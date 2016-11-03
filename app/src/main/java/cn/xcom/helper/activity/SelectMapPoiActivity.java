@@ -9,6 +9,7 @@ import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
@@ -46,14 +47,18 @@ public class SelectMapPoiActivity extends BaseActivity implements OnGetGeoCoderR
 
     @BindView(R.id.rl_help_me_back)
     RelativeLayout rlHelpMeBack;
-    @BindView(R.id.et_search)
-    EditText etSearch;
-    @BindView(R.id.layout_default)
-    LinearLayout layoutDefault;
     @BindView(R.id.mapview)
     MapView mapview;
     @BindView(R.id.lv_address)
     ListView lvAddress;
+    @BindView(R.id.et_search)
+    EditText etSearch;
+    @BindView(R.id.iv_search_clear)
+    ImageView ivSearchClear;
+    @BindView(R.id.ll_address)
+    LinearLayout llAddress;
+    @BindView(R.id.listview_search_result)
+    ListView listviewSearchResult;
     private Context context;
 
     private double lat;
@@ -91,7 +96,7 @@ public class SelectMapPoiActivity extends BaseActivity implements OnGetGeoCoderR
         lat = getIntent().getDoubleExtra("lat", 0);
         lon = getIntent().getDoubleExtra("lon", 0);
         Log.e("hello", lat + lon + "");
-        mLat = new LatLng(lat,lon);
+        mLat = new LatLng(lat, lon);
         // 反Geo搜索
         mSearch.reverseGeoCode(new ReverseGeoCodeOption()
                 .location(mLat));
@@ -159,11 +164,6 @@ public class SelectMapPoiActivity extends BaseActivity implements OnGetGeoCoderR
         });*/
     }
 
-    @OnClick(R.id.rl_help_me_back)
-    public void onClick() {
-        finish();
-    }
-
 
     @Override
     public void onGetGeoCodeResult(GeoCodeResult geoCodeResult) {
@@ -172,11 +172,11 @@ public class SelectMapPoiActivity extends BaseActivity implements OnGetGeoCoderR
 
     @Override
     public void onGetReverseGeoCodeResult(ReverseGeoCodeResult result) {
-        if(result==null){
+        if (result == null) {
             return;
         }
         mBaiduMap.clear();
-        if(isFisrtIn){
+        if (isFisrtIn) {
             mBaiduMap.setMapStatus(MapStatusUpdateFactory.newLatLng(mLat));
             MapStatus.Builder builder = new MapStatus.Builder();
             builder.target(mLat).zoom(18.0f);
@@ -217,12 +217,13 @@ public class SelectMapPoiActivity extends BaseActivity implements OnGetGeoCoderR
 
     /**
      * 为周边设置信息
+     *
      * @param result
      */
     private void setAdapter(ReverseGeoCodeResult result) {
         poiInformaitons.clear();
         List<PoiInfo> poiInfos = result.getPoiList();
-        for(int i=0;i<poiInfos.size();i++){
+        for (int i = 0; i < poiInfos.size(); i++) {
             PoiInformaiton poiInformaiton = new PoiInformaiton();
             poiInformaiton.setName(poiInfos.get(i).name);
             poiInformaiton.setAddress(poiInfos.get(i).address);
@@ -230,14 +231,14 @@ public class SelectMapPoiActivity extends BaseActivity implements OnGetGeoCoderR
             poiInformaiton.setLon(poiInfos.get(i).location.longitude);
             poiInformaitons.add(poiInformaiton);
         }
-        if(adapter!=null){
+        if (adapter != null) {
             adapter.notifyDataSetChanged();
-        }else{
+        } else {
             adapter = new CommonAdapter<PoiInformaiton>(context, poiInformaitons, R.layout.item_poi_info) {
                 @Override
                 public void convert(ViewHolder holder, PoiInformaiton poiInformaiton) {
-                    holder.setText(R.id.tv_name,poiInformaiton.getName());
-                    holder.setText(R.id.tv_address,poiInformaiton.getAddress());
+                    holder.setText(R.id.tv_name, poiInformaiton.getName());
+                    holder.setText(R.id.tv_address, poiInformaiton.getAddress());
                 }
             };
         }
@@ -260,5 +261,16 @@ public class SelectMapPoiActivity extends BaseActivity implements OnGetGeoCoderR
     protected void onDestroy() {
         mapview.onDestroy();
         super.onDestroy();
+    }
+
+    @OnClick({R.id.rl_help_me_back, R.id.iv_search_clear})
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.rl_help_me_back:
+                finish();
+                break;
+            case R.id.iv_search_clear:
+                break;
+        }
     }
 }

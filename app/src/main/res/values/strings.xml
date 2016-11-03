@@ -127,7 +127,7 @@
 
     <!--HelpMeActivity-->
     <string name="tv_help_me_title">帮我</string>
-    <string name="et_help_me_content_hint">各种您想找人做的事情都可以发布哦～只要您一声招呼，我就帮您办事！</string>
+    <string name="et_help_me_content_hint">禁止发布黄，赌，毒，违反国家法律的言论和图片。</string>
     <string name="tv_help_me_phone">联系电话</string>
     <string name="et_help_me_phone_hint">请输入联系电话</string>
     <string name="tv_help_me_site_location">上门地点</string>

@@ -283,6 +283,10 @@ public class ReleaseActivity extends BaseActivity implements View.OnClickListene
             Toast.makeText(this, "地址不能为空", Toast.LENGTH_SHORT).show();
             return;
         }
+        if(addImageList.size()==0){
+            Toast.makeText(this, "请选择图片", Toast.LENGTH_SHORT).show();
+            return;
+        }
         //先上传图片再发布
         new PushImageUtil().setPushIamge(getApplication(), addImageList, nameList, new PushImage() {
             @Override
@@ -368,6 +372,10 @@ public class ReleaseActivity extends BaseActivity implements View.OnClickListene
             Toast.makeText(this, "地址不能为空", Toast.LENGTH_SHORT).show();
             return;
         }
+        if(addImageList.size()==0){
+            Toast.makeText(this, "请选择图片", Toast.LENGTH_SHORT).show();
+            return;
+        }
        //先上传图片再发布
         new PushImageUtil().setPushIamge(getApplication(), addImageList,nameList, new PushImage() {
             @Override
@@ -407,13 +415,9 @@ public class ReleaseActivity extends BaseActivity implements View.OnClickListene
 
             @Override
             public void error() {
-                ToastUtil.showShort(context,"图片上传失败");
                 finish();
             }
         });
-
-
-
     }
 
 

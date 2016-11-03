@@ -317,7 +317,7 @@ public interface NetConstant extends HelperConstant {
     /**
      * 用户二维码h5
      */
-    public final static String SHARE_QRCODE_H5 = "http://www.my51bang.com/index.php?g=portal&m=article&a=server&userid=";
+    public final static String SHARE_QRCODE_H5 = "http://www.my51bang.com/index.php?g=portal&m=article&a=server&id=";
 
 
     /**

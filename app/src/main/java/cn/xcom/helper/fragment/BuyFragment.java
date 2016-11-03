@@ -230,9 +230,9 @@ public class BuyFragment extends Fragment implements View.OnClickListener{
                 sb_change.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        if(!SPUtils.get(mContext,HelperConstant.IS_INSURANCE,"").equals("1")){
+                        if (!SPUtils.get(mContext, HelperConstant.IS_INSURANCE, "").equals("1")) {
                             popDialog(mContext, "提示", "您未通过保险认证，不能开工，是否跳转到保险认证页面进行验证？");
-                        }else{
+                        } else {
                             if (sb_change.isChecked()) {
                                 changeWorkingState("1");
                             } else {
@@ -304,10 +304,10 @@ public class BuyFragment extends Fragment implements View.OnClickListener{
      */
     private void setItem(ViewHolder holder, final TaskInfo taskInfo) {
         holder.setText(R.id.tv_name, taskInfo.getName())
-                .setText(R.id.tv_task_name, taskInfo.getTitle().equals("")?taskInfo.getDescription():taskInfo.getTitle())
+                .setText(R.id.tv_task_name, taskInfo.getTitle())
                 .setTimeText(R.id.tv_task_time, taskInfo.getTime())
                 .setTimeTextWithStr(R.id.tv_expiry_time, taskInfo.getExpirydate(), "前有效")
-                .setText(R.id.tv_type_name, taskInfo.getTypename())
+                .setText(R.id.tv_type_name, taskInfo.getDescription())
                 .setText(R.id.tv_address1,taskInfo.getAddress())
                 .setText(R.id.tv_address2,taskInfo.getSaddress())
                 .setText(R.id.tv_btn_grab, taskInfo.getState().equals("1") ? "抢单" : "已被抢")
@@ -350,7 +350,7 @@ public class BuyFragment extends Fragment implements View.OnClickListener{
             btn_grab.setText("已被抢");
             btn_grab.setTextColor(getResources().getColor(R.color.holo_red_light));
         }
-        //启用百度地图app导航
+        /*//启用百度地图app导航
         if(taskInfo.getLongitude().length()>0&&taskInfo.getLatitude().length()>0
                 &&taskInfo.getSlongitude().length()>0&&taskInfo.getSlatitude().length()>0){
             holder.getView(R.id.ll_address).setOnClickListener(new View.OnClickListener() {
@@ -365,6 +365,16 @@ public class BuyFragment extends Fragment implements View.OnClickListener{
         if(taskInfo.getLongitude().length()>0&&taskInfo.getLatitude().length()>0
                 &&taskInfo.getSlongitude().length()>0&&taskInfo.getSlatitude().length()>0){
             holder.getView(R.id.ll_address).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    startRoutePlanDriving(taskInfo.getLatitude(), taskInfo.getLongitude(), taskInfo.getAddress()
+                            , taskInfo.getSlatitude(), taskInfo.getSlongitude(), taskInfo.getSaddress());
+                }
+            });
+        }*/
+        if(taskInfo.getLongitude().length()>0&&taskInfo.getLatitude().length()>0
+                &&taskInfo.getSlongitude().length()>0&&taskInfo.getSlatitude().length()>0){
+            holder.getView(R.id.ll_map).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     startRoutePlanDriving(taskInfo.getLatitude(), taskInfo.getLongitude(), taskInfo.getAddress()

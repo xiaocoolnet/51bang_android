@@ -16,6 +16,8 @@ import java.util.List;
 import cn.xcom.helper.R;
 import cn.xcom.helper.activity.SaleDetailActivity;
 import cn.xcom.helper.bean.Collection;
+import cn.xcom.helper.constant.NetConstant;
+import cn.xcom.helper.utils.MyImageLoader;
 
 /**
  * Created by Administrator on 2016/9/29 0029.
@@ -67,9 +69,9 @@ public class CollectionAdapter extends BaseAdapter {
         }
         final Collection front = addList.get(position);
         Log.e("========shipeiqi", "" + addList.size());
-        /*if(front.getGoodspicture().size()!=0){
+        if(front.getGoodspicture().size()!=0){
             MyImageLoader.display(NetConstant.NET_DISPLAY_IMG + front.getGoodspicture().get(0).getFile(), viewHolder.imageView);
-        }*/
+        }
         viewHolder.textView1.setText(front.getTitle());
         viewHolder.textView2.setText(front.getDescription());
         viewHolder.textView3.setText("￥" + front.getPrice());

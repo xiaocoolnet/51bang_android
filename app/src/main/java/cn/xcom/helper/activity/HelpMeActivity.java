@@ -536,7 +536,7 @@ public class HelpMeActivity extends BaseActivity implements View.OnClickListener
             request.putValue("picurl", s);
         }
         request.putValue("userid", userInfo.getUserId());
-        request.putValue("description", et_content.getText().toString());
+        request.putValue("title", et_content.getText().toString());
         request.putValue("expirydate", begintime);
         request.putValue("price", et_wages.getText().toString());
         request.putValue("type", getSelectString());

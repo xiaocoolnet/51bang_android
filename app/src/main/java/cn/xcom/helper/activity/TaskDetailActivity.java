@@ -1,6 +1,8 @@
 package cn.xcom.helper.activity;
 
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
@@ -88,7 +90,7 @@ public class TaskDetailActivity extends BaseActivity {
         } else if (type.equals("2")) {
             tvName.setText(taskItemInfo.getName());
             tvTradeNo.setText(taskItemInfo.getOrder_num());
-            tvTradeName.setText(taskItemInfo.getDescription());
+            tvTradeName.setText(taskItemInfo.getTitle());
             tvPrice.setText(taskItemInfo.getPrice());
             tvAddress.setText(taskItemInfo.getAddress());
             Date date = new Date();
@@ -113,8 +115,30 @@ public class TaskDetailActivity extends BaseActivity {
                 finish();
                 break;
             case R.id.rl_dianhua:
+                if (type.equals("1")) {
+                    Intent intent = new Intent();
+                    intent.setAction(Intent.ACTION_DIAL);
+                    intent.setData(Uri.parse("tel:" +taskInfo.getPhone()));
+                    context.startActivity(intent);
+                }else if(type.equals("2")){
+                    Intent intent = new Intent();
+                    intent.setAction(Intent.ACTION_DIAL);
+                    intent.setData(Uri.parse("tel:" +taskItemInfo.getPhone()));
+                    context.startActivity(intent);
+                }
                 break;
             case R.id.rl_xiaoxi:
+                if (type.equals("1")) {
+                    Intent intent = new Intent(context,ChatActivity.class);
+                    intent.putExtra("id",taskInfo.getUserid());
+                    intent.putExtra("name",taskInfo.getName());
+                    context.startActivity(intent);
+                }else if(type.equals("2")){
+                    Intent intent = new Intent(context,ChatActivity.class);
+                    intent.putExtra("id",taskItemInfo.getUserid());
+                    intent.putExtra("name",taskItemInfo.getName());
+                    context.startActivity(intent);
+                }
                 break;
         }
     }
