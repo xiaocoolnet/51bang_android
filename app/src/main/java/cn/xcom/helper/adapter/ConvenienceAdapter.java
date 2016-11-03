@@ -58,7 +58,7 @@ public class ConvenienceAdapter extends RecyclerView.Adapter<ConvenienceAdapter.
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(context).inflate(R.layout.convenience_layout, parent,false);
+        View view = LayoutInflater.from(context).inflate(R.layout.convenience_layout, parent, false);
         return new ViewHolder(view);
     }
 
