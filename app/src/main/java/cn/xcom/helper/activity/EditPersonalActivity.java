@@ -135,7 +135,7 @@ public class EditPersonalActivity extends BaseActivity implements View.OnClickLi
                 finish();
                 break;
             case R.id.iv_edit_personal_head:
-                showPickDialog();
+                requestPermission();
                 break;
             case R.id.ll_edit_personal_update_name:
                 startActivity(new Intent(mContext,UpdateNameActivity.class));
@@ -265,6 +265,19 @@ public class EditPersonalActivity extends BaseActivity implements View.OnClickLi
 
             // other 'case' lines to check for other
             // permissions this app might request
+        }
+
+
+        if (requestCode == REQUEST_CODE) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                showPickDialog();
+            } else {
+                //用户勾选了不再询问
+                //提示用户手动打开权限
+                if (!ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.READ_EXTERNAL_STORAGE)) {
+                    Toast.makeText(this, "访问权限已被禁止", Toast.LENGTH_SHORT).show();
+                }
+            }
         }
     }
 
@@ -416,5 +429,28 @@ public class EditPersonalActivity extends BaseActivity implements View.OnClickLi
         }
         super.onActivityResult(requestCode, resultCode, data);
     }
+
+
+    private int REQUEST_CODE = 1111;
+
+    private void requestPermission(){
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED) {
+            // 第一次请求权限时，用户如果拒绝，下一次请求shouldShowRequestPermissionRationale()返回true
+            // 向用户解释为什么需要这个权限
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.READ_EXTERNAL_STORAGE)) {
+                ActivityCompat.requestPermissions(EditPersonalActivity.this,
+                        new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, REQUEST_CODE);
+            } else {
+                //申请权限
+                ActivityCompat.requestPermissions(this,
+                        new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, REQUEST_CODE);
+            }
+        } else{
+            showPickDialog();
+        }
+    }
+
+
 
 }
