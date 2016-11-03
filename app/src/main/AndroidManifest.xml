@@ -200,6 +200,7 @@
         <activity android:name=".activity.ChatActivity" />
         <activity android:name=".activity.InsureDetailActivity" />
         <activity android:name=".activity.BindAccountAuthorizedActivity"/>
+        <activity android:name=".activity.WebViewActivity"/>
         <!-- 极光Required SDK核心功能 -->
         <activity
             android:name="cn.jpush.android.ui.PushActivity"

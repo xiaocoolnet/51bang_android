@@ -1,6 +1,7 @@
 package cn.xcom.helper.activity;
 
 import android.content.Context;
+import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentActivity;
@@ -24,6 +25,8 @@ public class BaseActivity extends FragmentActivity{
         this.registerReceiver(new Receiver(), filter);*/
         //添加ctivity集合
         HelperApplication.getInstance().addActivity(this);
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);//禁止横屏
+
     }
 
     /**

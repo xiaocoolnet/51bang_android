@@ -87,7 +87,7 @@
             android:layout_weight="1.0"
             android:layout_marginLeft="15dip"
             android:gravity="center_vertical"
-            android:text="@string/tv_more_service_legal_agreement"
+            android:text="用户者服务协议"
             android:textSize="15dp"/>
         <ImageView
             android:layout_width="40dip"
@@ -136,6 +136,30 @@
             android:layout_marginLeft="15dip"
             android:gravity="center_vertical"
             android:text="@string/tv_more_service_clear_cache"
+            android:textSize="15dp"/>
+        <ImageView
+            android:layout_width="40dip"
+            android:layout_height="match_parent"
+            android:src="@mipmap/ic_arrow_right"
+            android:scaleType="center"/>
+
+    </LinearLayout>
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="1dip"
+        android:background="@color/colorLine" />
+    <LinearLayout
+        android:id="@+id/ll_about"
+        android:layout_width="match_parent"
+        android:layout_height="45dip"
+        android:background="@color/colorTextWhite">
+        <TextView
+            android:layout_width="0dip"
+            android:layout_height="match_parent"
+            android:layout_weight="1.0"
+            android:layout_marginLeft="15dip"
+            android:gravity="center_vertical"
+            android:text="关于51帮"
             android:textSize="15dp"/>
         <ImageView
             android:layout_width="40dip"
