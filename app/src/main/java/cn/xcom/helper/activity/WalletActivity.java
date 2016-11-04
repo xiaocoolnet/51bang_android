@@ -1,6 +1,8 @@
 package cn.xcom.helper.activity;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -17,6 +19,7 @@ import com.loopj.android.http.RequestParams;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import cn.xcom.helper.HelperApplication;
 import cn.xcom.helper.R;
 import cn.xcom.helper.bean.UserInfo;
 import cn.xcom.helper.bean.WalletInfo;
@@ -76,6 +79,24 @@ public class WalletActivity extends BaseActivity implements View.OnClickListener
     protected void onResume() {
         super.onResume();
         getWallet();
+        if(HelperApplication.getInstance().isBack){
+            showDialog();
+        }
+    }
+
+    /**
+     * 弹出提现提示框
+     */
+    private void showDialog() {
+        HelperApplication.getInstance().isBack = false;
+        final AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+        builder.setTitle("提示").setMessage("提现已请求，最迟次日打账").setCancelable(false).setPositiveButton("确定", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+            }
+        });
+        builder.show();
     }
 
     @Override

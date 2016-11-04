@@ -1,7 +1,6 @@
 package cn.xcom.helper.activity;
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.View;
@@ -17,6 +16,7 @@ import com.loopj.android.http.RequestParams;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import cn.xcom.helper.HelperApplication;
 import cn.xcom.helper.R;
 import cn.xcom.helper.bean.UserInfo;
 import cn.xcom.helper.constant.NetConstant;
@@ -95,6 +95,8 @@ public class WithdrawCashActivity extends BaseActivity implements View.OnClickLi
                         String state = response.getString("status");
                         if (state.equals("success")) {
                             Toast.makeText(WithdrawCashActivity.this, "提现申请成功，请耐心等待", Toast.LENGTH_SHORT).show();
+                            finish();
+                            HelperApplication.getInstance().isBack = true;
                         } else {
                             String data = response.getString("data");
                             Toast.makeText(WithdrawCashActivity.this, data, Toast.LENGTH_SHORT).show();

@@ -1,7 +1,5 @@
 package cn.xcom.helper.activity;
 
-import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -102,8 +100,10 @@ public class ChooseAccountActivity extends BaseActivity implements View.OnClickL
                         intent.putExtra("account", zfbAccountTv.getText());
                         intent.putExtra("bankType",1);
                         startActivity(intent);
+                        finish();
                     } else {
                         startActivity(new Intent(this,BindAlipayAccountActivity.class));
+                        finish();
                     }
                 } else if (!zfbCheckBox.isChecked() && bankCheckBox.isChecked()) {
                     if (bankRegistered) {
@@ -111,8 +111,10 @@ public class ChooseAccountActivity extends BaseActivity implements View.OnClickL
                         intent.putExtra("account", bankAccountTv.getText());
                         intent.putExtra("bankType",2);
                         startActivity(intent);
+                        finish();
                     } else {
                         startActivity(new Intent(this, BindBankAccountActivity.class));
+                        finish();
                     }
                 }
                 break;

@@ -43,6 +43,7 @@ import com.baidu.mapapi.search.geocode.OnGetGeoCoderResultListener;
 import com.baidu.mapapi.search.geocode.ReverseGeoCodeOption;
 import com.baidu.mapapi.search.geocode.ReverseGeoCodeResult;
 import com.baoyz.actionsheet.ActionSheet;
+import com.kaopiz.kprogresshud.KProgressHUD;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 
@@ -90,6 +91,7 @@ public class HelpMeActivity extends BaseActivity implements View.OnClickListener
     private Context mContext;
     private RelativeLayout rl_back;
     private NoScrollGridView gv_skill;
+    private KProgressHUD hud,submit_hub;
     private ArrayList<SkillTagInfo> skillTagInfos;
     private HelpMeSkillAdapter mHelpMeSkillAdapter;
     private EditText et_content, et_phone, et_site_location, et_service_location, et_wages, et_validity_period;
@@ -120,6 +122,7 @@ public class HelpMeActivity extends BaseActivity implements View.OnClickListener
     private double mSiteLat, mSiteLon, mServiceLat, mServiewLon;
     private String mSiteName, mServiceName;
     private int type = 1;
+    private String description;
 
 
     @Override
@@ -136,6 +139,10 @@ public class HelpMeActivity extends BaseActivity implements View.OnClickListener
         // 初始化搜索模块，注册事件监听
         mSearch = GeoCoder.newInstance();
         mSearch.setOnGetGeoCodeResultListener(this);
+        hud = KProgressHUD.create(mContext)
+                .setStyle(KProgressHUD.Style.SPIN_INDETERMINATE)
+                .setCancellable(true);
+        hud.show();
         initView();
         getData();
     }
@@ -233,6 +240,9 @@ public class HelpMeActivity extends BaseActivity implements View.OnClickListener
         Log.e("count", String.valueOf(selectList.size()));
         for (int i = 0; i < skillTagInfos.size(); i++) {
             skillTagInfos.get(i).setChecked(check(skillTagInfos.get(i).getSkill_id()));
+            if(skillTagInfos.get(i).isChecked()){
+                description = skillTagInfos.get(i).getSkill_name();
+            }
         }
         mHelpMeSkillAdapter.notifyDataSetChanged();
     }
@@ -261,6 +271,9 @@ public class HelpMeActivity extends BaseActivity implements View.OnClickListener
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                 super.onSuccess(statusCode, headers, response);
                 LogUtils.e(TAG, "--statusCode->" + statusCode + "==>" + response.toString());
+                if(hud!=null){
+                    hud.dismiss();
+                }
                 if (response != null) {
                     try {
                         String state = response.getString("status");
@@ -287,6 +300,9 @@ public class HelpMeActivity extends BaseActivity implements View.OnClickListener
             public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
                 super.onFailure(statusCode, headers, responseString, throwable);
                 LogUtils.e(TAG, "--statusCode->" + statusCode + "==>" + responseString);
+                if(hud!=null){
+                    hud.dismiss();
+                }
             }
         });
     }
@@ -469,6 +485,10 @@ public class HelpMeActivity extends BaseActivity implements View.OnClickListener
             ToastUtil.showShort(mContext, "请选择有效时间");
             return;
         }
+        submit_hub = KProgressHUD.create(mContext)
+                .setStyle(KProgressHUD.Style.SPIN_INDETERMINATE)
+                .setCancellable(true);
+        submit_hub.show();
         if(mPhotoList.size()==0){
             //传入1表示没有图片
             submitTask(1);
@@ -498,6 +518,9 @@ public class HelpMeActivity extends BaseActivity implements View.OnClickListener
         StringPostRequest request = new StringPostRequest(url, new Response.Listener<String>() {
             @Override
             public void onResponse(String s) {
+                if(submit_hub!=null){
+                    submit_hub.dismiss();
+                }
                 if (s != null) {
                     try {
                         JSONObject object = new JSONObject(s);
@@ -526,6 +549,9 @@ public class HelpMeActivity extends BaseActivity implements View.OnClickListener
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError volleyError) {
+                if(submit_hub!=null){
+                    submit_hub.dismiss();
+                }
                 HelperApplication.getInstance().getTaskTypes().clear();
                 Toast.makeText(getApplication(), "网络错误，检查您的网络", Toast.LENGTH_SHORT).show();
             }
@@ -537,6 +563,7 @@ public class HelpMeActivity extends BaseActivity implements View.OnClickListener
         }
         request.putValue("userid", userInfo.getUserId());
         request.putValue("title", et_content.getText().toString());
+        request.putValue("description", description);
         request.putValue("expirydate", begintime);
         request.putValue("price", et_wages.getText().toString());
         request.putValue("type", getSelectString());

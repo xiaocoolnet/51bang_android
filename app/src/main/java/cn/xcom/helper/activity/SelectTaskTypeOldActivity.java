@@ -30,7 +30,7 @@ import cn.xcom.helper.net.HelperAsyncHttpClient;
 import cn.xcom.helper.utils.LogUtils;
 import cz.msebera.android.httpclient.Header;
 
-public class SelectTaskTypeActivity extends BaseActivity implements View.OnClickListener {
+public class SelectTaskTypeOldActivity extends BaseActivity implements View.OnClickListener {
 
     private Context context;
     private RelativeLayout rl_back;
@@ -123,7 +123,7 @@ public class SelectTaskTypeActivity extends BaseActivity implements View.OnClick
                 break;
             case R.id.tv_submit:
                 //提交,保存当前页面的选择状态到全局变量中
-                /*List<TaskType> list = new ArrayList<>();
+                List<TaskType> list = new ArrayList<>();
                 for(int i = 0;i<selectTaskType.size();i++){
                     if(!selectTaskType.get(i).getParent().equals(id)){
                         list.add(selectTaskType.get(i));
@@ -134,7 +134,7 @@ public class SelectTaskTypeActivity extends BaseActivity implements View.OnClick
                         list.add(adapter.getTaskTypes().get(i));
                     }
                 }
-                HelperApplication.getInstance().setTaskTypes(list);*/
+                HelperApplication.getInstance().setTaskTypes(list);
                 finish();
                 break;
         }
@@ -183,14 +183,8 @@ public class SelectTaskTypeActivity extends BaseActivity implements View.OnClick
                 public void onClick(View v) {
                     if (holder.cb_type.isChecked()) {
                         holder.cb_type.setChecked(false);
-                        HelperApplication.getInstance().getTaskTypes().clear();
                     } else {
                         holder.cb_type.setChecked(true);
-                        clearOther(taskTypes.get(position).getId());
-                        List<TaskType> list = new ArrayList<TaskType>();
-                        list.add(taskTypes.get(position));
-                        HelperApplication.getInstance().setTaskTypes(list);
-                        notifyDataSetChanged();
                     }
                     taskTypes.get(position).setChecked(holder.cb_type.isChecked());
                 }
@@ -199,15 +193,6 @@ public class SelectTaskTypeActivity extends BaseActivity implements View.OnClick
                 @Override
                 public void onClick(View v) {
                     taskTypes.get(position).setChecked(holder.cb_type.isChecked());
-                    if(holder.cb_type.isChecked()){
-                        clearOther(taskTypes.get(position).getId());
-                        List<TaskType> list = new ArrayList<TaskType>();
-                        list.add(taskTypes.get(position));
-                        HelperApplication.getInstance().setTaskTypes(list);
-                        notifyDataSetChanged();
-                    }else{
-                        HelperApplication.getInstance().getTaskTypes().clear();
-                    }
                 }
             });
             return convertView;

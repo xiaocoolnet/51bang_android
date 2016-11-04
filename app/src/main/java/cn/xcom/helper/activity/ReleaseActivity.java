@@ -41,6 +41,7 @@ import com.baidu.mapapi.search.geocode.OnGetGeoCoderResultListener;
 import com.baidu.mapapi.search.geocode.ReverseGeoCodeOption;
 import com.baidu.mapapi.search.geocode.ReverseGeoCodeResult;
 import com.baoyz.actionsheet.ActionSheet;
+import com.kaopiz.kprogresshud.KProgressHUD;
 
 import java.io.File;
 import java.lang.ref.WeakReference;
@@ -106,6 +107,7 @@ public class ReleaseActivity extends BaseActivity implements View.OnClickListene
     private  String type="";
     private int requestCode1;
     GeoCoder mSearch = null; // 搜索模块，也可去掉地图模块独立使用
+    private KProgressHUD hud;
 
     private UserInfo info=new UserInfo();
 
@@ -376,6 +378,10 @@ public class ReleaseActivity extends BaseActivity implements View.OnClickListene
             Toast.makeText(this, "请选择图片", Toast.LENGTH_SHORT).show();
             return;
         }
+        hud = KProgressHUD.create(context)
+                .setStyle(KProgressHUD.Style.SPIN_INDETERMINATE)
+                .setCancellable(true);
+        hud.show();
        //先上传图片再发布
         new PushImageUtil().setPushIamge(getApplication(), addImageList,nameList, new PushImage() {
             @Override
@@ -385,6 +391,9 @@ public class ReleaseActivity extends BaseActivity implements View.OnClickListene
                 StringPostRequest request=new StringPostRequest(url, new Response.Listener<String>() {
                     @Override
                     public void onResponse(String s) {
+                        if(hud!=null){
+                            hud.dismiss();
+                        }
                         Log.d("===我的发布",s);
                         Toast.makeText(getApplication(),"发布成功",Toast.LENGTH_SHORT).show();
                         finish();
@@ -392,6 +401,9 @@ public class ReleaseActivity extends BaseActivity implements View.OnClickListene
                 }, new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError volleyError) {
+                        if(hud!=null){
+                            hud.dismiss();
+                        }
                         Toast.makeText(getApplication(),"网络错误，检查您的网络",Toast.LENGTH_SHORT).show();
                     }
                 });
@@ -415,6 +427,9 @@ public class ReleaseActivity extends BaseActivity implements View.OnClickListene
 
             @Override
             public void error() {
+                if(hud!=null){
+                    hud.dismiss();
+                }
                 finish();
             }
         });
@@ -577,7 +592,7 @@ public class ReleaseActivity extends BaseActivity implements View.OnClickListene
         View outerView = LayoutInflater.from(getBaseContext())
                 .inflate(R.layout.wheel_view, null);
 
-        WheelView wv = (WheelView) outerView
+        final WheelView wv = (WheelView) outerView
                 .findViewById(R.id.wheel_view_wv);
 
         wv.setOffset(2);// 偏移量
@@ -594,7 +609,13 @@ public class ReleaseActivity extends BaseActivity implements View.OnClickListene
         // 展示弹出框
         new android.support.v7.app.AlertDialog.Builder(ReleaseActivity.this)
                 .setTitle("请选择类型").setView(outerView)
-                .setPositiveButton("确定", null).show();
+                .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        text_transport.setText(wv.getSeletedItem());
+                        id_dismiss11.setVisibility(View.INVISIBLE);
+                    }
+                }).show();
 
 
     }

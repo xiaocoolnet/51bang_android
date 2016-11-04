@@ -35,6 +35,7 @@ import com.bigkoo.alertview.OnDismissListener;
 import com.bigkoo.alertview.OnItemClickListener;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.kaopiz.kprogresshud.KProgressHUD;
 import com.kyleduo.switchbutton.SwitchButton;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
@@ -89,6 +90,7 @@ public class BuyFragment extends Fragment implements View.OnClickListener{
     public BDLocationListener myListener = new MyLocationListener();
     private String district;
     private boolean isFirstIn = true;
+    private KProgressHUD hud;
 
     int flag = 0;
     @Nullable
@@ -288,6 +290,10 @@ public class BuyFragment extends Fragment implements View.OnClickListener{
      * 切换工作状态
      */
     private void changeWorkingState(String state) {
+        hud = KProgressHUD.create(mContext)
+                .setStyle(KProgressHUD.Style.SPIN_INDETERMINATE)
+                .setCancellable(true);
+        hud.show();
         RequestParams params=new RequestParams();
         params.put("userid",userInfo.getUserId());
         params.put("address",HelperApplication.getInstance().mLocAddress);
@@ -297,6 +303,9 @@ public class BuyFragment extends Fragment implements View.OnClickListener{
         HelperAsyncHttpClient.get(NetConstant.CHANGE_WORKING_STATE, params, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                if(hud!=null){
+                    hud.dismiss();
+                }
                 super.onSuccess(statusCode, headers, response);
                 Log.e(TAG, String.valueOf(response));
             }
@@ -304,6 +313,9 @@ public class BuyFragment extends Fragment implements View.OnClickListener{
             @Override
             public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
                 super.onFailure(statusCode, headers, responseString, throwable);
+                if(hud!=null){
+                    hud.dismiss();
+                }
                 LogUtils.e(TAG, responseString);
             }
         });
@@ -325,6 +337,9 @@ public class BuyFragment extends Fragment implements View.OnClickListener{
                     setItem(holder,taskInfo);
                 }
             };
+            if(lv_task==null){
+                return;
+            }
             lv_task.setAdapter(adapter);
         }
     }

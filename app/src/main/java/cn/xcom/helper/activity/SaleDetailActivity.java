@@ -39,6 +39,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.tencent.connect.share.QQShare;
 import com.tencent.connect.share.QzoneShare;
+import com.kaopiz.kprogresshud.KProgressHUD;
 import com.tencent.mm.sdk.modelmsg.SendMessageToWX;
 import com.tencent.mm.sdk.modelmsg.WXMediaMessage;
 import com.tencent.mm.sdk.modelmsg.WXWebpageObject;
@@ -96,6 +97,7 @@ public class SaleDetailActivity extends BaseActivity implements View.OnClickList
     private ListView sale_detail_comment;
     private ImageView iv_phone;
     private CommonAdapter<ShopGoodInfoNew.CommentlistBean> adapter;
+    private KProgressHUD hud;
     Resources res;
     Bitmap bitmap;
     String thumbPath;
@@ -274,11 +276,17 @@ public class SaleDetailActivity extends BaseActivity implements View.OnClickList
 
     //根据商品的id得到商家的id
     public void addGood() {
-
+        hud = KProgressHUD.create(context)
+                .setStyle(KProgressHUD.Style.SPIN_INDETERMINATE)
+                .setCancellable(true);
+        hud.show();
         String url = NetConstant.SHOP_INFO;
         StringPostRequest request = new StringPostRequest(url, new Response.Listener<String>() {
             @Override
             public void onResponse(String s) {
+                if(hud!=null){
+                    hud.dismiss();
+                }
                 try {
                     JSONObject jsonObject = new JSONObject(s);
                     String status = jsonObject.getString("status");
@@ -303,6 +311,9 @@ public class SaleDetailActivity extends BaseActivity implements View.OnClickList
             @Override
             public void onErrorResponse(VolleyError volleyError) {
                 ToastUtils.showToast(context, "网络错误，请检查网络");
+                if(hud!=null){
+                    hud.dismiss();
+                }
             }
         });
         request.putValue("id", goodsId);

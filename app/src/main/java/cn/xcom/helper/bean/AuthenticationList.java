@@ -8,20 +8,23 @@ import java.util.List;
  */
 public class AuthenticationList implements Serializable{
 
+
     /**
-     * id : 645
-     * name : 年年有余
-     * photo : avatar20161007154143.png
-     * phone : 13905933706
-     * address : 宁德市福安市S302
+     * id : 783
+     * name : 冰姐
+     * photo : 1478084959831.jpg
+     * phone : 15392341266
+     * address : 宁德市福安市百丽阁
      * status : 2
      * usertype : 1
      * isworking : 1
-     * serviceCount : 19
-     * skilllist : [{"type":"22","typename":"送外卖","parent_typeid":"12"},{"type":"262","typename":"超市代购","parent_typeid":"12"},{"type":"314","typename":"排队挂号","parent_typeid":"12"},{"type":"243","typename":"其他...","parent_typeid":"12"},{"type":"269","typename":"占位占座","parent_typeid":"12"},{"type":"23","typename":"送货品","parent_typeid":"12"},{"type":"21","typename":"送快递","parent_typeid":"12"},{"type":"167","typename":"美术培训","parent_typeid":"162"},{"type":"327","typename":"武术培训","parent_typeid":"162"},{"type":"74","typename":"宠物美容","parent_typeid":"71"},{"type":"185","typename":"商业摄影","parent_typeid":"179"},{"type":"305","typename":"家教","parent_typeid":"77"},{"type":"49","typename":"保洁清洗","parent_typeid":"48"},{"type":"115","typename":"催乳师","parent_typeid":"48"},{"type":"53","typename":"厨师上门","parent_typeid":"48"},{"type":"93","typename":"家庭服务","parent_typeid":"48"},{"type":"94","typename":"甲醛检测","parent_typeid":"48"},{"type":"92","typename":"钟点工","parent_typeid":"48"},{"type":"51","typename":"保姆月嫂","parent_typeid":"48"},{"type":"50","typename":"干洗改衣","parent_typeid":"48"},{"type":"176","typename":"各种偏方","parent_typeid":"173"},{"type":"224","typename":"名医","parent_typeid":"173"},{"type":"177","typename":"各种药","parent_typeid":"173"},{"type":"174","typename":"疑难杂症","parent_typeid":"173"},{"type":"125","typename":"商标注册","parent_typeid":"54"},{"type":"126","typename":"工商注册","parent_typeid":"54"},{"type":"127","typename":"代理记账","parent_typeid":"54"},{"type":"128","typename":"异地对公","parent_typeid":"54"},{"type":"129","typename":"个人档案","parent_typeid":"54"},{"type":"130","typename":"专利版权申请","parent_typeid":"54"},{"type":"131","typename":"资格认证","parent_typeid":"54"},{"type":"132","typename":"签证代办","parent_typeid":"54"},{"type":"133","typename":"财务代办","parent_typeid":"54"},{"type":"134","typename":"工商代办","parent_typeid":"54"},{"type":"309","typename":"代办信用卡","parent_typeid":"54"},{"type":"310","typename":"代办pos机","parent_typeid":"54"},{"type":"139","typename":"美妆","parent_typeid":"68"},{"type":"141","typename":"纹身","parent_typeid":"68"},{"type":"136","typename":"美甲","parent_typeid":"68"},{"type":"143","typename":"塑身","parent_typeid":"68"},{"type":"144","typename":"理疗按摩","parent_typeid":"68"},{"type":"142","typename":"纹绣","parent_typeid":"68"},{"type":"140","typename":"美发","parent_typeid":"68"},{"type":"138","typename":"美容","parent_typeid":"68"},{"type":"137","typename":"美睫","parent_typeid":"68"},{"type":"193","typename":"法律纠纷","parent_typeid":"192"},{"type":"197","typename":"法律诉状","parent_typeid":"192"},{"type":"196","typename":"法律咨询","parent_typeid":"192"},{"type":"194","typename":"找律师","parent_typeid":"192"}]
-     * longitude : 119.692434597453
-     * latitude : 26.8177902687607
+     * serviceCount : 3
+     * skilllist : [{"type":"21","typename":"送快递","parent_typeid":"12"},{"type":"273","typename":"陪练歌","parent_typeid":"272"}]
+     * longitude : 119.654799
+     * latitude : 27.090945
      * distance : 10000000000
+     * evaluatelist : [{"id":"99","content":"态度好","score":"5","add_time":"1478242179","userid":"800","name":"翠花","photo":"1478165506124.jpg"}]
+     * score : 5.0000
      */
 
     private String id;
@@ -36,13 +39,25 @@ public class AuthenticationList implements Serializable{
     private String longitude;
     private String latitude;
     private long distance;
+    private String score;
     /**
-     * type : 22
-     * typename : 送外卖
+     * type : 21
+     * typename : 送快递
      * parent_typeid : 12
      */
 
     private List<SkilllistBean> skilllist;
+    /**
+     * id : 99
+     * content : 态度好
+     * score : 5
+     * add_time : 1478242179
+     * userid : 800
+     * name : 翠花
+     * photo : 1478165506124.jpg
+     */
+
+    private List<EvaluatelistBean> evaluatelist;
 
     public String getId() {
         return id;
@@ -140,6 +155,14 @@ public class AuthenticationList implements Serializable{
         this.distance = distance;
     }
 
+    public String getScore() {
+        return score;
+    }
+
+    public void setScore(String score) {
+        this.score = score;
+    }
+
     public List<SkilllistBean> getSkilllist() {
         return skilllist;
     }
@@ -148,7 +171,15 @@ public class AuthenticationList implements Serializable{
         this.skilllist = skilllist;
     }
 
-    public static class SkilllistBean implements Serializable {
+    public List<EvaluatelistBean> getEvaluatelist() {
+        return evaluatelist;
+    }
+
+    public void setEvaluatelist(List<EvaluatelistBean> evaluatelist) {
+        this.evaluatelist = evaluatelist;
+    }
+
+    public static class SkilllistBean implements Serializable{
         private String type;
         private String typename;
         private String parent_typeid;
@@ -175,6 +206,72 @@ public class AuthenticationList implements Serializable{
 
         public void setParent_typeid(String parent_typeid) {
             this.parent_typeid = parent_typeid;
+        }
+    }
+
+    public static class EvaluatelistBean implements Serializable{
+        private String id;
+        private String content;
+        private String score;
+        private String add_time;
+        private String userid;
+        private String name;
+        private String photo;
+
+        public String getId() {
+            return id;
+        }
+
+        public void setId(String id) {
+            this.id = id;
+        }
+
+        public String getContent() {
+            return content;
+        }
+
+        public void setContent(String content) {
+            this.content = content;
+        }
+
+        public String getScore() {
+            return score;
+        }
+
+        public void setScore(String score) {
+            this.score = score;
+        }
+
+        public String getAdd_time() {
+            return add_time;
+        }
+
+        public void setAdd_time(String add_time) {
+            this.add_time = add_time;
+        }
+
+        public String getUserid() {
+            return userid;
+        }
+
+        public void setUserid(String userid) {
+            this.userid = userid;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public String getPhoto() {
+            return photo;
+        }
+
+        public void setPhoto(String photo) {
+            this.photo = photo;
         }
     }
 }

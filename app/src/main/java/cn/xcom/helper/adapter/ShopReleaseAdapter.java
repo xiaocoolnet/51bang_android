@@ -2,7 +2,6 @@ package cn.xcom.helper.adapter;
 
 import android.content.Context;
 import android.content.Intent;
-import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,10 +14,8 @@ import java.util.List;
 
 import cn.xcom.helper.R;
 import cn.xcom.helper.activity.SaleDetailActivity;
-import cn.xcom.helper.activity.ShopActivity;
 import cn.xcom.helper.bean.Front;
 import cn.xcom.helper.constant.NetConstant;
-
 import cn.xcom.helper.utils.MyImageLoader;
 
 /**
@@ -66,11 +63,12 @@ public class ShopReleaseAdapter extends BaseAdapter {
             viewHolder.textView3= (TextView) convertView.findViewById(R.id.price);
             viewHolder.textView4= (TextView) convertView.findViewById(R.id.oldprice);
             viewHolder.textView5= (TextView) convertView.findViewById(R.id.havesell);
+            viewHolder.tv_name = (TextView) convertView.findViewById(R.id.tv_name);
             convertView.setTag(viewHolder);
         }else {
             viewHolder= (ViewHolder) convertView.getTag();
         }
-        Front front=addList.get(position);
+        final Front front=addList.get(position);
         Log.e("========shipeiqi", "" + addList.size());
         if (front.getPicturelist().size()>0) {
             MyImageLoader.display(NetConstant.NET_DISPLAY_IMG +
@@ -83,12 +81,13 @@ public class ShopReleaseAdapter extends BaseAdapter {
         viewHolder.textView3.setText("￥"+front.getPrice());
         viewHolder.textView4.setText(front.getOprice());
         viewHolder.textView5.setText("已售"+front.getSellnumber());
+        viewHolder.tv_name.setText(front.getUsername());
         //对cinvertview进行监听
 
         convertView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent=new Intent(context,ShopActivity.class);
+                /*Intent intent=new Intent(context,ShopActivity.class);
                 Bundle bundle=new Bundle();
                 bundle.putSerializable("item1", addList.get(position));
                 Log.i("---", addList.size() + "");
@@ -97,6 +96,9 @@ public class ShopReleaseAdapter extends BaseAdapter {
                 Log.i("---", position + "");
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 intent.putExtra("from",2);
+                context.startActivity(intent);*/
+                Intent intent = new Intent(context,SaleDetailActivity.class);
+                intent.putExtra("id",front.getId());
                 context.startActivity(intent);
             }
         });
@@ -105,6 +107,6 @@ public class ShopReleaseAdapter extends BaseAdapter {
     }
     public class ViewHolder{
         private ImageView imageView;
-        private TextView textView1,textView2,textView3,textView4,textView5;
+        private TextView textView1,textView2,textView3,textView4,textView5,tv_name;
     }
 }

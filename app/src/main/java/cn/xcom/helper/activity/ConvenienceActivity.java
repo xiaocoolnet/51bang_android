@@ -3,14 +3,10 @@ package cn.xcom.helper.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -20,6 +16,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.jcodecraeer.xrecyclerview.ProgressStyle;
 import com.jcodecraeer.xrecyclerview.XRecyclerView;
+import com.kaopiz.kprogresshud.KProgressHUD;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -37,7 +34,6 @@ import cn.xcom.helper.utils.SPUtils;
 import cn.xcom.helper.utils.SingleVolleyRequest;
 import cn.xcom.helper.utils.StringPostRequest;
 import cn.xcom.helper.utils.ToastUtil;
-import cn.xcom.helper.utils.ToastUtils;
 
 public class ConvenienceActivity extends BaseActivity implements View.OnClickListener {
 
@@ -48,12 +44,22 @@ public class ConvenienceActivity extends BaseActivity implements View.OnClickLis
     private ConvenienceAdapter convenienceAdapter;
     private Context context;
     private XRecyclerView xRecyclerView;
+    private KProgressHUD hud;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_convenience);
         initView();
+        hud = KProgressHUD.create(context)
+                .setStyle(KProgressHUD.Style.SPIN_INDETERMINATE)
+                .setCancellable(true);
+        hud.show();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
         getNewDatas();
     }
 
@@ -122,6 +128,9 @@ public class ConvenienceActivity extends BaseActivity implements View.OnClickLis
         StringPostRequest request = new StringPostRequest(url, new Response.Listener<String>() {
             @Override
             public void onResponse(String s) {
+                if(hud!=null){
+                    hud.dismiss();
+                }
                 try {
                     JSONObject jsonObject = new JSONObject(s);
                     String status = jsonObject.getString("status");
@@ -144,6 +153,9 @@ public class ConvenienceActivity extends BaseActivity implements View.OnClickLis
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError volleyError) {
+                if(hud!=null){
+                    hud.dismiss();
+                }
                 ToastUtil.Toast(context, "网络错误，请检查");
                 xRecyclerView.refreshComplete();
 

@@ -15,6 +15,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.kaopiz.kprogresshud.KProgressHUD;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 
@@ -50,6 +51,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
     private SharedPreferences sp;
     private static final int MSG_SET_ALIAS = 1001;
     private String userId;
+    private KProgressHUD hud;
     private final TagAliasCallback mAliasCallback = new TagAliasCallback() {
         @Override
         public void gotResult(int i, String s, Set<String> set) {
@@ -137,6 +139,11 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
 
     }
     private void toLogin(){
+        hud = KProgressHUD.create(LoginActivity.this)
+                .setStyle(KProgressHUD.Style.SPIN_INDETERMINATE)
+                .setDetailsLabel("登陆中...")
+                .setCancellable(true);
+        hud.show();
 //      http://bang.xiaocool.net/index.php?g=apps&m=index&a=applogin&phone=18653503680&password=123456
         String phone=et_phone.getText().toString().trim();
         String password=et_password.getText().toString().trim();
@@ -177,9 +184,11 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
                                 userId = userInfo.getUserId();
                                 userInfo.writeData(mContext);
                                 getNameAuthentication(userInfo.getUserId());
-                            }if(state.equals("error")){
+                                hud.dismiss();
+                            }else if(state.equals("error")){
                                 String data=response.getString("data");
                                 Toast.makeText(mContext,data,Toast.LENGTH_LONG).show();
+                                hud.dismiss();
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -190,7 +199,8 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
             @Override
             public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
                 super.onFailure(statusCode, headers, responseString, throwable);
-                LogUtils.e(TAG,"--statusCode->"+statusCode+"==>"+responseString);
+                LogUtils.e(TAG, "--statusCode->" + statusCode + "==>" + responseString);
+                hud.dismiss();
             }
         });
     }

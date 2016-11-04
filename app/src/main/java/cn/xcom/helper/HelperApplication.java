@@ -3,19 +3,12 @@ package cn.xcom.helper;
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.Application;
-import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.support.multidex.MultiDex;
 import android.text.TextUtils;
-import android.util.Log;
 
 import com.baidu.mapapi.SDKInitializer;
-import com.bigkoo.alertview.AlertView;
-import com.bigkoo.alertview.OnDismissListener;
-import com.bigkoo.alertview.OnItemClickListener;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.tencent.bugly.crashreport.CrashReport;
@@ -32,11 +25,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import cn.jpush.android.api.JPushInterface;
-import cn.xcom.helper.activity.HomeActivity;
 import cn.xcom.helper.bean.TaskType;
-import cn.xcom.helper.constant.HelperConstant;
-import cn.xcom.helper.utils.SPUtils;
-import cn.xcom.helper.utils.ToastUtil;
 import cn.xcom.helper.utils.ToolUtil;
 
 /**
@@ -61,6 +50,10 @@ public class HelperApplication extends Application {
     //支付相关参数
     public String tradeNo;
     public String payType;
+
+    //提现flag
+    public boolean isBack = false;
+
     /**
      * 打开的activity
      **/

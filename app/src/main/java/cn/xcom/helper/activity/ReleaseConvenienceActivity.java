@@ -17,6 +17,7 @@ import android.widget.Toast;
 
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.kaopiz.kprogresshud.KProgressHUD;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -59,6 +60,7 @@ public class ReleaseConvenienceActivity extends BaseActivity implements View.OnC
     private final int REQUEST_CODE_GALLERY = 1001;
     private AudioManager audioManager;
     private UserInfo userInfo;//得到用户的userid
+    private KProgressHUD hud;
 
 
     @Override
@@ -99,11 +101,18 @@ public class ReleaseConvenienceActivity extends BaseActivity implements View.OnC
             return;
         }
         if(addImageList.size()==0){
+            hud = KProgressHUD.create(context)
+                    .setStyle(KProgressHUD.Style.SPIN_INDETERMINATE)
+                    .setCancellable(true);
+            hud.show();
             //发布任务
             String url = NetConstant.CONVENIENCE_RELEASE;
             StringPostRequest request = new StringPostRequest(url, new Response.Listener<String>() {
                 @Override
                 public void onResponse(String s) {
+                    if(hud!=null){
+                        hud.dismiss();
+                    }
                     Log.d("我的发布", s);
                     try {
                         JSONObject object = new JSONObject(s);
@@ -121,6 +130,9 @@ public class ReleaseConvenienceActivity extends BaseActivity implements View.OnC
             }, new Response.ErrorListener() {
                 @Override
                 public void onErrorResponse(VolleyError volleyError) {
+                    if(hud!=null){
+                        hud.dismiss();
+                    }
                     Toast.makeText(getApplication(), "网络错误，检查您的网络", Toast.LENGTH_SHORT).show();
                 }
             });
@@ -137,6 +149,10 @@ public class ReleaseConvenienceActivity extends BaseActivity implements View.OnC
             Log.e("发布便民圈",String.valueOf(HelperApplication.getInstance().mLocLat) + HelperApplication.getInstance().mLocAddress);
             SingleVolleyRequest.getInstance(getApplication()).addToRequestQueue(request);
         }else{
+            hud = KProgressHUD.create(context)
+                    .setStyle(KProgressHUD.Style.SPIN_INDETERMINATE)
+                    .setCancellable(true);
+            hud.show();
             //先上传图片再发布
             new PushImageUtil().setPushIamge(getApplication(), addImageList, nameList, new PushImage() {
                 @Override
@@ -147,6 +163,9 @@ public class ReleaseConvenienceActivity extends BaseActivity implements View.OnC
                     StringPostRequest request = new StringPostRequest(url, new Response.Listener<String>() {
                         @Override
                         public void onResponse(String s) {
+                            if(hud!=null){
+                                hud.dismiss();
+                            }
                             Log.d("我的发布", s);
                             try {
                                 JSONObject object = new JSONObject(s);
@@ -164,6 +183,9 @@ public class ReleaseConvenienceActivity extends BaseActivity implements View.OnC
                     }, new Response.ErrorListener() {
                         @Override
                         public void onErrorResponse(VolleyError volleyError) {
+                            if(hud!=null){
+                                hud.dismiss();
+                            }
                             Toast.makeText(getApplication(), "网络错误，检查您的网络", Toast.LENGTH_SHORT).show();
                         }
                     });

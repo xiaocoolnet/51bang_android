@@ -18,6 +18,7 @@ import android.widget.Toast;
 
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.kaopiz.kprogresshud.KProgressHUD;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 
@@ -54,6 +55,7 @@ public class ChangeSkillsActivity extends BaseActivity {
     private HelpMeSkillAdapter mHelpMeSkillAdapter;
     private List<TaskType> selectList;
     private UserInfo userInfo;
+    private KProgressHUD hud;
 
     private Context context;
 
@@ -88,7 +90,7 @@ public class ChangeSkillsActivity extends BaseActivity {
         gridViewHelpMe.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent intent = new Intent(ChangeSkillsActivity.this, SelectTaskTypeActivity.class);
+                Intent intent = new Intent(ChangeSkillsActivity.this, SelectTaskTypeOldActivity.class);
                 intent.putExtra("id", skillTagInfos.get(position).getSkill_id());
                 startActivity(intent);
             }
@@ -204,10 +206,17 @@ public class ChangeSkillsActivity extends BaseActivity {
      * 提交新技能
      */
     private void changeSkills() {
+        hud = KProgressHUD.create(context)
+                .setStyle(KProgressHUD.Style.SPIN_INDETERMINATE)
+                .setCancellable(true);
+        hud.show();
         String url=NetConstant.CHANGE_MY_SKILLS;
         StringPostRequest request=new StringPostRequest(url, new Response.Listener<String>() {
             @Override
             public void onResponse(String s) {
+                if(hud!=null){
+                    hud.dismiss();
+                }
                 if (s!=null){
                     try {
                         JSONObject object = new JSONObject(s);
@@ -229,6 +238,9 @@ public class ChangeSkillsActivity extends BaseActivity {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError volleyError) {
+                if(hud!=null){
+                    hud.dismiss();
+                }
                 HelperApplication.getInstance().getTaskTypes().clear();
                 Toast.makeText(getApplication(),"网络错误，检查您的网络",Toast.LENGTH_SHORT).show();
             }

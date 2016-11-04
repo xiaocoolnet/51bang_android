@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.view.Window;
 import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.RatingBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -19,6 +20,7 @@ import cn.xcom.helper.constant.NetConstant;
 import cn.xcom.helper.utils.CommonAdapter;
 import cn.xcom.helper.utils.MyImageLoader;
 import cn.xcom.helper.utils.ViewHolder;
+import cn.xcom.helper.view.NoScrollListView;
 
 public class DetailAuthenticatinActivity extends BaseActivity {
 
@@ -36,6 +38,8 @@ public class DetailAuthenticatinActivity extends BaseActivity {
     TextView tvPaiming;
     @BindView(R.id.gridView_skill)
     GridView gridViewSkill;
+    @BindView(R.id.sale_detail_comment)
+    NoScrollListView saleDetailComment;
     private Context context;
     private AuthenticationList authenticationList;
 
@@ -54,15 +58,26 @@ public class DetailAuthenticatinActivity extends BaseActivity {
      * 为布局设置值
      */
     private void setData() {
-        MyImageLoader.display(NetConstant.NET_DISPLAY_IMG+authenticationList.getPhoto(),ivAvatar);
+        MyImageLoader.display(NetConstant.NET_DISPLAY_IMG + authenticationList.getPhoto(), ivAvatar);
         tvName.setText(authenticationList.getName());
         tvServiceState.setText(authenticationList.getIsworking().equals("1") ? "服务中" : "未服务");
         tvServiceCount.setText(authenticationList.getServiceCount());
         gridViewSkill.setSelector(new ColorDrawable(Color.TRANSPARENT));
-        gridViewSkill.setAdapter(new CommonAdapter<AuthenticationList.SkilllistBean>(context,authenticationList.getSkilllist(),R.layout.item_skill_tag) {
+        gridViewSkill.setAdapter(new CommonAdapter<AuthenticationList.SkilllistBean>(context, authenticationList.getSkilllist(), R.layout.item_skill_tag) {
             @Override
             public void convert(ViewHolder holder, AuthenticationList.SkilllistBean skilllistBean) {
-                holder.setText(R.id.tv_item_help_me_skill_tag,skilllistBean.getTypename());
+                holder.setText(R.id.tv_item_help_me_skill_tag, skilllistBean.getTypename());
+            }
+        });
+        saleDetailComment.setAdapter(new CommonAdapter<AuthenticationList.EvaluatelistBean>(context,authenticationList.getEvaluatelist(),R.layout.item_comment_info) {
+            @Override
+            public void convert(ViewHolder holder, AuthenticationList.EvaluatelistBean evaluatelistBean) {
+                holder.setImageByUrl(R.id.iv_avatar, evaluatelistBean.getPhoto())
+                        .setText(R.id.tv_name, evaluatelistBean.getName())
+                        .setTimeText(R.id.tv_time, evaluatelistBean.getAdd_time())
+                        .setText(R.id.tv_content, evaluatelistBean.getContent());
+                RatingBar ratingBar = holder.getView(R.id.rating_bar);
+                ratingBar.setNumStars(Integer.valueOf(evaluatelistBean.getScore()));
             }
         });
     }

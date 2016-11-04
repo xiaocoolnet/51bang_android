@@ -21,6 +21,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.kaopiz.kprogresshud.KProgressHUD;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 
@@ -71,6 +72,7 @@ public class AuthenticationActivity extends BaseActivity {
     private String type, sort, onlineType;
     private CommonAdapter<AuthenticationList> adapter;
     private List<AuthenticationList> authenticationLists;
+    private KProgressHUD hud;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,13 +85,17 @@ public class AuthenticationActivity extends BaseActivity {
         type = "0";
         sort = "1";
         onlineType = "1";
+        hud = KProgressHUD.create(context)
+                .setStyle(KProgressHUD.Style.SPIN_INDETERMINATE)
+                .setCancellable(true);
+        hud.show();
         setRefresh();
         lvAuthentication.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent intent = new Intent(AuthenticationActivity.this,DetailAuthenticatinActivity.class);
+                Intent intent = new Intent(AuthenticationActivity.this, DetailAuthenticatinActivity.class);
                 Bundle bundle = new Bundle();
-                bundle.putSerializable("authentication",authenticationLists.get(position));
+                bundle.putSerializable("authentication", authenticationLists.get(position));
                 intent.putExtras(bundle);
                 startActivity(intent);
             }
@@ -125,6 +131,9 @@ public class AuthenticationActivity extends BaseActivity {
         StringPostRequest request = new StringPostRequest(url, new Response.Listener<String>() {
             @Override
             public void onResponse(String s) {
+                if(hud!=null){
+                    hud.dismiss();
+                }
                 try {
                     JSONObject jsonObject = new JSONObject(s);
                     String status = jsonObject.getString("status");
@@ -140,6 +149,9 @@ public class AuthenticationActivity extends BaseActivity {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError volleyError) {
+                if(hud!=null){
+                    hud.dismiss();
+                }
                 ToastUtil.Toast(context, "网络错误，请检查");
                 srlAuthentication.setRefreshing(false);
             }
@@ -191,6 +203,8 @@ public class AuthenticationActivity extends BaseActivity {
                     authenticationList.setLongitude(object.optString("longitude"));
                     authenticationList.setLatitude(object.optString("latitude"));
                     authenticationList.setDistance(Long.parseLong(object.optString("distance")));
+                    authenticationList.setScore(object.optString("score"));
+                    //获取技能
                     JSONArray skillArray = object.optJSONArray("skilllist");
                     List<AuthenticationList.SkilllistBean> skilllistBeans = new ArrayList<>();
                     for(int j=0;j<skillArray.length();j++){
@@ -201,6 +215,21 @@ public class AuthenticationActivity extends BaseActivity {
                         skilllistBeans.add(skilllistBean);
                     }
                     authenticationList.setSkilllist(skilllistBeans);
+                    //获取评论
+                    JSONArray commentArray = object.optJSONArray("evaluatelist");
+                    List<AuthenticationList.EvaluatelistBean> evaluatelistBeans = new ArrayList<>();
+                    for(int k = 0;k<commentArray.length();k++){
+                        AuthenticationList.EvaluatelistBean evaluatelistBean = new AuthenticationList.EvaluatelistBean();
+                        evaluatelistBean.setId(commentArray.optJSONObject(k).optString("id"));
+                        evaluatelistBean.setScore(commentArray.optJSONObject(k).optString("score"));
+                        evaluatelistBean.setName(commentArray.optJSONObject(k).optString("name"));
+                        evaluatelistBean.setAdd_time(commentArray.optJSONObject(k).optString("add_time"));
+                        evaluatelistBean.setContent(commentArray.optJSONObject(k).optString("content"));
+                        evaluatelistBean.setPhoto(commentArray.optJSONObject(k).optString("photo"));
+                        evaluatelistBean.setUserid(commentArray.optJSONObject(k).optString("userid"));
+                        evaluatelistBeans.add(evaluatelistBean);
+                    }
+                    authenticationList.setEvaluatelist(evaluatelistBeans);
                     lists.add(authenticationList);
                 }
             }
@@ -239,11 +268,20 @@ public class AuthenticationActivity extends BaseActivity {
         }else{
             adapter = new CommonAdapter<AuthenticationList>(context, authenticationLists, R.layout.item_authentication_info) {
                 @Override
-                public void convert(ViewHolder holder, AuthenticationList authenticationList) {
+                public void convert(ViewHolder holder, final AuthenticationList authenticationList) {
                     holder.setImageByUrl(R.id.iv_avatar, authenticationList.getPhoto())
                             .setText(R.id.tv_name, authenticationList.getName())
                             .setText(R.id.tv_address, authenticationList.getAddress())
                             .setText(R.id.tv_count, "服务" + authenticationList.getServiceCount() + "次");
+                    holder.getView(R.id.btn_chat).setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            Intent intent = new Intent(context, ChatActivity.class);
+                            intent.putExtra("id", authenticationList.getId());
+                            intent.putExtra("name", authenticationList.getName());
+                            context.startActivity(intent);
+                        }
+                    });
                 }
             };
             lvAuthentication.setAdapter(adapter);

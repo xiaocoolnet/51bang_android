@@ -24,6 +24,7 @@ import com.baidu.mapapi.search.geocode.GeoCoder;
 import com.baidu.mapapi.search.geocode.OnGetGeoCoderResultListener;
 import com.baidu.mapapi.search.geocode.ReverseGeoCodeOption;
 import com.baidu.mapapi.search.geocode.ReverseGeoCodeResult;
+import com.kaopiz.kprogresshud.KProgressHUD;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 
@@ -77,6 +78,7 @@ public class CityPickerActivity extends BaseActivity implements View.OnClickList
     private String mLocaddress;
     private double mLocLat,mLocLon;
     private int type; //1是定位，2是切换城市
+    private KProgressHUD hud;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,6 +90,10 @@ public class CityPickerActivity extends BaseActivity implements View.OnClickList
         mSearch = GeoCoder.newInstance();
         mSearch.setOnGetGeoCodeResultListener(this);
         mAllCities = new ArrayList<>();
+        hud = KProgressHUD.create(CityPickerActivity.this)
+                .setStyle(KProgressHUD.Style.SPIN_INDETERMINATE)
+                .setCancellable(true);
+        hud.show();
         initView();
     }
     /**
@@ -319,6 +325,9 @@ public class CityPickerActivity extends BaseActivity implements View.OnClickList
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                 super.onSuccess(statusCode, headers, response);
+                if(hud!=null){
+                    hud.dismiss();
+                }
                 if (response.optString("status").equals("success")) {
                     initData(response);
                     initLocation();
@@ -328,6 +337,9 @@ public class CityPickerActivity extends BaseActivity implements View.OnClickList
             @Override
             public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
                 super.onFailure(statusCode, headers, responseString, throwable);
+                if(hud!=null){
+                    hud.dismiss();
+                }
             }
         });
     }

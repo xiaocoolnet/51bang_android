@@ -337,6 +337,7 @@
             android:theme="@android:style/Theme.Translucent.NoTitleBar" />
 
         android:name="android.support.multidex.MultiDexApplication">
+        <activity android:name=".activity.SelectTaskTypeOldActivity"/>
     </application>
 
 

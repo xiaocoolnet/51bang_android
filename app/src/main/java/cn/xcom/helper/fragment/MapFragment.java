@@ -176,8 +176,10 @@ public class MapFragment extends Fragment implements View.OnClickListener, OnGet
             @Override
             public void onMapStatusChangeFinish(MapStatus mapStatus) {
                 currentPt = mBaiduMap.getMapStatus().target;
-                mSearch.reverseGeoCode(new ReverseGeoCodeOption()
-                        .location(currentPt));
+                if(currentPt.longitude!=0&&currentPt.latitude!=0){
+                    mSearch.reverseGeoCode(new ReverseGeoCodeOption()
+                            .location(currentPt));
+                }
                 Log.e("中心点", currentPt.latitude + "");
                 if (marker != null) {
                     marker.remove();

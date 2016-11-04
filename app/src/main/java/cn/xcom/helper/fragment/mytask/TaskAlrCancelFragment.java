@@ -3,7 +3,6 @@ package cn.xcom.helper.fragment.mytask;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -30,7 +29,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import cn.xcom.helper.R;
-import cn.xcom.helper.activity.NoBeginTaskActivity;
 import cn.xcom.helper.bean.TaskItemInfo;
 import cn.xcom.helper.bean.UserInfo;
 import cn.xcom.helper.constant.NetConstant;
@@ -76,11 +74,11 @@ public class TaskAlrCancelFragment extends Fragment {
         lv_task.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent intent = new Intent(context, NoBeginTaskActivity.class);
+                /*Intent intent = new Intent(context, NoBeginTaskActivity.class);
                 Bundle bundle = new Bundle();
                 bundle.putSerializable("task",taskItemInfos.get(position));
                 intent.putExtras(bundle);
-                context.startActivity(intent);
+                context.startActivity(intent);*/
             }
         });
         srl_task.setColorSchemeResources(R.color.background_white);

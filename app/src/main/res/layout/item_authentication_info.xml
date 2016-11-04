@@ -50,11 +50,21 @@
         </LinearLayout>
         <ImageView
             android:id="@+id/btn_chat"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
             android:src="@mipmap/ic_xiaoxi_xiao"
             android:layout_alignParentRight="true"
             android:layout_marginRight="10dp"
+            android:layout_marginTop="10dp"/>
+        <TextView
+            android:id="@+id/tv_distance"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="0km"
+            android:textSize="15sp"
+            android:textColor="@color/text_grey"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="45dp"
             android:layout_marginTop="10dp"/>
     </RelativeLayout>
     <LinearLayout

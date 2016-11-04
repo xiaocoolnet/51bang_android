@@ -2,6 +2,7 @@ package cn.xcom.helper.activity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
@@ -94,6 +95,10 @@ public class InProgressTaskActivity extends BaseActivity {
                 startActivity(intent);
                 break;
             case R.id.bt_contact:
+                Intent intent1 = new Intent();
+                intent1.setAction(Intent.ACTION_DIAL);
+                intent1.setData(Uri.parse("tel:" + taskItemInfo.getPhone()));
+                context.startActivity(intent1);
                 break;
             case R.id.bt_service:
                 updateState();

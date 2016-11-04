@@ -2,6 +2,7 @@ package cn.xcom.helper.activity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
@@ -86,7 +87,10 @@ public class NoBeginTaskActivity extends BaseActivity {
                 break;
             //联系对方
             case R.id.bt_contact:
-
+                Intent intent1 = new Intent();
+                intent1.setAction(Intent.ACTION_DIAL);
+                intent1.setData(Uri.parse("tel:" + taskItemInfo.getPhone()));
+                context.startActivity(intent1);
                 break;
             //上门服务
             case R.id.bt_service:

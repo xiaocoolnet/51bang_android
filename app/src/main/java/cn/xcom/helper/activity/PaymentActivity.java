@@ -279,7 +279,7 @@ public class PaymentActivity extends BaseActivity implements View.OnClickListene
             return;
         }
         Log.d("更新支付状态",tradeNo);
-        Map<String, String> params = OrderInfoUtil2_0.buildOrderParamMap(APPID,tradeNo,price);
+        Map<String, String> params = OrderInfoUtil2_0.buildOrderParamMap(APPID,tradeNo,price,body);
         String orderParam = OrderInfoUtil2_0.buildOrderParam(params);
         String sign = OrderInfoUtil2_0.getSign(params, RSA_PRIVATE);
         final String orderInfo = orderParam + "&" + sign;
@@ -396,7 +396,7 @@ public class PaymentActivity extends BaseActivity implements View.OnClickListene
             packageParams.add(new BasicNameValuePair("notify_url", "www.baidu.com"));
             packageParams.add(new BasicNameValuePair("out_trade_no",tradeNo));//商户订单号
             packageParams.add(new BasicNameValuePair("spbill_create_ip", "127.0.0.1"));
-            packageParams.add(new BasicNameValuePair("total_fee","1"));
+            packageParams.add(new BasicNameValuePair("total_fee",String.valueOf((int) (Double.parseDouble(price) * 100))));
             packageParams.add(new BasicNameValuePair("trade_type", "APP"));
             Log.e("paycarnew", "================" + "测试");
             Log.e("genOutTradNo","================"+genOutTradNo());
