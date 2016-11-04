@@ -20,6 +20,8 @@ import cn.xcom.helper.R;
 import cn.xcom.helper.adapter.ImgGridAdapter;
 import cn.xcom.helper.bean.TaskInfo;
 import cn.xcom.helper.bean.TaskItemInfo;
+import cn.xcom.helper.constant.NetConstant;
+import cn.xcom.helper.utils.MyImageLoader;
 import cn.xcom.helper.utils.NoScrollGridView;
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -87,6 +89,7 @@ public class TaskDetailActivity extends BaseActivity {
                 itemSnGridpic.setVisibility(View.VISIBLE);
                 itemSnGridpic.setAdapter(new ImgGridAdapter(images, context));
             }
+            MyImageLoader.display(NetConstant.NET_DISPLAY_IMG + taskInfo.getPhoto(),ivAvatar);
         } else if (type.equals("2")) {
             tvName.setText(taskItemInfo.getName());
             tvTradeNo.setText(taskItemInfo.getOrder_num());
@@ -105,6 +108,7 @@ public class TaskDetailActivity extends BaseActivity {
                 itemSnGridpic.setVisibility(View.VISIBLE);
                 itemSnGridpic.setAdapter(new ImgGridAdapter(images, context));
             }
+            MyImageLoader.display(NetConstant.NET_DISPLAY_IMG + taskItemInfo.getPhoto(),ivAvatar);
         }
     }
 

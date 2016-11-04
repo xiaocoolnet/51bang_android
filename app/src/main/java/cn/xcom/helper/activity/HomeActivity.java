@@ -1,7 +1,6 @@
 package cn.xcom.helper.activity;
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -12,15 +11,11 @@ import android.view.Window;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.bigkoo.alertview.AlertView;
-import com.bigkoo.alertview.OnItemClickListener;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 
 import org.json.JSONObject;
 
-import cn.jpush.android.api.JPushInterface;
-import cn.xcom.helper.HelperApplication;
 import cn.xcom.helper.R;
 import cn.xcom.helper.bean.UserInfo;
 import cn.xcom.helper.constant.HelperConstant;
@@ -51,6 +46,8 @@ public class HomeActivity extends BaseActivity {
     private int index;
     private int currentTanIndex;
     private String from = "";
+    private String state;
+    private int flag=0;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -62,6 +59,7 @@ public class HomeActivity extends BaseActivity {
         userInfo.readData(mContext);
         initView();
         initFragment();
+        state = SPUtils.get(mContext,HelperConstant.IS_HAD_AUTHENTICATION,"").toString();
     }
 
     private void initView() {
@@ -137,6 +135,10 @@ public class HomeActivity extends BaseActivity {
                 break;
         }
         if (currentTanIndex != index) {
+            if(index == 1 && state != SPUtils.get(mContext,HelperConstant.IS_HAD_AUTHENTICATION,"").toString()&&flag==0){
+                flag = 1;
+                fragments[1] = new BuyFragment();
+            }
             FragmentTransaction trx = getSupportFragmentManager().beginTransaction();
             trx.hide(fragments[currentTanIndex]);
             if (!fragments[index].isAdded()) {

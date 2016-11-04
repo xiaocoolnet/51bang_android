@@ -222,7 +222,9 @@ public class BuyFragment extends Fragment implements View.OnClickListener{
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                     super.onSuccess(statusCode, headers, response);
-                    srl_task.setRefreshing(false);
+                    if(srl_task!=null){
+                        srl_task.setRefreshing(false);
+                    }
                     if (response.optString("status").equals("success")) {
                         setAdapter(response);
                     }
@@ -249,6 +251,9 @@ public class BuyFragment extends Fragment implements View.OnClickListener{
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                 super.onSuccess(statusCode, headers, response);
                 String state = response.optString("data");
+                if(sb_change==null){
+                    return;
+                }
                 if (state.equals("0")) {
                     sb_change.setChecked(false);
                 } else if (state.equals("1")) {
