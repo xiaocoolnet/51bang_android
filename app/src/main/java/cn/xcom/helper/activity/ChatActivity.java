@@ -3,6 +3,7 @@ package cn.xcom.helper.activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,7 +14,6 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -28,7 +28,6 @@ import java.util.List;
 
 import cn.xcom.helper.R;
 import cn.xcom.helper.bean.ChatInfo;
-import cn.xcom.helper.bean.ChatListInfo;
 import cn.xcom.helper.bean.UserInfo;
 import cn.xcom.helper.constant.NetConstant;
 import cn.xcom.helper.net.HelperAsyncHttpClient;
@@ -128,6 +127,7 @@ public class ChatActivity extends BaseActivity implements View.OnClickListener {
                         super.onSuccess(statusCode, headers, response);
                         if (response != null) {
                             try {
+                                Log.e("chat",response.toString());
                                 String state = response.getString("status");
                                 if (state.equals("success")) {
                                     String data = response.getString("data");
