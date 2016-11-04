@@ -19,7 +19,7 @@ import cn.xcom.helper.R;
 public class SharePopupWindow extends PopupWindow {
     private Context mContext;
     private View view;
-    private LinearLayout haoyou, dongtai;
+    private LinearLayout haoyou, dongtai,qq,kongjian,zhifubao;
     private TextView tv_cancel;
 
 
@@ -29,6 +29,9 @@ public class SharePopupWindow extends PopupWindow {
 
         haoyou = (LinearLayout) view.findViewById(R.id.haoyou);
         dongtai = (LinearLayout) view.findViewById(R.id.dongtai);
+        qq = (LinearLayout) view.findViewById(R.id.qq);
+        kongjian = (LinearLayout) view.findViewById(R.id.kongjian);
+        zhifubao = (LinearLayout) view.findViewById(R.id.zhifubao);
         tv_cancel = (TextView) view.findViewById(R.id.quxiao);
         // 取消按钮
         tv_cancel.setOnClickListener(new View.OnClickListener() {
@@ -41,7 +44,9 @@ public class SharePopupWindow extends PopupWindow {
         // 设置按钮监听
         haoyou.setOnClickListener(itemsOnClick);
         dongtai.setOnClickListener(itemsOnClick);
-
+        qq.setOnClickListener(itemsOnClick);
+        kongjian.setOnClickListener(itemsOnClick);
+        zhifubao.setOnClickListener(itemsOnClick);
         // 设置外部可点击
         this.setOutsideTouchable(true);
         // mMenuView添加OnTouchListener监听判断获取触屏位置如果在选择框外面则销毁弹出框

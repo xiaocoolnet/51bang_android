@@ -24,7 +24,7 @@ android {
         targetSdkVersion 23
         versionCode 1
         versionName "1.0"
-
+        multiDexEnabled true
     }
     buildTypes {
         release {
@@ -92,4 +92,7 @@ dependencies {
     compile 'com.tencent.bugly:crashreport:latest.release'
     //其中latest.release指代最新Bugly SDK版本号，也可以指定明确的版本号，例如2.1.9
     compile files('libs/libapshare.jar')
+    compile files('libs/open_sdk_r5756_lite.jar')
+    compile 'com.android.support:multidex:1.0.1'
+
 }

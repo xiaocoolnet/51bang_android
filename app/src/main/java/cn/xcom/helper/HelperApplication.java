@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
+import android.support.multidex.MultiDex;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -18,6 +19,7 @@ import com.bigkoo.alertview.OnItemClickListener;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.tencent.bugly.crashreport.CrashReport;
+import com.tencent.tauth.Tencent;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -59,7 +61,6 @@ public class HelperApplication extends Application {
     //支付相关参数
     public String tradeNo;
     public String payType;
-
     /**
      * 打开的activity
      **/
@@ -79,6 +80,7 @@ public class HelperApplication extends Application {
      */
     public static JSONObject mCityJson;
 
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -96,6 +98,7 @@ public class HelperApplication extends Application {
         initJsonData();
         //初始化bugly
         initBugly();
+
     }
 
 
@@ -157,6 +160,7 @@ public class HelperApplication extends Application {
     @Override
     protected void attachBaseContext(Context base) {
         super.attachBaseContext(base);
+        MultiDex.install(this);
     }
 
     private void initChat() {
@@ -283,5 +287,6 @@ public class HelperApplication extends Application {
         }
         return null;
     }
+
 
 }

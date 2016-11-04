@@ -49,6 +49,7 @@ public class UserMessageActivity extends BaseActivity implements View.OnClickLis
     private UserInfo userInfo;
     private ListView listView;
     private ChatListAdapter chatListAdapter;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -70,9 +71,9 @@ public class UserMessageActivity extends BaseActivity implements View.OnClickLis
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent intent = new Intent(mContext,ChatActivity.class);
-                intent.putExtra("id",chatLists.get(position).getChat_uid());
-                intent.putExtra("name",chatLists.get(position).getOther_nickname());
+                Intent intent = new Intent(mContext, ChatActivity.class);
+                intent.putExtra("id", chatLists.get(position).getChat_uid());
+                intent.putExtra("name", chatLists.get(position).getOther_nickname());
                 startActivity(intent);
             }
         });
@@ -81,7 +82,7 @@ public class UserMessageActivity extends BaseActivity implements View.OnClickLis
 
     private void getChatList() {
         RequestParams requestParams = new RequestParams();
-        requestParams.put("uid",userInfo.getUserId());
+        requestParams.put("uid", userInfo.getUserId());
         HelperAsyncHttpClient.get(NetConstant.GET_CHAT_LIST, requestParams,
                 new JsonHttpResponseHandler() {
                     @Override
@@ -93,7 +94,8 @@ public class UserMessageActivity extends BaseActivity implements View.OnClickLis
                                 if (state.equals("success")) {
                                     String data = response.getString("data");
                                     List<ChatListInfo> infos = new Gson().fromJson(data,
-                                            new TypeToken<List<ChatListInfo>>(){}.getType());
+                                            new TypeToken<List<ChatListInfo>>() {
+                                            }.getType());
                                     chatLists.clear();
                                     chatLists.addAll(infos);
                                     chatListAdapter.notifyDataSetChanged();

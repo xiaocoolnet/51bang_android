@@ -2,10 +2,13 @@ package cn.xcom.helper.activity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Paint;
 import android.os.Bundle;
+import android.util.Base64;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.Window;
@@ -14,18 +17,27 @@ import android.webkit.WebViewClient;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.alipay.share.sdk.openapi.APAPIFactory;
 import com.alipay.share.sdk.openapi.APMediaMessage;
-import com.alipay.share.sdk.openapi.APTextObject;
 import com.alipay.share.sdk.openapi.APWebPageObject;
 import com.alipay.share.sdk.openapi.IAPApi;
 import com.alipay.share.sdk.openapi.SendMessageToZFB;
+import com.tencent.connect.share.QQShare;
+import com.tencent.connect.share.QzoneShare;
 import com.tencent.mm.sdk.modelmsg.SendMessageToWX;
 import com.tencent.mm.sdk.modelmsg.WXMediaMessage;
 import com.tencent.mm.sdk.modelmsg.WXWebpageObject;
 import com.tencent.mm.sdk.openapi.IWXAPI;
 import com.tencent.mm.sdk.openapi.WXAPIFactory;
+import com.tencent.tauth.IUiListener;
+import com.tencent.tauth.Tencent;
+import com.tencent.tauth.UiError;
+
+import java.io.ByteArrayOutputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -38,6 +50,8 @@ import cn.xcom.helper.constant.NetConstant;
 import cn.xcom.helper.utils.SPUtils;
 import cn.xcom.helper.utils.ToastUtils;
 import cn.xcom.helper.view.SharePopupWindow;
+
+import static com.tencent.connect.share.QzoneShare.SHARE_TO_QZONE_TYPE_IMAGE_TEXT;
 
 public class ShareQRCodeActivity extends BaseActivity {
     @BindView(R.id.back)
@@ -60,7 +74,11 @@ public class ShareQRCodeActivity extends BaseActivity {
     private UserInfo userInfo;
     private int wxflag = 0;
     private String url;
-
+    private BaseUiListener listener;
+    private Tencent mTencent;
+    Resources res;
+    Bitmap bitmap;
+    String thumbPath;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -73,16 +91,23 @@ public class ShareQRCodeActivity extends BaseActivity {
         userInfo = new UserInfo(context);
         userInfo.readData(context);
         setData();
+
+        mTencent = Tencent.createInstance("1105589363", this.getApplicationContext());
+        listener = new BaseUiListener();
+
+        res=getResources();
+        bitmap=BitmapFactory.decodeResource(res, R.drawable.ic_logo);
+        thumbPath = convertIconToString(bitmap);
     }
 
     /**
      * 显示数据
      */
     private void setData() {
-        tvJizhi.getPaint().setFlags(Paint. UNDERLINE_TEXT_FLAG ); //下划线
+        tvJizhi.getPaint().setFlags(Paint.UNDERLINE_TEXT_FLAG); //下划线
         tvJizhi.getPaint().setAntiAlias(true);//抗锯齿
         url = NetConstant.MY_QR_CODE + "&uid=" + userInfo.getUserId();
-        tvReferral.setText(SPUtils.get(context, HelperConstant.MY_REFERAL,"").toString());
+        tvReferral.setText(SPUtils.get(context, HelperConstant.MY_REFERAL, "").toString());
         webView.getSettings().setJavaScriptEnabled(true);
         webView.getSettings().setUseWideViewPort(true);
         webView.getSettings().setLoadWithOverviewMode(true);
@@ -114,7 +139,18 @@ public class ShareQRCodeActivity extends BaseActivity {
                 case R.id.dongtai:
                     ToastUtils.showToast(ShareQRCodeActivity.this, "微信朋友圈");
                     history();
-//                    toAlipay();
+                    break;
+                case R.id.qq:
+                    ToastUtils.showToast(ShareQRCodeActivity.this, "QQ");
+//                    shareToQQ();
+                    break;
+                case R.id.kongjian:
+                    ToastUtils.showToast(ShareQRCodeActivity.this, "QQ空间");
+//                    shareToQzone();
+                    break;
+                case R.id.zhifubao:
+                    ToastUtils.showToast(ShareQRCodeActivity.this, "支付宝");
+                    toAlipay();
                     break;
             }
         }
@@ -160,20 +196,55 @@ public class ShareQRCodeActivity extends BaseActivity {
         takePhotoPopWin.dismiss();
     }
 
-    private void toAlipay(){
+    private void toAlipay() {
         //创建工具对象实例，此处的APPID为上文提到的，申请应用生效后，在应用详情页中可以查到的支付宝应用唯一标识
-        IAPApi api = APAPIFactory.createZFBApi(getApplicationContext(),"2016083001821606",false);
-        APWebPageObject webPageObject = new APWebPageObject(NetConstant.SHARE_QRCODE_H5 + userInfo.getUserId());
+        IAPApi api = APAPIFactory.createZFBApi(getApplicationContext(), "2016083001821606", false);
+        APWebPageObject webPageObject = new APWebPageObject();
+        webPageObject.webpageUrl = NetConstant.SHARE_QRCODE_H5 + userInfo.getUserId();
+
         //组装分享消息对象
         APMediaMessage mediaMessage = new APMediaMessage();
-        mediaMessage.title = "我注册了51bang，发布了商品，来加入吧";
+        mediaMessage.title = "我注册了51bang，来加入吧";
         mediaMessage.description = "基于同城个人，商户服务 。商品购买。给个人，商户提供交流与服务平台";
         mediaMessage.mediaObject = webPageObject;
+        mediaMessage.setThumbImage(bitmap);
         //将分享消息对象包装成请求对象
         SendMessageToZFB.Req req = new SendMessageToZFB.Req();
         req.message = mediaMessage;
+        req.transaction = "WebShare"+String.valueOf(System.currentTimeMillis());
         //发送请求
         api.sendReq(req);
+
+    }
+
+
+    private void shareToQQ() {
+        Bundle params = new Bundle();
+        params.putInt(QQShare.SHARE_TO_QQ_KEY_TYPE, QQShare.SHARE_TO_QQ_TYPE_DEFAULT);
+        params.putString(QQShare.SHARE_TO_QQ_TITLE, "我注册了51bang，来加入吧");
+        params.putString(QQShare.SHARE_TO_QQ_SUMMARY, "基于同城个人，商户服务 。商品购买。给个人，商户提供交流与服务平台");
+        params.putString(QQShare.SHARE_TO_QQ_TARGET_URL, NetConstant.SHARE_QRCODE_H5 + userInfo.getUserId());
+        params.putString(QQShare.SHARE_TO_QQ_IMAGE_LOCAL_URL, thumbPath);
+        params.putString(QQShare.SHARE_TO_QQ_APP_NAME, "51帮");
+//        params.putInt(QQShare.SHARE_TO_QQ_EXT_INT,  1);
+//        params.putString(QQShare.SHARE_TO_QQ_IMAGE_LOCAL_URL, BitmapFactory
+//                .decodeResource(this.getResources(), R.mipmap.ic_logo));
+        mTencent.shareToQQ(this, params, listener);
+    }
+
+    private void shareToQzone() {
+        Bundle params = new Bundle();
+        //分享类型
+        params.putInt(QzoneShare.SHARE_TO_QZONE_KEY_TYPE, SHARE_TO_QZONE_TYPE_IMAGE_TEXT);
+        params.putString(QzoneShare.SHARE_TO_QQ_TITLE, "我注册了51bang，来加入吧");//必填
+        params.putString(QzoneShare.SHARE_TO_QQ_SUMMARY, "基于同城个人，商户服务 。商品购买。给个人，商户提供交流与服务平台");//选填
+        params.putString(QzoneShare.SHARE_TO_QQ_TARGET_URL, NetConstant.SHARE_QRCODE_H5 + userInfo.getUserId());//必填
+        ArrayList<String> images = new ArrayList<>();
+        images.add(thumbPath);
+        params.putStringArrayList(QzoneShare.SHARE_TO_QQ_IMAGE_LOCAL_URL, images);
+//        params.putString(QzoneShare.SHARE_TO_QQ_IMAGE_URL,
+//                convertIconToString(BitmapFactory.decodeResource(this.getResources(),R.mipmap.ic_logo)));
+        mTencent.shareToQzone(ShareQRCodeActivity.this, params, listener);
     }
 
 
@@ -191,6 +262,43 @@ public class ShareQRCodeActivity extends BaseActivity {
 
     @OnClick(R.id.ll_jizhi)
     public void onClick() {
-        startActivity(new Intent(context,VIPArticleActivity.class));
+        startActivity(new Intent(context, VIPArticleActivity.class));
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        Tencent.onActivityResultData(requestCode, resultCode, data, listener);
+    }
+
+
+    private class BaseUiListener implements IUiListener
+    {
+        @Override
+        public void onCancel() {
+            Toast.makeText(ShareQRCodeActivity.this, "取消分享", Toast.LENGTH_SHORT)
+                    .show();
+        }
+
+        @Override
+        public void onError(UiError uiError) {
+            Toast.makeText(ShareQRCodeActivity.this, uiError.errorMessage + "\n" +uiError.errorDetail,
+                    Toast.LENGTH_SHORT)
+                    .show();
+            Log.d("QQshare",uiError.errorMessage + "\n" +uiError.errorDetail);
+        }
+
+        @Override
+        public void onComplete(Object o) {
+//            enableAction(enableActionShareQRCodeActivity.this.action);
+        }
+    }
+
+    public  String convertIconToString(Bitmap bitmap)
+    {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();// outputstream
+        bitmap.compress(Bitmap.CompressFormat.PNG, 100, baos);
+        byte[] appicon = baos.toByteArray();// 转为byte数组
+        return Base64.encodeToString(appicon, Base64.DEFAULT);
+
     }
 }
