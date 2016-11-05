@@ -57,6 +57,7 @@ import cn.xcom.helper.activity.CityPickerActivity;
 import cn.xcom.helper.activity.ConvenienceActivity;
 import cn.xcom.helper.activity.HelpMeActivity;
 import cn.xcom.helper.activity.HomeActivity;
+import cn.xcom.helper.activity.MyCitySelectActivity;
 import cn.xcom.helper.bean.AuthenticationList;
 import cn.xcom.helper.constant.NetConstant;
 import cn.xcom.helper.utils.SingleVolleyRequest;
@@ -436,7 +437,7 @@ public class MapFragment extends Fragment implements View.OnClickListener, OnGet
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.rl_fragment_map_location:
-                startActivityForResult(new Intent(mContext, CityPickerActivity.class), CITY_RESULT);
+                startActivityForResult(new Intent(mContext, MyCitySelectActivity.class), CITY_RESULT);
                 break;
             case R.id.rl_fragment_map_authentication_list:
                 startActivity(new Intent(mContext, AuthenticationActivity.class));

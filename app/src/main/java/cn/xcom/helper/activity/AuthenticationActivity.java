@@ -202,6 +202,7 @@ public class AuthenticationActivity extends BaseActivity {
                     authenticationList.setServiceCount(object.optString("serviceCount"));
                     authenticationList.setLongitude(object.optString("longitude"));
                     authenticationList.setLatitude(object.optString("latitude"));
+                    authenticationList.setRanking(object.optString("Ranking"));
                     authenticationList.setDistance(Long.parseLong(object.optString("distance")));
                     authenticationList.setScore(object.optString("score"));
                     //获取技能

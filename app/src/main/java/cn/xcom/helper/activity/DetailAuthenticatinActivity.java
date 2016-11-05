@@ -62,6 +62,7 @@ public class DetailAuthenticatinActivity extends BaseActivity {
         tvName.setText(authenticationList.getName());
         tvServiceState.setText(authenticationList.getIsworking().equals("1") ? "服务中" : "未服务");
         tvServiceCount.setText(authenticationList.getServiceCount());
+        tvPaiming.setText(authenticationList.getRanking()+"");
         gridViewSkill.setSelector(new ColorDrawable(Color.TRANSPARENT));
         gridViewSkill.setAdapter(new CommonAdapter<AuthenticationList.SkilllistBean>(context, authenticationList.getSkilllist(), R.layout.item_skill_tag) {
             @Override

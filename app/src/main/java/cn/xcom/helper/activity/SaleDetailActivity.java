@@ -383,15 +383,18 @@ public class SaleDetailActivity extends BaseActivity implements View.OnClickList
                     break;
                 case R.id.qq:
                     ToastUtils.showToast(SaleDetailActivity.this, "QQ");
-//                    shareToQQ();
+                    shareToQQ();
+                    takePhotoPopWin.dismiss();
                     break;
                 case R.id.kongjian:
                     ToastUtils.showToast(SaleDetailActivity.this, "QQ空间");
-//                    shareToQzone();
+                    shareToQzone();
+                    takePhotoPopWin.dismiss();
                     break;
                 case R.id.zhifubao:
                     ToastUtils.showToast(SaleDetailActivity.this, "支付宝");
                     toAlipay();
+                    takePhotoPopWin.dismiss();
                     break;
             }
         }
@@ -407,7 +410,7 @@ public class SaleDetailActivity extends BaseActivity implements View.OnClickList
         WXMediaMessage msg = new WXMediaMessage(webpage);
         msg.title = "我注册了51bang，发布了商品，来加入吧";
         msg.description = "基于同城个人，商户服务 。商品购买。给个人，商户提供交流与服务平台";
-        Bitmap thumb = BitmapFactory.decodeResource(getResources(), R.drawable.logo_wx);
+        Bitmap thumb = BitmapFactory.decodeResource(getResources(), R.mipmap.ic_logo);
         msg.setThumbImage(thumb);
         SendMessageToWX.Req req = new SendMessageToWX.Req();
         req.transaction = "weiyi";
@@ -626,11 +629,8 @@ public class SaleDetailActivity extends BaseActivity implements View.OnClickList
         params.putString(QQShare.SHARE_TO_QQ_TITLE, "我注册了51bang，发布了商品，来加入吧");
         params.putString(QQShare.SHARE_TO_QQ_SUMMARY, "基于同城个人，商户服务 。商品购买。给个人，商户提供交流与服务平台");
         params.putString(QQShare.SHARE_TO_QQ_TARGET_URL, NetConstant.SHARE_SHOP_H5 + userInfo.getUserId());
-        params.putString(QQShare.SHARE_TO_QQ_IMAGE_LOCAL_URL, thumbPath);
+        params.putString(QQShare.SHARE_TO_QQ_IMAGE_URL, "http://www.my51bang.com/uploads/ic_logo.png");
         params.putString(QQShare.SHARE_TO_QQ_APP_NAME, "51帮");
-//        params.putInt(QQShare.SHARE_TO_QQ_EXT_INT,  1);
-//        params.putString(QQShare.SHARE_TO_QQ_IMAGE_LOCAL_URL, BitmapFactory
-//                .decodeResource(this.getResources(), R.mipmap.ic_logo));
         mTencent.shareToQQ(this, params, listener);
     }
 
@@ -642,12 +642,11 @@ public class SaleDetailActivity extends BaseActivity implements View.OnClickList
         params.putString(QzoneShare.SHARE_TO_QQ_SUMMARY, "基于同城个人，商户服务 。商品购买。给个人，商户提供交流与服务平台");//选填
         params.putString(QzoneShare.SHARE_TO_QQ_TARGET_URL, NetConstant.SHARE_SHOP_H5 + userInfo.getUserId());//必填
         ArrayList<String> images = new ArrayList<>();
-        images.add(thumbPath);
-        params.putStringArrayList(QzoneShare.SHARE_TO_QQ_IMAGE_LOCAL_URL, images);
-//        params.putString(QzoneShare.SHARE_TO_QQ_IMAGE_URL,
-//                convertIconToString(BitmapFactory.decodeResource(this.getResources(),R.mipmap.ic_logo)));
+        images.add("http://www.my51bang.com/uploads/ic_logo.png");
+        params.putStringArrayList(QzoneShare.SHARE_TO_QQ_IMAGE_URL, images);
         mTencent.shareToQzone(SaleDetailActivity.this, params, listener);
     }
+
 
     public String convertIconToString(Bitmap bitmap) {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();// outputstream

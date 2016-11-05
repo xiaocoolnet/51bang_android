@@ -7,23 +7,22 @@ import java.util.List;
  * Created by Administrator on 2016/10/17 0017.
  */
 public class AuthenticationList implements Serializable{
-
-
     /**
-     * id : 783
-     * name : 冰姐
-     * photo : 1478084959831.jpg
-     * phone : 15392341266
-     * address : 宁德市福安市百丽阁
+     * id : 736
+     * name : 51帮会所
+     * photo : avatar20161027213553.png
+     * phone : 18059360319
+     * address : 宁德市福安市解放路
      * status : 2
      * usertype : 1
      * isworking : 1
-     * serviceCount : 3
-     * skilllist : [{"type":"21","typename":"送快递","parent_typeid":"12"},{"type":"273","typename":"陪练歌","parent_typeid":"272"}]
-     * longitude : 119.654799
-     * latitude : 27.090945
+     * serviceCount : 4
+     * Ranking : 4
+     * skilllist : [{"type":"21","typename":"送快递","parent_typeid":"12"},{"type":"45","typename":"家具安装","parent_typeid":"40"}]
+     * longitude : 119.65478416475
+     * latitude : 27.0909364142877
      * distance : 10000000000
-     * evaluatelist : [{"id":"99","content":"态度好","score":"5","add_time":"1478242179","userid":"800","name":"翠花","photo":"1478165506124.jpg"}]
+     * evaluatelist : [{"id":"100","content":"态度好","score":"5","add_time":"1478242266","userid":"800","name":"翠花","photo":"1478165506124.jpg"},{"id":"101","content":"速度快","score":"5","add_time":"1478243017","userid":"800","name":"翠花","photo":"1478165506124.jpg"}]
      * score : 5.0000
      */
 
@@ -36,6 +35,7 @@ public class AuthenticationList implements Serializable{
     private String usertype;
     private String isworking;
     private String serviceCount;
+    private String Ranking;
     private String longitude;
     private String latitude;
     private long distance;
@@ -48,10 +48,10 @@ public class AuthenticationList implements Serializable{
 
     private List<SkilllistBean> skilllist;
     /**
-     * id : 99
+     * id : 100
      * content : 态度好
      * score : 5
-     * add_time : 1478242179
+     * add_time : 1478242266
      * userid : 800
      * name : 翠花
      * photo : 1478165506124.jpg
@@ -129,6 +129,14 @@ public class AuthenticationList implements Serializable{
 
     public void setServiceCount(String serviceCount) {
         this.serviceCount = serviceCount;
+    }
+
+    public String getRanking() {
+        return Ranking;
+    }
+
+    public void setRanking(String Ranking) {
+        this.Ranking = Ranking;
     }
 
     public String getLongitude() {
@@ -209,7 +217,7 @@ public class AuthenticationList implements Serializable{
         }
     }
 
-    public static class EvaluatelistBean implements Serializable{
+    public static class EvaluatelistBean implements Serializable {
         private String id;
         private String content;
         private String score;
