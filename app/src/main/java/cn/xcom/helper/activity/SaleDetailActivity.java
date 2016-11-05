@@ -118,7 +118,7 @@ public class SaleDetailActivity extends BaseActivity implements View.OnClickList
         goodsId = intent.getStringExtra("id");
         addGood();
 
-        mTencent = Tencent.createInstance("1105589363", this.getApplicationContext());
+        mTencent = Tencent.createInstance("1105802480", this.getApplicationContext());
         listener = new BaseUiListener();
         res = getResources();
         bitmap = BitmapFactory.decodeResource(res, R.drawable.ic_logo);

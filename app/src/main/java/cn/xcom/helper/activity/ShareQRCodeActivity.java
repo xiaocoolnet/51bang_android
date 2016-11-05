@@ -12,8 +12,6 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.Window;
-import android.webkit.WebView;
-import android.webkit.WebViewClient;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -37,7 +35,6 @@ import com.tencent.tauth.UiError;
 
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
-import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -60,8 +57,8 @@ public class ShareQRCodeActivity extends BaseActivity {
     RelativeLayout rlShare;
     @BindView(R.id.main_view)
     View mainView;
-    @BindView(R.id.webView)
-    WebView webView;
+    /*@BindView(R.id.webView)
+    WebView webView;*/
     @BindView(R.id.tv_referral)
     TextView tvReferral;
     @BindView(R.id.ll_jizhi)
@@ -92,7 +89,7 @@ public class ShareQRCodeActivity extends BaseActivity {
         userInfo.readData(context);
         setData();
 
-        mTencent = Tencent.createInstance("1105589363", this.getApplicationContext());
+        mTencent = Tencent.createInstance("1105802480", this.getApplicationContext());
         listener = new BaseUiListener();
 
         res=getResources();
@@ -108,7 +105,7 @@ public class ShareQRCodeActivity extends BaseActivity {
         tvJizhi.getPaint().setAntiAlias(true);//抗锯齿
         url = NetConstant.MY_QR_CODE + "&uid=" + userInfo.getUserId();
         tvReferral.setText(SPUtils.get(context, HelperConstant.MY_REFERAL, "").toString());
-        webView.getSettings().setJavaScriptEnabled(true);
+        /*webView.getSettings().setJavaScriptEnabled(true);
         webView.getSettings().setUseWideViewPort(true);
         webView.getSettings().setLoadWithOverviewMode(true);
         webView.setScrollBarStyle(WebView.SCROLLBARS_OUTSIDE_OVERLAY);
@@ -118,7 +115,7 @@ public class ShareQRCodeActivity extends BaseActivity {
                 view.loadUrl(url);
                 return true;
             }
-        });
+        });*/
 
     }
 
@@ -142,11 +139,11 @@ public class ShareQRCodeActivity extends BaseActivity {
                     break;
                 case R.id.qq:
                     ToastUtils.showToast(ShareQRCodeActivity.this, "QQ");
-//                    shareToQQ();
+                    shareToQQ();
                     break;
                 case R.id.kongjian:
                     ToastUtils.showToast(ShareQRCodeActivity.this, "QQ空间");
-//                    shareToQzone();
+                    shareToQzone();
                     break;
                 case R.id.zhifubao:
                     ToastUtils.showToast(ShareQRCodeActivity.this, "支付宝");

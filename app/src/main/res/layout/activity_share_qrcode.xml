@@ -50,13 +50,19 @@
             android:id="@+id/rl_bottom"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
-            <WebView
+            <!--<WebView
                 android:id="@+id/webView"
                 android:layout_width="250dp"
                 android:layout_height="250dp"
                 android:layout_centerHorizontal="true"
-                android:layout_marginTop="100dp"></WebView>
-
+                android:layout_marginTop="100dp"></WebView>-->
+            <ImageView
+                android:id="@+id/webView"
+                android:layout_width="250dp"
+                android:layout_height="250dp"
+                android:src="@drawable/qrcode"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="80dp"/>
             <LinearLayout
                 android:id="@+id/ll_referral"
                 android:layout_width="wrap_content"

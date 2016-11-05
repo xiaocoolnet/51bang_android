@@ -13,9 +13,14 @@ android {
 //            storeFile file("C:/Users/Administrator.RL-20160728GMZX/.android/debug.keystore")
 //        }
 //    }
-
-
-
+    signingConfigs {
+        release {
+            keyAlias '51bang'
+            keyPassword 'love@1314'
+            storeFile file('E:/51bangpackage/51bang.jks')
+            storePassword 'love@1314'
+        }
+    }
     compileSdkVersion 23
     buildToolsVersion "23.0.3"
     defaultConfig {
@@ -30,6 +35,10 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
+        }
+        debug {
+            signingConfig signingConfigs.release
         }
     }
     sourceSets {
@@ -41,9 +50,9 @@ android {
             assets.srcDirs = ['src/main/assets']
         }
     }
-    packagingOptions{
-        exclude  'META-INF/maven/com.squareup.picasso/picasso/pom.xml'
-        exclude  'META-INF/maven/com.squareup.picasso/picasso/pom.properties'
+    packagingOptions {
+        exclude 'META-INF/maven/com.squareup.picasso/picasso/pom.xml'
+        exclude 'META-INF/maven/com.squareup.picasso/picasso/pom.properties'
 
     }
 }
@@ -71,12 +80,19 @@ dependencies {
     // compile files('libs/xUtils-2.6.14.jar')
     compile 'com.squareup.picasso:picasso:2.5.2'
     //    compile files('build/intermediates/exploded-aar/org.xutils/xutils/3.1.22/jars/classes.jar')
+
     //    compile files('build/intermediates/exploded-aar/com.facebook.fresco/fbcore/0.9.0/jars/classes.jar')
+
     //    compile files('build/intermediates/exploded-aar/com.facebook.fresco/imagepipeline/0.9.0/jars/classes.jar')
+
     //    compile files('build/intermediates/exploded-aar/com.facebook.fresco/fresco/0.9.0/jars/classes.jar')
+
     //    compile files('build/intermediates/exploded-aar/com.facebook.fresco/imagepipeline-base/0.9.0/jars/classes.jar')
+
     //    compile files('build/intermediates/exploded-aar/com.facebook.fresco/imagepipeline/0.9.0/jars/classes.jar')
+
     //    compile files('build/intermediates/exploded-aar/com.facebook.fresco/imagepipeline-base/0.9.0/jars/classes.jar')
+
     //    compile files('build/intermediates/exploded-aar/org.xutils/xutils/3.1.22/jars/classes.jar')
     compile files('libs/alipaySdk-20160825.jar')
     compile 'de.hdodenhof:circleimageview:2.1.0'
