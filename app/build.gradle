@@ -105,7 +105,7 @@ dependencies {
     //仿ios弹出框
     compile 'com.feezu.liuli:timeselector:1.0.8+'
     //仿ios时间选择器
-    compile 'com.tencent.bugly:crashreport:latest.release'
+    //compile 'com.tencent.bugly:crashreport:latest.release'
     //其中latest.release指代最新Bugly SDK版本号，也可以指定明确的版本号，例如2.1.9
     compile files('libs/libapshare.jar')
     compile files('libs/open_sdk_r5756_lite.jar')

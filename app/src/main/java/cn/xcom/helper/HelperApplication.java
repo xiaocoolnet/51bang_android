@@ -11,8 +11,6 @@ import android.text.TextUtils;
 import com.baidu.mapapi.SDKInitializer;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
-import com.tencent.bugly.crashreport.CrashReport;
-import com.tencent.tauth.Tencent;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -240,7 +238,7 @@ public class HelperApplication extends Application {
     }
 
     private void initBugly() {
-        Context context = getApplicationContext();
+        /*Context context = getApplicationContext();
         // 获取当前包名
         String packageName = context.getPackageName();
         // 获取当前进程名
@@ -249,7 +247,7 @@ public class HelperApplication extends Application {
         CrashReport.UserStrategy strategy = new CrashReport.UserStrategy(context);
         strategy.setUploadProcess(processName == null || processName.equals(packageName));
         // 初始化Bugly
-        CrashReport.initCrashReport(context, "18fef82344", true, strategy);//正式上线时改为false
+        CrashReport.initCrashReport(context, "18fef82344", true, strategy);//正式上线时改为false*/
     }
 
     /**
