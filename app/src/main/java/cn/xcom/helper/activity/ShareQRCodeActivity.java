@@ -12,6 +12,7 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.Window;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -44,6 +45,7 @@ import cn.xcom.helper.WXpay.Constants;
 import cn.xcom.helper.bean.UserInfo;
 import cn.xcom.helper.constant.HelperConstant;
 import cn.xcom.helper.constant.NetConstant;
+import cn.xcom.helper.utils.MyImageLoader;
 import cn.xcom.helper.utils.SPUtils;
 import cn.xcom.helper.utils.ToastUtils;
 import cn.xcom.helper.view.SharePopupWindow;
@@ -76,6 +78,7 @@ public class ShareQRCodeActivity extends BaseActivity {
     Resources res;
     Bitmap bitmap;
     String thumbPath;
+    private ImageView iv_qrcode;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -101,9 +104,11 @@ public class ShareQRCodeActivity extends BaseActivity {
      * 显示数据
      */
     private void setData() {
+        iv_qrcode = (ImageView) findViewById(R.id.webView);
+        url = NetConstant.MY_QR_CODE + "&uid=" + userInfo.getUserId();
+        MyImageLoader.display(url,iv_qrcode);
         tvJizhi.getPaint().setFlags(Paint.UNDERLINE_TEXT_FLAG); //下划线
         tvJizhi.getPaint().setAntiAlias(true);//抗锯齿
-        url = NetConstant.MY_QR_CODE + "&uid=" + userInfo.getUserId();
         tvReferral.setText(SPUtils.get(context, HelperConstant.MY_REFERAL, "").toString());
         /*webView.getSettings().setJavaScriptEnabled(true);
         webView.getSettings().setUseWideViewPort(true);
@@ -140,14 +145,17 @@ public class ShareQRCodeActivity extends BaseActivity {
                 case R.id.qq:
                     ToastUtils.showToast(ShareQRCodeActivity.this, "QQ");
                     shareToQQ();
+                    takePhotoPopWin.dismiss();
                     break;
                 case R.id.kongjian:
                     ToastUtils.showToast(ShareQRCodeActivity.this, "QQ空间");
                     shareToQzone();
+                    takePhotoPopWin.dismiss();
                     break;
                 case R.id.zhifubao:
                     ToastUtils.showToast(ShareQRCodeActivity.this, "支付宝");
                     toAlipay();
+                    takePhotoPopWin.dismiss();
                     break;
             }
         }

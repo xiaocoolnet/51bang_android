@@ -250,8 +250,17 @@ public class SelectMapPoiActivity extends BaseActivity implements OnGetGeoCoderR
         mBaiduMap.addOverlay(new MarkerOptions().position(mLat)
                 .icon(BitmapDescriptorFactory
                         .fromResource(R.mipmap.ic_dingwei_shou)));
-        createMarker(result.getLocation(), result.getPoiList().get(0).name);
-        setAdapter(result);
+        try {
+            if(result.getPoiList()!=null){
+                createMarker(result.getLocation(), result.getPoiList().get(0).name);
+                setAdapter(result);
+            }else{
+                createMarker(result.getLocation(), result.getAddressDetail().city+result.getAddressDetail().district+result.getAddressDetail().street);
+            }
+        }catch (NullPointerException e){
+
+        }
+
     }
 
     /**

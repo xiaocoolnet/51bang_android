@@ -38,6 +38,7 @@ public class HelperApplication extends Application {
     //切换城市信息
     public double mCurrentLocLat = 0;
     public double mCurrentLocLon = 0;
+    public String mCurrentAddress = "";
     public String status = "";
     public String mDistrict = "";
 
@@ -52,6 +53,8 @@ public class HelperApplication extends Application {
     //提现flag
     public boolean isBack = false;
 
+    //特卖返回flag
+    public boolean saleBack = false;
     /**
      * 打开的activity
      **/

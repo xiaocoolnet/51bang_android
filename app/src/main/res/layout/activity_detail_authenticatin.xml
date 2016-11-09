@@ -56,6 +56,18 @@
                     android:layout_marginLeft="80dp"
                     android:layout_marginTop="20dp"/>
                 <TextView
+                    android:id="@+id/tv_distance"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="地址"
+                    android:textSize="16sp"
+                    android:textColor="@color/background_white"
+                    android:layout_below="@+id/tv_name"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_toLeftOf="@+id/tv_service_state"
+                    android:layout_toRightOf="@+id/iv_avatar"/>
+                <TextView
                     android:id="@+id/tv_service_state"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -117,7 +129,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="服务排名"
+                            android:text="本地排名"
                             android:textSize="15sp"
                             android:textColor="@color/text_black"
                             android:layout_gravity="center_horizontal"/>
@@ -139,7 +151,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:background="@color/background_white"
-                android:numColumns="5" />
+                android:numColumns="4" />
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="35dp"

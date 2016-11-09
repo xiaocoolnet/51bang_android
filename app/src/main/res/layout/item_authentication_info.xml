@@ -6,7 +6,9 @@
     android:background="@color/background_white">
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="60dp">
+        android:layout_height="wrap_content"
+        android:paddingTop="5dp"
+        android:paddingBottom="5dp">
         <ImageView
             android:id="@+id/iv_avatar"
             android:layout_width="50dp"
@@ -15,10 +17,12 @@
             android:layout_marginLeft="10dp"
             android:layout_centerVertical="true"/>
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:id="@+id/ll_left"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_marginLeft="70dp"
+            android:layout_toLeftOf="@+id/tv_distance_new"
             android:orientation="vertical">
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -57,7 +61,7 @@
             android:layout_marginRight="10dp"
             android:layout_marginTop="10dp"/>
         <TextView
-            android:id="@+id/tv_distance"
+            android:id="@+id/tv_distance_new"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="0km"

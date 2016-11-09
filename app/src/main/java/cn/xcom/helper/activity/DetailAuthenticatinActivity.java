@@ -40,6 +40,8 @@ public class DetailAuthenticatinActivity extends BaseActivity {
     GridView gridViewSkill;
     @BindView(R.id.sale_detail_comment)
     NoScrollListView saleDetailComment;
+    @BindView(R.id.tv_distance)
+    TextView tvDistance;
     private Context context;
     private AuthenticationList authenticationList;
 
@@ -62,7 +64,8 @@ public class DetailAuthenticatinActivity extends BaseActivity {
         tvName.setText(authenticationList.getName());
         tvServiceState.setText(authenticationList.getIsworking().equals("1") ? "服务中" : "未服务");
         tvServiceCount.setText(authenticationList.getServiceCount());
-        tvPaiming.setText(authenticationList.getRanking()+"");
+        tvPaiming.setText(authenticationList.getRanking() + "");
+        tvDistance.setText(authenticationList.getAddress());
         gridViewSkill.setSelector(new ColorDrawable(Color.TRANSPARENT));
         gridViewSkill.setAdapter(new CommonAdapter<AuthenticationList.SkilllistBean>(context, authenticationList.getSkilllist(), R.layout.item_skill_tag) {
             @Override
@@ -70,7 +73,7 @@ public class DetailAuthenticatinActivity extends BaseActivity {
                 holder.setText(R.id.tv_item_help_me_skill_tag, skilllistBean.getTypename());
             }
         });
-        saleDetailComment.setAdapter(new CommonAdapter<AuthenticationList.EvaluatelistBean>(context,authenticationList.getEvaluatelist(),R.layout.item_comment_info) {
+        saleDetailComment.setAdapter(new CommonAdapter<AuthenticationList.EvaluatelistBean>(context, authenticationList.getEvaluatelist(), R.layout.item_comment_info) {
             @Override
             public void convert(ViewHolder holder, AuthenticationList.EvaluatelistBean evaluatelistBean) {
                 holder.setImageByUrl(R.id.iv_avatar, evaluatelistBean.getPhoto())

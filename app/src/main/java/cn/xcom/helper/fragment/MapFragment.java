@@ -473,7 +473,15 @@ public class MapFragment extends Fragment implements View.OnClickListener, OnGet
         if(reverseGeoCodeResult==null){
             return;
         }
-        createMarker(reverseGeoCodeResult.getLocation(), reverseGeoCodeResult.getPoiList().get(0).name);
+        try {
+            if(reverseGeoCodeResult.getPoiList()!=null){
+                createMarker(reverseGeoCodeResult.getLocation(), reverseGeoCodeResult.getPoiList().get(0).name);
+            }else{
+                createMarker(reverseGeoCodeResult.getLocation(), reverseGeoCodeResult.getAddressDetail().city+reverseGeoCodeResult.getAddressDetail().district+reverseGeoCodeResult.getAddressDetail().street);
+            }
+        }catch (NullPointerException e){
+
+        }
         isResult = false;
     }
 
@@ -563,6 +571,7 @@ public class MapFragment extends Fragment implements View.OnClickListener, OnGet
                 isFirstIn = false;
                 HelperApplication.getInstance().mCurrentLocLat = location.getLatitude();
                 HelperApplication.getInstance().mCurrentLocLon = location.getLongitude();
+                HelperApplication.getInstance().mCurrentAddress = location.getCity()+location.getDistrict()+location.getPoiList().get(0).getName();
                 HelperApplication.getInstance().mDistrict = location.getDistrict();
                 locate_district.setText(location.getDistrict());
                 getAuthentication();

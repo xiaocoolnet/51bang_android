@@ -705,14 +705,31 @@ public class HelpMeActivity extends BaseActivity implements View.OnClickListener
             return;
         }
         String address = result.getAddressDetail().city + result.getAddressDetail().district ;
-        if(type == 1){
-            et_service_location.setText(address+ result.getPoiList().get(0).name);
-            et_site_location.setText(address+ result.getPoiList().get(0).name);
-        }else if(type == 2){
-            et_site_location.setText(address+mSiteName);
-        }else if(type == 3){
-            et_service_location.setText(address+mServiceName);
+        try {
+            if(type == 1){
+                if(result.getPoiList()!=null){
+                    et_service_location.setText(address+ result.getPoiList().get(0).name);
+                    et_site_location.setText(address+ result.getPoiList().get(0).name);
+                }else{
+                    et_service_location.setText(address+ result.getAddressDetail().street);
+                    et_site_location.setText(address+ result.getAddressDetail().street);
+                }
+            }else if(type == 2){
+                et_site_location.setText(address+mSiteName);
+            }else if(type == 3){
+                et_service_location.setText(address+mServiceName);
+            }
+        }catch (NullPointerException e){
+            if(type == 1){
+                et_service_location.setText(HelperApplication.getInstance().mCurrentAddress);
+                et_site_location.setText(HelperApplication.getInstance().mCurrentAddress);
+                mSiteLat = HelperApplication.getInstance().mCurrentLocLat;
+                mSiteLon = HelperApplication.getInstance().mCurrentLocLon;
+                mServiceLat = HelperApplication.getInstance().mCurrentLocLat;
+                mServiewLon = HelperApplication.getInstance().mCurrentLocLon;
+            }
         }
+
 
     }
 

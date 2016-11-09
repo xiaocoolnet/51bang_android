@@ -273,7 +273,7 @@ public class AuthenticationActivity extends BaseActivity {
                     holder.setImageByUrl(R.id.iv_avatar, authenticationList.getPhoto())
                             .setText(R.id.tv_name, authenticationList.getName())
                             .setText(R.id.tv_address, authenticationList.getAddress())
-                            .setText(R.id.tv_distance,authenticationList.getDistance()==10000000000L?"1000km+":authenticationList.getDistance()/1000+"km")
+                            .setText(R.id.tv_distance_new,authenticationList.getDistance()==10000000000L?"1000km+":authenticationList.getDistance()/1000.0+"km")
                             .setText(R.id.tv_count, "服务" + authenticationList.getServiceCount() + "次");
                     holder.getView(R.id.btn_chat).setOnClickListener(new View.OnClickListener() {
                         @Override

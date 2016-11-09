@@ -167,9 +167,9 @@ public class ReleaseActivity extends BaseActivity implements View.OnClickListene
         text_transport= (TextView) findViewById(R.id.text_transport);
         ed_location= (TextView) findViewById(R.id.ed_location);
         //初始化当前位置信息
-        ed_location.setText(HelperApplication.getInstance().mLocAddress);
-        mSiteLat = HelperApplication.getInstance().mLocLat;
-        mSiteLon = HelperApplication.getInstance().mLocLon;
+        ed_location.setText(HelperApplication.getInstance().mCurrentAddress);
+        mSiteLat = HelperApplication.getInstance().mCurrentLocLat;
+        mSiteLon = HelperApplication.getInstance().mCurrentLocLon;
         //  delete= (ImageView) findViewById(R.id.delete);
      //   delete.setOnClickListener(this);
         divide = (LinearLayout) findViewById(R.id.divide);
@@ -220,8 +220,8 @@ public class ReleaseActivity extends BaseActivity implements View.OnClickListene
             //选择地址
             case R.id.rl_select_address:
                 Intent intent1 = new Intent(context, SelectMapPoiActivity.class);
-                intent1.putExtra("lat", HelperApplication.getInstance().mLocLat);
-                intent1.putExtra("lon", HelperApplication.getInstance().mLocLon);
+                intent1.putExtra("lat", HelperApplication.getInstance().mCurrentLocLat);
+                intent1.putExtra("lon", HelperApplication.getInstance().mCurrentLocLon);
                 startActivityForResult(intent1, 0x110);
                 break;
         }

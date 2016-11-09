@@ -64,8 +64,12 @@ public class MyCitySelectActivity extends BaseActivity implements OnClickListene
 	private String mLocDistict;
 
 	GeoCoder mSearch = null; // 搜索模块，也可去掉地图模块独立使用
-	//定位详细地址
+	//定位市区
 	private String mLocaddress;
+
+	//全局详细地址
+	private String mLocateAddress;
+
 
 	private KProgressHUD hud,locatehud;
 
@@ -120,6 +124,7 @@ public class MyCitySelectActivity extends BaseActivity implements OnClickListene
 			public void onClick(View v) {
 				HelperApplication.getInstance().mCurrentLocLat = mLocLat;
 				HelperApplication.getInstance().mCurrentLocLon = mLocLon;
+				HelperApplication.getInstance().mCurrentAddress = mLocateAddress;
 				HelperApplication.getInstance().status = "1";
 				Log.e("result_ok","yes");
 				HelperApplication.getInstance().mDistrict = mLocDistict;
@@ -290,6 +295,7 @@ public class MyCitySelectActivity extends BaseActivity implements OnClickListene
 		Log.e("city",result.getLocation().toString());
 		HelperApplication.getInstance().mCurrentLocLat = result.getLocation().latitude;
 		HelperApplication.getInstance().mCurrentLocLon = result.getLocation().longitude;
+		HelperApplication.getInstance().mCurrentAddress = result.getAddress();
 		HelperApplication.getInstance().status = "1";
 		Log.e("result_ok","yes");
 		HelperApplication.getInstance().mDistrict = city3;
@@ -304,6 +310,7 @@ public class MyCitySelectActivity extends BaseActivity implements OnClickListene
 		}
 		mLocaddress = result.getAddressDetail().province+result.getAddressDetail().city+result.getAddressDetail().district;
 		tv_location.setText(mLocaddress);
+		mLocateAddress = result.getAddressDetail().city+result.getAddressDetail().district+result.getPoiList().get(0).name;
 		mLocDistict = result.getAddressDetail().district;
 		if(hud!=null){
 			hud.dismiss();

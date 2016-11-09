@@ -78,7 +78,7 @@ import static com.tencent.connect.share.QzoneShare.SHARE_TO_QZONE_TYPE_IMAGE_TEX
 public class SaleDetailActivity extends BaseActivity implements View.OnClickListener {
     private ViewPager vp;
     private ImageView imageView, collect;
-    private TextView tvContent, price, tvprice, adress, buy, tv_city_name;
+    private TextView tvContent, price, tvprice, adress, buy, tv_city_name,tv_title;
     private RelativeLayout backImage;
     private RelativeLayout shopPublish;
     private List addViewList;//添加图片的list
@@ -180,6 +180,7 @@ public class SaleDetailActivity extends BaseActivity implements View.OnClickList
     }
 
     private void setData() {
+        tv_title.setText(shopGoodInfo.getGoodsname());
         tvContent.setText(shopGoodInfo.getDescription());
         price.setText("￥" + shopGoodInfo.getPrice());
         tvprice.setText("￥" + shopGoodInfo.getPrice());
@@ -255,6 +256,7 @@ public class SaleDetailActivity extends BaseActivity implements View.OnClickList
         userInfo.readData(context);
         addViewList = new ArrayList();
         addList = new ArrayList<>();
+        tv_title = (TextView) findViewById(R.id.tv_title);
         vp = (ViewPager) findViewById(R.id.vp);
         tvContent = (TextView) findViewById(R.id.tvContent);
         collect = (ImageView) findViewById(R.id.collect);
@@ -675,5 +677,11 @@ public class SaleDetailActivity extends BaseActivity implements View.OnClickList
         public void onComplete(Object o) {
 //            enableAction(enableActionShareQRCodeActivity.this.action);
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        HelperApplication.getInstance().saleBack = true;
     }
 }

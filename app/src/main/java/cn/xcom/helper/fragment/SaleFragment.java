@@ -133,7 +133,10 @@ public class SaleFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onResume() {
         super.onResume();
-        getData();
+        if(!HelperApplication.getInstance().saleBack){
+            getData();
+        }
+        HelperApplication.getInstance().saleBack = false;
     }
 
     /**
