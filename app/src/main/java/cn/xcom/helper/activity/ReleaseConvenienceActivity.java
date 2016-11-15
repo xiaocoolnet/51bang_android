@@ -157,7 +157,7 @@ public class ReleaseConvenienceActivity extends BaseActivity implements View.OnC
             new PushImageUtil().setPushIamge(getApplication(), addImageList, nameList, new PushImage() {
                 @Override
                 public void success(boolean state) {
-                    Toast.makeText(getApplication(), "图片上传成功", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(getApplication(), "图片上传成功", Toast.LENGTH_SHORT).show();
                     //发布任务
                     String url = NetConstant.CONVENIENCE_RELEASE;
                     StringPostRequest request = new StringPostRequest(url, new Response.Listener<String>() {

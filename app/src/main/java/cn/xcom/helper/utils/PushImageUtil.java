@@ -3,7 +3,6 @@ package cn.xcom.helper.utils;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.net.Uri;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
@@ -22,7 +21,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -239,7 +237,7 @@ public class PushImageUtil {
 
     public void pushImg(final String picPath,int  addImgKey){
         if(needCompress){
-            convertBitmap(convertToBitmap(picPath, 200, 200), addImgKey);
+            convertBitmap(convertToBitmap(picPath, 720, 1280), addImgKey);
         }else{
             compressImageWithRatio(picPath,addImgKey);
         }
@@ -344,8 +342,9 @@ public class PushImageUtil {
         opts.inJustDecodeBounds = false;
         float scale = Math.max(scaleWidth, scaleHeight);
         opts.inSampleSize = (int)scale;
-        WeakReference<Bitmap> weak = new WeakReference<Bitmap>(BitmapFactory.decodeFile(path, opts));
-        return Bitmap.createScaledBitmap(weak.get(), w, h, true);
+        return BitmapFactory.decodeFile(path, opts);
+        //WeakReference<Bitmap> weak = new WeakReference<Bitmap>(BitmapFactory.decodeFile(path, opts));
+        //return Bitmap.createScaledBitmap(weak.get(), w, h, true);
     }
 
 
