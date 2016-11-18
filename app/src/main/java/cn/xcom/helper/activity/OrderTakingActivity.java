@@ -1,10 +1,13 @@
 package cn.xcom.helper.activity;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.view.View;
 import android.view.Window;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -44,7 +47,7 @@ public class OrderTakingActivity extends BaseActivity {
     ListView taskList;
     @BindView(R.id.task_srl)
     SwipeRefreshLayout taskSrl;
-    private TextView tvCount;
+    private TextView tvCount,tv_today_count;
     private String TAG = "OrderTakingActivity";
     private Context mContext;
     private UserInfo userInfo;
@@ -63,6 +66,27 @@ public class OrderTakingActivity extends BaseActivity {
         userInfo.readData(mContext);
         myApplyTasks = new ArrayList<>();
         tvCount = (TextView) findViewById(R.id.tv_count);
+        tv_today_count = (TextView) findViewById(R.id.tv_today_count);
+        taskList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                if(myApplyTasks.get(position).getState().equals("2")){
+                    Intent intent = new Intent(mContext, NoBeginTaskActivity.class);
+                    Bundle bundle = new Bundle();
+                    bundle.putSerializable("mytask",myApplyTasks.get(position));
+                    intent.putExtras(bundle);
+                    intent.putExtra("type","2");
+                    mContext.startActivity(intent);
+                }else if(myApplyTasks.get(position).getState().equals("3")){
+                    Intent intent = new Intent(mContext, InProgressTaskActivity.class);
+                    Bundle bundle = new Bundle();
+                    bundle.putSerializable("mytask",myApplyTasks.get(position));
+                    intent.putExtra("type","2");
+                    intent.putExtras(bundle);
+                    mContext.startActivity(intent);
+                }
+            }
+        });
     }
 
     /**
@@ -84,6 +108,31 @@ public class OrderTakingActivity extends BaseActivity {
     protected void onResume() {
         super.onResume();
         getData();
+        getCount();
+    }
+
+    /**
+     * 获取接单统计数据
+     */
+    private void getCount() {
+        RequestParams params = new RequestParams();
+        params.put("userid", userInfo.getUserId());
+        HelperAsyncHttpClient.get(NetConstant.MY_APPLY_COUNT, params, new JsonHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                super.onSuccess(statusCode, headers, response);
+                if (response.optString("status").equals("success")) {
+                   JSONObject object = response.optJSONObject("data");
+                    tvCount.setText(object.optString("monthcount"));
+                    tv_today_count.setText(object.optString("daycount"));
+                }
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                super.onFailure(statusCode, headers, responseString, throwable);
+            }
+        });
     }
 
     /**
@@ -112,6 +161,7 @@ public class OrderTakingActivity extends BaseActivity {
                 LogUtils.e(TAG, responseString);
             }
         });
+
     }
 
     /**
@@ -144,6 +194,18 @@ public class OrderTakingActivity extends BaseActivity {
                 .setText(R.id.tv_trade_name, myApplyTask.getDescription())
                 .setText(R.id.tv_service_address, myApplyTask.getSaddress())
                 .setText(R.id.tv_price, myApplyTask.getPrice());
+        TextView tv_state = holder.getView(R.id.tv_state);
+        if(myApplyTask.getState().equals("2")){
+            tv_state.setText("已抢单");
+        }else if(myApplyTask.getState().equals("3")){
+            tv_state.setText("已上门");
+        }else if(myApplyTask.getState().equals("4")){
+            tv_state.setText("申请付款");
+        }else if(myApplyTask.getState().equals("5")){
+            tv_state.setText("已付款");
+        }else if (myApplyTask.getState().equals("-1")){
+            tv_state.setText("已取消");
+        }
     }
 
     /**

@@ -9,16 +9,15 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.view.Window;
-import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -26,6 +25,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.baoyz.actionsheet.ActionSheet;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
@@ -39,13 +39,21 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
+import cn.finalteam.galleryfinal.GalleryFinal;
+import cn.finalteam.galleryfinal.model.PhotoInfo;
 import cn.xcom.helper.R;
 import cn.xcom.helper.bean.UserInfo;
 import cn.xcom.helper.constant.NetConstant;
 import cn.xcom.helper.net.HelperAsyncHttpClient;
+import cn.xcom.helper.utils.GalleryFinalUtil;
 import cn.xcom.helper.utils.LogUtils;
-import cn.xcom.helper.utils.RegexUtil;
+import cn.xcom.helper.utils.PushImage;
+import cn.xcom.helper.utils.PushImageUtil;
+import cn.xcom.helper.utils.StringJoint;
+import cn.xcom.helper.utils.ToastUtil;
 import cn.xcom.helper.view.CircleImageView;
 import cz.msebera.android.httpclient.Header;
 
@@ -71,12 +79,21 @@ public class EditPersonalActivity extends BaseActivity implements View.OnClickLi
     private static final int PHOTO_REQUEST_CUT=3;//剪裁
     private static final int MY_PERMISSIONS_REQUEST_READ_CONTACTS=4;
 
+    private GalleryFinalUtil galleryFinalUtil;
+    private final int REQUEST_CODE_CAMERA = 1000;
+    private final int REQUEST_CODE_GALLERY = 1001;
+    private ArrayList<PhotoInfo> mPhotoList;
+    private List<String> nameList;//添加相册选取完返回的的list
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_edit_personal);
         mContext=this;
+        mPhotoList = new ArrayList<>();
+        galleryFinalUtil = new GalleryFinalUtil(1);
+        nameList = new ArrayList<>();
         initView();
     }
 
@@ -135,7 +152,9 @@ public class EditPersonalActivity extends BaseActivity implements View.OnClickLi
                 finish();
                 break;
             case R.id.iv_edit_personal_head:
-                requestPermission();
+                //之前的图片选择
+                //requestPermission();
+                showActionSheet();
                 break;
             case R.id.ll_edit_personal_update_name:
                 startActivity(new Intent(mContext,UpdateNameActivity.class));
@@ -148,6 +167,86 @@ public class EditPersonalActivity extends BaseActivity implements View.OnClickLi
                 break;
         }
 
+    }
+
+    private void showActionSheet() {
+        ActionSheet.createBuilder(EditPersonalActivity.this, getSupportFragmentManager())
+                .setCancelButtonTitle("取消")
+                .setOtherButtonTitles("打开相册", "拍照")
+                .setCancelableOnTouchOutside(true)
+                .setListener(new ActionSheet.ActionSheetListener() {
+                    @Override
+                    public void onDismiss(ActionSheet actionSheet, boolean isCancel) {
+
+                    }
+                    @Override
+                    public void onOtherButtonClick(ActionSheet actionSheet, int index) {
+
+                        switch (index) {
+                            case 0:
+                                galleryFinalUtil.openAblum(EditPersonalActivity.this, mPhotoList, REQUEST_CODE_GALLERY, mOnHanlderResultCallback);
+                                break;
+                            case 1:
+                                //获取拍照权限
+                                if (galleryFinalUtil.openCamera(EditPersonalActivity.this, mPhotoList, REQUEST_CODE_CAMERA, mOnHanlderResultCallback)) {
+                                    return;
+                                } else {
+                                    String[] perms = {"android.permission.CAMERA"};
+                                    int permsRequestCode = 200;
+                                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                                        requestPermissions(perms, permsRequestCode);
+                                    }
+                                }
+                                break;
+
+                            default:
+                                break;
+                        }
+                    }
+                })
+                .show();
+    }
+
+    /**
+     * 选择图片后 返回的图片数据
+     */
+
+    private GalleryFinal.OnHanlderResultCallback mOnHanlderResultCallback = new GalleryFinal.OnHanlderResultCallback() {
+        @Override
+        public void onHanlderSuccess(int reqeustCode, List<PhotoInfo> resultList) {
+            if (resultList != null) {
+                mPhotoList.clear();
+                mPhotoList.addAll(resultList);
+                //MyImageLoader.display("file:/" + mPhotoList.get(0).getPhotoPath(), iv_head);
+                updateImg();
+            }
+        }
+
+        @Override
+        public void onHanlderFailure(int requestCode, String errorMsg) {
+            Toast.makeText(EditPersonalActivity.this, errorMsg, Toast.LENGTH_SHORT).show();
+        }
+    };
+
+    /**
+     * 新上传照片
+     */
+    private void updateImg() {
+        //先上传图片再发布
+        new PushImageUtil().setPushIamge(getApplication(), mPhotoList, nameList, new PushImage() {
+            @Override
+            public void success(boolean state) {
+                //传入2表示有图片
+                String s = StringJoint.arrayJointchar(nameList, ",");
+                userInfo.setUserImg(s);
+                updateHead();
+            }
+
+            @Override
+            public void error() {
+                //Toast.makeText(getApplication(), "图片上传失败", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     @Override
@@ -167,18 +266,18 @@ public class EditPersonalActivity extends BaseActivity implements View.OnClickLi
     private void updateGender(){
         if (!userInfo.getUserGender().equals(""+gender)){
             RequestParams params =new RequestParams();
-            params.put("userid",userInfo.getUserId());
-            params.put("sex",gender);
-            HelperAsyncHttpClient.get(NetConstant.NET_UPDATE_GENDER,params,new JsonHttpResponseHandler(){
+            params.put("userid", userInfo.getUserId());
+            params.put("sex", gender);
+            HelperAsyncHttpClient.get(NetConstant.NET_UPDATE_GENDER, params, new JsonHttpResponseHandler() {
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                     super.onSuccess(statusCode, headers, response);
-                    LogUtils.e(TAG,"--statusCode->"+statusCode+"==>"+response.toString());
-                    if (response!=null){
+                    LogUtils.e(TAG, "--statusCode->" + statusCode + "==>" + response.toString());
+                    if (response != null) {
                         try {
-                            String state=response.getString("status");
-                            if (state.equals("success")){
-                                userInfo.setUserGender(""+gender);
+                            String state = response.getString("status");
+                            if (state.equals("success")) {
+                                userInfo.setUserGender("" + gender);
                                 userInfo.writeData(mContext);
                             }
                         } catch (JSONException e) {
@@ -242,8 +341,8 @@ public class EditPersonalActivity extends BaseActivity implements View.OnClickLi
             }
         }).show();
     }
-
-    @Override
+    //老图片权限申请
+    /*@Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         switch (requestCode) {
@@ -279,7 +378,7 @@ public class EditPersonalActivity extends BaseActivity implements View.OnClickLi
                 }
             }
         }
-    }
+    }*/
 
     /**
      * 裁剪图片方法实现
@@ -386,6 +485,7 @@ public class EditPersonalActivity extends BaseActivity implements View.OnClickLi
                         String state=response.getString("status");
                         if (state.equals("success")){
                             userInfo.writeData(mContext);
+                            imageLoader.displayImage(NetConstant.NET_DISPLAY_IMG + userInfo.getUserImg(), iv_head, options);
                         }
                     } catch (JSONException e) {
                         e.printStackTrace();
@@ -449,6 +549,35 @@ public class EditPersonalActivity extends BaseActivity implements View.OnClickLi
         } else{
             showPickDialog();
         }
+    }
+
+    /**
+     * 授权权限
+     *
+     * @param permsRequestCode
+     * @param permissions
+     * @param grantResults
+     */
+    @Override
+    public void onRequestPermissionsResult(int permsRequestCode, String[] permissions, int[] grantResults) {
+
+        switch (permsRequestCode) {
+
+            case 200:
+
+                boolean cameraAccepted = grantResults[0] == PackageManager.PERMISSION_GRANTED;
+                if (cameraAccepted) {
+                    //授权成功之后，调用系统相机进行拍照操作等
+                    galleryFinalUtil.openCamera(EditPersonalActivity.this, mPhotoList, REQUEST_CODE_CAMERA, mOnHanlderResultCallback);
+                } else {
+                    //用户授权拒绝之后，友情提示一下就可以了
+                    ToastUtil.showShort(this, "已拒绝进入相机，如想开启请到设置中开启！");
+                }
+
+                break;
+
+        }
+
     }
 
 

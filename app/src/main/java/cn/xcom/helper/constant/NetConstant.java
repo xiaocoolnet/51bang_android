@@ -402,4 +402,9 @@ public interface NetConstant extends HelperConstant {
      * 进入app检验封号情况
      */
     public final static String CHECK_LOGIN = NET_HOST_PREFIX + "a=checkLogin&";
+
+    /**
+     * 获取我的接单汇总
+     */
+    public static final String MY_APPLY_COUNT = NET_HOST_PREFIX + "a=GetMyApplyTastTotal&";
 }

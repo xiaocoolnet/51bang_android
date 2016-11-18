@@ -60,6 +60,11 @@ public class HomeActivity extends BaseActivity {
         initView();
         initFragment();
         state = SPUtils.get(mContext,HelperConstant.IS_HAD_AUTHENTICATION,"").toString();
+        if(state.equals("0")){
+            mTabs[1].setText("认证");
+        }else if(state.equals("1")){
+            mTabs[1].setText("抢单");
+        }
     }
 
     private void initView() {
@@ -138,6 +143,7 @@ public class HomeActivity extends BaseActivity {
             if(index == 1 && state != SPUtils.get(mContext,HelperConstant.IS_HAD_AUTHENTICATION,"").toString()&&flag==0){
                 flag = 1;
                 fragments[1] = new BuyFragment();
+                mTabs[1].setText("抢单");
             }
             FragmentTransaction trx = getSupportFragmentManager().beginTransaction();
             trx.hide(fragments[currentTanIndex]);

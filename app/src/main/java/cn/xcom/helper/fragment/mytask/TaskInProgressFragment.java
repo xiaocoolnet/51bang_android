@@ -80,6 +80,7 @@ public class TaskInProgressFragment extends Fragment {
                 Bundle bundle = new Bundle();
                 bundle.putSerializable("task",taskItemInfos.get(position));
                 intent.putExtras(bundle);
+                intent.putExtra("type","1");
                 context.startActivity(intent);
             }
         });

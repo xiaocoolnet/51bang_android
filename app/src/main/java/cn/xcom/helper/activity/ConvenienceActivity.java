@@ -55,12 +55,27 @@ public class ConvenienceActivity extends BaseActivity implements View.OnClickLis
                 .setStyle(KProgressHUD.Style.SPIN_INDETERMINATE)
                 .setCancellable(true);
         hud.show();
+        getNewDatas();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        getNewDatas();
+        if(HelperApplication.getInstance().trendsBack){
+            getNewDatas();
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        HelperApplication.getInstance().trendsBack = false;
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        HelperApplication.getInstance().trendsBack = false;
     }
 
     private void initView() {

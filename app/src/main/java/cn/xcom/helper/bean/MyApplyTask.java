@@ -1,11 +1,12 @@
 package cn.xcom.helper.bean;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
  * Created by Administrator on 2016/9/30 0030.
  */
-public class MyApplyTask {
+public class MyApplyTask implements Serializable{
 
     /**
      * id : 116
@@ -339,7 +340,7 @@ public class MyApplyTask {
         this.commentlist = commentlist;
     }
 
-    public static class FilesBean {
+    public static class FilesBean implements Serializable{
         private String id;
         private String taskid;
         private String file;

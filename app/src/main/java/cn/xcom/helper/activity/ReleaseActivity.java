@@ -411,8 +411,8 @@ public class ReleaseActivity extends BaseActivity implements View.OnClickListene
                 Log.d("2222233",s+ "");
                 Log.d("2222233",nameList.size()+ "");
                 request.putValue("userid",info.getUserId());
-                request.putValue("picturelist",s);
-                request.putValue("goodsname",goodNameString);
+                request.putValue("picturelist", s);
+                request.putValue("goodsname", goodNameString);
                 request.putValue("type",type);
                 request.putValue("price",price);
                 request.putValue("oprice",oldprice);
@@ -422,6 +422,9 @@ public class ReleaseActivity extends BaseActivity implements View.OnClickListene
                 request.putValue("longitude", String.valueOf(mSiteLon));
                 request.putValue("latitude", String.valueOf(mSiteLat));
                 request.putValue("delivery",text_transport.getText().toString());
+                request.putValue("UserLatitude", String.valueOf(HelperApplication.getInstance().mLocLat));
+                request.putValue("UserLongitude", String.valueOf(HelperApplication.getInstance().mLocLon));
+                request.putValue("UserLocation", HelperApplication.getInstance().mLocAddress);
                 SingleVolleyRequest.getInstance(getApplication()).addToRequestQueue(request);
             }
 

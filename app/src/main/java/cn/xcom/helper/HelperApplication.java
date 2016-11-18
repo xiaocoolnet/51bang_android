@@ -55,6 +55,9 @@ public class HelperApplication extends Application {
 
     //特卖返回flag
     public boolean saleBack = false;
+
+    //便民圈返回flag
+    public boolean trendsBack = false;
     /**
      * 打开的activity
      **/

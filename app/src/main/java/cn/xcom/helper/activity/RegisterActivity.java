@@ -9,13 +9,13 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.provider.MediaStore;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -31,6 +31,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.baoyz.actionsheet.ActionSheet;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
@@ -44,14 +45,24 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
+import cn.finalteam.galleryfinal.GalleryFinal;
+import cn.finalteam.galleryfinal.model.PhotoInfo;
 import cn.xcom.helper.R;
 import cn.xcom.helper.bean.UserInfo;
 import cn.xcom.helper.constant.HelperConstant;
 import cn.xcom.helper.constant.NetConstant;
 import cn.xcom.helper.net.HelperAsyncHttpClient;
+import cn.xcom.helper.utils.GalleryFinalUtil;
 import cn.xcom.helper.utils.LogUtils;
+import cn.xcom.helper.utils.MyImageLoader;
+import cn.xcom.helper.utils.PushImage;
+import cn.xcom.helper.utils.PushImageUtil;
 import cn.xcom.helper.utils.RegexUtil;
+import cn.xcom.helper.utils.StringJoint;
+import cn.xcom.helper.utils.ToastUtil;
 import cn.xcom.helper.view.CircleImageView;
 import cz.msebera.android.httpclient.Header;
 
@@ -82,6 +93,13 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
     private static final int CODE_ONE=5;
     private static final int CODE_TWO=6;
 
+    private GalleryFinalUtil galleryFinalUtil;
+    private final int REQUEST_CODE_CAMERA = 1000;
+    private final int REQUEST_CODE_GALLERY = 1001;
+    private ArrayList<PhotoInfo> mPhotoList;
+    private List<String> nameList;//添加相册选取完返回的的list
+    private String headImg;
+
 
     private Handler handler=new Handler(Looper.myLooper()){
             public void handleMessage(Message msg){
@@ -103,6 +121,9 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_register);
         mContext=this;
+        mPhotoList = new ArrayList<>();
+        galleryFinalUtil = new GalleryFinalUtil(1);
+        nameList = new ArrayList<>();
         initView();
     }
     private void initView(){
@@ -177,7 +198,7 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
     }
 
     private void saveDate(){
-        userInfo.setUserGender(""+gender);
+        userInfo.setUserGender("" + gender);
 //        userInfo.setUserName(et_name.getText().toString().trim());
 //        userInfo.setUserID(et_ID.getText().toString().trim());
 //        userInfo.setUserAddress(et_address.getText().toString().trim());
@@ -191,7 +212,8 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
                 finish();
                 break;
             case R.id.iv_register_head:
-                requestPermission();
+                //requestPermission();
+                showActionSheet();
                 break;
             case R.id.tv_register_verification_get:
                 i=120;
@@ -214,6 +236,66 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
                 break;
         }
     }
+
+    private void showActionSheet() {
+        ActionSheet.createBuilder(RegisterActivity.this, getSupportFragmentManager())
+                .setCancelButtonTitle("取消")
+                .setOtherButtonTitles("打开相册", "拍照")
+                .setCancelableOnTouchOutside(true)
+                .setListener(new ActionSheet.ActionSheetListener() {
+                    @Override
+                    public void onDismiss(ActionSheet actionSheet, boolean isCancel) {
+
+                    }
+                    @Override
+                    public void onOtherButtonClick(ActionSheet actionSheet, int index) {
+
+                        switch (index) {
+                            case 0:
+                                galleryFinalUtil.openAblum(RegisterActivity.this, mPhotoList, REQUEST_CODE_GALLERY, mOnHanlderResultCallback);
+                                break;
+                            case 1:
+                                //获取拍照权限
+                                if (galleryFinalUtil.openCamera(RegisterActivity.this, mPhotoList, REQUEST_CODE_CAMERA, mOnHanlderResultCallback)) {
+                                    return;
+                                } else {
+                                    String[] perms = {"android.permission.CAMERA"};
+                                    int permsRequestCode = 200;
+                                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                                        requestPermissions(perms, permsRequestCode);
+                                    }
+                                }
+                                break;
+
+                            default:
+                                break;
+                        }
+                    }
+                })
+                .show();
+    }
+
+    /**
+     * 选择图片后 返回的图片数据
+     */
+
+    private GalleryFinal.OnHanlderResultCallback mOnHanlderResultCallback = new GalleryFinal.OnHanlderResultCallback() {
+        @Override
+        public void onHanlderSuccess(int reqeustCode, List<PhotoInfo> resultList) {
+            if (resultList != null) {
+                mPhotoList.clear();
+                mPhotoList.addAll(resultList);
+                MyImageLoader.displayForLocal(mPhotoList.get(0).getPhotoPath(), iv_head);
+                //MyImageLoader.display("file:/" + mPhotoList.get(0).getPhotoPath(), iv_head);
+            }
+        }
+
+        @Override
+        public void onHanlderFailure(int requestCode, String errorMsg) {
+            Toast.makeText(RegisterActivity.this, errorMsg, Toast.LENGTH_SHORT).show();
+        }
+    };
+
 
     @Override
     public void onCheckedChanged(RadioGroup group, int checkedId) {
@@ -309,7 +391,7 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
         }).show();
     }
 
-    @Override
+    /*@Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         switch (requestCode) {
@@ -344,7 +426,7 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
                 }
             }
         }
-    }
+    }*/
 
     /**
      * 裁剪图片方法实现
@@ -412,18 +494,18 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
         }catch (FileNotFoundException e){
 
         }
-        LogUtils.e(TAG,"--statusCode->"+params.toString());
-        HelperAsyncHttpClient.post(NetConstant.NET_UPLOAD_IMG,params,new JsonHttpResponseHandler(){
+        LogUtils.e(TAG, "--statusCode->" + params.toString());
+        HelperAsyncHttpClient.post(NetConstant.NET_UPLOAD_IMG, params, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                 super.onSuccess(statusCode, headers, response);
-                LogUtils.e(TAG,"--statusCode->"+statusCode+"==>"+response.toString());
-                if (response!=null){
+                LogUtils.e(TAG, "--statusCode->" + statusCode + "==>" + response.toString());
+                if (response != null) {
                     try {
-                        String state=response.getString("status");
-                        if (state.equals("success")){
+                        String state = response.getString("status");
+                        if (state.equals("success")) {
                             userInfo.setUserImg(response.getString("data"));
-                            imageLoader.displayImage(NetConstant.NET_DISPLAY_IMG+userInfo.getUserImg(),iv_head,options);
+                            imageLoader.displayImage(NetConstant.NET_DISPLAY_IMG + userInfo.getUserImg(), iv_head, options);
                         }
                     } catch (JSONException e) {
                         e.printStackTrace();
@@ -434,7 +516,7 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
             @Override
             public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
                 super.onFailure(statusCode, headers, responseString, throwable);
-                LogUtils.e(TAG,"--statusCode->"+statusCode+"==>"+responseString);
+                LogUtils.e(TAG, "--statusCode->" + statusCode + "==>" + responseString);
             }
         });
 
@@ -448,19 +530,19 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
             return;
         }
         RequestParams params=new RequestParams();
-        params.put("phone",phone);
-        HelperAsyncHttpClient.get(NetConstant.NET_CHECK_PHONE,params,new JsonHttpResponseHandler(){
+        params.put("phone", phone);
+        HelperAsyncHttpClient.get(NetConstant.NET_CHECK_PHONE, params, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                 super.onSuccess(statusCode, headers, response);
-                LogUtils.e(TAG,"--statusCode->"+statusCode+"==>"+response.toString());
-                if (response!=null){
+                LogUtils.e(TAG, "--statusCode->" + statusCode + "==>" + response.toString());
+                if (response != null) {
                     try {
-                        String state=response.getString("status");
-                        if (state.equals("error")){
+                        String state = response.getString("status");
+                        if (state.equals("error")) {
                             getVerification();
-                        }else if(state.equals("success")){
-                            Toast.makeText(mContext,"手机号已被注册！",Toast.LENGTH_LONG).show();
+                        } else if (state.equals("success")) {
+                            Toast.makeText(mContext, "手机号已被注册！", Toast.LENGTH_LONG).show();
                         }
                     } catch (JSONException e) {
                         e.printStackTrace();
@@ -471,7 +553,7 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
             @Override
             public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
                 super.onFailure(statusCode, headers, responseString, throwable);
-                LogUtils.e(TAG,"--statusCode->"+statusCode+"==>"+responseString);
+                LogUtils.e(TAG, "--statusCode->" + statusCode + "==>" + responseString);
             }
         });
     }
@@ -532,33 +614,13 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
 
     }
     private void toRegister(){
-//      http://bang.xiaocool.net/index.php?g=apps&m=index&a=AppRegister&name=我的昵称&avatar=1234.jpg&phone=18653503680&password=123456&code=2345&devicestate=1
-        String phone=et_phone.getText().toString().trim();
-//        String name=et_name.getText().toString().trim();
-//        String ID=et_ID.getText().toString().trim();
-//        String address=et_address.getText().toString().trim();
-        String password=et_password.getText().toString().trim();
-        String verification=et_verification.getText().toString().trim();
-        /*if (userInfo.getUserImg().equals("")){
-            Toast.makeText(mContext,"请添加头像！",Toast.LENGTH_LONG).show();
-            return;
-        }*/
-//        if (!RegexUtil.IsChineseOrEnglish(name)){
-//            Toast.makeText(mContext,"请正确填写姓名！",Toast.LENGTH_LONG).show();
-//            return;
-//        }
-//        if (!RegexUtil.checkIdCard(ID)){
-//            Toast.makeText(mContext,"请正确填写身份证号！",Toast.LENGTH_LONG).show();
-//            return;
-//        }
+        final String phone=et_phone.getText().toString().trim();
+        final String password=et_password.getText().toString().trim();
+        final String verification=et_verification.getText().toString().trim();
         if (!RegexUtil.checkMobile(phone)){
             Toast.makeText(mContext,"请正确输入手机号！",Toast.LENGTH_LONG).show();
             return;
         }
-//        if (address==null||address.length()<=0){
-//            Toast.makeText(mContext,"请输入地址！",Toast.LENGTH_LONG).show();
-//            return;
-//        }
         if (verification==null||verification.length()<=0){
             Toast.makeText(mContext,"请输入验证码！",Toast.LENGTH_LONG).show();
             return;
@@ -567,44 +629,97 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
             Toast.makeText(mContext,"密码至少6位！",Toast.LENGTH_LONG).show();
             return;
         }
-        RequestParams params=new RequestParams();
-        params.put("name","");
-        params.put("avatar",userInfo.getUserImg());
-        params.put("phone",phone);
-//        params.put("idcard",ID);
-//        params.put("address",address);
-        params.put("password",password);
-        params.put("code",verification);
-        params.put("referral",et_register_referral.getText().toString());
-        params.put("devicestate", HelperConstant.DEVICE_STATE);
-        LogUtils.e(TAG,"--params->"+params.toString());
-        HelperAsyncHttpClient.get(NetConstant.NET_REGISTER,params,new JsonHttpResponseHandler(){
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                super.onSuccess(statusCode, headers, response);
-                LogUtils.e(TAG,"--statusCode->"+statusCode+"==>"+response.toString());
-                if (response!=null){
-                    try {
-                        String state=response.getString("status");
-                        if (state.equals("success")){
-                            Toast.makeText(mContext,"注册成功！",Toast.LENGTH_LONG).show();
-                            finish();
-                        }else if(state.equals("error")){
-                            String error=response.getString("data");
-                            Toast.makeText(mContext,error,Toast.LENGTH_LONG).show();
+        if(mPhotoList.size()==0){
+            //传入1表示没有图片
+            headImg = "";
+            RequestParams params=new RequestParams();
+            params.put("name","");
+            params.put("avatar",headImg);
+            params.put("phone",phone);
+            params.put("password",password);
+            params.put("code",verification);
+            params.put("referral",et_register_referral.getText().toString());
+            params.put("devicestate", HelperConstant.DEVICE_STATE);
+            LogUtils.e(TAG,"--params->"+params.toString());
+            HelperAsyncHttpClient.get(NetConstant.NET_REGISTER,params,new JsonHttpResponseHandler(){
+                @Override
+                public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                    super.onSuccess(statusCode, headers, response);
+                    LogUtils.e(TAG,"--statusCode->"+statusCode+"==>"+response.toString());
+                    if (response!=null){
+                        try {
+                            String state=response.getString("status");
+                            if (state.equals("success")){
+                                Toast.makeText(mContext,"注册成功！",Toast.LENGTH_LONG).show();
+                                finish();
+                            }else if(state.equals("error")){
+                                String error=response.getString("data");
+                                Toast.makeText(mContext,error,Toast.LENGTH_LONG).show();
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
                         }
-                    } catch (JSONException e) {
-                        e.printStackTrace();
                     }
                 }
-            }
 
-            @Override
-            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                super.onFailure(statusCode, headers, responseString, throwable);
-                LogUtils.e(TAG,"--statusCode->"+statusCode+"==>"+responseString);
-            }
-        });
+                @Override
+                public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                    super.onFailure(statusCode, headers, responseString, throwable);
+                    LogUtils.e(TAG,"--statusCode->"+statusCode+"==>"+responseString);
+                }
+            });
+        }else{
+            new PushImageUtil().setPushIamge(getApplication(), mPhotoList, nameList, new PushImage() {
+                @Override
+                public void success(boolean state) {
+                    //传入2表示有图片
+                    String s = StringJoint.arrayJointchar(nameList, ",");
+                    userInfo.setUserImg(s);
+                    headImg = s;
+                    RequestParams params=new RequestParams();
+                    params.put("name","");
+                    params.put("avatar",headImg);
+                    params.put("phone",phone);
+                    params.put("password",password);
+                    params.put("code",verification);
+                    params.put("referral",et_register_referral.getText().toString());
+                    params.put("devicestate", HelperConstant.DEVICE_STATE);
+                    LogUtils.e(TAG, "--params->" + params.toString());
+                    HelperAsyncHttpClient.get(NetConstant.NET_REGISTER,params,new JsonHttpResponseHandler(){
+                        @Override
+                        public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                            super.onSuccess(statusCode, headers, response);
+                            LogUtils.e(TAG,"--statusCode->"+statusCode+"==>"+response.toString());
+                            if (response!=null){
+                                try {
+                                    String state=response.getString("status");
+                                    if (state.equals("success")){
+                                        Toast.makeText(mContext,"注册成功！",Toast.LENGTH_LONG).show();
+                                        finish();
+                                    }else if(state.equals("error")){
+                                        String error=response.getString("data");
+                                        Toast.makeText(mContext,error,Toast.LENGTH_LONG).show();
+                                    }
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                            super.onFailure(statusCode, headers, responseString, throwable);
+                            LogUtils.e(TAG,"--statusCode->"+statusCode+"==>"+responseString);
+                        }
+                    });
+                }
+
+                @Override
+                public void error() {
+                    //Toast.makeText(getApplication(), "图片上传失败", Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
     }
 
 
@@ -626,5 +741,34 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
         } else{
             showPickDialog();
         }
+    }
+
+    /**
+     * 授权权限
+     *
+     * @param permsRequestCode
+     * @param permissions
+     * @param grantResults
+     */
+    @Override
+    public void onRequestPermissionsResult(int permsRequestCode, String[] permissions, int[] grantResults) {
+
+        switch (permsRequestCode) {
+
+            case 200:
+
+                boolean cameraAccepted = grantResults[0] == PackageManager.PERMISSION_GRANTED;
+                if (cameraAccepted) {
+                    //授权成功之后，调用系统相机进行拍照操作等
+                    galleryFinalUtil.openCamera(RegisterActivity.this, mPhotoList, REQUEST_CODE_CAMERA, mOnHanlderResultCallback);
+                } else {
+                    //用户授权拒绝之后，友情提示一下就可以了
+                    ToastUtil.showShort(this, "已拒绝进入相机，如想开启请到设置中开启！");
+                }
+
+                break;
+
+        }
+
     }
 }

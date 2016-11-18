@@ -23,6 +23,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import cn.xcom.helper.R;
+import cn.xcom.helper.bean.MyApplyTask;
 import cn.xcom.helper.bean.TaskItemInfo;
 import cn.xcom.helper.constant.NetConstant;
 import cn.xcom.helper.net.HelperAsyncHttpClient;
@@ -53,6 +54,8 @@ public class NoBeginTaskActivity extends BaseActivity {
     LinearLayout llTotal;
     private Context context;
     private TaskItemInfo taskItemInfo;
+    private MyApplyTask myApplyTask;
+    private String type;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,7 +64,12 @@ public class NoBeginTaskActivity extends BaseActivity {
         setContentView(R.layout.activity_no_begin_task);
         ButterKnife.bind(this);
         context = this;
-        taskItemInfo = (TaskItemInfo) getIntent().getSerializableExtra("task");
+        type = getIntent().getStringExtra("type");
+        if(type.equals("1")){
+            taskItemInfo = (TaskItemInfo) getIntent().getSerializableExtra("task");
+        }else if(type.equals("2")){
+            myApplyTask = (MyApplyTask) getIntent().getSerializableExtra("mytask");
+        }
         setData();
     }
 
@@ -69,14 +77,26 @@ public class NoBeginTaskActivity extends BaseActivity {
      * 设置数据
      */
     private void setData() {
-        tvTradeNo.setText(taskItemInfo.getOrder_num());
-        Date date = new Date();
-        date.setTime(Long.parseLong(taskItemInfo.getTime()) * 1000);
-        tvTime.setText(new SimpleDateFormat("MM-dd  HH:mm").format(date));
-        tvTradeName.setText(taskItemInfo.getDescription());
-        tvAddress1.setText(taskItemInfo.getAddress());
-        tvAddress2.setText(taskItemInfo.getSaddress());
-        tvPrice.setText(taskItemInfo.getPrice());
+        if(type.equals("1")){
+            tvTradeNo.setText(taskItemInfo.getOrder_num());
+            Date date = new Date();
+            date.setTime(Long.parseLong(taskItemInfo.getTime()) * 1000);
+            tvTime.setText(new SimpleDateFormat("MM-dd  HH:mm").format(date));
+            tvTradeName.setText(taskItemInfo.getDescription());
+            tvAddress1.setText(taskItemInfo.getAddress());
+            tvAddress2.setText(taskItemInfo.getSaddress());
+            tvPrice.setText(taskItemInfo.getPrice());
+        }else if(type.equals("2")){
+            tvTradeNo.setText(myApplyTask.getOrder_num());
+            Date date = new Date();
+            date.setTime(Long.parseLong(myApplyTask.getTime()) * 1000);
+            tvTime.setText(new SimpleDateFormat("MM-dd  HH:mm").format(date));
+            tvTradeName.setText(myApplyTask.getDescription());
+            tvAddress1.setText(myApplyTask.getAddress());
+            tvAddress2.setText(myApplyTask.getSaddress());
+            tvPrice.setText(myApplyTask.getPrice());
+        }
+
     }
 
     @OnClick({R.id.rl_back, R.id.bt_contact, R.id.bt_service, R.id.ll_total})
@@ -89,7 +109,11 @@ public class NoBeginTaskActivity extends BaseActivity {
             case R.id.bt_contact:
                 Intent intent1 = new Intent();
                 intent1.setAction(Intent.ACTION_DIAL);
-                intent1.setData(Uri.parse("tel:" + taskItemInfo.getPhone()));
+                if(type.equals("1")){
+                    intent1.setData(Uri.parse("tel:" + taskItemInfo.getPhone()));
+                }else if(type.equals("2")){
+                    intent1.setData(Uri.parse("tel:" + myApplyTask.getPhone()));
+                }
                 context.startActivity(intent1);
                 break;
             //上门服务
@@ -98,14 +122,16 @@ public class NoBeginTaskActivity extends BaseActivity {
                 break;
             //跳转到详情页
             case R.id.ll_total:
-                Intent intent = new Intent(context, TaskDetailActivity.class);
-                Bundle bundle = new Bundle();
-                bundle.putSerializable("taskItemInfo",taskItemInfo);
-                intent.putExtras(bundle);
-                //我的任务
-                intent.putExtra("type","2");
-                startActivity(intent);
-                break;
+                if(type.equals("1")){
+                    Intent intent = new Intent(context, TaskDetailActivity.class);
+                    Bundle bundle = new Bundle();
+                    bundle.putSerializable("taskItemInfo",taskItemInfo);
+                    intent.putExtras(bundle);
+                    //我的任务
+                    intent.putExtra("type","2");
+                    startActivity(intent);
+                    break;
+                }
         }
     }
 
@@ -114,7 +140,11 @@ public class NoBeginTaskActivity extends BaseActivity {
      */
     private void updateState() {
         RequestParams params=new RequestParams();
-        params.put("order_num", taskItemInfo.getOrder_num());
+        if(type.equals("1")){
+            params.put("order_num", taskItemInfo.getOrder_num());
+        }else if(type.equals("2")){
+            params.put("order_num", myApplyTask.getOrder_num());
+        }
         params.put("state", "3");
         HelperAsyncHttpClient.get(NetConstant.UPDATE_TASK_STATE, params, new JsonHttpResponseHandler() {
             @Override

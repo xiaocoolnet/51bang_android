@@ -124,6 +124,7 @@ public class ReleaseConvenienceActivity extends BaseActivity implements View.OnC
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
+                    HelperApplication.getInstance().trendsBack = true;
                     finish();
 
                 }
@@ -143,9 +144,9 @@ public class ReleaseConvenienceActivity extends BaseActivity implements View.OnC
             request.putValue("content",descriptionString);
             request.putValue("sound", "");
             request.putValue("soundtime", "");
-            request.putValue("latitude", String.valueOf(HelperApplication.getInstance().mLocLat));
-            request.putValue("longitude", String.valueOf(HelperApplication.getInstance().mLocLon));
-            request.putValue("address", HelperApplication.getInstance().mLocAddress);
+            request.putValue("latitude", String.valueOf(HelperApplication.getInstance().mCurrentLocLat));
+            request.putValue("longitude", String.valueOf(HelperApplication.getInstance().mCurrentLocLon));
+            request.putValue("address", HelperApplication.getInstance().mCurrentAddress);
             Log.e("发布便民圈",String.valueOf(HelperApplication.getInstance().mLocLat) + HelperApplication.getInstance().mLocAddress);
             SingleVolleyRequest.getInstance(getApplication()).addToRequestQueue(request);
         }else{
@@ -177,6 +178,7 @@ public class ReleaseConvenienceActivity extends BaseActivity implements View.OnC
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
+                            HelperApplication.getInstance().trendsBack = true;
                             finish();
 
                         }
