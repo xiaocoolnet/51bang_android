@@ -469,10 +469,10 @@ public class HelpMeActivity extends BaseActivity implements View.OnClickListener
             ToastUtil.showShort(mContext, "请选择分类");
             return;
         }
-        if (et_content.getText().toString().length() == 0) {
+        /*if (et_content.getText().toString().length() == 0) {
             ToastUtil.showShort(mContext, "请输入任务描述");
             return;
-        }
+        }*/
         if (et_phone.getText().toString().length() == 0) {
             ToastUtil.showShort(mContext, "请输入联系方式");
             return;

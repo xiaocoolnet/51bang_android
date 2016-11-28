@@ -192,11 +192,11 @@ public class MyCitySelectActivity extends BaseActivity implements OnClickListene
 					System.out.println("城市列表what======" + msg.what);
 					regions = (ArrayList<MyRegion>) msg.obj;
 					String name = regions.get(0).getName();
-					if(name.equals("北京市")||name.equals("上海市")||name.equals("天津市")||name.equals("重庆市")){
+					/*if(name.equals("北京市")||name.equals("上海市")||name.equals("天津市")||name.equals("重庆市")||name.equals("西安市")){
 
 					}else{
 						regions.remove(0);
-					}
+					}*/
 					adapter.clear();
 					adapter.addAll(regions);
 					adapter.update();
