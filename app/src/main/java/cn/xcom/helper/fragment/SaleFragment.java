@@ -109,7 +109,10 @@ public class SaleFragment extends Fragment implements View.OnClickListener {
                                 saleAdapter.notifyDataSetChanged();
                                 ToastUtils.showToast(mContext, "刷新成功");
 
-
+                            }else{
+                                addlist.clear();
+                                saleAdapter = new SaleAdapter(addlist, mContext);
+                                listView.setAdapter(saleAdapter);
                             }
 
                         } catch (JSONException e) {
@@ -161,8 +164,10 @@ public class SaleFragment extends Fragment implements View.OnClickListener {
                         saleAdapter = new SaleAdapter(addlist, mContext);
                         listView.setAdapter(saleAdapter);
                         saleAdapter.notifyDataSetChanged();
-
-
+                    }else{
+                        addlist.clear();
+                        saleAdapter = new SaleAdapter(addlist, mContext);
+                        listView.setAdapter(saleAdapter);
                     }
 
                 } catch (JSONException e) {
