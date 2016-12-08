@@ -90,43 +90,54 @@ public class MyOrderAdapter extends RecyclerView.Adapter<MyOrderAdapter.ViewHold
                     holder.payBtn.setVisibility(View.GONE);
                     holder.cancelPaymentBtn.setVisibility(View.GONE);
                     holder.commentBtn.setVisibility(View.GONE);
+                    holder.confirmBtn.setVisibility(View.GONE);
                     break;
                 case OrderHelper.UNPAY:
                     holder.orderState.setText("待付款");
                     holder.payBtn.setVisibility(View.VISIBLE);
                     holder.cancelPaymentBtn.setVisibility(View.GONE);
                     holder.commentBtn.setVisibility(View.GONE);
+                    holder.confirmBtn.setVisibility(View.GONE);
                     break;
                 case OrderHelper.UN_SEND_OUT:
                     holder.orderState.setText("待发货");
                     holder.payBtn.setVisibility(View.GONE);
                     holder.cancelPaymentBtn.setVisibility(View.VISIBLE);
                     holder.commentBtn.setVisibility(View.GONE);
+                    holder.confirmBtn.setVisibility(View.GONE);
                     break;
                 case OrderHelper.UNCONFIRMED:
-                    holder.orderState.setText("待消费");
                     holder.payBtn.setVisibility(View.GONE);
                     holder.cancelPaymentBtn.setVisibility(View.GONE);
                     holder.commentBtn.setVisibility(View.GONE);
-
+                    if("送货上门".equals(goodInfo.getDelivery())){
+                        holder.confirmBtn.setVisibility(View.VISIBLE);
+                        holder.orderState.setText("待确认");
+                    }else{
+                        holder.confirmBtn.setVisibility(View.GONE);
+                        holder.orderState.setText("待消费");
+                    }
                     break;
                 case OrderHelper.BUYER_UNCOMMENT:
                     holder.orderState.setText("待评价");
                     holder.payBtn.setVisibility(View.GONE);
                     holder.cancelPaymentBtn.setVisibility(View.GONE);
                     holder.commentBtn.setVisibility(View.VISIBLE);
+                    holder.confirmBtn.setVisibility(View.GONE);
                     break;
                 case OrderHelper.SELLER_UNCOMMENT:
                     holder.orderState.setText("待评价");
                     holder.payBtn.setVisibility(View.GONE);
                     holder.cancelPaymentBtn.setVisibility(View.GONE);
                     holder.commentBtn.setVisibility(View.GONE);
+                    holder.confirmBtn.setVisibility(View.GONE);
                     break;
                 case OrderHelper.COMPLETED:
                     holder.orderState.setText("已完成");
                     holder.payBtn.setVisibility(View.GONE);
                     holder.cancelPaymentBtn.setVisibility(View.GONE);
                     holder.commentBtn.setVisibility(View.GONE);
+                    holder.confirmBtn.setVisibility(View.GONE);
                     break;
             }
 
@@ -134,6 +145,7 @@ public class MyOrderAdapter extends RecyclerView.Adapter<MyOrderAdapter.ViewHold
             holder.payBtn.setVisibility(View.GONE);
             holder.cancelPaymentBtn.setVisibility(View.GONE);
             holder.commentBtn.setVisibility(View.GONE);
+            holder.confirmBtn.setVisibility(View.GONE);
             switch (Integer.valueOf(goodInfo.getState())) {
                 case OrderHelper.CANCELED:
                     holder.orderState.setText("已取消");
@@ -145,7 +157,11 @@ public class MyOrderAdapter extends RecyclerView.Adapter<MyOrderAdapter.ViewHold
                     holder.orderState.setText("待发货");
                     break;
                 case OrderHelper.UNCONFIRMED:
-                    holder.orderState.setText("待消费");
+                    if("送货上门".equals(goodInfo.getDelivery())){
+                        holder.orderState.setText("待确认");
+                    }else{
+                        holder.orderState.setText("待消费");
+                    }
                     break;
                 case OrderHelper.BUYER_UNCOMMENT:
                     holder.orderState.setText("待评价");
@@ -207,13 +223,25 @@ public class MyOrderAdapter extends RecyclerView.Adapter<MyOrderAdapter.ViewHold
             }
         });
 
+        holder.confirmBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new AlertDialog.Builder(mContext).setTitle("确认收货").setPositiveButton("确认",
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                confirmOrder(goodInfo.getOrder_num(),position);
+                            }
+                        }).setNegativeButton("取消", null).show();
+            }
+        });
 
     }
 
     class ViewHold extends RecyclerView.ViewHolder {
         private ImageView goodImage;
         private TextView goodPrice, goodTitle, orderState;
-        private Button payBtn, commentBtn, cancelPaymentBtn;
+        private Button payBtn, commentBtn, cancelPaymentBtn,confirmBtn;
 
         public ViewHold(View itemView) {
             super(itemView);
@@ -224,7 +252,7 @@ public class MyOrderAdapter extends RecyclerView.Adapter<MyOrderAdapter.ViewHold
             payBtn = (Button) itemView.findViewById(R.id.btn_to_pay);
             commentBtn = (Button) itemView.findViewById(R.id.btn_to_comment);
             cancelPaymentBtn = (Button) itemView.findViewById(R.id.btn_cancel_payment);
-
+            confirmBtn = (Button) itemView.findViewById(R.id.btn_confirm);
         }
     }
 
@@ -258,5 +286,32 @@ public class MyOrderAdapter extends RecyclerView.Adapter<MyOrderAdapter.ViewHold
 
     }
 
+    private void confirmOrder(String orderNum, final int position){
+        RequestParams requestParams = new RequestParams();
+        requestParams.put("order_num", orderNum);
+        requestParams.put("state", OrderHelper.BUYER_UNCOMMENT);
+        HelperAsyncHttpClient.get(NetConstant.UPDATE_SHOPPING_STATE, requestParams, new JsonHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                super.onSuccess(statusCode, headers, response);
+                if (response != null) {
+                    try {
+                        String state = response.getString("status");
+                        if (state.equals("success")) {
+                            Toast.makeText(mContext, "确认收货成功", Toast.LENGTH_SHORT).show();
+                            goodInfos.remove(position);
+                            notifyDataSetChanged();
+                        } else {
+                            String data = response.getString("data");
+                            Toast.makeText(mContext,data, Toast.LENGTH_SHORT).show();
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        });
+
+    }
 
 }
