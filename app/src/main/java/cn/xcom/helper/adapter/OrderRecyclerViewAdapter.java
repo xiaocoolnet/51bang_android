@@ -1,6 +1,5 @@
 package cn.xcom.helper.adapter;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -15,7 +14,6 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.baidu.platform.comapi.map.A;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 
@@ -31,12 +29,10 @@ import cn.xcom.helper.activity.BillActivity;
 import cn.xcom.helper.activity.MyPostOrderDetailActivity;
 import cn.xcom.helper.activity.PaymentActivity;
 import cn.xcom.helper.activity.PostCommentActivity;
-import cn.xcom.helper.bean.PoiInformaiton;
 import cn.xcom.helper.bean.TaskItemInfo;
 import cn.xcom.helper.constant.NetConstant;
 import cn.xcom.helper.fragment.order.MyPostOrderFragment;
 import cn.xcom.helper.net.HelperAsyncHttpClient;
-import cn.xcom.helper.utils.TimeUtils;
 import cz.msebera.android.httpclient.Header;
 
 /**
@@ -93,6 +89,7 @@ public class OrderRecyclerViewAdapter extends RecyclerView.Adapter<OrderRecycler
             holder.orderCompleteStateTv.setText("未完成");
             holder.orderStateTv.setText("已上门");
             holder.payBt.setVisibility(View.VISIBLE);
+            holder.bt_cancel.setVisibility(View.VISIBLE);
             holder.toCommentBtn.setVisibility(View.GONE);
         } else {
             holder.orderCompleteStateTv.setText("已完成");
@@ -133,6 +130,20 @@ public class OrderRecyclerViewAdapter extends RecyclerView.Adapter<OrderRecycler
             }
         });
 
+        holder.bt_cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new AlertDialog.Builder(mContext).setTitle("取消订单").setPositiveButton("确认",
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                String orderNum = taskItemInfo.getOrder_num();
+                                cancelPayment(orderNum,position);
+                            }
+                        }).setNegativeButton("取消", null).show();
+            }
+        });
+
         holder.toCommentBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -165,6 +176,8 @@ public class OrderRecyclerViewAdapter extends RecyclerView.Adapter<OrderRecycler
                 fragment.startActivityForResult(intent,MyPostOrderFragment.POST_ORDER_REQUEST_CODE);
             }
         });
+
+
 
 
     }
@@ -215,10 +228,39 @@ public class OrderRecyclerViewAdapter extends RecyclerView.Adapter<OrderRecycler
 
     }
 
+    private void cancelPayment(String orderNum, final int position) {
+        RequestParams requestParams = new RequestParams();
+        requestParams.put("order_num",orderNum);
+        requestParams.put("state","-1");
+        HelperAsyncHttpClient.get(NetConstant.UPDATE_TASK_STATE, requestParams,
+                new JsonHttpResponseHandler() {
+                    @Override
+                    public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                        super.onSuccess(statusCode, headers, response);
+                        if (response != null) {
+                            try {
+                                String state = response.getString("status");
+                                if (state.equals("success")) {
+                                    Toast.makeText(mContext, "取消订单成功", Toast.LENGTH_SHORT).show();
+                                    taskItemInfos.remove(position);
+                                    notifyDataSetChanged();
+                                }else{
+                                    String data = response.getString("data");
+                                    Toast.makeText(mContext,data, Toast.LENGTH_SHORT).show();
+                                }
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+                });
+
+    }
+
 
     class ViewHolder extends RecyclerView.ViewHolder {
         private TextView orderCompleteStateTv, publishTimeTv, orderNumTv,
-                orderTitleTv, phoneTv, applyNameTv, orderStateTv, payStateDesTv;
+                orderTitleTv, phoneTv, applyNameTv, orderStateTv, payStateDesTv,bt_cancel;
         private Button payBt, trusteeshipBt,toCommentBtn;
 
         public ViewHolder(View itemView) {
@@ -234,6 +276,7 @@ public class OrderRecyclerViewAdapter extends RecyclerView.Adapter<OrderRecycler
             payBt = (Button) itemView.findViewById(R.id.bt_confirm_payment);
             trusteeshipBt = (Button) itemView.findViewById(R.id.bt_trusteeship_payment);
             toCommentBtn = (Button) itemView.findViewById(R.id.bt_to_comment);
+            bt_cancel = (TextView) itemView.findViewById(R.id.bt_cancel);
         }
     }
 

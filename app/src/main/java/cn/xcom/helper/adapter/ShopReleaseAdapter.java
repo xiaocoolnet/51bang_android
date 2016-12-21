@@ -64,6 +64,7 @@ public class ShopReleaseAdapter extends BaseAdapter {
             viewHolder.textView4= (TextView) convertView.findViewById(R.id.oldprice);
             viewHolder.textView5= (TextView) convertView.findViewById(R.id.havesell);
             viewHolder.tv_name = (TextView) convertView.findViewById(R.id.tv_name);
+            viewHolder.tv_comment = (TextView) convertView.findViewById(R.id.commen_count);
             convertView.setTag(viewHolder);
         }else {
             viewHolder= (ViewHolder) convertView.getTag();
@@ -82,6 +83,7 @@ public class ShopReleaseAdapter extends BaseAdapter {
         viewHolder.textView4.setText(front.getOprice());
         viewHolder.textView5.setText("已售"+front.getSellnumber());
         viewHolder.tv_name.setText(front.getUsername());
+        viewHolder.tv_comment.setText("评价"+front.getCommentlist().size()+"条");
         //对cinvertview进行监听
 
         convertView.setOnClickListener(new View.OnClickListener() {
@@ -107,6 +109,6 @@ public class ShopReleaseAdapter extends BaseAdapter {
     }
     public class ViewHolder{
         private ImageView imageView;
-        private TextView textView1,textView2,textView3,textView4,textView5,tv_name;
+        private TextView textView1,textView2,textView3,textView4,textView5,tv_name,tv_comment;
     }
 }

@@ -23,7 +23,6 @@ import cn.xcom.helper.constant.NetConstant;
 import cn.xcom.helper.net.HelperAsyncHttpClient;
 import cn.xcom.helper.utils.LogUtils;
 import cn.xcom.helper.utils.RegexUtil;
-import cn.xcom.helper.utils.StringUtils;
 import cz.msebera.android.httpclient.Header;
 
 /**
@@ -153,7 +152,7 @@ public class BindBankAccountActivity extends BaseActivity implements View.OnClic
             return;
         }
         binkAccount = accountEditText.getText().toString();
-        if (!(binkAccount.length() == 16 || binkAccount.length() == 19)) {
+        if (!(binkAccount.length() == 16 || binkAccount.length() == 19|| binkAccount.length() == 18)) {
             Toast.makeText(BindBankAccountActivity.this, "输入的银行号码不合法", Toast.LENGTH_SHORT).show();
             return;
         }

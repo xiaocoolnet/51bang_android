@@ -2,10 +2,8 @@ package cn.xcom.helper.activity;
 
 
 import android.content.Context;
-
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -20,7 +18,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import cn.xcom.helper.R;
-import cn.xcom.helper.fragment.Authorized.BindAccountAuthorizedFragment;
 import cn.xcom.helper.fragment.Authorized.PhotoAuthorizedFragment;
 
 /**
@@ -47,12 +44,12 @@ public class AuthorizedActivity extends BaseActivity implements View.OnClickList
     private void initView() {
         photoTitleTv = (TextView) findViewById(R.id.tv_title_photo);
         photoTitleTv.setOnClickListener(this);
-        bindBankTitleTv = (TextView) findViewById(R.id.tv_title_bind);
-        bindBankTitleTv.setOnClickListener(this);
+        /*bindBankTitleTv = (TextView) findViewById(R.id.tv_title_bind);
+        bindBankTitleTv.setOnClickListener(this);*/
         viewPager = (ViewPager) findViewById(R.id.view_pager);
         fragments = new ArrayList<>();
         fragments.add(new PhotoAuthorizedFragment());
-        fragments.add(new BindAccountAuthorizedFragment());
+        /*fragments.add(new BindAccountAuthorizedFragment());*/
         viewPager.setAdapter(new MyFragmentAdapter(getSupportFragmentManager()));
         viewPager.addOnPageChangeListener(this);
 
@@ -110,9 +107,9 @@ public class AuthorizedActivity extends BaseActivity implements View.OnClickList
             case R.id.tv_title_photo:
                 viewPager.setCurrentItem(0);
                 break;
-            case R.id.tv_title_bind:
+            /*case R.id.tv_title_bind:
                 viewPager.setCurrentItem(1);
-                break;
+                break;*/
         }
     }
 
@@ -123,13 +120,13 @@ public class AuthorizedActivity extends BaseActivity implements View.OnClickList
 
     @Override
     public void onPageSelected(int position) {
-        if(position == 0){
+        /*if(position == 0){
             photoTitleTv.setTextColor(getResources().getColor(R.color.colorTheme));
             bindBankTitleTv.setTextColor(getResources().getColor(R.color.text_black));
         }else if(position == 1){
             photoTitleTv.setTextColor(getResources().getColor(R.color.text_black));
             bindBankTitleTv.setTextColor(getResources().getColor(R.color.colorTheme));
-        }
+        }*/
     }
 
     @Override

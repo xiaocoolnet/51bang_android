@@ -103,8 +103,9 @@
             android:background="@drawable/bt_payment"
             android:text="确认收货"
             android:textColor="@color/colorUploadSkip"
-            android:textSize="15sp"
+            android:textSize="14sp"
             android:visibility="gone"
+            android:padding="0dp"
             />
 
     </RelativeLayout>

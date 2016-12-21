@@ -151,7 +151,7 @@ public class MyOrderDetailActivity extends BaseActivity implements View.OnClickL
             toPaytv.setVisibility(View.GONE);
             cancelPaymentTv.setVisibility(View.GONE);
             commentTv.setVisibility(View.GONE);
-            if (Integer.valueOf(goodInfo.getState())== OrderHelper.UN_SEND_OUT) {
+            if (Integer.valueOf(goodInfo.getState())== OrderHelper.UN_SEND_OUT && !goodInfo.getDelivery().equals("同城自取")) {
                 sendOutTv.setVisibility(View.VISIBLE);
             } else {
                 sendOutTv.setVisibility(View.GONE);

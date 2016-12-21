@@ -61,7 +61,7 @@ public class HomeActivity extends BaseActivity {
         initFragment();
         state = SPUtils.get(mContext,HelperConstant.IS_HAD_AUTHENTICATION,"").toString();
         if(state.equals("0")){
-            mTabs[1].setText("认证");
+            mTabs[1].setText("抢单");
         }else if(state.equals("1")){
             mTabs[1].setText("抢单");
         }

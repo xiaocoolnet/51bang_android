@@ -187,9 +187,10 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dip"
                 android:background="@color/colorTextWhite"
-                android:paddingLeft="15dip"
-                android:paddingRight="15dip"
+                android:paddingLeft="10dip"
+                android:paddingRight="10dip"
                 android:paddingTop="5dp"
+                android:textColor="#D6562A"
                 android:text="@string/tv_authorized_note" />
 
             <LinearLayout
@@ -218,6 +219,18 @@
                     android:src="@mipmap/ic_authorized_photo" />
 
             </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/background_white">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="*特卖商户请上传营业执照"
+                    android:textColor="#D6562A"
+                    android:layout_marginLeft="10dp"
+                    android:background="@color/background_white"/>
+            </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -228,14 +241,34 @@
                 android:paddingLeft="10dip"
                 android:paddingRight="10dip"
                 android:paddingTop="5dip">
-
-                <ImageView
-                    android:layout_width="0dip"
+                <RelativeLayout
+                    android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_marginRight="5dip"
-                    android:layout_weight="1.0"
-                    android:src="@mipmap/ic_id_card" />
-
+                    android:layout_weight="1">
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginRight="5dip"
+                        android:src="@mipmap/ic_id_card" />
+                    <TextView
+                        android:id="@+id/tv_bottom"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="18sp"
+                        android:layout_marginTop="20dp"
+                        android:textColor="@color/holo_red_light"
+                        android:text="服务者实名认证"
+                        android:layout_centerHorizontal="true"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="18sp"
+                        android:layout_centerHorizontal="true"
+                        android:textColor="@color/holo_red_light"
+                        android:layout_below="@+id/tv_bottom"
+                        android:layout_marginTop="10dp"
+                        android:text="营业执照认证"/>
+                </RelativeLayout>
                 <ImageView
                     android:id="@+id/iv_authorized_ID_card"
                     android:layout_width="0dip"
@@ -245,24 +278,46 @@
                     android:src="@mipmap/ic_authorized_photo" />
 
             </LinearLayout>
-
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/background_white">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="*有技能证书者请上传技能证书"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginBottom="10dp"
+                    android:textColor="#D6562A"
+                    android:background="@color/background_white"/>
+            </LinearLayout>
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="130dip"
-                android:layout_marginTop="10dip"
                 android:background="@color/colorTextWhite"
                 android:orientation="horizontal"
                 android:paddingBottom="10dip"
                 android:paddingLeft="10dip"
                 android:paddingRight="10dip"
                 android:paddingTop="5dip">
-
-                <ImageView
-                    android:layout_width="0dip"
+                <RelativeLayout
+                    android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_marginRight="5dip"
-                    android:layout_weight="1.0"
-                    android:src="@mipmap/ic_driving_license" />
+                    android:layout_weight="1">
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginRight="5dip"
+                        android:src="@mipmap/ic_driving_license" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="18sp"
+                        android:layout_centerInParent="true"
+                        android:textColor="@color/holo_red_light"
+                        android:layout_marginTop="10dp"
+                        android:text="技能证书"/>
+                </RelativeLayout>
 
                 <ImageView
                     android:id="@+id/iv_authorized_driving_license"

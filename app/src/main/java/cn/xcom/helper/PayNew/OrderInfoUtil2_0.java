@@ -72,7 +72,7 @@ public class OrderInfoUtil2_0 {
 
 		keyValues.put("sign_type", "RSA");
 
-		//keyValues.put("notify_url", "http://www.my51bang.com/index.php?g=apps&m=index&a=AlipayNotify");
+		keyValues.put("notify_url", "http://www.my51bang.com/apps/index/AlipayNotify");
 
 		keyValues.put("timestamp", "2016-07-29 16:55:53");
 

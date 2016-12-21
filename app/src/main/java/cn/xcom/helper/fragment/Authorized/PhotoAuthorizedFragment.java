@@ -44,6 +44,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 import cn.xcom.helper.R;
+import cn.xcom.helper.activity.InsureActivity;
 import cn.xcom.helper.activity.SelectTypeActivity;
 import cn.xcom.helper.activity.SetCityActivity;
 import cn.xcom.helper.bean.UserInfo;
@@ -313,6 +314,7 @@ public class PhotoAuthorizedFragment extends Fragment implements View.OnClickLis
                         if (state.equals("success")) {
                             Toast.makeText(mContext, "提交认证成功！", Toast.LENGTH_LONG).show();
                             getActivity().finish();
+                            startActivity(new Intent(mContext, InsureActivity.class));
                         }
                     } catch (JSONException e) {
                         e.printStackTrace();

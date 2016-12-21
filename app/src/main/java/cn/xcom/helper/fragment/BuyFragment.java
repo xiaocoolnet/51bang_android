@@ -51,7 +51,6 @@ import cn.xcom.helper.HelperApplication;
 import cn.xcom.helper.R;
 import cn.xcom.helper.activity.AuthorizedActivity;
 import cn.xcom.helper.activity.ChangeSkillsActivity;
-import cn.xcom.helper.activity.InsureActivity;
 import cn.xcom.helper.activity.MyTaskActivity;
 import cn.xcom.helper.activity.TaskDetailActivity;
 import cn.xcom.helper.bean.TaskInfo;
@@ -98,11 +97,12 @@ public class BuyFragment extends Fragment implements View.OnClickListener{
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = null;
         Log.e("state",SPUtils.get(getActivity(), HelperConstant.IS_HAD_AUTHENTICATION,"").toString());
-        if(SPUtils.get(getActivity(), HelperConstant.IS_HAD_AUTHENTICATION,"").equals("1")){
+        /*if(SPUtils.get(getActivity(), HelperConstant.IS_HAD_AUTHENTICATION,"").equals("1")){
             view = inflater.inflate(R.layout.activity_grab_task,container,false);
         }else{
-            view = inflater.inflate(R.layout.fragment_buy,container,false);
-        }
+            view = inflater.inflate( R.layout.fragment_buy,container,false);
+        }*/
+        view = inflater.inflate(R.layout.activity_grab_task,container,false);
         return view;
     }
 
@@ -139,7 +139,7 @@ public class BuyFragment extends Fragment implements View.OnClickListener{
     }
     private void initView(){
         userInfo=new UserInfo(mContext);
-        if(SPUtils.get(getActivity(), HelperConstant.IS_HAD_AUTHENTICATION,"").equals("1")){
+        /*if(SPUtils.get(getActivity(), HelperConstant.IS_HAD_AUTHENTICATION,"").equals("1")){
             ll_task = (RelativeLayout) getView().findViewById(R.id.ll_task);
             ll_task.setOnClickListener(this);
             srl_task = (SwipeRefreshLayout) getView().findViewById(R.id.grab_task_srl);
@@ -170,7 +170,33 @@ public class BuyFragment extends Fragment implements View.OnClickListener{
             bt_authorized= (Button) getView().findViewById(R.id.bt_fragment_buy_authorized);
             bt_authorized.setOnClickListener(this);
             sb= (SwitchButton) getView().findViewById(R.id.sb_fragment_buy);
-        }
+        }*/
+        ll_task = (RelativeLayout) getView().findViewById(R.id.ll_task);
+        ll_task.setOnClickListener(this);
+        srl_task = (SwipeRefreshLayout) getView().findViewById(R.id.grab_task_srl);
+        lv_task = (ListView) getView().findViewById(R.id.grab_task_list);
+        sb_change = (SwitchButton) getView().findViewById(R.id.sb_fragment_buy);
+        srl_task.setColorSchemeResources(R.color.background_white);
+        srl_task.setProgressBackgroundColorSchemeColor(getResources().getColor(R.color.colorTheme));
+        srl_task.setProgressViewOffset(true, 10, 100);
+        srl_task.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                getData(HelperApplication.getInstance().mDistrict);
+            }
+        });
+        lv_task.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent intent = new Intent(mContext, TaskDetailActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("taskInfo",taskInfos.get(position));
+                intent.putExtras(bundle);
+                //抢单列表
+                intent.putExtra("type","1");
+                mContext.startActivity(intent);
+            }
+        });
     }
 
     @Override
@@ -213,7 +239,7 @@ public class BuyFragment extends Fragment implements View.OnClickListener{
      * 加载数据
      */
     private void getData(String district) {
-        if(SPUtils.get(getActivity(), HelperConstant.IS_HAD_AUTHENTICATION,"").equals("1")){
+        /*if(SPUtils.get(getActivity(), HelperConstant.IS_HAD_AUTHENTICATION,"").equals("1")){
             getWorkingState();
             RequestParams params=new RequestParams();
             params.put("city",district);
@@ -239,7 +265,32 @@ public class BuyFragment extends Fragment implements View.OnClickListener{
                     LogUtils.e(TAG, responseString);
                 }
             });
-        }
+        }*/
+        getWorkingState();
+        RequestParams params=new RequestParams();
+        params.put("city",district);
+        Log.e("city",HelperApplication.getInstance().mDistrict);
+        //params.put("city","芝罘区");
+        params.put("userid",userInfo.getUserId());
+        HelperAsyncHttpClient.get(NetConstant.GETTASKLIST, params, new JsonHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                super.onSuccess(statusCode, headers, response);
+                if(srl_task!=null){
+                    srl_task.setRefreshing(false);
+                }
+                if (response.optString("status").equals("success")) {
+                    setAdapter(response);
+                }
+                LogUtils.e(TAG, response.toString());
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                super.onFailure(statusCode, headers, responseString, throwable);
+                LogUtils.e(TAG, responseString);
+            }
+        });
     }
 
     /**
@@ -265,7 +316,7 @@ public class BuyFragment extends Fragment implements View.OnClickListener{
                     @Override
                     public void onClick(View v) {
                         if (!SPUtils.get(mContext, HelperConstant.IS_INSURANCE, "").equals("1")) {
-                            popDialog(mContext, "提示", "您未通过保险认证，不能开工，是否跳转到保险认证页面进行验证？");
+                            popDialog(mContext, "提示", "您未通过认证，不能开工，是否跳转到认证页面进行验证？");
                         } else {
                             if (sb_change.isChecked()) {
                                 changeWorkingState("1");
@@ -380,8 +431,9 @@ public class BuyFragment extends Fragment implements View.OnClickListener{
                 btn_grab.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        if(!SPUtils.get(mContext,HelperConstant.IS_INSURANCE,"").equals("1")){
-                            popDialog(mContext,"提示","您未通过保险认证，不能抢单，是否跳转到保险认证页面进行验证？");
+                        if(!SPUtils.get(getActivity(), HelperConstant.IS_HAD_AUTHENTICATION,"").equals("1")){
+                            //popDialog(mContext,"提示","您未通过认证，不能抢单，是否跳转到保险认证页面进行验证？");
+                            startActivity(new Intent(mContext, AuthorizedActivity.class));
                         }else{
                             if(taskInfo.getUserid().equals(userInfo.getUserId())){
                                 ToastUtil.showShort(mContext,"不能抢自己发布的任务");
@@ -442,7 +494,7 @@ public class BuyFragment extends Fragment implements View.OnClickListener{
             @Override
             public void onItemClick(Object o, int position) {
                 if (position == 0) {
-                    startActivity(new Intent(mContext, InsureActivity.class));
+                    startActivity(new Intent(mContext, AuthorizedActivity.class));
                 }
             }
         }).setCancelable(true).setOnDismissListener(new OnDismissListener() {
@@ -603,9 +655,9 @@ public class BuyFragment extends Fragment implements View.OnClickListener{
     @Override
     public void onClick(View v) {
         switch (v.getId()){
-            case R.id.bt_fragment_buy_authorized:
+            /*case R.id.bt_fragment_buy_authorized:
                 startActivity(new Intent(mContext, AuthorizedActivity.class));
-                break;
+                break;*/
             case R.id.ll_task:
                 showPopupMenu();
         }

@@ -393,7 +393,7 @@ public class PaymentActivity extends BaseActivity implements View.OnClickListene
             packageParams.add(new BasicNameValuePair("body", body));
             packageParams.add(new BasicNameValuePair("mch_id", Constants.MCH_ID));
             packageParams.add(new BasicNameValuePair("nonce_str", nonceStr));
-            packageParams.add(new BasicNameValuePair("notify_url", "www.baidu.com"));
+            packageParams.add(new BasicNameValuePair("notify_url", "http://www.my51bang.com/api/returnwx/example/notify.php"));
             packageParams.add(new BasicNameValuePair("out_trade_no",tradeNo));//商户订单号
             packageParams.add(new BasicNameValuePair("spbill_create_ip", "127.0.0.1"));
             packageParams.add(new BasicNameValuePair("total_fee",String.valueOf((int) (Double.parseDouble(price) * 100))));
