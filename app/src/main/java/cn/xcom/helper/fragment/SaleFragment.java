@@ -109,7 +109,7 @@ public class SaleFragment extends Fragment implements View.OnClickListener {
                                 saleAdapter.notifyDataSetChanged();
                                 ToastUtils.showToast(mContext, "刷新成功");
 
-                            }else{
+                            } else {
                                 addlist.clear();
                                 saleAdapter = new SaleAdapter(addlist, mContext);
                                 listView.setAdapter(saleAdapter);
@@ -136,7 +136,7 @@ public class SaleFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onResume() {
         super.onResume();
-        if(!HelperApplication.getInstance().saleBack){
+        if (!HelperApplication.getInstance().saleBack) {
             getData();
         }
         HelperApplication.getInstance().saleBack = false;
@@ -164,7 +164,7 @@ public class SaleFragment extends Fragment implements View.OnClickListener {
                         saleAdapter = new SaleAdapter(addlist, mContext);
                         listView.setAdapter(saleAdapter);
                         saleAdapter.notifyDataSetChanged();
-                    }else{
+                    } else {
                         addlist.clear();
                         saleAdapter = new SaleAdapter(addlist, mContext);
                         listView.setAdapter(saleAdapter);

@@ -17,7 +17,7 @@ android {
         release {
             keyAlias '51bang'
             keyPassword 'love@1314'
-            storeFile file('E:/51bangpackage/51bang.jks')
+            storeFile file('/Users/hemingyang/Desktop/51bang.jks')
             storePassword 'love@1314'
         }
     }
