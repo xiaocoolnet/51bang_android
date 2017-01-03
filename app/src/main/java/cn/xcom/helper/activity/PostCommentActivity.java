@@ -9,6 +9,7 @@ import android.widget.RatingBar;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import com.kaopiz.kprogresshud.KProgressHUD;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 
@@ -34,6 +35,7 @@ public class PostCommentActivity extends BaseActivity implements View.OnClickLis
     private RelativeLayout backBtn, publishBtn;
     private String type, receiveType, orderId;
     private UserInfo userInfo;
+    private KProgressHUD hud;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -62,6 +64,10 @@ public class PostCommentActivity extends BaseActivity implements View.OnClickLis
      * content,score
      */
     private void publish() {
+        hud = KProgressHUD.create(PostCommentActivity.this)
+                .setStyle(KProgressHUD.Style.SPIN_INDETERMINATE)
+                .setCancellable(true);
+        hud.show();
         String comment = commentEd.getText().toString();
         if (comment.equals("")) {
             Toast.makeText(this, "请输入评价", Toast.LENGTH_SHORT).show();
@@ -95,13 +101,24 @@ public class PostCommentActivity extends BaseActivity implements View.OnClickLis
                         String state = response.getString("status");
                         if (state.equals("success")) {
                             Toast.makeText(PostCommentActivity.this, "评论成功", Toast.LENGTH_SHORT).show();
+                            if(hud!=null){
+                                hud.dismiss();
+                            }
                             setResult(COMMENT_RESULT_CODE);
                             finish();
+                        }else{
+                            if(hud!=null){
+                                hud.dismiss();
+                            }
                         }
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
 
+                }else{
+                    if(hud!=null){
+                        hud.dismiss();
+                    }
                 }
             }
 

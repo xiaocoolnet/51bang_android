@@ -8,10 +8,12 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
+import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 
 import com.nostra13.universalimageloader.core.ImageLoader;
 
@@ -34,6 +36,7 @@ public class SpaceImageDetailActivity extends BaseActivity {
     private List addViewList;//添加图片的list
     private ViewPager viewPager;
     private ViewPageAdapter viewPageAdapter;
+    private RelativeLayout rl_back;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -44,6 +47,13 @@ public class SpaceImageDetailActivity extends BaseActivity {
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
         setContentView(R.layout.activity_space_image_detail);
+        rl_back = (RelativeLayout) findViewById(R.id.rl_back);
+        rl_back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
         //getSupportActionBar().hide();
         context=this;
         addViewList=new ArrayList();
