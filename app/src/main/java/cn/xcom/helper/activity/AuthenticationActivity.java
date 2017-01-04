@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,6 +23,8 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.jcodecraeer.xrecyclerview.ProgressStyle;
+import com.jcodecraeer.xrecyclerview.XRecyclerView;
 import com.kaopiz.kprogresshud.KProgressHUD;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
@@ -37,6 +41,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import cn.xcom.helper.HelperApplication;
 import cn.xcom.helper.R;
+import cn.xcom.helper.adapter.AuthenticationListAdapter;
 import cn.xcom.helper.bean.AuthenticationList;
 import cn.xcom.helper.bean.SkillTagInfo;
 import cn.xcom.helper.constant.NetConstant;
@@ -46,6 +51,7 @@ import cn.xcom.helper.utils.SingleVolleyRequest;
 import cn.xcom.helper.utils.StringPostRequest;
 import cn.xcom.helper.utils.ToastUtil;
 import cn.xcom.helper.utils.ViewHolder;
+import cn.xcom.helper.view.DividerItemDecoration;
 import cz.msebera.android.httpclient.Header;
 
 public class AuthenticationActivity extends BaseActivity {
@@ -64,13 +70,11 @@ public class AuthenticationActivity extends BaseActivity {
     TextView tvType3;
     @BindView(R.id.rl_type3)
     RelativeLayout rlType3;
-    @BindView(R.id.lv_authentication)
-    ListView lvAuthentication;
-    @BindView(R.id.srl_authentication)
-    SwipeRefreshLayout srlAuthentication;
+    @BindView(R.id.recycler_view)
+    XRecyclerView xRecyclerView;
     private Context context;
     private String type, sort, onlineType;
-    private CommonAdapter<AuthenticationList> adapter;
+    private AuthenticationListAdapter adapter;
     private List<AuthenticationList> authenticationLists;
     private KProgressHUD hud;
 
@@ -89,39 +93,27 @@ public class AuthenticationActivity extends BaseActivity {
                 .setStyle(KProgressHUD.Style.SPIN_INDETERMINATE)
                 .setCancellable(true);
         hud.show();
-        setRefresh();
-        lvAuthentication.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent intent = new Intent(AuthenticationActivity.this, DetailAuthenticatinActivity.class);
-                Bundle bundle = new Bundle();
-                bundle.putSerializable("authentication", authenticationLists.get(position));
-                intent.putExtras(bundle);
-                startActivity(intent);
-            }
-        });
-    }
 
-    /**
-     * 设置下拉刷新
-     */
-    private void setRefresh() {
-        srlAuthentication.setColorSchemeResources(R.color.background_white);
-        srlAuthentication.setProgressBackgroundColorSchemeColor(getResources().getColor(R.color.colorTheme));
-        srlAuthentication.setProgressViewOffset(true, 10, 100);
-        srlAuthentication.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context);
+        linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+        xRecyclerView.setRefreshProgressStyle(ProgressStyle.BallSpinFadeLoader);
+        xRecyclerView.setLoadingMoreProgressStyle(ProgressStyle.BallRotate);
+        xRecyclerView.setLayoutManager(linearLayoutManager);
+        xRecyclerView.addItemDecoration(new DividerItemDecoration(context, DividerItemDecoration.VERTICAL_LIST));
+        xRecyclerView.setLoadingListener(new XRecyclerView.LoadingListener() {
             @Override
             public void onRefresh() {
                 getData();
             }
-        });
-    }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
+            @Override
+            public void onLoadMore() {
+                getMore();
+            }
+        });
         getData();
     }
+
 
     /**
      * 加载数据
@@ -131,40 +123,85 @@ public class AuthenticationActivity extends BaseActivity {
         StringPostRequest request = new StringPostRequest(url, new Response.Listener<String>() {
             @Override
             public void onResponse(String s) {
-                if(hud!=null){
+                if (hud != null) {
                     hud.dismiss();
                 }
                 try {
                     JSONObject jsonObject = new JSONObject(s);
                     String status = jsonObject.getString("status");
                     if (status.equals("success")) {
-                        srlAuthentication.setRefreshing(false);
                         setAdapter(jsonObject);
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-
+                xRecyclerView.refreshComplete();
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError volleyError) {
-                if(hud!=null){
+                if (hud != null) {
                     hud.dismiss();
                 }
                 ToastUtil.Toast(context, "网络错误，请检查");
-                srlAuthentication.setRefreshing(false);
+                xRecyclerView.refreshComplete();
             }
         });
         request.putValue("cityname", HelperApplication.getInstance().mDistrict);
-        request.putValue("latitude", HelperApplication.getInstance().mLocLat+"");
-        request.putValue("longitude", HelperApplication.getInstance().mLocLon+"");
+        request.putValue("latitude", HelperApplication.getInstance().mLocLat + "");
+        request.putValue("longitude", HelperApplication.getInstance().mLocLon + "");
         request.putValue("sort", sort);
         request.putValue("type", type);
+        request.putValue("beginid", "0");
         Log.e("认证帮", NetConstant.GET_AUTHENTICATION_LIST + sort + type);
         SingleVolleyRequest.getInstance(context).addToRequestQueue(request);
     }
 
+
+    private void getMore() {
+        String url = NetConstant.GET_AUTHENTICATION_LIST;
+        StringPostRequest request = new StringPostRequest(url, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String s) {
+                if (hud != null) {
+                    hud.dismiss();
+                }
+                try {
+                    JSONObject jsonObject = new JSONObject(s);
+                    String status = jsonObject.getString("status");
+                    if (status.equals("success")) {
+                        if (onlineType.equals("2")) {
+                            authenticationLists.addAll(getBeanByMe(jsonObject));
+                        } else {
+                            authenticationLists.addAll(getBeanFromJson(jsonObject));
+                        }
+                        adapter.notifyDataSetChanged();
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                xRecyclerView.loadMoreComplete();
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError volleyError) {
+                if (hud != null) {
+                    hud.dismiss();
+                }
+                ToastUtil.Toast(context, "网络错误，请检查");
+                xRecyclerView.loadMoreComplete();
+            }
+        });
+        request.putValue("cityname", HelperApplication.getInstance().mDistrict);
+        request.putValue("latitude", HelperApplication.getInstance().mLocLat + "");
+        request.putValue("longitude", HelperApplication.getInstance().mLocLon + "");
+        request.putValue("sort", sort);
+        request.putValue("type", type);
+        AuthenticationList last = authenticationLists.get(authenticationLists.size() - 1);
+        request.putValue("beginid", last.getId());
+        Log.e("认证帮", NetConstant.GET_AUTHENTICATION_LIST + sort + type);
+        SingleVolleyRequest.getInstance(context).addToRequestQueue(request);
+    }
 
     /**
      * 字符串转模型集合
@@ -183,13 +220,13 @@ public class AuthenticationActivity extends BaseActivity {
         }.getType());
     }
 
-    private List<AuthenticationList> getBeanByMe(JSONObject response){
+    private List<AuthenticationList> getBeanByMe(JSONObject response) {
         List<AuthenticationList> lists = new ArrayList<>();
         try {
             JSONArray array = response.getJSONArray("data");
-            for(int i = 0;i<array.length();i++){
+            for (int i = 0; i < array.length(); i++) {
                 JSONObject object = array.optJSONObject(i);
-                if(object.optString("isworking").equals("1")){
+                if (object.optString("isworking").equals("1")) {
                     AuthenticationList authenticationList = new AuthenticationList();
                     authenticationList.setId(object.optString("id"));
                     authenticationList.setName(object.optString("name"));
@@ -208,7 +245,7 @@ public class AuthenticationActivity extends BaseActivity {
                     //获取技能
                     JSONArray skillArray = object.optJSONArray("skilllist");
                     List<AuthenticationList.SkilllistBean> skilllistBeans = new ArrayList<>();
-                    for(int j=0;j<skillArray.length();j++){
+                    for (int j = 0; j < skillArray.length(); j++) {
                         AuthenticationList.SkilllistBean skilllistBean = new AuthenticationList.SkilllistBean();
                         skilllistBean.setType(skillArray.optJSONObject(j).optString("type"));
                         skilllistBean.setTypename(skillArray.optJSONObject(j).optString("typename"));
@@ -219,7 +256,7 @@ public class AuthenticationActivity extends BaseActivity {
                     //获取评论
                     JSONArray commentArray = object.optJSONArray("evaluatelist");
                     List<AuthenticationList.EvaluatelistBean> evaluatelistBeans = new ArrayList<>();
-                    for(int k = 0;k<commentArray.length();k++){
+                    for (int k = 0; k < commentArray.length(); k++) {
                         AuthenticationList.EvaluatelistBean evaluatelistBean = new AuthenticationList.EvaluatelistBean();
                         evaluatelistBean.setId(commentArray.optJSONObject(k).optString("id"));
                         evaluatelistBean.setScore(commentArray.optJSONObject(k).optString("score"));
@@ -247,9 +284,9 @@ public class AuthenticationActivity extends BaseActivity {
      */
     private void setAdapter(JSONObject jsonObject) {
         authenticationLists.clear();
-        if(onlineType.equals("2")){
+        if (onlineType.equals("2")) {
             authenticationLists.addAll(getBeanByMe(jsonObject));
-        }else{
+        } else {
             authenticationLists.addAll(getBeanFromJson(jsonObject));
         }
         /*if (onlineType.equals("2")) {
@@ -264,29 +301,11 @@ public class AuthenticationActivity extends BaseActivity {
             authenticationLists = onlineList;
         }*/
 
-        if(adapter!=null){
+        if (adapter != null) {
             adapter.notifyDataSetChanged();
-        }else{
-            adapter = new CommonAdapter<AuthenticationList>(context, authenticationLists, R.layout.item_authentication_info) {
-                @Override
-                public void convert(ViewHolder holder, final AuthenticationList authenticationList) {
-                    holder.setImageByUrl(R.id.iv_avatar, authenticationList.getPhoto())
-                            .setText(R.id.tv_name, authenticationList.getName())
-                            .setText(R.id.tv_address, authenticationList.getAddress())
-                            .setText(R.id.tv_distance_new,authenticationList.getDistance()==10000000000L?"1000km+":authenticationList.getDistance()/1000.0+"km")
-                            .setText(R.id.tv_count, "服务" + authenticationList.getServiceCount() + "次");
-                    holder.getView(R.id.btn_chat).setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            Intent intent = new Intent(context, ChatActivity.class);
-                            intent.putExtra("id", authenticationList.getId());
-                            intent.putExtra("name", authenticationList.getName());
-                            context.startActivity(intent);
-                        }
-                    });
-                }
-            };
-            lvAuthentication.setAdapter(adapter);
+        } else {
+            adapter = new AuthenticationListAdapter(context, authenticationLists);
+            xRecyclerView.setAdapter(adapter);
         }
     }
 
@@ -496,6 +515,7 @@ public class AuthenticationActivity extends BaseActivity {
                 super.onFailure(statusCode, headers, responseString, throwable);
             }
         });
-
     }
+
+
 }

@@ -3,6 +3,7 @@ package cn.xcom.helper.adapter;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Paint;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,7 +22,7 @@ import cn.xcom.helper.utils.MyImageLoader;
 /**
  * Created by zhuchongkun on 16/6/8.
  */
-public class SaleAdapter extends BaseAdapter {
+public class SaleAdapter extends RecyclerView.Adapter<SaleAdapter.ViewHolder> {
     private List<Front> addList;
     private Context context;
 
@@ -32,39 +33,13 @@ public class SaleAdapter extends BaseAdapter {
 
 
     @Override
-    public int getCount() {
-        return addList.size();
+    public SaleAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(context).inflate(R.layout.sale_fragment, parent, false);
+        return new ViewHolder(view);
     }
 
     @Override
-    public Object getItem(int position) {
-        return addList.get(position);
-
-    }
-
-    @Override
-    public long getItemId(int position) {
-        return position;
-    }
-
-    @Override
-    public View getView(final int position, View convertView, ViewGroup parent) {
-        ViewHolder viewHolder = null;
-        if (convertView == null) {
-            viewHolder = new ViewHolder();
-            convertView = LayoutInflater.from(context).inflate(R.layout.sale_fragment, null);
-            viewHolder.imageView = (ImageView) convertView.findViewById(R.id.imgview);
-            viewHolder.textView1 = (TextView) convertView.findViewById(R.id.title);
-            viewHolder.textView2 = (TextView) convertView.findViewById(R.id.content);
-            viewHolder.textView3 = (TextView) convertView.findViewById(R.id.price);
-            viewHolder.textView4 = (TextView) convertView.findViewById(R.id.oldprice);
-            viewHolder.textView5 = (TextView) convertView.findViewById(R.id.havesell);
-            viewHolder.tv_name = (TextView) convertView.findViewById(R.id.tv_name);
-            viewHolder.tv_comment_count = (TextView) convertView.findViewById(R.id.commen_count);
-            convertView.setTag(viewHolder);
-        } else {
-            viewHolder = (ViewHolder) convertView.getTag();
-        }
+    public void onBindViewHolder(ViewHolder viewHolder, int position) {
         final Front front = addList.get(position);
         if (front.getPicturelist().size() > 0) {
             MyImageLoader.display(NetConstant.NET_DISPLAY_IMG +
@@ -79,9 +54,9 @@ public class SaleAdapter extends BaseAdapter {
         viewHolder.textView4.getPaint().setFlags(Paint.STRIKE_THRU_TEXT_FLAG); //中划线
         viewHolder.textView5.setText("已售" + front.getSellnumber());
         viewHolder.tv_name.setText(front.getUsername());
-        viewHolder.tv_comment_count.setText("评价"+front.getCommentlist().size()+"条");
+        viewHolder.tv_comment_count.setText("评价" + front.getCommentCount() + "条");
         //对cinvertview进行监听
-        convertView.setOnClickListener(new View.OnClickListener() {
+        viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(context, SaleDetailActivity.class);
@@ -90,12 +65,27 @@ public class SaleAdapter extends BaseAdapter {
                 context.startActivity(intent);
             }
         });
-
-        return convertView;
     }
 
-    public class ViewHolder {
+    @Override
+    public int getItemCount() {
+        return addList.size();
+    }
+
+    public class ViewHolder extends RecyclerView.ViewHolder {
         private ImageView imageView;
-        private TextView textView1, textView2, textView3, textView4, textView5,tv_name,tv_comment_count;
+        private TextView textView1, textView2, textView3, textView4, textView5, tv_name, tv_comment_count;
+
+        public ViewHolder(View convertView) {
+            super(convertView);
+            imageView = (ImageView) convertView.findViewById(R.id.imgview);
+            textView1 = (TextView) convertView.findViewById(R.id.title);
+            textView2 = (TextView) convertView.findViewById(R.id.content);
+            textView3 = (TextView) convertView.findViewById(R.id.price);
+            textView4 = (TextView) convertView.findViewById(R.id.oldprice);
+            textView5 = (TextView) convertView.findViewById(R.id.havesell);
+            tv_name = (TextView) convertView.findViewById(R.id.tv_name);
+            tv_comment_count = (TextView) convertView.findViewById(R.id.commen_count);
+        }
     }
 }

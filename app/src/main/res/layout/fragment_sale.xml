@@ -1,66 +1,65 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="46dip" >
+        android:layout_height="46dip">
 
         <TextView
             android:layout_width="match_parent"
-            android:gravity="center"
             android:layout_height="match_parent"
-            android:textSize="20dp"
+            android:background="@color/colorTheme"
+            android:gravity="center"
             android:text="@string/tv_fragment_sale_title"
             android:textColor="@color/colorTextWhite"
-            android:background="@color/colorTheme"/>
+            android:textSize="20dp" />
 
         <RelativeLayout
             android:id="@+id/rl_fragment_sale_classification"
             android:layout_width="wrap_content"
             android:layout_height="fill_parent"
             android:gravity="center_vertical">
+
             <TextView
                 android:id="@+id/tv_sale_type"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="全部分类"
                 android:layout_marginLeft="10dp"
                 android:maxLength="10"
-                android:textSize="15sp"
-                android:textColor="@color/background_white"/>
+                android:text="全部分类"
+                android:textColor="@color/background_white"
+                android:textSize="15sp" />
         </RelativeLayout>
 
         <RelativeLayout
             android:id="@+id/rl_fragment_sale_release"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentRight="true"
             android:layout_alignParentEnd="true"
-            android:paddingRight="10dip"
-            android:gravity="center_vertical|right">
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:gravity="center_vertical|right"
+            android:paddingRight="10dip">
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
                 android:text="发布"
                 android:textColor="@color/background_white"
-                android:textSize="16sp"
-                android:layout_marginLeft="10dp"/>
+                android:textSize="16sp" />
         </RelativeLayout>
     </RelativeLayout>
-    <android.support.v4.widget.SwipeRefreshLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/swipeRefresh">
-    <ListView
-        android:id="@+id/lv_fragment_listView"
+
+    <com.jcodecraeer.xrecyclerview.XRecyclerView
+        android:id="@+id/recycler_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
-    </android.support.v4.widget.SwipeRefreshLayout>
+
 </LinearLayout>
 

@@ -7,14 +7,15 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
-import android.widget.ListView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -35,6 +36,8 @@ import com.bigkoo.alertview.OnDismissListener;
 import com.bigkoo.alertview.OnItemClickListener;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.jcodecraeer.xrecyclerview.ProgressStyle;
+import com.jcodecraeer.xrecyclerview.XRecyclerView;
 import com.kaopiz.kprogresshud.KProgressHUD;
 import com.kyleduo.switchbutton.SwitchButton;
 import com.loopj.android.http.JsonHttpResponseHandler;
@@ -43,10 +46,13 @@ import com.loopj.android.http.RequestParams;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import cn.xcom.helper.HelperApplication;
 import cn.xcom.helper.R;
 import cn.xcom.helper.activity.AuthorizedActivity;
@@ -58,11 +64,13 @@ import cn.xcom.helper.bean.UserInfo;
 import cn.xcom.helper.constant.HelperConstant;
 import cn.xcom.helper.constant.NetConstant;
 import cn.xcom.helper.net.HelperAsyncHttpClient;
-import cn.xcom.helper.utils.CommonAdapter;
 import cn.xcom.helper.utils.LogUtils;
+import cn.xcom.helper.utils.MyImageLoader;
+import cn.xcom.helper.utils.RoundImageView;
 import cn.xcom.helper.utils.SPUtils;
 import cn.xcom.helper.utils.ToastUtil;
 import cn.xcom.helper.utils.ViewHolder;
+import cn.xcom.helper.view.DividerItemDecoration;
 import cn.xcom.helper.view.MenuPopupWindow;
 import cz.msebera.android.httpclient.Header;
 
@@ -70,19 +78,17 @@ import cz.msebera.android.httpclient.Header;
  * Created by zhuchongkun on 16/5/27.
  * 主页面——抢单
  */
-public class BuyFragment extends Fragment implements View.OnClickListener{
-    private String TAG="BuyFragment";
+public class BuyFragment extends Fragment implements View.OnClickListener {
+    private String TAG = "BuyFragment";
     private Context mContext;
     private Button bt_authorized;
     private UserInfo userInfo;
     private SwitchButton sb;
     private RelativeLayout ll_task;
-    private SwipeRefreshLayout srl_task;
-    private ListView lv_task;
     private SwitchButton sb_change;
     private boolean isChecked = true;
     private List<TaskInfo> taskInfos;
-    private CommonAdapter<TaskInfo> adapter;
+    private BuyRecycleAdapter adapter;
     private MenuPopupWindow menuPopupWindow;
     // 定位相关
     LocationClient mLocClient;
@@ -90,19 +96,21 @@ public class BuyFragment extends Fragment implements View.OnClickListener{
     private String district;
     private boolean isFirstIn = true;
     private KProgressHUD hud;
+    private XRecyclerView xRecyclerView;
 
     int flag = 0;
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = null;
-        Log.e("state",SPUtils.get(getActivity(), HelperConstant.IS_HAD_AUTHENTICATION,"").toString());
+        Log.e("state", SPUtils.get(getActivity(), HelperConstant.IS_HAD_AUTHENTICATION, "").toString());
         /*if(SPUtils.get(getActivity(), HelperConstant.IS_HAD_AUTHENTICATION,"").equals("1")){
             view = inflater.inflate(R.layout.activity_grab_task,container,false);
         }else{
             view = inflater.inflate( R.layout.fragment_buy,container,false);
         }*/
-        view = inflater.inflate(R.layout.activity_grab_task,container,false);
+        view = inflater.inflate(R.layout.activity_grab_task, container, false);
         return view;
     }
 
@@ -130,15 +138,16 @@ public class BuyFragment extends Fragment implements View.OnClickListener{
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        mContext=getActivity();
+        mContext = getActivity();
         taskInfos = new ArrayList<>();
         mLocClient = new LocationClient(mContext);     //声明LocationClient类
         mLocClient.registerLocationListener(myListener);    //注册监听函数
         initLocation();
         initView();
     }
-    private void initView(){
-        userInfo=new UserInfo(mContext);
+
+    private void initView() {
+        userInfo = new UserInfo(mContext);
         /*if(SPUtils.get(getActivity(), HelperConstant.IS_HAD_AUTHENTICATION,"").equals("1")){
             ll_task = (RelativeLayout) getView().findViewById(R.id.ll_task);
             ll_task.setOnClickListener(this);
@@ -173,45 +182,45 @@ public class BuyFragment extends Fragment implements View.OnClickListener{
         }*/
         ll_task = (RelativeLayout) getView().findViewById(R.id.ll_task);
         ll_task.setOnClickListener(this);
-        srl_task = (SwipeRefreshLayout) getView().findViewById(R.id.grab_task_srl);
-        lv_task = (ListView) getView().findViewById(R.id.grab_task_list);
         sb_change = (SwitchButton) getView().findViewById(R.id.sb_fragment_buy);
-        srl_task.setColorSchemeResources(R.color.background_white);
-        srl_task.setProgressBackgroundColorSchemeColor(getResources().getColor(R.color.colorTheme));
-        srl_task.setProgressViewOffset(true, 10, 100);
-        srl_task.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+        xRecyclerView = (XRecyclerView) getView().findViewById(R.id.recycler_view);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
+        linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+        xRecyclerView.setRefreshProgressStyle(ProgressStyle.BallSpinFadeLoader);
+        xRecyclerView.setLoadingMoreProgressStyle(ProgressStyle.BallRotate);
+        xRecyclerView.setLayoutManager(linearLayoutManager);
+        xRecyclerView.addItemDecoration(new DividerItemDecoration(getContext()
+                , DividerItemDecoration.VERTICAL_LIST));
+        xRecyclerView.setLoadingListener(new XRecyclerView.LoadingListener() {
             @Override
             public void onRefresh() {
                 getData(HelperApplication.getInstance().mDistrict);
             }
-        });
-        lv_task.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
             @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent intent = new Intent(mContext, TaskDetailActivity.class);
-                Bundle bundle = new Bundle();
-                bundle.putSerializable("taskInfo",taskInfos.get(position));
-                intent.putExtras(bundle);
-                //抢单列表
-                intent.putExtra("type","1");
-                mContext.startActivity(intent);
+            public void onLoadMore() {
+                getMore(HelperApplication.getInstance().mDistrict);
             }
         });
+
+        adapter = new BuyRecycleAdapter(getContext(), taskInfos);
+        xRecyclerView.setAdapter(adapter);
+
     }
 
     @Override
     public void onResume() {
         super.onResume();
         userInfo.readData(mContext);
-        if(!isFirstIn){
+        if (!isFirstIn) {
             getData(HelperApplication.getInstance().mDistrict);
         }
         //getIdentity();
     }
 
     /**
-     *显示选择菜单
-     * */
+     * 显示选择菜单
+     */
     private void showPopupMenu() {
         menuPopupWindow = new MenuPopupWindow(mContext, new View.OnClickListener() {
             @Override
@@ -239,55 +248,61 @@ public class BuyFragment extends Fragment implements View.OnClickListener{
      * 加载数据
      */
     private void getData(String district) {
-        /*if(SPUtils.get(getActivity(), HelperConstant.IS_HAD_AUTHENTICATION,"").equals("1")){
-            getWorkingState();
-            RequestParams params=new RequestParams();
-            params.put("city",district);
-            Log.e("city",HelperApplication.getInstance().mDistrict);
-            //params.put("city","芝罘区");
-            params.put("userid",userInfo.getUserId());
-            HelperAsyncHttpClient.get(NetConstant.GETTASKLIST, params, new JsonHttpResponseHandler() {
-                @Override
-                public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                    super.onSuccess(statusCode, headers, response);
-                    if(srl_task!=null){
-                        srl_task.setRefreshing(false);
-                    }
-                    if (response.optString("status").equals("success")) {
-                        setAdapter(response);
-                    }
-                    LogUtils.e(TAG, response.toString());
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                    super.onFailure(statusCode, headers, responseString, throwable);
-                    LogUtils.e(TAG, responseString);
-                }
-            });
-        }*/
         getWorkingState();
-        RequestParams params=new RequestParams();
-        params.put("city",district);
-        Log.e("city",HelperApplication.getInstance().mDistrict);
+        RequestParams params = new RequestParams();
+        params.put("city", district);
+        Log.e("city", HelperApplication.getInstance().mDistrict);
         //params.put("city","芝罘区");
-        params.put("userid",userInfo.getUserId());
+        params.put("userid", userInfo.getUserId());
+        params.put("beginid", "0");
+
         HelperAsyncHttpClient.get(NetConstant.GETTASKLIST, params, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                 super.onSuccess(statusCode, headers, response);
-                if(srl_task!=null){
-                    srl_task.setRefreshing(false);
-                }
                 if (response.optString("status").equals("success")) {
-                    setAdapter(response);
+                    taskInfos.clear();
+                    taskInfos.addAll(getBeanFromJson(response));
+                    adapter.notifyDataSetChanged();
                 }
+                LogUtils.e(TAG, response.toString());
+                xRecyclerView.refreshComplete();
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                super.onFailure(statusCode, headers, responseString, throwable);
+                LogUtils.e(TAG, responseString);
+                xRecyclerView.refreshComplete();
+            }
+        });
+    }
+
+    private void getMore(String district) {
+        getWorkingState();
+        RequestParams params = new RequestParams();
+        params.put("city", district);
+        Log.e("city", HelperApplication.getInstance().mDistrict);
+        //params.put("city","芝罘区");
+        params.put("userid", userInfo.getUserId());
+        TaskInfo taskInfo = taskInfos.get(taskInfos.size() - 1);
+        params.put("beginid", taskInfo.getId());
+        HelperAsyncHttpClient.get(NetConstant.GETTASKLIST, params, new JsonHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                super.onSuccess(statusCode, headers, response);
+                if (response.optString("status").equals("success")) {
+                    taskInfos.addAll(getBeanFromJson(response));
+                    adapter.notifyDataSetChanged();
+                }
+                xRecyclerView.loadMoreComplete();
                 LogUtils.e(TAG, response.toString());
             }
 
             @Override
             public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
                 super.onFailure(statusCode, headers, responseString, throwable);
+                xRecyclerView.loadMoreComplete();
                 LogUtils.e(TAG, responseString);
             }
         });
@@ -297,14 +312,14 @@ public class BuyFragment extends Fragment implements View.OnClickListener{
      * 获取当前用户开工收工状态
      */
     private void getWorkingState() {
-        RequestParams params=new RequestParams();
+        RequestParams params = new RequestParams();
         params.put("userid", userInfo.getUserId());
         HelperAsyncHttpClient.get(NetConstant.GET_WORKING_STATE, params, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                 super.onSuccess(statusCode, headers, response);
                 String state = response.optString("data");
-                if(sb_change==null){
+                if (sb_change == null) {
                     return;
                 }
                 if (state.equals("0")) {
@@ -345,16 +360,16 @@ public class BuyFragment extends Fragment implements View.OnClickListener{
                 .setStyle(KProgressHUD.Style.SPIN_INDETERMINATE)
                 .setCancellable(true);
         hud.show();
-        RequestParams params=new RequestParams();
-        params.put("userid",userInfo.getUserId());
-        params.put("address",HelperApplication.getInstance().mLocAddress);
-        params.put("longitude",HelperApplication.getInstance().mLocLon);
-        params.put("latitude",HelperApplication.getInstance().mLocLat);
+        RequestParams params = new RequestParams();
+        params.put("userid", userInfo.getUserId());
+        params.put("address", HelperApplication.getInstance().mLocAddress);
+        params.put("longitude", HelperApplication.getInstance().mLocLon);
+        params.put("latitude", HelperApplication.getInstance().mLocLat);
         params.put("isworking", state);
         HelperAsyncHttpClient.get(NetConstant.CHANGE_WORKING_STATE, params, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                if(hud!=null){
+                if (hud != null) {
                     hud.dismiss();
                 }
                 super.onSuccess(statusCode, headers, response);
@@ -364,7 +379,7 @@ public class BuyFragment extends Fragment implements View.OnClickListener{
             @Override
             public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
                 super.onFailure(statusCode, headers, responseString, throwable);
-                if(hud!=null){
+                if (hud != null) {
                     hud.dismiss();
                 }
                 LogUtils.e(TAG, responseString);
@@ -372,119 +387,10 @@ public class BuyFragment extends Fragment implements View.OnClickListener{
         });
     }
 
-    /**
-     * 根据请求数据
-     * @param response
-     */
-    private void setAdapter(JSONObject response) {
-        taskInfos.clear();
-        taskInfos.addAll(getBeanFromJson(response));
-        if(adapter!=null){
-            adapter.notifyDataSetChanged();
-        }else{
-            adapter = new CommonAdapter<TaskInfo>(mContext,taskInfos,R.layout.item_task_info) {
-                @Override
-                public void convert(ViewHolder holder, TaskInfo taskInfo) {
-                    setItem(holder,taskInfo);
-                }
-            };
-            if(lv_task==null){
-                return;
-            }
-            lv_task.setAdapter(adapter);
-        }
-    }
-
-    /**
-     * 为item填充内容
-     * @param holder
-     * @param taskInfo
-     */
-    private void setItem(ViewHolder holder, final TaskInfo taskInfo) {
-        holder.setText(R.id.tv_name, taskInfo.getName())
-                .setText(R.id.tv_task_name, taskInfo.getTitle())
-                .setTimeText(R.id.tv_task_time, taskInfo.getTime())
-                .setTimeTextWithStr(R.id.tv_expiry_time, taskInfo.getExpirydate(), "前有效")
-                .setText(R.id.tv_type_name, taskInfo.getDescription())
-                .setText(R.id.tv_address1,taskInfo.getAddress())
-                .setText(R.id.tv_address2,taskInfo.getSaddress())
-                .setText(R.id.tv_btn_grab, taskInfo.getState().equals("1") ? "抢单" : "已被抢")
-                .setImageByUrl(R.id.iv_avatar, taskInfo.getPhoto())
-                .setText(R.id.tv_price, taskInfo.getPrice());
-        if(!taskInfo.getLongitude().equals("")&&!taskInfo.getLatitude().equals("")&&!taskInfo.getSlatitude().equals("")&&!taskInfo.getSlongitude().equals("")){
-            holder.setText(R.id.tv_distance, (int) DistanceUtil.getDistance(
-                    new LatLng(Double.parseDouble(taskInfo.getLatitude()),
-                            Double.parseDouble(taskInfo.getLongitude())),
-                    new LatLng(Double.parseDouble(taskInfo.getSlatitude()),
-                            Double.parseDouble(taskInfo.getSlongitude()))) + "米");
-        }
-        TextView btn_grab = holder.getView(R.id.tv_btn_grab);
-        if(taskInfo.getState().equals("1")){
-            if(Long.parseLong(taskInfo.getExpirydate()) * 1000 < new Date().getTime()){
-                btn_grab.setClickable(false);
-                btn_grab.setText("过期");
-                btn_grab.setTextColor(getResources().getColor(R.color.holo_red_light));
-            }else{
-                btn_grab.setClickable(true);
-                btn_grab.setText("抢单");
-                btn_grab.setTextColor(getResources().getColor(R.color.colorTheme));
-                btn_grab.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        if(!SPUtils.get(getActivity(), HelperConstant.IS_HAD_AUTHENTICATION,"").equals("1")){
-                            //popDialog(mContext,"提示","您未通过认证，不能抢单，是否跳转到保险认证页面进行验证？");
-                            startActivity(new Intent(mContext, AuthorizedActivity.class));
-                        }else{
-                            if(taskInfo.getUserid().equals(userInfo.getUserId())){
-                                ToastUtil.showShort(mContext,"不能抢自己发布的任务");
-                            }else{
-                                updateState(taskInfo.getId());
-                            }
-                        }
-                    }
-                });
-            }
-        }else{
-            btn_grab.setClickable(false);
-            btn_grab.setText("已被抢");
-            btn_grab.setTextColor(getResources().getColor(R.color.holo_red_light));
-        }
-        /*//启用百度地图app导航
-        if(taskInfo.getLongitude().length()>0&&taskInfo.getLatitude().length()>0
-                &&taskInfo.getSlongitude().length()>0&&taskInfo.getSlatitude().length()>0){
-            holder.getView(R.id.ll_address).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    startRoutePlanDriving(taskInfo.getLatitude(),taskInfo.getLongitude(),taskInfo.getAddress()
-                                        ,taskInfo.getSlatitude(),taskInfo.getSlongitude(),taskInfo.getSaddress());
-                }
-            });
-        }
-        //启用百度地图app导航
-        if(taskInfo.getLongitude().length()>0&&taskInfo.getLatitude().length()>0
-                &&taskInfo.getSlongitude().length()>0&&taskInfo.getSlatitude().length()>0){
-            holder.getView(R.id.ll_address).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    startRoutePlanDriving(taskInfo.getLatitude(), taskInfo.getLongitude(), taskInfo.getAddress()
-                            , taskInfo.getSlatitude(), taskInfo.getSlongitude(), taskInfo.getSaddress());
-                }
-            });
-        }*/
-        if(taskInfo.getLongitude().length()>0&&taskInfo.getLatitude().length()>0
-                &&taskInfo.getSlongitude().length()>0&&taskInfo.getSlatitude().length()>0){
-            holder.getView(R.id.ll_map).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    startRoutePlanDriving(taskInfo.getLatitude(), taskInfo.getLongitude(), taskInfo.getAddress()
-                            , taskInfo.getSlatitude(), taskInfo.getSlongitude(), taskInfo.getSaddress());
-                }
-            });
-        }
-    }
 
     /**
      * 弹框
+     *
      * @param context
      * @param title
      * @param message
@@ -562,6 +468,7 @@ public class BuyFragment extends Fragment implements View.OnClickListener{
 
     /**
      * 启动百度地图驾车路线规划
+     *
      * @param taskInfoLatitude
      * @param taskInfoLongitude
      * @param taskInfoAddress
@@ -584,7 +491,7 @@ public class BuyFragment extends Fragment implements View.OnClickListener{
                 .startPoint(pt1).endPoint(pt2)
                 .startName(taskInfoAddress).endName(address);
         try {
-        // 调起百度地图骑行导航
+            // 调起百度地图骑行导航
             BaiduMapNavigation.openBaiduMapBikeNavi(para, mContext);
         } catch (BaiduMapAppNotSupportNaviException e) {
             e.printStackTrace();
@@ -595,18 +502,19 @@ public class BuyFragment extends Fragment implements View.OnClickListener{
 
     /**
      * 抢单
+     *
      * @param id
      */
     private void updateState(String id) {
-        RequestParams params=new RequestParams();
+        RequestParams params = new RequestParams();
         params.put("userid", userInfo.getUserId());
-        params.put("taskid",id);
+        params.put("taskid", id);
         HelperAsyncHttpClient.get(NetConstant.GRAB_TASK, params, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                 super.onSuccess(statusCode, headers, response);
                 if (response.optString("status").equals("success")) {
-                    ToastUtil.showShort(mContext,"抢单");
+                    ToastUtil.showShort(mContext, "抢单");
                     getData(HelperApplication.getInstance().mDistrict);
                 }
             }
@@ -620,6 +528,7 @@ public class BuyFragment extends Fragment implements View.OnClickListener{
 
     /**
      * 字符串转模型集合
+     *
      * @param response
      * @return
      */
@@ -630,23 +539,24 @@ public class BuyFragment extends Fragment implements View.OnClickListener{
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        return new Gson().fromJson(data,new TypeToken<List<TaskInfo>>(){}.getType());
+        return new Gson().fromJson(data, new TypeToken<List<TaskInfo>>() {
+        }.getType());
     }
 
-    private void getIdentity(){
-        RequestParams params=new RequestParams();
-        params.put("userid",userInfo.getUserId());
-        HelperAsyncHttpClient.get(NetConstant.NET_GET_IDENTITY,params,new JsonHttpResponseHandler(){
+    private void getIdentity() {
+        RequestParams params = new RequestParams();
+        params.put("userid", userInfo.getUserId());
+        HelperAsyncHttpClient.get(NetConstant.NET_GET_IDENTITY, params, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                 super.onSuccess(statusCode, headers, response);
-                LogUtils.e(TAG,"--statusCode->"+statusCode+"==>"+response.toString());
+                LogUtils.e(TAG, "--statusCode->" + statusCode + "==>" + response.toString());
             }
 
             @Override
             public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
                 super.onFailure(statusCode, headers, responseString, throwable);
-                LogUtils.e(TAG,"--statusCode->"+statusCode+"==>"+responseString);
+                LogUtils.e(TAG, "--statusCode->" + statusCode + "==>" + responseString);
             }
         });
 
@@ -654,7 +564,7 @@ public class BuyFragment extends Fragment implements View.OnClickListener{
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
+        switch (v.getId()) {
             /*case R.id.bt_fragment_buy_authorized:
                 startActivity(new Intent(mContext, AuthorizedActivity.class));
                 break;*/
@@ -667,14 +577,170 @@ public class BuyFragment extends Fragment implements View.OnClickListener{
 
         @Override
         public void onReceiveLocation(BDLocation location) {
-            if(location!=null){
+            if (location != null) {
                 district = location.getDistrict();
                 mLocClient.stop();
-                if(isFirstIn){
+                if (isFirstIn) {
                     isFirstIn = false;
                     getData(district);
                 }
             }
+        }
+    }
+
+
+    /**
+     * 适配器
+     */
+    public class BuyRecycleAdapter extends RecyclerView.Adapter<BuyRecycleAdapter.ViewHolder> {
+        private Context context;
+        private List<TaskInfo> taskInfos;
+
+        public BuyRecycleAdapter(Context context, List<TaskInfo> taskInfos) {
+            this.context = context;
+            this.taskInfos = taskInfos;
+        }
+
+
+        @Override
+        public BuyRecycleAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            View view = LayoutInflater.from(context).inflate(R.layout.item_task_info, parent, false);
+            return new BuyRecycleAdapter.ViewHolder(view);
+        }
+
+        @Override
+        public void onBindViewHolder(BuyRecycleAdapter.ViewHolder holder, final int position) {
+            final TaskInfo taskInfo = taskInfos.get(position);
+            holder.tvName.setText(taskInfo.getName());
+            holder.tvTaskName.setText(taskInfo.getTitle());
+            Date date = new Date();
+            date.setTime(Long.parseLong(taskInfo.getTime()) * 1000);
+            holder.tvTaskTime.setText(new SimpleDateFormat("yyyy-MM-dd  HH:mm").format(date));
+            holder.tvExpiryTime.setText(setTimeTextWithStr(taskInfo.getExpirydate(), "前有效"));
+            holder.tvTypeName.setText(taskInfo.getDescription());
+            holder.tvAddress1.setText(taskInfo.getAddress());
+            holder.tvAddress2.setText(taskInfo.getSaddress());
+            holder.tvBtnGrab.setText(taskInfo.getState().equals("1") ? "抢单" : "已被抢");
+            if ("".equals(taskInfo.getPhoto())) {
+                MyImageLoader.display(NetConstant.NET_DISPLAY_IMG, holder.ivAvatar);
+            } else {
+                MyImageLoader.display(NetConstant.NET_DISPLAY_IMG +
+                        taskInfo.getPhoto(), holder.ivAvatar);
+            }
+            holder.tvPrice.setText(taskInfo.getPrice());
+
+            if (!taskInfo.getLongitude().equals("") && !taskInfo.getLatitude().equals("") && !taskInfo.getSlatitude().equals("") && !taskInfo.getSlongitude().equals("")) {
+                holder.tvDistance.setText((int) DistanceUtil.getDistance(
+                        new LatLng(Double.parseDouble(taskInfo.getLatitude()),
+                                Double.parseDouble(taskInfo.getLongitude())),
+                        new LatLng(Double.parseDouble(taskInfo.getSlatitude()),
+                                Double.parseDouble(taskInfo.getSlongitude()))) + "米");
+            }
+            if (taskInfo.getState().equals("1")) {
+                if (Long.parseLong(taskInfo.getExpirydate()) * 1000 < new Date().getTime()) {
+                    holder.tvBtnGrab.setClickable(false);
+                    holder.tvBtnGrab.setText("过期");
+                    holder.tvBtnGrab.setTextColor(context.getResources().getColor(R.color.holo_red_light));
+                } else {
+                    holder.tvBtnGrab.setClickable(true);
+                    holder.tvBtnGrab.setText("抢单");
+                    holder.tvBtnGrab.setTextColor(context.getResources().getColor(R.color.colorTheme));
+                    holder.tvBtnGrab.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            if (!SPUtils.get(context, HelperConstant.IS_HAD_AUTHENTICATION, "").equals("1")) {
+                                //popDialog(mContext,"提示","您未通过认证，不能抢单，是否跳转到保险认证页面进行验证？");
+                                context.startActivity(new Intent(context, AuthorizedActivity.class));
+                            } else {
+                                if (taskInfo.getUserid().equals(userInfo.getUserId())) {
+                                    ToastUtil.showShort(mContext, "不能抢自己发布的任务");
+                                } else {
+                                    updateState(taskInfo.getId());
+                                }
+                            }
+                        }
+                    });
+                }
+            } else {
+                holder.tvBtnGrab.setClickable(false);
+                holder.tvBtnGrab.setText("已被抢");
+                holder.tvBtnGrab.setTextColor(getResources().getColor(R.color.holo_red_light));
+            }
+
+            if (taskInfo.getLongitude().length() > 0 && taskInfo.getLatitude().length() > 0
+                    && taskInfo.getSlongitude().length() > 0 && taskInfo.getSlatitude().length() > 0) {
+                holder.llMap.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        startRoutePlanDriving(taskInfo.getLatitude(), taskInfo.getLongitude(), taskInfo.getAddress()
+                                , taskInfo.getSlatitude(), taskInfo.getSlongitude(), taskInfo.getSaddress());
+                    }
+                });
+            }
+
+            holder.itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(mContext, TaskDetailActivity.class);
+                    Bundle bundle = new Bundle();
+                    bundle.putSerializable("taskInfo", taskInfos.get(position));
+                    intent.putExtras(bundle);
+                    //抢单列表
+                    intent.putExtra("type", "1");
+                    mContext.startActivity(intent);
+                }
+            });
+        }
+
+        @Override
+        public int getItemCount() {
+            return taskInfos.size();
+        }
+
+        class ViewHolder extends RecyclerView.ViewHolder {
+            @BindView(R.id.iv_avatar)
+            RoundImageView ivAvatar;
+            @BindView(R.id.tv_task_time)
+            TextView tvTaskTime;
+            @BindView(R.id.tv_name)
+            TextView tvName;
+            @BindView(R.id.tv_type_name)
+            TextView tvTypeName;
+            @BindView(R.id.ll_ll)
+            LinearLayout llLl;
+            @BindView(R.id.tv_expiry_time)
+            TextView tvExpiryTime;
+            @BindView(R.id.tv_task_name)
+            TextView tvTaskName;
+            @BindView(R.id.tv_address1)
+            TextView tvAddress1;
+            @BindView(R.id.ll_address)
+            LinearLayout llAddress;
+            @BindView(R.id.tv_address2)
+            TextView tvAddress2;
+            @BindView(R.id.ll_saddress)
+            LinearLayout llSaddress;
+            @BindView(R.id.ll_map)
+            LinearLayout llMap;
+            @BindView(R.id.tv_price)
+            TextView tvPrice;
+            @BindView(R.id.tv_left)
+            TextView tvLeft;
+            @BindView(R.id.tv_distance)
+            TextView tvDistance;
+            @BindView(R.id.tv_btn_grab)
+            TextView tvBtnGrab;
+
+            public ViewHolder(View view) {
+                super(view);
+                ButterKnife.bind(this, view);
+            }
+        }
+
+        public String setTimeTextWithStr(String text, String str) {
+            Date date = new Date();
+            date.setTime(Long.parseLong(text) * 1000);
+            return new SimpleDateFormat("MM-dd  HH:mm").format(date) + str;
         }
     }
 }

@@ -74,7 +74,7 @@ public class MapFragment extends Fragment implements View.OnClickListener, OnGet
     private String TAG = "MapFragment";
     private Context mContext;
     private RelativeLayout rl_location, rl_authentication_list;
-    private TextView tv_I_help, tv_help_me, tv_city_interaction,locate_district;
+    private TextView tv_I_help, tv_help_me, tv_city_interaction, locate_district;
     private List<AuthenticationList> lists;
     private List<Marker> markers;
     // 定位相关
@@ -90,7 +90,7 @@ public class MapFragment extends Fragment implements View.OnClickListener, OnGet
     private LatLng currentPt;
     private Marker marker;
     private boolean isResult;
-    private double mLatitude,mLongtitude;
+    private double mLatitude, mLongtitude;
     private boolean isFirstIn = true;
     private String status;
 
@@ -129,7 +129,7 @@ public class MapFragment extends Fragment implements View.OnClickListener, OnGet
             @Override
             public void onClick(View v) {
                 LatLng ll = new LatLng(mLatitude, mLongtitude);
-                MapStatusUpdate msu = MapStatusUpdateFactory.newLatLngZoom(ll,18.0f);
+                MapStatusUpdate msu = MapStatusUpdateFactory.newLatLngZoom(ll, 18.0f);
                 mBaiduMap.animateMapStatus(msu);
             }
         });
@@ -144,14 +144,14 @@ public class MapFragment extends Fragment implements View.OnClickListener, OnGet
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        Log.e("activity_result","yes");
+        Log.e("activity_result", "yes");
         switch (requestCode) {
             case CITY_RESULT:
-                    isResult = true;
-                    status = HelperApplication.getInstance().status;
-                    Log.e("statu", status);
-                    if(status.equals("0")){
-                        showDialog();
+                isResult = true;
+                status = HelperApplication.getInstance().status;
+                Log.e("statu", status);
+                if (status.equals("0")) {
+                    showDialog();
                 }
                 break;
         }
@@ -177,7 +177,7 @@ public class MapFragment extends Fragment implements View.OnClickListener, OnGet
             @Override
             public void onMapStatusChangeFinish(MapStatus mapStatus) {
                 currentPt = mBaiduMap.getMapStatus().target;
-                if(currentPt.longitude!=0&&currentPt.latitude!=0){
+                if (currentPt.longitude != 0 && currentPt.latitude != 0) {
                     mSearch.reverseGeoCode(new ReverseGeoCodeOption()
                             .location(currentPt));
                 }
@@ -263,7 +263,7 @@ public class MapFragment extends Fragment implements View.OnClickListener, OnGet
     public void onHiddenChanged(boolean hidden) {
         super.onHiddenChanged(hidden);
         Log.e("onhidedenChanged", "yes");
-        if(HelperApplication.getInstance().mCurrentLocLon!=0){
+        if (HelperApplication.getInstance().mCurrentLocLon != 0) {
             currentPt = new LatLng(HelperApplication.getInstance().mCurrentLocLat, HelperApplication.getInstance().mCurrentLocLon);
             MapStatusUpdate msu = MapStatusUpdateFactory.newLatLngZoom(currentPt, 18.0f);
             mBaiduMap.animateMapStatus(msu);
@@ -282,13 +282,13 @@ public class MapFragment extends Fragment implements View.OnClickListener, OnGet
         super.onResume();
         Log.e("resume", "yes");
         Log.e("当前定位坐标", HelperApplication.getInstance().mCurrentLocLat + "," + HelperApplication.getInstance().mCurrentLocLon);
-        if(HelperApplication.getInstance().mCurrentLocLon!=0){
+        if (HelperApplication.getInstance().mCurrentLocLon != 0) {
             currentPt = new LatLng(HelperApplication.getInstance().mCurrentLocLat, HelperApplication.getInstance().mCurrentLocLon);
             MapStatusUpdate msu = MapStatusUpdateFactory.newLatLngZoom(currentPt, 18.0f);
             mBaiduMap.animateMapStatus(msu);
             locate_district.setText(HelperApplication.getInstance().mDistrict);
         }
-        if(!"".equals(HelperApplication.getInstance().mDistrict)){
+        if (!"".equals(HelperApplication.getInstance().mDistrict)) {
             getAuthentication();
         }
         mMapView.onResume();
@@ -323,6 +323,7 @@ public class MapFragment extends Fragment implements View.OnClickListener, OnGet
         request.putValue("cityname", HelperApplication.getInstance().mDistrict);
         request.putValue("latitude", "");
         request.putValue("longitude", "");
+        request.putValue("beginid", "-1");
         SingleVolleyRequest.getInstance(mContext).addToRequestQueue(request);
     }
 
@@ -330,14 +331,14 @@ public class MapFragment extends Fragment implements View.OnClickListener, OnGet
      * 在地图中显示小红人图标
      */
     private void createPersonTag() {
-        if(markers.size()>0){
-            for(int i=0;i<markers.size();i++){
+        if (markers.size() > 0) {
+            for (int i = 0; i < markers.size(); i++) {
                 markers.get(i).remove();
             }
         }
         markers.clear();
-        for(int i=0;i<lists.size();i++){
-            LatLng latLng = new LatLng(Double.parseDouble(lists.get(i).getLatitude()),Double.parseDouble(lists.get(i).getLongitude()));
+        for (int i = 0; i < lists.size(); i++) {
+            LatLng latLng = new LatLng(Double.parseDouble(lists.get(i).getLatitude()), Double.parseDouble(lists.get(i).getLongitude()));
             //构建Marker图标
             BitmapDescriptor bitmap = BitmapDescriptorFactory
                     .fromResource(R.drawable.service_person);
@@ -354,15 +355,16 @@ public class MapFragment extends Fragment implements View.OnClickListener, OnGet
 
     /**
      * 解析认证帮信息
+     *
      * @param jsonObject
      */
     private void getAuthenticationData(JSONObject jsonObject) {
         lists.clear();
         try {
             JSONArray array = jsonObject.getJSONArray("data");
-            for(int i = 0;i<array.length();i++){
+            for (int i = 0; i < array.length(); i++) {
                 JSONObject object = array.optJSONObject(i);
-                if(object.optString("isworking").equals("1")){
+                if (object.optString("isworking").equals("1")) {
                     AuthenticationList authenticationList = new AuthenticationList();
                     authenticationList.setId(object.optString("id"));
                     authenticationList.setName(object.optString("name"));
@@ -378,7 +380,7 @@ public class MapFragment extends Fragment implements View.OnClickListener, OnGet
                     authenticationList.setDistance(Long.parseLong(object.optString("distance")));
                     JSONArray skillArray = object.optJSONArray("skilllist");
                     List<AuthenticationList.SkilllistBean> skilllistBeans = new ArrayList<>();
-                    for(int j=0;j<skillArray.length();j++){
+                    for (int j = 0; j < skillArray.length(); j++) {
                         AuthenticationList.SkilllistBean skilllistBean = new AuthenticationList.SkilllistBean();
                         skilllistBean.setType(skillArray.optJSONObject(j).optString("type"));
                         skilllistBean.setTypename(skillArray.optJSONObject(j).optString("typename"));
@@ -428,10 +430,11 @@ public class MapFragment extends Fragment implements View.OnClickListener, OnGet
                 .getSystemService(Context.WINDOW_SERVICE);
         int width = wm.getDefaultDisplay().getWidth();
         WindowManager.LayoutParams layoutParams = mDialog.getWindow().getAttributes();
-        layoutParams.width = width-200;
+        layoutParams.width = width - 200;
         layoutParams.height = LinearLayout.LayoutParams.WRAP_CONTENT;
         mDialog.getWindow().setAttributes(layoutParams);
     }
+
     @Override
 
     public void onClick(View v) {
@@ -448,7 +451,7 @@ public class MapFragment extends Fragment implements View.OnClickListener, OnGet
                 break;
             case R.id.tv_fragment_map_help_me:
                 Intent intent = new Intent(mContext, HelpMeActivity.class);
-                if(currentPt != null){
+                if (currentPt != null) {
                     intent.putExtra("lat", currentPt.latitude);
                     intent.putExtra("lon", currentPt.longitude);
                 }
@@ -470,16 +473,16 @@ public class MapFragment extends Fragment implements View.OnClickListener, OnGet
 
     @Override
     public void onGetReverseGeoCodeResult(ReverseGeoCodeResult reverseGeoCodeResult) {
-        if(reverseGeoCodeResult==null){
+        if (reverseGeoCodeResult == null) {
             return;
         }
         try {
-            if(reverseGeoCodeResult.getPoiList()!=null){
+            if (reverseGeoCodeResult.getPoiList() != null) {
                 createMarker(reverseGeoCodeResult.getLocation(), reverseGeoCodeResult.getPoiList().get(0).name);
-            }else{
-                createMarker(reverseGeoCodeResult.getLocation(), reverseGeoCodeResult.getAddressDetail().city+reverseGeoCodeResult.getAddressDetail().district+reverseGeoCodeResult.getAddressDetail().street);
+            } else {
+                createMarker(reverseGeoCodeResult.getLocation(), reverseGeoCodeResult.getAddressDetail().city + reverseGeoCodeResult.getAddressDetail().district + reverseGeoCodeResult.getAddressDetail().street);
             }
-        }catch (NullPointerException e){
+        } catch (NullPointerException e) {
 
         }
         isResult = false;
@@ -489,7 +492,7 @@ public class MapFragment extends Fragment implements View.OnClickListener, OnGet
 
         @Override
         public void onReceiveLocation(BDLocation location) {
-            if(location==null){
+            if (location == null) {
                 return;
             }
             //Receive Location
@@ -553,7 +556,7 @@ public class MapFragment extends Fragment implements View.OnClickListener, OnGet
             Log.i("BaiduLocationApiDem", sb.toString());
             locData = new MyLocationData.Builder()
                     .accuracy(location.getRadius())
-                            // 此处设置开发者获取到的方向信息，顺时针0-360
+                    // 此处设置开发者获取到的方向信息，顺时针0-360
                     .direction(100).latitude(location.getLatitude())
                     .longitude(location.getLongitude()).build();
             mBaiduMap.setMyLocationData(locData);
@@ -563,15 +566,15 @@ public class MapFragment extends Fragment implements View.OnClickListener, OnGet
             //currentLocPt = new LatLng(location.getLatitude(),location.getLongitude());
             HelperApplication.getInstance().mLocLat = location.getLatitude();
             HelperApplication.getInstance().mLocLon = location.getLongitude();
-            HelperApplication.getInstance().mLocAddress = location.getCity()+location.getDistrict()+location.getPoiList().get(0).getName();
-            if(isFirstIn){
+            HelperApplication.getInstance().mLocAddress = location.getCity() + location.getDistrict() + location.getPoiList().get(0).getName();
+            if (isFirstIn) {
                 LatLng ll = new LatLng(mLatitude, mLongtitude);
                 MapStatusUpdate msu = MapStatusUpdateFactory.newLatLngZoom(ll, 18.0f);
                 mBaiduMap.animateMapStatus(msu);
                 isFirstIn = false;
                 HelperApplication.getInstance().mCurrentLocLat = location.getLatitude();
                 HelperApplication.getInstance().mCurrentLocLon = location.getLongitude();
-                HelperApplication.getInstance().mCurrentAddress = location.getCity()+location.getDistrict()+location.getPoiList().get(0).getName();
+                HelperApplication.getInstance().mCurrentAddress = location.getCity() + location.getDistrict() + location.getPoiList().get(0).getName();
                 HelperApplication.getInstance().mDistrict = location.getDistrict();
                 locate_district.setText(location.getDistrict());
                 getAuthentication();

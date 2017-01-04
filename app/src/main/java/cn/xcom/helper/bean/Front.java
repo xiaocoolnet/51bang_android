@@ -25,7 +25,19 @@ public class Front implements Serializable {
     private List<PicturelistBean> picturelist;
     private List<CommentlistBean> commentlist;
     private int racking;//0正在上架 1已下架
+    private int commentCount;//评论条数
 
+    public Object getPicture() {
+        return picture;
+    }
+
+    public int getCommentCount() {
+        return commentCount;
+    }
+
+    public void setCommentCount(int commentCount) {
+        this.commentCount = commentCount;
+    }
 
     public String getId() {
         return id;
@@ -84,7 +96,6 @@ public class Front implements Serializable {
     }
 
 
-
     public void setPicture(Object picture) {
         this.picture = picture;
     }
@@ -138,7 +149,7 @@ public class Front implements Serializable {
     }
 
     public List<PicturelistBean> getPicturelist() {
-       return picturelist;
+        return picturelist;
     }
 
     public void setPicturelist(List<PicturelistBean> picturelist) {
@@ -149,6 +160,7 @@ public class Front implements Serializable {
 
         return commentlist;
     }
+
     public void setCommentlist(List<CommentlistBean> commentlist) {
         this.commentlist = commentlist;
     }
@@ -200,7 +212,7 @@ public class Front implements Serializable {
         }
     }
 
-    public static class CommentlistBean implements Serializable{
+    public static class CommentlistBean implements Serializable {
         private String id;
         private String content;
         private String add_time;
@@ -258,7 +270,6 @@ public class Front implements Serializable {
 
 
     }
-
 
 
 }

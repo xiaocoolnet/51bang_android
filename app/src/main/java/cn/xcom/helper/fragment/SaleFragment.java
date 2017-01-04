@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.LinearLayoutManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,6 +21,8 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.jcodecraeer.xrecyclerview.ProgressStyle;
+import com.jcodecraeer.xrecyclerview.XRecyclerView;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 
@@ -45,6 +48,7 @@ import cn.xcom.helper.utils.SPUtils;
 import cn.xcom.helper.utils.SingleVolleyRequest;
 import cn.xcom.helper.utils.StringPostRequest;
 import cn.xcom.helper.utils.ToastUtils;
+import cn.xcom.helper.view.DividerItemDecoration;
 import cn.xcom.helper.view.SaleTypePopupWindow;
 import cz.msebera.android.httpclient.Header;
 
@@ -57,79 +61,37 @@ public class SaleFragment extends Fragment implements View.OnClickListener {
     private Context mContext;
     private PopupWindow popupWindow;
     private RelativeLayout rl_classification, rl_release;
-    private ListView listView, lv_group;
     private View view;
-    private SwipeRefreshLayout swipeRefreshLayout;
     private List<Front> addlist = new ArrayList<>();
     private SaleAdapter saleAdapter;
-    private GroupAdapter groupAdapter;
     private SaleTypePopupWindow saleTypePopupWindow;
     private TextView tv_typeName;
-    private Handler handler = new Handler();
-    private Runnable runnable = new Runnable() {
-        @Override
-        public void run() {
-            swipeRefreshLayout.setRefreshing(false);
-        }
-    };
+    private XRecyclerView xRecyclerView;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_sale, container, false);
-        listView = (ListView) view.findViewById(R.id.lv_fragment_listView);
-        swipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipeRefresh);
-        swipeRefreshLayout.setProgressBackgroundColorSchemeResource(R.color.colorTheme);
-        //swip.setProgressBackgroundColorSchemeColor(getResources().getColor(R.color.colorPrimary));
-        swipeRefreshLayout.setSize(SwipeRefreshLayout.LARGE);
-        swipeRefreshLayout.setColorSchemeColors(getResources().getColor(R.color.colorTextWhite));
-        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+        xRecyclerView = (XRecyclerView) view.findViewById(R.id.recycler_view);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
+        linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+        xRecyclerView.setRefreshProgressStyle(ProgressStyle.BallSpinFadeLoader);
+        xRecyclerView.setLoadingMoreProgressStyle(ProgressStyle.BallRotate);
+        xRecyclerView.setLayoutManager(linearLayoutManager);
+        xRecyclerView.addItemDecoration(new DividerItemDecoration(getContext()
+                , DividerItemDecoration.VERTICAL_LIST));
+        xRecyclerView.setLoadingListener(new XRecyclerView.LoadingListener() {
             @Override
             public void onRefresh() {
-                handler.removeCallbacks(runnable);
-                handler.postDelayed(runnable, 1000);
-                String url = NetConstant.GOODSLIST;
-                StringPostRequest request = new StringPostRequest(url, new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String s) {
-                        try {
+                getNewData();
+            }
 
-                            Log.d("=====显示111", "" + s);
-                            JSONObject jsonObject = new JSONObject(s);
-                            String state = jsonObject.getString("status");
-                            if (state.equals("success")) {
-                                String jsonObject1 = jsonObject.getString("data");
-                                tv_typeName.setText("全部分类");
-                                Gson gson = new Gson();
-                                addlist = gson.fromJson(jsonObject1,
-                                        new TypeToken<ArrayList<Front>>() {
-                                        }.getType());
-                                Log.e("========fragment", "" + addlist.size());
-                                saleAdapter = new SaleAdapter(addlist, mContext);
-                                listView.setAdapter(saleAdapter);
-                                saleAdapter.notifyDataSetChanged();
-                                ToastUtils.showToast(mContext, "刷新成功");
-
-                            } else {
-                                addlist.clear();
-                                saleAdapter = new SaleAdapter(addlist, mContext);
-                                listView.setAdapter(saleAdapter);
-                            }
-
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-
-                    }
-                }, new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError volleyError) {
-                        ToastUtils.showToast(mContext, "网络连接错误，请检查您的网络");
-                    }
-                });
-                request.putValue("city", HelperApplication.getInstance().mDistrict);
-                SingleVolleyRequest.getInstance(getContext()).addToRequestQueue(request);
+            @Override
+            public void onLoadMore() {
+                getMore();
             }
         });
+        saleAdapter = new SaleAdapter(addlist, getContext());
+        xRecyclerView.setAdapter(saleAdapter);
         return view;
     }
 
@@ -137,15 +99,13 @@ public class SaleFragment extends Fragment implements View.OnClickListener {
     public void onResume() {
         super.onResume();
         if (!HelperApplication.getInstance().saleBack) {
-            getData();
+            getNewData();
         }
         HelperApplication.getInstance().saleBack = false;
     }
 
-    /**
-     * 获取数据列表
-     */
-    private void getData() {
+
+    private void getNewData() {
         String url = NetConstant.GOODSLIST;
         StringPostRequest request = new StringPostRequest(url, new Response.Listener<String>() {
             @Override
@@ -155,34 +115,80 @@ public class SaleFragment extends Fragment implements View.OnClickListener {
                     JSONObject jsonObject = new JSONObject(s);
                     String state = jsonObject.getString("status");
                     if (state.equals("success")) {
+                        tv_typeName.setText("全部分类");
                         String jsonObject1 = jsonObject.getString("data");
                         Gson gson = new Gson();
-                        addlist = gson.fromJson(jsonObject1,
+                        addlist.clear();
+                        List<Front> fronts = gson.fromJson(jsonObject1,
                                 new TypeToken<ArrayList<Front>>() {
                                 }.getType());
                         Log.e("========fragment", "" + addlist.size());
-                        saleAdapter = new SaleAdapter(addlist, mContext);
-                        listView.setAdapter(saleAdapter);
-                        saleAdapter.notifyDataSetChanged();
+                        addlist.addAll(fronts);
+                        saleAdapter = new SaleAdapter(addlist,mContext);
+                        xRecyclerView.setAdapter(saleAdapter);
+//                        ToastUtils.showToast(mContext, "刷新成功");
                     } else {
                         addlist.clear();
-                        saleAdapter = new SaleAdapter(addlist, mContext);
-                        listView.setAdapter(saleAdapter);
+                        saleAdapter.notifyDataSetChanged();
                     }
 
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
+                xRecyclerView.refreshComplete();
+            }
 
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError volleyError) {
+                ToastUtils.showToast(mContext, "网络连接错误，请检查您的网络");
+                xRecyclerView.refreshComplete();
+            }
+        });
+        request.putValue("city", HelperApplication.getInstance().mDistrict);
+        request.putValue("beginid", "0");
+        SingleVolleyRequest.getInstance(getContext()).addToRequestQueue(request);
+    }
+
+
+    private void getMore() {
+        String url = NetConstant.GOODSLIST;
+        StringPostRequest request = new StringPostRequest(url, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String s) {
+                try {
+                    JSONObject jsonObject = new JSONObject(s);
+                    String state = jsonObject.getString("status");
+                    if (state.equals("success")) {
+                        String jsonObject1 = jsonObject.getString("data");
+                        Gson gson = new Gson();
+                        List<Front> fronts = gson.fromJson(jsonObject1,
+                                new TypeToken<ArrayList<Front>>() {
+                                }.getType());
+                        addlist.addAll(fronts);
+                        saleAdapter.notifyDataSetChanged();
+                    } else {
+                        addlist.clear();
+                        saleAdapter.notifyDataSetChanged();
+                    }
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                xRecyclerView.loadMoreComplete();
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError volleyError) {
                 ToastUtils.showToast(mContext, "网络连接错误，请检查您的网络");
+                xRecyclerView.loadMoreComplete();
             }
         });
         request.putValue("city", HelperApplication.getInstance().mDistrict);
+        Front front = addlist.get(addlist.size() - 1);
+        request.putValue("beginid", front.getId());
         SingleVolleyRequest.getInstance(getContext()).addToRequestQueue(request);
+
     }
 
     @Override
@@ -225,7 +231,7 @@ public class SaleFragment extends Fragment implements View.OnClickListener {
                         }
                         tv_typeName.setText(dictionaryList.getName());
                         saleAdapter = new SaleAdapter(aList, mContext);
-                        listView.setAdapter(saleAdapter);
+                        xRecyclerView.setAdapter(saleAdapter);
                         saleAdapter.notifyDataSetChanged();
                         if (saleTypePopupWindow != null) {
                             saleTypePopupWindow.dismiss();
