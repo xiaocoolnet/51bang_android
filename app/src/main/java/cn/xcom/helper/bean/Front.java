@@ -25,18 +25,18 @@ public class Front implements Serializable {
     private List<PicturelistBean> picturelist;
     private List<CommentlistBean> commentlist;
     private int racking;//0正在上架 1已下架
-    private int commentCount;//评论条数
+    private int commentcount;//评论条数
 
     public Object getPicture() {
         return picture;
     }
 
     public int getCommentCount() {
-        return commentCount;
+        return commentcount;
     }
 
     public void setCommentCount(int commentCount) {
-        this.commentCount = commentCount;
+        this.commentcount = commentCount;
     }
 
     public String getId() {

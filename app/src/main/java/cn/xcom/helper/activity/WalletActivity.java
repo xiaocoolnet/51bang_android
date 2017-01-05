@@ -33,12 +33,12 @@ import cz.msebera.android.httpclient.Header;
  * 钱包页
  */
 public class WalletActivity extends BaseActivity implements View.OnClickListener {
-    private String TAG="WalletActivity";
+    private String TAG = "WalletActivity";
     private Context mContext;
     private RelativeLayout rl_back;
-    private TextView tv_momeny,tv_month_singular,tv_month_income,tv_all_singular,tv_all_income,tv_know_more;
+    private TextView tv_momeny, tv_month_singular, tv_month_income, tv_all_singular, tv_all_income, tv_know_more;
     private Button bt_present;
-    private LinearLayout ll_present,ll_income,ll_my_work,ll_bind;
+    private LinearLayout ll_present, ll_income, ll_my_work, ll_bind;
     private UserInfo userInfo;
     private WalletInfo walletInfo;
 
@@ -47,28 +47,28 @@ public class WalletActivity extends BaseActivity implements View.OnClickListener
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_wallet);
-        mContext=this;
+        mContext = this;
         initView();
     }
 
-    private void initView(){
-        rl_back= (RelativeLayout) findViewById(R.id.rl_wallet_back);
+    private void initView() {
+        rl_back = (RelativeLayout) findViewById(R.id.rl_wallet_back);
         rl_back.setOnClickListener(this);
         ll_my_work = (LinearLayout) findViewById(R.id.ll_wallet_my_work);
         ll_my_work.setOnClickListener(this);
-        tv_momeny= (TextView) findViewById(R.id.tv_wallet_money);
-        tv_month_singular= (TextView) findViewById(R.id.tv_wallet_month_singular_number);
-        tv_month_income= (TextView) findViewById(R.id.tv_wallet_month_income);
-        tv_all_singular= (TextView) findViewById(R.id.tv_wallet_all_singular_number);
-        tv_all_income= (TextView) findViewById(R.id.tv_wallet_all_income);
-        ll_present= (LinearLayout) findViewById(R.id.ll_wallet_present_records);
+        tv_momeny = (TextView) findViewById(R.id.tv_wallet_money);
+        tv_month_singular = (TextView) findViewById(R.id.tv_wallet_month_singular_number);
+        tv_month_income = (TextView) findViewById(R.id.tv_wallet_month_income);
+        tv_all_singular = (TextView) findViewById(R.id.tv_wallet_all_singular_number);
+        tv_all_income = (TextView) findViewById(R.id.tv_wallet_all_income);
+        ll_present = (LinearLayout) findViewById(R.id.ll_wallet_present_records);
         ll_present.setOnClickListener(this);
-        ll_income= (LinearLayout) findViewById(R.id.ll_wallet_income_records);
+        ll_income = (LinearLayout) findViewById(R.id.ll_wallet_income_records);
         ll_income.setOnClickListener(this);
-        bt_present= (Button) findViewById(R.id.bt_wallet_present);
+        bt_present = (Button) findViewById(R.id.bt_wallet_present);
         bt_present.setOnClickListener(this);
-        userInfo=new UserInfo(mContext);
-        walletInfo=new WalletInfo();
+        userInfo = new UserInfo(mContext);
+        walletInfo = new WalletInfo();
         tv_know_more = (TextView) findViewById(R.id.tv_know_more);
         tv_know_more.setOnClickListener(this);
         ll_bind = (LinearLayout) findViewById(R.id.ll_band_account);
@@ -79,7 +79,7 @@ public class WalletActivity extends BaseActivity implements View.OnClickListener
     protected void onResume() {
         super.onResume();
         getWallet();
-        if(HelperApplication.getInstance().isBack){
+        if (HelperApplication.getInstance().isBack) {
             showDialog();
         }
     }
@@ -101,46 +101,50 @@ public class WalletActivity extends BaseActivity implements View.OnClickListener
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
+        switch (v.getId()) {
             case R.id.rl_wallet_back:
                 finish();
                 break;
             case R.id.ll_wallet_present_records:
-                startActivity(new Intent(mContext,PresentRecordActivity.class));
+                startActivity(new Intent(mContext, PresentRecordActivity.class));
                 break;
             case R.id.ll_wallet_income_records:
-                startActivity(new Intent(mContext,IncomeRecordsActivity.class));
+                startActivity(new Intent(mContext, IncomeRecordsActivity.class));
                 break;
             case R.id.bt_wallet_present:
 //                startActivity(new Intent(mContext,BindAccountActivity.class));
-                startActivity(new Intent(mContext,ChooseAccountActivity.class));
+                startActivity(new Intent(mContext, ChooseAccountActivity.class));
 
                 break;
             case R.id.tv_know_more:
-                startActivity(new Intent(mContext,LegalAgreementActivity.class));
+                Intent intent = new Intent(mContext, WebViewActivity.class);
+                intent.putExtra("title", "用户提现");
+                intent.putExtra("url", "http://www.my51bang.com/index.php?g=portal&m=article&a=index&id=3");
+                startActivity(intent);
                 break;
 
             case R.id.ll_wallet_my_work:
-                startActivity(new Intent(mContext,MyWorkActivity.class));
+                startActivity(new Intent(mContext, MyWorkActivity.class));
                 break;
             case R.id.ll_band_account:
-                startActivity(new Intent(mContext,BindAccountActivity.class));
+                startActivity(new Intent(mContext, BindAccountActivity.class));
                 break;
         }
     }
-    private void getWallet(){
-        RequestParams requestParams=new RequestParams();
-        requestParams.put("userid",userInfo.getUserId());
-        HelperAsyncHttpClient.get(NetConstant.NET_GET_WALLET,requestParams,new JsonHttpResponseHandler(){
+
+    private void getWallet() {
+        RequestParams requestParams = new RequestParams();
+        requestParams.put("userid", userInfo.getUserId());
+        HelperAsyncHttpClient.get(NetConstant.NET_GET_WALLET, requestParams, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                 super.onSuccess(statusCode, headers, response);
-                LogUtils.e(TAG,"--statusCode->"+statusCode+"==>"+response.toString());
-                if(response!=null){
+                LogUtils.e(TAG, "--statusCode->" + statusCode + "==>" + response.toString());
+                if (response != null) {
                     try {
-                        String state=response.getString("status");
-                        if (state.equals("success")){
-                            JSONObject jsonObject=response.getJSONObject("data");
+                        String state = response.getString("status");
+                        if (state.equals("success")) {
+                            JSONObject jsonObject = response.getJSONObject("data");
                             walletInfo.setMomney(jsonObject.getString("money"));
                             walletInfo.setAvailableMomney(jsonObject.getString("availablemoney"));
                             walletInfo.setAllTasks(jsonObject.getString("alltasks"));
@@ -158,6 +162,7 @@ public class WalletActivity extends BaseActivity implements View.OnClickListener
         });
 
     }
+
     private void displayWallet() {
 //        tv_momeny,tv_month_singular,tv_month_income,tv_all_singular,tv_all_income;
         tv_momeny.setText(walletInfo.getAvailableMomney());

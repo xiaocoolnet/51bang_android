@@ -168,8 +168,7 @@ public class SaleFragment extends Fragment implements View.OnClickListener {
                         addlist.addAll(fronts);
                         saleAdapter.notifyDataSetChanged();
                     } else {
-                        addlist.clear();
-                        saleAdapter.notifyDataSetChanged();
+
                     }
 
                 } catch (JSONException e) {

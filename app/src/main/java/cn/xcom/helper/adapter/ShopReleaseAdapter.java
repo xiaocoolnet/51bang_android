@@ -83,7 +83,7 @@ public class ShopReleaseAdapter extends BaseAdapter {
         viewHolder.textView4.setText(front.getOprice());
         viewHolder.textView5.setText("已售"+front.getSellnumber());
         viewHolder.tv_name.setText(front.getUsername());
-        viewHolder.tv_comment.setText("评价"+front.getCommentlist().size()+"条");
+        viewHolder.tv_comment.setText("评价"+front.getCommentCount()+"条");
         //对cinvertview进行监听
 
         convertView.setOnClickListener(new View.OnClickListener() {
