@@ -127,6 +127,9 @@ public class PushReceiver extends BroadcastReceiver {
                 case "system":
                     playNotificationSound(context,"system");
                     break;
+                case "newTask":
+                    playNotificationSound(context,"task_new");
+                    break;
 
             }
 
@@ -334,6 +337,9 @@ public class PushReceiver extends BroadcastReceiver {
                 case "system":
                     fileDescriptor = assetManager.openFd("system_new.mp3");
                     break;
+                case "task_new":
+                    fileDescriptor = assetManager.openFd("task_new.mp3");
+                break;
             }
 
             mediaPlayer
