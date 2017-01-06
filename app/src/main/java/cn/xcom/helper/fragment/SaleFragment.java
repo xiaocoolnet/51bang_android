@@ -67,6 +67,7 @@ public class SaleFragment extends Fragment implements View.OnClickListener {
     private SaleTypePopupWindow saleTypePopupWindow;
     private TextView tv_typeName;
     private XRecyclerView xRecyclerView;
+    private String currentType = "0";
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -82,12 +83,11 @@ public class SaleFragment extends Fragment implements View.OnClickListener {
         xRecyclerView.setLoadingListener(new XRecyclerView.LoadingListener() {
             @Override
             public void onRefresh() {
-                getNewData();
+                getNewData(currentType);
             }
-
             @Override
             public void onLoadMore() {
-                getMore();
+                getMore(currentType);
             }
         });
         saleAdapter = new SaleAdapter(addlist, getContext());
@@ -99,13 +99,13 @@ public class SaleFragment extends Fragment implements View.OnClickListener {
     public void onResume() {
         super.onResume();
         if (!HelperApplication.getInstance().saleBack) {
-            getNewData();
+            getNewData(currentType);
         }
         HelperApplication.getInstance().saleBack = false;
     }
 
 
-    private void getNewData() {
+    private void getNewData(String type) {
         String url = NetConstant.GOODSLIST;
         StringPostRequest request = new StringPostRequest(url, new Response.Listener<String>() {
             @Override
@@ -115,7 +115,6 @@ public class SaleFragment extends Fragment implements View.OnClickListener {
                     JSONObject jsonObject = new JSONObject(s);
                     String state = jsonObject.getString("status");
                     if (state.equals("success")) {
-                        tv_typeName.setText("全部分类");
                         String jsonObject1 = jsonObject.getString("data");
                         Gson gson = new Gson();
                         addlist.clear();
@@ -124,7 +123,7 @@ public class SaleFragment extends Fragment implements View.OnClickListener {
                                 }.getType());
                         Log.e("========fragment", "" + addlist.size());
                         addlist.addAll(fronts);
-                        saleAdapter = new SaleAdapter(addlist,mContext);
+                        saleAdapter = new SaleAdapter(addlist, mContext);
                         xRecyclerView.setAdapter(saleAdapter);
 //                        ToastUtils.showToast(mContext, "刷新成功");
                     } else {
@@ -146,12 +145,13 @@ public class SaleFragment extends Fragment implements View.OnClickListener {
             }
         });
         request.putValue("city", HelperApplication.getInstance().mDistrict);
+        request.putValue("type",type);
         request.putValue("beginid", "0");
         SingleVolleyRequest.getInstance(getContext()).addToRequestQueue(request);
     }
 
 
-    private void getMore() {
+    private void getMore(String type) {
         String url = NetConstant.GOODSLIST;
         StringPostRequest request = new StringPostRequest(url, new Response.Listener<String>() {
             @Override
@@ -185,10 +185,11 @@ public class SaleFragment extends Fragment implements View.OnClickListener {
         });
         request.putValue("city", HelperApplication.getInstance().mDistrict);
         Front front = addlist.get(addlist.size() - 1);
+        request.putValue("type",type);
         request.putValue("beginid", front.getId());
         SingleVolleyRequest.getInstance(getContext()).addToRequestQueue(request);
-
     }
+
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
@@ -214,8 +215,10 @@ public class SaleFragment extends Fragment implements View.OnClickListener {
                     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                         final List aList = new ArrayList();
                         DictionaryList dictionaryList = saleTypePopupWindow.addAllList.get(position);
+                        currentType = dictionaryList.getId();
                         if (dictionaryList.getName().equals("全部分类")) {
                             aList.addAll(addlist);
+                            currentType = "0";
                         } else {
                             for (int i = 0; i < addlist.size(); i++) {
                                 Front front = addlist.get(i);
@@ -229,8 +232,9 @@ public class SaleFragment extends Fragment implements View.OnClickListener {
                             }
                         }
                         tv_typeName.setText(dictionaryList.getName());
-                        saleAdapter = new SaleAdapter(aList, mContext);
-                        xRecyclerView.setAdapter(saleAdapter);
+                        getNewData(currentType);
+//                        saleAdapter = new SaleAdapter(aList, mContext);
+//                        xRecyclerView.setAdapter(saleAdapter);
                         saleAdapter.notifyDataSetChanged();
                         if (saleTypePopupWindow != null) {
                             saleTypePopupWindow.dismiss();
@@ -289,5 +293,6 @@ public class SaleFragment extends Fragment implements View.OnClickListener {
         Intent intent = new Intent(getActivity(), BindAccountAuthorizedActivity.class);
         startActivity(intent);
     }
+
 
 }

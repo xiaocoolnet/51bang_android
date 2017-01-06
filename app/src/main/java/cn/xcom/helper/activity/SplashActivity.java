@@ -1,6 +1,9 @@
 package cn.xcom.helper.activity;
 
+import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
@@ -20,12 +23,14 @@ import android.widget.TextView;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import cn.jpush.android.api.JPushInterface;
+import cn.xcom.helper.HelperApplication;
 import cn.xcom.helper.R;
 import cn.xcom.helper.adapter.ViewPageAdapter;
 import cn.xcom.helper.bean.AppInfo;
@@ -186,13 +191,39 @@ public class SplashActivity extends BaseActivity  implements View.OnClickListene
                     @Override
                     public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
                         super.onFailure(statusCode, headers, responseString, throwable);
-
+                        popLogOutDialog("网络错误","网络连接超时,请检查您的网络");
                     }
+
                 });
             }else{
                 startActivity(new Intent(mContext, LoginActivity.class));
                 finish();
             }
+
+    }
+
+    private void popLogOutDialog(String title, String message) {
+        List<Activity> activities = HelperApplication.getInstance().getActivities();
+        if (activities.size() == 0) {
+            return;
+        }
+        final Activity activity = activities.get(activities.size() - 1);
+        if (activity == null) {
+            return;
+        }
+        AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+        builder.setTitle(title).setMessage(message).setCancelable(false).setPositiveButton("确定", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                UserInfo userInfo = new UserInfo();
+                userInfo.clearDataExceptPhone(activity);
+                SPUtils.clear(activity);
+                JPushInterface.stopPush(activity);
+                activity.startActivity(new Intent(activity, LoginActivity.class));
+                HelperApplication.getInstance().onTerminate();
+            }
+        });
+        builder.show();
 
     }
 

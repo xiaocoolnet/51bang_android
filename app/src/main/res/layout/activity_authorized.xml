@@ -45,14 +45,15 @@
             android:gravity="center"
             android:textColor="@color/colorTheme"
             />
-        <!--<TextView
+        <TextView
             android:id="@+id/tv_title_bind"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:text="认证方式二"
             android:gravity="center"
-            />-->
+            android:visibility="gone"
+            />
     </LinearLayout>
 
     <View

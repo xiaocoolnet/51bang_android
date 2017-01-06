@@ -72,7 +72,7 @@ import cn.xcom.helper.utils.WheelView;
 
 public class ReleaseActivity extends BaseActivity implements View.OnClickListener, OnGetGeoCoderResultListener {
     private Context context;
-    private RelativeLayout rl_i_help_back,rl_select_address;
+    private RelativeLayout rl_i_help_back, rl_select_address;
     private List<PhotoInfo> addImageList;
     private List<String> nameList;//添加相册选取完返回的的list
     private ArrayList<PhotoWithPath> photoWithPaths;
@@ -80,15 +80,15 @@ public class ReleaseActivity extends BaseActivity implements View.OnClickListene
     private EditText description;
     private GalleryFinalUtil galleryFinalUtil;
     private ImageView iv_authorized_handheld_ID_card;
-    private ImageView tupian,ima_dismiss,id_dismiss11;
-    private LinearLayout divide ;
+    private ImageView tupian, ima_dismiss, id_dismiss11;
+    private LinearLayout divide;
     private EditText ed_price;
     private EditText ed_oldprice;
     private GridView gridView;
     private GridViewAdapter gridViewAdapter;
-    private LinearLayout location,image_linearLayout;
+    private LinearLayout location, image_linearLayout;
     private LinearLayout transport;
-    private TextView telephone,tv_divide,text_transport,ed_location;
+    private TextView telephone, tv_divide, text_transport, ed_location;
     private LinearLayout release;
     private Button bt_login_release;
     private ChoosePhotoListAdapter choosePhotoListAdapter;
@@ -96,22 +96,22 @@ public class ReleaseActivity extends BaseActivity implements View.OnClickListene
     private final int REQUEST_CODE_GALLERY = 1001;
     private final int REQUEST_CODE_CROP = 1002;
     private final int REQUEST_CODE_EDIT = 1003;
-    private final int  PHONE_PHOTO=1;
-    private final int  TAKE_PHOTO=2;
-    private final int  RESULT_PHOTO=3;//裁剪后的头像
+    private final int PHONE_PHOTO = 1;
+    private final int TAKE_PHOTO = 2;
+    private final int RESULT_PHOTO = 3;//裁剪后的头像
     private View view_line;
-    private static final int MY_PERMISSIONS_REQUEST_READ_CONTACTS=4;
-    String s2=null;
+    private static final int MY_PERMISSIONS_REQUEST_READ_CONTACTS = 4;
+    String s2 = null;
     private int M;
     private Front front;
-    private  String type="";
+    private String type = "";
     private int requestCode1;
     GeoCoder mSearch = null; // 搜索模块，也可去掉地图模块独立使用
     private KProgressHUD hud;
 
-    private UserInfo info=new UserInfo();
+    private UserInfo info = new UserInfo();
 
-    String a[]={"同城自取","送货上门","凭劵消费"};
+    String a[] = {"同城自取", "送货上门", "凭劵消费"};
     private double mSiteLat;
     private double mSiteLon;
     private String sitename;
@@ -123,55 +123,55 @@ public class ReleaseActivity extends BaseActivity implements View.OnClickListene
         getWindow().setSoftInputMode(
                 WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         setContentView(R.layout.activity_release);
-        context=this;
+        context = this;
         // 初始化搜索模块，注册事件监听
         mSearch = GeoCoder.newInstance();
         mSearch.setOnGetGeoCodeResultListener(this);
         initView();
-        Intent intent=getIntent();
-        s2=intent.getStringExtra("judge").toString();
-        Log.d("123s2",s2);
-        if (s2!=null&&s2.equals("我是order")){
-            M=1;
-            front= (Front) intent.getSerializableExtra("editor");
+        Intent intent = getIntent();
+        s2 = intent.getStringExtra("judge").toString();
+        Log.d("123s2", s2);
+        if (s2 != null && s2.equals("我是order")) {
+            M = 1;
+            front = (Front) intent.getSerializableExtra("editor");
             goodName.setText(front.getGoodsname());
             Log.d("editor111", front.getGoodsname());
             description.setText(front.getDescription());
             bt_login_release.setText("完成");
-        }else{
-            M=2;
+        } else {
+            M = 2;
         }
     }
 
     private void initView() {
         info.readData(context);
-        addImageList=new ArrayList();
-        nameList=new ArrayList<>();
+        addImageList = new ArrayList();
+        nameList = new ArrayList<>();
         photoWithPaths = new ArrayList<>();
-        galleryFinalUtil=new GalleryFinalUtil(9);
+        galleryFinalUtil = new GalleryFinalUtil(9);
         rl_i_help_back = (RelativeLayout) findViewById(R.id.rl_i_help_back);
         rl_i_help_back.setOnClickListener(this);
         rl_select_address = (RelativeLayout) findViewById(R.id.rl_select_address);
         rl_select_address.setOnClickListener(this);
         goodName = (EditText) findViewById(R.id.goodName);
         description = (EditText) findViewById(R.id.description);
-        view_line=findViewById(R.id.view_line);
-       // ima_dismiss= (ImageView) findViewById(R.id.ima_dissmis);
-       // ima_dismiss.setOnClickListener(this);
-        id_dismiss11= (ImageView) findViewById(R.id.id_dismiss11);
-        tv_divide= (TextView) findViewById(R.id.text_divide);
+        view_line = findViewById(R.id.view_line);
+        // ima_dismiss= (ImageView) findViewById(R.id.ima_dissmis);
+        // ima_dismiss.setOnClickListener(this);
+        id_dismiss11 = (ImageView) findViewById(R.id.id_dismiss11);
+        tv_divide = (TextView) findViewById(R.id.text_divide);
         tv_divide.setOnClickListener(this);
         //iv_authorized_handheld_ID_card = (ImageView) findViewById(R.id.iv_authorized_handheld_ID_card);
         tupian = (ImageView) findViewById(R.id.tupian);
         tupian.setOnClickListener(this);
-        text_transport= (TextView) findViewById(R.id.text_transport);
-        ed_location= (TextView) findViewById(R.id.ed_location);
+        text_transport = (TextView) findViewById(R.id.text_transport);
+        ed_location = (TextView) findViewById(R.id.ed_location);
         //初始化当前位置信息
         ed_location.setText(HelperApplication.getInstance().mCurrentAddress);
         mSiteLat = HelperApplication.getInstance().mCurrentLocLat;
         mSiteLon = HelperApplication.getInstance().mCurrentLocLon;
         //  delete= (ImageView) findViewById(R.id.delete);
-     //   delete.setOnClickListener(this);
+        //   delete.setOnClickListener(this);
         divide = (LinearLayout) findViewById(R.id.divide);
         divide.setOnClickListener(this);
 
@@ -187,7 +187,7 @@ public class ReleaseActivity extends BaseActivity implements View.OnClickListene
         release = (LinearLayout) findViewById(R.id.release);
         bt_login_release = (Button) findViewById(R.id.bt_login_release);
         bt_login_release.setOnClickListener(this);
-        gridView= (GridView) findViewById(R.id.gridview);
+        gridView = (GridView) findViewById(R.id.gridview);
     }
 
 
@@ -195,11 +195,11 @@ public class ReleaseActivity extends BaseActivity implements View.OnClickListene
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.bt_login_release:
-                if (M==1){
+                if (M == 1) {
                     submitUpdata();
-                }else{
+                } else {
                     submit();
-               }
+                }
                 break;
             case R.id.tupian:
                 //showActionSheet();
@@ -209,10 +209,10 @@ public class ReleaseActivity extends BaseActivity implements View.OnClickListene
                 backImage();
                 break;
             case R.id.text_divide:
-                requestCode1=6;
-                Intent intent=new Intent(ReleaseActivity.this, DivideActivity.class);
+                requestCode1 = 6;
+                Intent intent = new Intent(ReleaseActivity.this, DivideActivity.class);
                 startActivityForResult(intent, requestCode1);
-               // finish();
+                // finish();
                 break;
             case R.id.transport:
                 popoDialog(a);
@@ -229,37 +229,38 @@ public class ReleaseActivity extends BaseActivity implements View.OnClickListene
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode1==6){
-            if (resultCode==6){
-                String  s1= data.getStringExtra("dictionary");
-                type=data.getStringExtra("id");
+        if (requestCode1 == 6) {
+            if (resultCode == 6) {
+                String s1 = data.getStringExtra("dictionary");
+                type = data.getStringExtra("id");
                 tv_divide.setText(s1);
             }
 
         }
-        if(requestCode == 0x110){
-            if(data!=null){
+        if (requestCode == 0x110) {
+            if (data != null) {
                 //ed_location.setText(data.getStringExtra("siteName"));
                 sitename = data.getStringExtra("siteName");
                 mSiteLat = data.getDoubleExtra("siteLat", 0);
                 mSiteLon = data.getDoubleExtra("siteLon", 0);
                 // 反Geo搜索
                 mSearch.reverseGeoCode(new ReverseGeoCodeOption()
-                        .location(new LatLng(mSiteLat,mSiteLon)));
+                        .location(new LatLng(mSiteLat, mSiteLon)));
             }
         }
         super.onActivityResult(requestCode, resultCode, data);
     }
+
     //更新发布
-    public void submitUpdata(){
+    public void submitUpdata() {
         // validate
         final String goodNameString = goodName.getText().toString().trim();
         if (TextUtils.isEmpty(goodNameString)) {
             Toast.makeText(this, "商品名称不能为空", Toast.LENGTH_SHORT).show();
             return;
         }
-        if(goodNameString.length()>35){
-            ToastUtil.showShort(this,"商品名称不能超过35字");
+        if (goodNameString.length() > 35) {
+            ToastUtil.showShort(this, "商品名称不能超过35字");
             return;
         }
 
@@ -285,10 +286,15 @@ public class ReleaseActivity extends BaseActivity implements View.OnClickListene
             Toast.makeText(this, "地址不能为空", Toast.LENGTH_SHORT).show();
             return;
         }
-        if(addImageList.size()==0){
+        if (addImageList.size() == 0) {
             Toast.makeText(this, "请选择图片", Toast.LENGTH_SHORT).show();
             return;
         }
+        if (TextUtils.isEmpty(text_transport.getText().toString().trim())) {
+            Toast.makeText(this, "请选择配送方式", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         //先上传图片再发布
         new PushImageUtil().setPushIamge(getApplication(), addImageList, nameList, new PushImage() {
             @Override
@@ -328,14 +334,14 @@ public class ReleaseActivity extends BaseActivity implements View.OnClickListene
 
             @Override
             public void error() {
-                ToastUtil.showShort(context,"图片上传失败");
+                ToastUtil.showShort(context, "图片上传失败");
                 finish();
             }
         });
 
 
-
     }
+
     //提交发布
     private void submit() {
         //得到用户的wuserid
@@ -347,7 +353,7 @@ public class ReleaseActivity extends BaseActivity implements View.OnClickListene
             return;
         }
 
-        if(goodNameString.length()>35){
+        if (goodNameString.length() > 35) {
             ToastUtil.showShort(this, "商品名称不能超过35字");
             return;
         }
@@ -374,54 +380,58 @@ public class ReleaseActivity extends BaseActivity implements View.OnClickListene
             Toast.makeText(this, "地址不能为空", Toast.LENGTH_SHORT).show();
             return;
         }
-        if(addImageList.size()==0){
+        if (addImageList.size() == 0) {
             Toast.makeText(this, "请选择图片", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if (TextUtils.isEmpty(text_transport.getText().toString().trim())) {
+            Toast.makeText(this, "请选择配送方式", Toast.LENGTH_SHORT).show();
             return;
         }
         hud = KProgressHUD.create(context)
                 .setStyle(KProgressHUD.Style.SPIN_INDETERMINATE)
                 .setCancellable(true);
         hud.show();
-       //先上传图片再发布
-        new PushImageUtil().setPushIamge(getApplication(), addImageList,nameList, new PushImage() {
+        //先上传图片再发布
+        new PushImageUtil().setPushIamge(getApplication(), addImageList, nameList, new PushImage() {
             @Override
             public void success(boolean state) {
                 //发布任务
-                String url=NetConstant.RELEASE;
-                StringPostRequest request=new StringPostRequest(url, new Response.Listener<String>() {
+                String url = NetConstant.RELEASE;
+                StringPostRequest request = new StringPostRequest(url, new Response.Listener<String>() {
                     @Override
                     public void onResponse(String s) {
-                        if(hud!=null){
+                        if (hud != null) {
                             hud.dismiss();
                         }
-                        Log.d("===我的发布",s);
-                        Toast.makeText(getApplication(),"发布成功",Toast.LENGTH_SHORT).show();
+                        Log.d("===我的发布", s);
+                        Toast.makeText(getApplication(), "发布成功", Toast.LENGTH_SHORT).show();
                         finish();
                     }
                 }, new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError volleyError) {
-                        if(hud!=null){
+                        if (hud != null) {
                             hud.dismiss();
                         }
-                        Toast.makeText(getApplication(),"网络错误，检查您的网络",Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplication(), "网络错误，检查您的网络", Toast.LENGTH_SHORT).show();
                     }
                 });
-                String s= StringJoint.arrayJointchar(nameList,",");
-                Log.d("2222233",s+ "");
-                Log.d("2222233",nameList.size()+ "");
-                request.putValue("userid",info.getUserId());
+                String s = StringJoint.arrayJointchar(nameList, ",");
+                Log.d("2222233", s + "");
+                Log.d("2222233", nameList.size() + "");
+                request.putValue("userid", info.getUserId());
                 request.putValue("picturelist", s);
                 request.putValue("goodsname", goodNameString);
-                request.putValue("type",type);
-                request.putValue("price",price);
-                request.putValue("oprice",oldprice);
-                request.putValue("description",descriptionString);
-                request.putValue("unit","个");
+                request.putValue("type", type);
+                request.putValue("price", price);
+                request.putValue("oprice", oldprice);
+                request.putValue("description", descriptionString);
+                request.putValue("unit", "个");
                 request.putValue("address", location);
                 request.putValue("longitude", String.valueOf(mSiteLon));
                 request.putValue("latitude", String.valueOf(mSiteLat));
-                request.putValue("delivery",text_transport.getText().toString());
+                request.putValue("delivery", text_transport.getText().toString());
                 request.putValue("UserLatitude", String.valueOf(HelperApplication.getInstance().mLocLat));
                 request.putValue("UserLongitude", String.valueOf(HelperApplication.getInstance().mLocLon));
                 request.putValue("UserLocation", HelperApplication.getInstance().mLocAddress);
@@ -430,7 +440,7 @@ public class ReleaseActivity extends BaseActivity implements View.OnClickListene
 
             @Override
             public void error() {
-                if(hud!=null){
+                if (hud != null) {
                     hud.dismiss();
                 }
                 finish();
@@ -439,15 +449,12 @@ public class ReleaseActivity extends BaseActivity implements View.OnClickListene
     }
 
 
-
-
-
-    public void showPicturePicker(View view){
+    public void showPicturePicker(View view) {
         PicturePickerDialog picturePickerDialog = new PicturePickerDialog(this);
         picturePickerDialog.show(new PicturePickerDialog.PicturePickerCallBack() {
             @Override
             public void onPhotoClick() {
-                Toast.makeText(context,"拍 照",Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, "拍 照", Toast.LENGTH_SHORT).show();
                 //获取拍照权限
                 if (galleryFinalUtil.openCamera(ReleaseActivity.this, (ArrayList<PhotoInfo>) addImageList, REQUEST_CODE_CAMERA, mOnHanlderResultCallback)) {
                     return;
@@ -463,10 +470,11 @@ public class ReleaseActivity extends BaseActivity implements View.OnClickListene
             @Override
             public void onAlbumClick() {
                 galleryFinalUtil.openAblum(ReleaseActivity.this, (ArrayList<PhotoInfo>) addImageList, REQUEST_CODE_GALLERY, mOnHanlderResultCallback);
-                Toast.makeText(context,"相册选择",Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, "相册选择", Toast.LENGTH_SHORT).show();
             }
         });
     }
+
     /**
      * 弹出选择框
      */
@@ -508,6 +516,7 @@ public class ReleaseActivity extends BaseActivity implements View.OnClickListene
                 })
                 .show();
     }
+
     /**
      * 选择图片后 返回的图片数据
      */
@@ -516,10 +525,10 @@ public class ReleaseActivity extends BaseActivity implements View.OnClickListene
         @Override
         public void onHanlderSuccess(int reqeustCode, List<PhotoInfo> resultList) {
             if (resultList != null) {
-              //  photoWithPaths.clear();
+                //  photoWithPaths.clear();
                 addImageList.clear();
                 addImageList.addAll(resultList);
-              //  photoWithPaths.addAll(GetImageUtil.getImgWithPaths(resultList));
+                //  photoWithPaths.addAll(GetImageUtil.getImgWithPaths(resultList));
                 Log.d("======haha", addImageList.size() + "");
                 gridViewAdapter = new GridViewAdapter(ReleaseActivity.this, (ArrayList<PhotoInfo>) addImageList);
                 gridView.setAdapter(gridViewAdapter);
@@ -527,6 +536,7 @@ public class ReleaseActivity extends BaseActivity implements View.OnClickListene
 
             }
         }
+
         @Override
         public void onHanlderFailure(int requestCode, String errorMsg) {
             Toast.makeText(ReleaseActivity.this, errorMsg, Toast.LENGTH_SHORT).show();
@@ -534,8 +544,8 @@ public class ReleaseActivity extends BaseActivity implements View.OnClickListene
     };
 
     //弹出相册相机对话框
-    public void showDialog(){
-        new AlertDialog.Builder(this,AlertDialog.THEME_HOLO_LIGHT)
+    public void showDialog() {
+        new AlertDialog.Builder(this, AlertDialog.THEME_HOLO_LIGHT)
                 .setNegativeButton("相机", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -590,8 +600,9 @@ public class ReleaseActivity extends BaseActivity implements View.OnClickListene
             }
         }).show();
     }
+
     //弹出对话框的方法
-    public void popoDialog(String [] a){
+    public void popoDialog(String[] a) {
         View outerView = LayoutInflater.from(getBaseContext())
                 .inflate(R.layout.wheel_view, null);
 
@@ -622,6 +633,7 @@ public class ReleaseActivity extends BaseActivity implements View.OnClickListene
 
 
     }
+
     /*
      将相册返回的图片的路径转换为bitmap格式；
      */
@@ -642,13 +654,13 @@ public class ReleaseActivity extends BaseActivity implements View.OnClickListene
         }
         opts.inJustDecodeBounds = false;
         float scale = Math.max(scaleWidth, scaleHeight);
-        opts.inSampleSize = (int)scale;
+        opts.inSampleSize = (int) scale;
         WeakReference<Bitmap> weak = new WeakReference<Bitmap>(BitmapFactory.decodeFile(path, opts));
         return Bitmap.createScaledBitmap(weak.get(), w, h, true);
     }
 
     //点击返回键
-    public void backImage(){
+    public void backImage() {
         finish();
     }
 

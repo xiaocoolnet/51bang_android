@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/colorMainBackground"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -96,8 +97,8 @@
                 android:drawableLeft="@mipmap/ic_me_real_name"
                 android:drawablePadding="10dip"
                 android:gravity="center_vertical"
-                android:paddingRight="10dp"
                 android:paddingLeft="10dip"
+                android:paddingRight="10dp"
                 android:text="@string/tv_fragment_me_real_baoxian"
                 android:textColor="@color/colorTextWhite"
                 android:textSize="14dip" />

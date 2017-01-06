@@ -46,7 +46,7 @@
 
     </RelativeLayout>
 
-    <ScrollView
+    <cn.xcom.helper.view.MyScrollView
         android:id="@+id/sv"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -215,7 +215,7 @@
                 android:layout_height="wrap_content">
             </cn.xcom.helper.view.NoScrollListView>
         </LinearLayout>
-    </ScrollView>
+    </cn.xcom.helper.view.MyScrollView>
 
     <RelativeLayout
         android:id="@+id/rl_bottom"

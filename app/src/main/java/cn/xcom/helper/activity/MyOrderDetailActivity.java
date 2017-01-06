@@ -199,32 +199,30 @@ public class MyOrderDetailActivity extends BaseActivity implements View.OnClickL
 
     private void cancelOrde() {
         RequestParams requestParams = new RequestParams();
-        requestParams.put("ordernum", goodInfo.getOrder_num());
-        requestParams.put("userid", userInfo.getUserId());
-        HelperAsyncHttpClient.get(NetConstant.CANCEL_ORDER, requestParams,
-                new JsonHttpResponseHandler() {
-                    @Override
-                    public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                        super.onSuccess(statusCode, headers, response);
-                        if (response != null) {
-                            try {
-                                String state = response.getString("status");
-                                if (state.equals("success")) {
-                                    Toast.makeText(MyOrderDetailActivity.this, "取消订单成功", Toast.LENGTH_SHORT).show();
-                                    setResult(CANCEL_SUCCESS);
-                                    cancelPaymentTv.setVisibility(View.GONE);
-                                    toPaytv.setVisibility(View.GONE);
-                                } else {
-                                    String data = response.getString("data");
-                                    Toast.makeText(MyOrderDetailActivity.this, data, Toast.LENGTH_SHORT).show();
-                                }
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                            }
+        requestParams.put("order_num", goodInfo.getOrder_num());
+        requestParams.put("state", OrderHelper.CANCELED);
+        HelperAsyncHttpClient.get(NetConstant.UPDATE_SHOPPING_STATE, requestParams, new JsonHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                super.onSuccess(statusCode, headers, response);
+                if (response != null) {
+                    try {
+                        String state = response.getString("status");
+                        if (state.equals("success")) {
+                            Toast.makeText(MyOrderDetailActivity.this, "取消订单成功", Toast.LENGTH_SHORT).show();
+                            setResult(CANCEL_SUCCESS);
+                            cancelPaymentTv.setVisibility(View.GONE);
+                            toPaytv.setVisibility(View.GONE);
+                        } else {
+                            String data = response.getString("data");
+                            Toast.makeText(MyOrderDetailActivity.this, data, Toast.LENGTH_SHORT).show();
                         }
-
+                    } catch (JSONException e) {
+                        e.printStackTrace();
                     }
-                });
+                }
+            }
+        });
     }
 
     private void sendOutOrder() {
