@@ -55,7 +55,7 @@ public class PushImageUtil {
     public void setPushIamge(Context context,List<PhotoInfo> p,List<String> list,PushImage pushIamge) {
         this.photoWithPaths = p;
         this.arrayList=list;
-        this.mContext = context;
+        mContext = context;
         this.pushIamge = pushIamge;
         if (photoWithPaths.size()>0){
             pushImage(photoWithPaths.get(imgNums),ADD_IMG_KEY1);
@@ -76,7 +76,7 @@ public class PushImageUtil {
             switch (msg.what) {
                 case ADD_IMG_KEY1:
                     if (msg.obj != null) {
-                      if (JsonResult.JSONparser(mContext, String.valueOf((JSONObject)msg.obj))){
+                      if (JsonResult.JSONparser(mContext, String.valueOf(msg.obj))){
                           imgNums = 1;
 //                          arrayList=JsonResult.JsonParser((String) msg.obj);
 //                          imageReturn.setData(arrayList.get(0).toString());
@@ -94,7 +94,7 @@ public class PushImageUtil {
                     break;
                 case ADD_IMG_KEY2:
                     if (msg.obj != null) {
-                        if (JsonResult.JSONparser(mContext, String.valueOf((JSONObject)msg.obj))){
+                        if (JsonResult.JSONparser(mContext, String.valueOf(msg.obj))){
                             imgNums = 2;
 //                            arrayList=JsonResult.JsonParser((String) msg.obj);
 //                            imageReturn.setData(arrayList.get(0).toString());
@@ -113,7 +113,7 @@ public class PushImageUtil {
                     break;
                 case ADD_IMG_KEY3:
                     if (msg.obj != null) {
-                        if (JsonResult.JSONparser(mContext, String.valueOf((JSONObject)msg.obj))){
+                        if (JsonResult.JSONparser(mContext, String.valueOf(msg.obj))){
                             imgNums = 3;
                             if (imgNums < photoWithPaths.size()) {
                                 pushImage(photoWithPaths.get(imgNums),ADD_IMG_KEY4);
@@ -130,7 +130,7 @@ public class PushImageUtil {
                     break;
                 case ADD_IMG_KEY4:
                     if (msg.obj != null) {
-                        if (JsonResult.JSONparser(mContext, String.valueOf((JSONObject)msg.obj))){
+                        if (JsonResult.JSONparser(mContext, String.valueOf(msg.obj))){
                             imgNums = 4;
                             if (imgNums < photoWithPaths.size()) {
                                 pushImage(photoWithPaths.get(imgNums),ADD_IMG_KEY5);
@@ -147,7 +147,7 @@ public class PushImageUtil {
                     break;
                 case ADD_IMG_KEY5:
                     if (msg.obj != null) {
-                        if (JsonResult.JSONparser(mContext, String.valueOf((JSONObject)msg.obj))){
+                        if (JsonResult.JSONparser(mContext, String.valueOf(msg.obj))){
                             imgNums = 5;
                             if (imgNums < photoWithPaths.size()) {
                                 pushImage(photoWithPaths.get(imgNums),ADD_IMG_KEY6);
@@ -164,7 +164,7 @@ public class PushImageUtil {
                     break;
                 case ADD_IMG_KEY6:
                     if (msg.obj != null) {
-                        if (JsonResult.JSONparser(mContext, String.valueOf((JSONObject)msg.obj))){
+                        if (JsonResult.JSONparser(mContext, String.valueOf(msg.obj))){
                             imgNums = 6;
                             if (imgNums < photoWithPaths.size()) {
                                 pushImage(photoWithPaths.get(imgNums),ADD_IMG_KEY7);
@@ -181,7 +181,7 @@ public class PushImageUtil {
                     break;
                 case ADD_IMG_KEY7:
                     if (msg.obj != null) {
-                        if (JsonResult.JSONparser(mContext, String.valueOf((JSONObject)msg.obj))){
+                        if (JsonResult.JSONparser(mContext, String.valueOf(msg.obj))){
                             imgNums = 7;
                             if (imgNums < photoWithPaths.size()) {
                                 pushImage(photoWithPaths.get(imgNums),ADD_IMG_KEY8);
@@ -198,7 +198,7 @@ public class PushImageUtil {
                     break;
                 case ADD_IMG_KEY8:
                     if (msg.obj != null) {
-                        if (JsonResult.JSONparser(mContext, String.valueOf((JSONObject)msg.obj))){
+                        if (JsonResult.JSONparser(mContext, String.valueOf(msg.obj))){
                             imgNums = 8;
                             if (imgNums < photoWithPaths.size()) {
                                 pushImage(photoWithPaths.get(imgNums),ADD_IMG_KEY9);
@@ -215,7 +215,7 @@ public class PushImageUtil {
                     break;
                 case ADD_IMG_KEY9:
                     if (msg.obj != null) {
-                        if (JsonResult.JSONparser(mContext, String.valueOf((JSONObject)msg.obj))){
+                        if (JsonResult.JSONparser(mContext, String.valueOf(msg.obj))){
                             imgNums = 9;
                             isOk = true;
                             pushIamge.success(true);

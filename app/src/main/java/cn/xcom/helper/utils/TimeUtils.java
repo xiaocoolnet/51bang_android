@@ -95,11 +95,7 @@ public class TimeUtils {
         boolean result = true;
         try {
             long now = getTodayTime(0, 0, 0);
-            if ((now - time) > 0) {
-                result = true;
-            } else {
-                result = false;
-            }
+            result = (now - time) > 0;
         } catch (Exception e) {
             result = true;
         }

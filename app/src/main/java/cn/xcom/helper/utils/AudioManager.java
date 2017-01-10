@@ -17,7 +17,8 @@ public class AudioManager  {
     private static AudioManager mInstance;
     private AudioManager(String dir){
         mdir=dir;
-    };
+    }
+
     public static AudioManager getmInstance(String dir){
         if (mInstance==null){
             synchronized (AudioManager.class) {
@@ -29,7 +30,8 @@ public class AudioManager  {
 
         }
      return mInstance;
-    };
+    }
+
     public void prepareAudio(){
         isPrepared=false;
         File dir=new File(mdir);

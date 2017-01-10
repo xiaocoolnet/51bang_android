@@ -38,10 +38,7 @@ public class ToolUtil {
      * @return
      */
     public static boolean isExitsSdcard(){
-        if (android.os.Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED))
-            return true;
-        else
-            return false;
+        return Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED);
     }
 
     /**

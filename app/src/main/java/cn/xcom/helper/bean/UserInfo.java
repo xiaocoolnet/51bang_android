@@ -68,10 +68,7 @@ public class UserInfo implements Serializable {
     }
 
     public boolean isLogined(){
-        if (this.getUserID().equals("")){
-            return false;
-        }
-            return true;
+        return !this.getUserID().equals("");
     }
 
     public String getUserId() {

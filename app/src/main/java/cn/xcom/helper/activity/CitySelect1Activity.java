@@ -123,7 +123,7 @@ public class CitySelect1Activity extends BaseActivity implements OnClickListener
 					adapter.update();
 					break;
 			}
-		};
+		}
 	};
 
 	OnItemClickListener onItemClickListener = new OnItemClickListener() {

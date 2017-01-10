@@ -217,7 +217,6 @@ public class MyCitySelectActivity extends BaseActivity implements OnClickListene
             }
         }
 
-        ;
     };
 
     OnItemClickListener onItemClickListener = new OnItemClickListener() {

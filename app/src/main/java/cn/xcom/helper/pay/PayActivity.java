@@ -62,7 +62,7 @@ public class PayActivity extends FragmentActivity {
 			default:
 				break;
 			}
-		};
+		}
 	};
 
 	@Override

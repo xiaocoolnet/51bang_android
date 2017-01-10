@@ -111,7 +111,7 @@ public class CitySelect2Activity extends BaseActivity implements OnClickListener
 		lv_city.setOnItemClickListener(onItemClickListener);
 		btn_back.setOnClickListener(this);
 		btn_right.setOnClickListener(this);
-	};
+	}
 
 
 	@SuppressLint("HandlerLeak")
@@ -146,7 +146,7 @@ public class CitySelect2Activity extends BaseActivity implements OnClickListener
 					adapter.update();
 					break;
 			}
-		};
+		}
 	};
 
 	OnItemClickListener onItemClickListener = new OnItemClickListener() {

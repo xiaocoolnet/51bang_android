@@ -2144,21 +2144,13 @@ public class TosGallery extends TosAbsSpinner implements GestureDetector.OnGestu
     }
 
     boolean movePrevious() {
-        if (mItemCount > 0 && mSelectedPosition > 0) {
-            // scrollToChild(mSelectedPosition - mFirstPosition - 1);
-            return true;
-        } else {
-            return false;
-        }
+        // scrollToChild(mSelectedPosition - mFirstPosition - 1);
+        return mItemCount > 0 && mSelectedPosition > 0;
     }
 
     boolean moveNext() {
-        if (mItemCount > 0 && mSelectedPosition < mItemCount - 1) {
-            // scrollToChild(mSelectedPosition - mFirstPosition + 1);
-            return true;
-        } else {
-            return false;
-        }
+        // scrollToChild(mSelectedPosition - mFirstPosition + 1);
+        return mItemCount > 0 && mSelectedPosition < mItemCount - 1;
     }
 
     private boolean scrollToChild(int childPosition) {
@@ -2865,11 +2857,8 @@ public class TosGallery extends TosAbsSpinner implements GestureDetector.OnGestu
 
             // Last child is out of gallery right bound.
             child = getChildAt(getChildCount() - 1);
-            if (null != child && child.getRight() > getRight()) {
-                return false;
-            }
+            return !(null != child && child.getRight() > getRight());
 
-            return true;
         }
 
         return false;
@@ -3147,7 +3136,7 @@ public class TosGallery extends TosAbsSpinner implements GestureDetector.OnGestu
          * 
          * @param v The gallery view.
          */
-        public void onEndFling(TosGallery v);
+        void onEndFling(TosGallery v);
     }
     //
     // Added by LiHong at 2011/08/12 end ============================================.

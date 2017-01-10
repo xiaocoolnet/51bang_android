@@ -47,9 +47,9 @@ public class ImageCompress {
         // 最长宽度或高度1024
         float be = 1.0f;
         if (w > h && w > ww) {
-            be = (float) (w / ww);
+            be = w / ww;
         } else if (w < h && h > hh) {
-            be = (float) (h / hh);
+            be = h / hh;
         }
         if (be <= 0) {
             be = 1.0f;
@@ -86,9 +86,9 @@ public class ImageCompress {
         // 最长宽度或高度1024
         float be = 1.0f;
         if (w > h && w > ww) {
-            be = (float) (w / ww);
+            be = w / ww;
         } else if (w < h && h > hh) {
-            be = (float) (h / hh);
+            be = h / hh;
         }
         if (be <= 0) {
             be = 1.0f;
@@ -121,7 +121,7 @@ public class ImageCompress {
      *
      * @param uri
      */
-    public static Bitmap getBitmapFormUri(Context context, Uri uri) throws FileNotFoundException, IOException {
+    public static Bitmap getBitmapFormUri(Context context, Uri uri) throws IOException {
         InputStream input = context.getContentResolver().openInputStream(uri);
         BitmapFactory.Options onlyBoundsOptions = new BitmapFactory.Options();
         onlyBoundsOptions.inJustDecodeBounds = true;

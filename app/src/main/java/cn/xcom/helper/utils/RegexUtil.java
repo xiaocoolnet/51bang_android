@@ -213,11 +213,7 @@ public final class RegexUtil {
 	 * @return
 	 */
 	public static boolean checkNumberLength(String number) {
-		if (number.length() < 6 || number.length() > 16) {
-			return false;
-		} else {
-			return true;
-		}
+		return !(number.length() < 6 || number.length() > 16);
 	}
 
 	/**

@@ -16,7 +16,7 @@ public class SingleVolleyRequest {
     private static Context context;
     //私有构造
     private SingleVolleyRequest(Context context){
-        this.context=context;
+        SingleVolleyRequest.context =context;
         requestQueue=getRequestQueue();
 
     }

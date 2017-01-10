@@ -197,7 +197,9 @@ public class ChangeSkillsActivity extends BaseActivity {
                 finish();
                 break;
             case R.id.btn_submit:
-                changeSkills();
+                if(selectList.size()>0){
+                    changeSkills();
+                }
                 break;
         }
     }

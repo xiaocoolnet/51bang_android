@@ -105,7 +105,7 @@ public class PaymentActivity extends BaseActivity implements View.OnClickListene
                 default:
                     break;
             }
-        };
+        }
     };
 
     /**

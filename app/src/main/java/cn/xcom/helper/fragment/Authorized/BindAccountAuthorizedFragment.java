@@ -2,7 +2,9 @@ package cn.xcom.helper.fragment.Authorized;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,6 +22,7 @@ import com.loopj.android.http.RequestParams;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.lang.ref.WeakReference;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -32,27 +35,30 @@ import cz.msebera.android.httpclient.Header;
 
 /**
  * 绑定账号认证
- * */
+ */
 public class BindAccountAuthorizedFragment extends Fragment implements CompoundButton.OnCheckedChangeListener, View.OnClickListener {
-    private EditText relaNameEt,idNumEt,alipayAccountEt,bankNameEt,bankAccountEt,bindCodeEt;
-    private TextView getCodeTv,bindPhoneTv;
+    private EditText relaNameEt, idNumEt, alipayAccountEt, bankNameEt, bankAccountEt, bindCodeEt;
+    private TextView getCodeTv, bindPhoneTv;
     private Button submitBt;
-    private CheckBox alipayCb,bankCb;
-    private LinearLayout alipayLl,bankLl;
+    private CheckBox alipayCb, bankCb;
+    private LinearLayout alipayLl, bankLl;
     private UserInfo userInfo;
-    private String userPhone,decodePhone;
+    private String userPhone, decodePhone;
     private Timer timer;
     private int time;
     private Context mContext;
+    private WeakReference<FragmentActivity> weakReference;
+    private FragmentActivity fragmentActivity;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_bind_account_authorized,container,false);
+        View view = inflater.inflate(R.layout.fragment_bind_account_authorized, container, false);
         initData();
         initView(view);
         return view;
     }
 
-    private void initData(){
+    private void initData() {
         mContext = getContext();
         userInfo = new UserInfo(getContext());
         userPhone = userInfo.getUserPhone();
@@ -60,7 +66,7 @@ public class BindAccountAuthorizedFragment extends Fragment implements CompoundB
         timer = new Timer();
     }
 
-    private void initView(View v){
+    private void initView(View v) {
         relaNameEt = (EditText) v.findViewById(R.id.et_real_name);
         idNumEt = (EditText) v.findViewById(R.id.et_id_num);
         alipayAccountEt = (EditText) v.findViewById(R.id.et_alipay_account);
@@ -114,28 +120,37 @@ public class BindAccountAuthorizedFragment extends Fragment implements CompoundB
         });
     }
 
-    private void timeCounter(){
+    private void timeCounter() {
+        weakReference = new WeakReference<>(getActivity());
+        fragmentActivity = weakReference.get();//使用软引用 防止内存泄漏
         getCodeTv.setClickable(false);
         time = 120;
         TimerTask timerTask = new TimerTask() {
             @Override
             public void run() {
-                getActivity().runOnUiThread(new Runnable() {
+                if (fragmentActivity == null) {
+                    return;
+                }
+                fragmentActivity.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        if(time <=0){
+                        if (time <= 0) {
                             getCodeTv.setClickable(true);
                             getCodeTv.setText("获取验证码");
-                        }else{
+                        } else {
                             getCodeTv.setClickable(false);
                             getCodeTv.setText("获取验证码(" + time + ")");
                         }
-                        time --;
+                        time--;
                     }
                 });
             }
         };
         timer.schedule(timerTask, 0, 1000);
+    }
+
+    static class MyHandler extends Handler {
+
     }
 
     /**
@@ -159,7 +174,7 @@ public class BindAccountAuthorizedFragment extends Fragment implements CompoundB
             return;
         }
 
-        String securityCode =bindCodeEt.getText().toString();
+        String securityCode = bindCodeEt.getText().toString();
         if (securityCode.length() == 0) {
             Toast.makeText(mContext, "请输入验证码", Toast.LENGTH_SHORT).show();
             return;
@@ -181,9 +196,9 @@ public class BindAccountAuthorizedFragment extends Fragment implements CompoundB
                         String state = response.getString("status");
                         if (state.equals("success")) {
                             Toast.makeText(mContext, "绑定成功！", Toast.LENGTH_LONG).show();
-                        }else{
+                        } else {
                             String data = response.getString("data");
-                            Toast.makeText(mContext,data, Toast.LENGTH_LONG).show();
+                            Toast.makeText(mContext, data, Toast.LENGTH_LONG).show();
                         }
                     } catch (JSONException e) {
                         e.printStackTrace();
@@ -213,7 +228,7 @@ public class BindAccountAuthorizedFragment extends Fragment implements CompoundB
             Toast.makeText(mContext, "输入的身份证号码不合法", Toast.LENGTH_SHORT).show();
             return;
         }
-        String binkName =bankNameEt.getText().toString();
+        String binkName = bankNameEt.getText().toString();
         if (binkName.length() == 0) {
             Toast.makeText(mContext, "输入的银行名称不合法", Toast.LENGTH_SHORT).show();
             return;
@@ -249,9 +264,9 @@ public class BindAccountAuthorizedFragment extends Fragment implements CompoundB
                         String state = response.getString("status");
                         if (state.equals("success")) {
                             Toast.makeText(mContext, "绑定成功！", Toast.LENGTH_LONG).show();
-                        }else{
+                        } else {
                             String data = response.getString("data");
-                            Toast.makeText(mContext,data, Toast.LENGTH_LONG).show();
+                            Toast.makeText(mContext, data, Toast.LENGTH_LONG).show();
                         }
                     } catch (JSONException e) {
                         e.printStackTrace();
@@ -268,20 +283,18 @@ public class BindAccountAuthorizedFragment extends Fragment implements CompoundB
     }
 
 
-
-
     @Override
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-        switch (buttonView.getId()){
+        switch (buttonView.getId()) {
             case R.id.cb_alipay:
-                if(isChecked){
+                if (isChecked) {
                     alipayAccountEt.setVisibility(View.VISIBLE);
                     bankAccountEt.setVisibility(View.GONE);
                     bankNameEt.setVisibility(View.GONE);
                 }
                 break;
             case R.id.cb_bank:
-                if(isChecked){
+                if (isChecked) {
                     alipayAccountEt.setVisibility(View.GONE);
                     bankAccountEt.setVisibility(View.VISIBLE);
                     bankNameEt.setVisibility(View.VISIBLE);
@@ -291,7 +304,7 @@ public class BindAccountAuthorizedFragment extends Fragment implements CompoundB
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
+        switch (v.getId()) {
             case R.id.ll_alipay:
                 alipayCb.setChecked(true);
                 bankCb.setChecked(false);
@@ -304,12 +317,20 @@ public class BindAccountAuthorizedFragment extends Fragment implements CompoundB
                 getTextCode();
                 break;
             case R.id.bt_submit:
-                if(alipayCb.isChecked()&&!bankCb.isChecked()){
+                if (alipayCb.isChecked() && !bankCb.isChecked()) {
                     bindAlipayAccount();
-                }else if(!alipayCb.isChecked()&&bankCb.isChecked()){
+                } else if (!alipayCb.isChecked() && bankCb.isChecked()) {
                     bindBankAccount();
                 }
                 break;
+        }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (timer != null) {
+            timer.cancel();
         }
     }
 }

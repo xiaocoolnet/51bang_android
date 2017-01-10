@@ -11,10 +11,7 @@ public class PermissionUtil {
 
     public static boolean hasCamera(Context context){
 
-        if (hasPermission("android.permission.CAMERA",context)) {
-            return true;
-        }
-        return false;
+        return hasPermission("android.permission.CAMERA", context);
     }
 
 

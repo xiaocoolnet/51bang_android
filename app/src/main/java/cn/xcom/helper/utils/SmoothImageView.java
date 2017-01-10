@@ -382,7 +382,7 @@ public class SmoothImageView extends ImageView {
 
     private TransformListener mTransformListener;
 
-    public static interface TransformListener {
+    public interface TransformListener {
         /**
          *
          * @param mode
