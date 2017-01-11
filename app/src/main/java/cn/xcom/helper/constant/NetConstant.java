@@ -286,6 +286,10 @@ public interface NetConstant extends HelperConstant {
      */
     String GET_AUTHENTICATION_LIST = NET_HOST_PREFIX + "a=getAuthenticationUserList&";
 
+    /**
+     * 首页获取小人位置
+     */
+    String GET_HOME_MAP_AUTHENTICATION_USER = NET_HOST_PREFIX+"a=HomegetAuthenticationUserList&";
 
     /**
      * 发布任务者取消订单
@@ -407,4 +411,9 @@ public interface NetConstant extends HelperConstant {
      * 获取我的接单汇总
      */
     String MY_APPLY_COUNT = NET_HOST_PREFIX + "a=GetMyApplyTastTotal&";
+
+    /**
+     * 根据userid获取技能
+     */
+    String GET_SKILLS_BY_USERID = NET_HOST_PREFIX+"a=getAuthenticationInfoByUserId&";
 }

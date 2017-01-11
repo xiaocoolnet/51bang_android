@@ -298,7 +298,7 @@ public class MapFragment extends Fragment implements View.OnClickListener, OnGet
      * 获取认证帮服务者
      */
     private void getAuthentication() {
-        String url = NetConstant.GET_AUTHENTICATION_LIST;
+        String url = NetConstant.GET_HOME_MAP_AUTHENTICATION_USER;
         StringPostRequest request = new StringPostRequest(url, new Response.Listener<String>() {
             @Override
             public void onResponse(String s) {
@@ -338,6 +338,7 @@ public class MapFragment extends Fragment implements View.OnClickListener, OnGet
         }
         markers.clear();
         for (int i = 0; i < lists.size(); i++) {
+            Log.d("main",lists.toString());
             LatLng latLng = new LatLng(Double.parseDouble(lists.get(i).getLatitude()), Double.parseDouble(lists.get(i).getLongitude()));
             //构建Marker图标
             BitmapDescriptor bitmap = BitmapDescriptorFactory
@@ -377,17 +378,17 @@ public class MapFragment extends Fragment implements View.OnClickListener, OnGet
                     authenticationList.setServiceCount(object.optString("serviceCount"));
                     authenticationList.setLongitude(object.optString("longitude"));
                     authenticationList.setLatitude(object.optString("latitude"));
-                    authenticationList.setDistance(Long.parseLong(object.optString("distance")));
-                    JSONArray skillArray = object.optJSONArray("skilllist");
-                    List<AuthenticationList.SkilllistBean> skilllistBeans = new ArrayList<>();
-                    for (int j = 0; j < skillArray.length(); j++) {
-                        AuthenticationList.SkilllistBean skilllistBean = new AuthenticationList.SkilllistBean();
-                        skilllistBean.setType(skillArray.optJSONObject(j).optString("type"));
-                        skilllistBean.setTypename(skillArray.optJSONObject(j).optString("typename"));
-                        skilllistBean.setParent_typeid(skillArray.optJSONObject(j).optString("parent_typeid"));
-                        skilllistBeans.add(skilllistBean);
-                    }
-                    authenticationList.setSkilllist(skilllistBeans);
+//                    authenticationList.setDistance(Long.parseLong(object.optString("distance")));
+//                    JSONArray skillArray = object.optJSONArray("skilllist");
+//                    List<AuthenticationList.SkilllistBean> skilllistBeans = new ArrayList<>();
+//                    for (int j = 0; j < skillArray.length(); j++) {
+//                        AuthenticationList.SkilllistBean skilllistBean = new AuthenticationList.SkilllistBean();
+//                        skilllistBean.setType(skillArray.optJSONObject(j).optString("type"));
+//                        skilllistBean.setTypename(skillArray.optJSONObject(j).optString("typename"));
+//                        skilllistBean.setParent_typeid(skillArray.optJSONObject(j).optString("parent_typeid"));
+//                        skilllistBeans.add(skilllistBean);
+//                    }
+//                    authenticationList.setSkilllist(skilllistBeans);
                     lists.add(authenticationList);
                 }
             }
