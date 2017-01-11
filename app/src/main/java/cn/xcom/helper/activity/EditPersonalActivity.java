@@ -237,7 +237,10 @@ public class EditPersonalActivity extends BaseActivity implements View.OnClickLi
             @Override
             public void success(boolean state) {
                 //传入2表示有图片
-                String s = StringJoint.arrayJointchar(nameList, ",");
+                if(nameList.size() == 0){
+                    return;
+                }
+                String s = nameList.get(0);
                 userInfo.setUserImg(s);
                 updateHead();
             }
@@ -486,6 +489,8 @@ public class EditPersonalActivity extends BaseActivity implements View.OnClickLi
                         if (state.equals("success")){
                             userInfo.writeData(mContext);
                             imageLoader.displayImage(NetConstant.NET_DISPLAY_IMG + userInfo.getUserImg(), iv_head, options);
+                            nameList.clear();
+
                         }
                     } catch (JSONException e) {
                         e.printStackTrace();
