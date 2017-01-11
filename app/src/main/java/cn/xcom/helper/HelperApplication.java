@@ -59,6 +59,10 @@ public class HelperApplication extends Application {
 
     //便民圈返回flag
     public boolean trendsBack = false;
+
+    //第一次进入时需要上传位置 调用开工接口
+    public boolean needUploadLocation = true;
+
     /**
      * 打开的activity
      **/

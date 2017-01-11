@@ -42,6 +42,8 @@ import com.baidu.mapapi.search.geocode.GeoCoder;
 import com.baidu.mapapi.search.geocode.OnGetGeoCoderResultListener;
 import com.baidu.mapapi.search.geocode.ReverseGeoCodeOption;
 import com.baidu.mapapi.search.geocode.ReverseGeoCodeResult;
+import com.loopj.android.http.JsonHttpResponseHandler;
+import com.loopj.android.http.RequestParams;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -59,11 +61,17 @@ import cn.xcom.helper.activity.HelpMeActivity;
 import cn.xcom.helper.activity.HomeActivity;
 import cn.xcom.helper.activity.MyCitySelectActivity;
 import cn.xcom.helper.bean.AuthenticationList;
+import cn.xcom.helper.bean.UserInfo;
+import cn.xcom.helper.constant.HelperConstant;
 import cn.xcom.helper.constant.NetConstant;
+import cn.xcom.helper.net.HelperAsyncHttpClient;
+import cn.xcom.helper.utils.LogUtils;
+import cn.xcom.helper.utils.SPUtils;
 import cn.xcom.helper.utils.SingleVolleyRequest;
 import cn.xcom.helper.utils.StringPostRequest;
 import cn.xcom.helper.utils.ToastUtil;
 import cn.xcom.helper.view.NiceDialog;
+import cz.msebera.android.httpclient.Header;
 
 /**
  * Created by zhuchongkun on 16/5/27.
@@ -97,6 +105,7 @@ public class MapFragment extends Fragment implements View.OnClickListener, OnGet
     private NiceDialog mDialog;
 
     private HomeActivity homeActivity;
+    private UserInfo userInfo;
 
 
     @Nullable
@@ -112,6 +121,7 @@ public class MapFragment extends Fragment implements View.OnClickListener, OnGet
         mContext = getActivity();
         lists = new ArrayList<>();
         markers = new ArrayList<>();
+        userInfo = new UserInfo(mContext);
         mLocClient = new LocationClient(mContext);     //声明LocationClient类
         mLocClient.registerLocationListener(myListener);    //注册监听函数
         // 地图初始化
@@ -292,6 +302,11 @@ public class MapFragment extends Fragment implements View.OnClickListener, OnGet
             getAuthentication();
         }
         mMapView.onResume();
+        //第一次进入应用 上传位置
+        if (HelperApplication.getInstance().needUploadLocation) {
+            HelperApplication.getInstance().needUploadLocation = false;
+            getWorkingState();
+        }
     }
 
     /**
@@ -327,6 +342,53 @@ public class MapFragment extends Fragment implements View.OnClickListener, OnGet
         SingleVolleyRequest.getInstance(mContext).addToRequestQueue(request);
     }
 
+
+    /**
+     * 获取当前用户开工收工状态
+     */
+    private void getWorkingState() {
+        RequestParams params = new RequestParams();
+        params.put("userid", userInfo.getUserId());
+        HelperAsyncHttpClient.get(NetConstant.GET_WORKING_STATE, params, new JsonHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                super.onSuccess(statusCode, headers, response);
+                String state = response.optString("data");
+                if (state.equals("1")) {
+                    uploadLocation();
+                }
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                super.onFailure(statusCode, headers, responseString, throwable);
+                LogUtils.e(TAG, responseString);
+            }
+        });
+    }
+
+    private void uploadLocation() {
+        RequestParams params = new RequestParams();
+        params.put("userid", userInfo.getUserId());
+        params.put("address", HelperApplication.getInstance().mLocAddress);
+        params.put("longitude", HelperApplication.getInstance().mLocLon);
+        params.put("latitude", HelperApplication.getInstance().mLocLat);
+        params.put("isworking", "1");
+        HelperAsyncHttpClient.get(NetConstant.CHANGE_WORKING_STATE, params, new JsonHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                super.onSuccess(statusCode, headers, response);
+                Log.e(TAG, String.valueOf(response));
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                super.onFailure(statusCode, headers, responseString, throwable);
+                LogUtils.e(TAG, responseString);
+            }
+        });
+    }
+
     /**
      * 在地图中显示小红人图标
      */
@@ -338,7 +400,7 @@ public class MapFragment extends Fragment implements View.OnClickListener, OnGet
         }
         markers.clear();
         for (int i = 0; i < lists.size(); i++) {
-            Log.d("main",lists.toString());
+            Log.d("main", lists.toString());
             LatLng latLng = new LatLng(Double.parseDouble(lists.get(i).getLatitude()), Double.parseDouble(lists.get(i).getLongitude()));
             //构建Marker图标
             BitmapDescriptor bitmap = BitmapDescriptorFactory
