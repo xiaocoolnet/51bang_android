@@ -37,5 +37,6 @@
     <color name="common_blue">#2d99fe</color>
 
     <color name="navpage">#FFE1E8EB</color>
+    <color name="translucent_background">#60000000</color>
 
 </resources>
