@@ -86,9 +86,9 @@ public class AuthenticationActivity extends BaseActivity {
         ButterKnife.bind(this);
         context = this;
         authenticationLists = new ArrayList<>();
-        type = "0";
+        type = "";
         sort = "1";
-        onlineType = "1";
+        onlineType = "0";//0全部 1在线
         hud = KProgressHUD.create(context)
                 .setStyle(KProgressHUD.Style.SPIN_INDETERMINATE)
                 .setCancellable(true);
@@ -153,6 +153,7 @@ public class AuthenticationActivity extends BaseActivity {
         request.putValue("sort", sort);
         request.putValue("type", type);
         request.putValue("beginid", "0");
+        request.putValue("online",onlineType);
         Log.e("认证帮", NetConstant.GET_AUTHENTICATION_LIST + sort + type);
         SingleVolleyRequest.getInstance(context).addToRequestQueue(request);
     }
@@ -170,11 +171,12 @@ public class AuthenticationActivity extends BaseActivity {
                     JSONObject jsonObject = new JSONObject(s);
                     String status = jsonObject.getString("status");
                     if (status.equals("success")) {
-                        if (onlineType.equals("2")) {
-                            authenticationLists.addAll(getBeanByMe(jsonObject));
-                        } else {
-                            authenticationLists.addAll(getBeanFromJson(jsonObject));
-                        }
+//                        if (onlineType.equals("2")) {
+//                            authenticationLists.addAll(getBeanByMe(jsonObject));
+//                        } else {
+//                            authenticationLists.addAll(getBeanFromJson(jsonObject));
+//                        }
+                        authenticationLists.addAll(getBeanFromJson(jsonObject));
                         adapter.notifyDataSetChanged();
                     }
                 } catch (JSONException e) {
@@ -197,6 +199,7 @@ public class AuthenticationActivity extends BaseActivity {
         request.putValue("longitude", HelperApplication.getInstance().mLocLon + "");
         request.putValue("sort", sort);
         request.putValue("type", type);
+        request.putValue("online",onlineType);
         AuthenticationList last = authenticationLists.get(authenticationLists.size() - 1);
         request.putValue("beginid", last.getId());
         Log.e("认证帮", NetConstant.GET_AUTHENTICATION_LIST + sort + type);
@@ -284,11 +287,12 @@ public class AuthenticationActivity extends BaseActivity {
      */
     private void setAdapter(JSONObject jsonObject) {
         authenticationLists.clear();
-        if (onlineType.equals("2")) {
-            authenticationLists.addAll(getBeanByMe(jsonObject));
-        } else {
-            authenticationLists.addAll(getBeanFromJson(jsonObject));
-        }
+//        if (onlineType.equals("2")) {
+//        authenticationLists.addAll(getBeanByMe(jsonObject));
+//        } else {
+//            authenticationLists.addAll(getBeanFromJson(jsonObject));
+//        }
+        authenticationLists.addAll(getBeanFromJson(jsonObject));
         /*if (onlineType.equals("2")) {
             for (int i = 0; i < authenticationLists.size(); i++) {
                 AuthenticationList authenticationList = new AuthenticationList();
@@ -407,7 +411,7 @@ public class AuthenticationActivity extends BaseActivity {
             @Override
             public void onClick(View v) {
                 tvType3.setText(tv1.getText());
-                onlineType = "1";
+                onlineType = "0";
                 getData();
                 popupWindow.dismiss();
             }
@@ -416,7 +420,7 @@ public class AuthenticationActivity extends BaseActivity {
             @Override
             public void onClick(View v) {
                 tvType3.setText(tv2.getText());
-                onlineType = "2";
+                onlineType = "1";
                 getData();
                 popupWindow.dismiss();
             }

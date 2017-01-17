@@ -128,6 +128,22 @@ public class DetailAuthenticatinActivity extends BaseActivity {
                                 holder.setText(R.id.tv_item_help_me_skill_tag, skilllistBean.getTypename());
                             }
                         });
+
+                        String commentStr = jo.getString("commentlist");
+                        List<AuthenticationList.EvaluatelistBean> comments = gson.fromJson(commentStr,
+                                new TypeToken<ArrayList<AuthenticationList.EvaluatelistBean>>(){}.getType());
+                        saleDetailComment.setAdapter(new CommonAdapter<AuthenticationList.EvaluatelistBean>(context, comments, R.layout.item_comment_info) {
+                            @Override
+                            public void convert(ViewHolder holder, AuthenticationList.EvaluatelistBean evaluatelistBean) {
+                                holder.setImageByUrl(R.id.iv_avatar, evaluatelistBean.getPhoto())
+                                        .setText(R.id.tv_name, evaluatelistBean.getName())
+                                        .setTimeText(R.id.tv_time, evaluatelistBean.getAdd_time())
+                                        .setText(R.id.tv_content, evaluatelistBean.getContent());
+                                RatingBar ratingBar = holder.getView(R.id.rating_bar);
+                                ratingBar.setNumStars(Integer.valueOf(evaluatelistBean.getScore()));
+                            }
+                        });
+
                     }
 
                 } catch (JSONException e) {
