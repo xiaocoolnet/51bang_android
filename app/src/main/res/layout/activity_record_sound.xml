@@ -8,11 +8,11 @@
 
     <cn.xcom.helper.record.RecordButton
         android:id="@+id/record_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
         android:layout_alignParentBottom="true"
         android:layout_marginBottom="50dp"
         android:layout_centerHorizontal="true"
-        android:background="@drawable/bg_record_btn"
+        android:src="@drawable/bg_record_btn"
         />
 </RelativeLayout>

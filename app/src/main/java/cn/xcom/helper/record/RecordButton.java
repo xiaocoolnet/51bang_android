@@ -17,7 +17,7 @@ import android.widget.Toast;
 
 import cn.xcom.helper.R;
 
-public class RecordButton extends Button {
+public class RecordButton extends ImageView {
 
     private static final int MIN_RECORD_TIME = 1; // 最短录音时间，单位秒
     private static final int RECORD_OFF = 0; // 不在录音

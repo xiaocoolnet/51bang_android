@@ -29,6 +29,7 @@ import cn.xcom.helper.R;
 import cn.xcom.helper.adapter.ConvenienceAdapter;
 import cn.xcom.helper.bean.Convenience;
 import cn.xcom.helper.constant.NetConstant;
+import cn.xcom.helper.record.AudioPlayer;
 import cn.xcom.helper.utils.SingleVolleyRequest;
 import cn.xcom.helper.utils.StringPostRequest;
 import cn.xcom.helper.utils.ToastUtil;
@@ -74,6 +75,9 @@ public class ConvenienceActivity extends BaseActivity implements View.OnClickLis
     protected void onDestroy() {
         super.onDestroy();
         HelperApplication.getInstance().trendsBack = false;
+        if(AudioPlayer.isPlaying){
+            AudioPlayer.getInstance().stopPlay();
+        }
     }
 
     private void initView() {

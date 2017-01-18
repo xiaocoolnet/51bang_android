@@ -40,6 +40,8 @@ public class AuthenticationList implements Serializable{
     private String latitude;
     private long distance;
     private String score;
+    private String sound;
+    private String soundtime;
     /**
      * type : 21
      * typename : 送快递
@@ -185,6 +187,22 @@ public class AuthenticationList implements Serializable{
 
     public void setEvaluatelist(List<EvaluatelistBean> evaluatelist) {
         this.evaluatelist = evaluatelist;
+    }
+
+    public String getSound() {
+        return sound;
+    }
+
+    public void setSound(String sound) {
+        this.sound = sound;
+    }
+
+    public String getSoundtime() {
+        return soundtime;
+    }
+
+    public void setSoundtime(String soundtime) {
+        this.soundtime = soundtime;
     }
 
     public static class SkilllistBean implements Serializable{

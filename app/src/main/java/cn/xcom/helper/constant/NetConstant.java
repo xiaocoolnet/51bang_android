@@ -148,7 +148,7 @@ public interface NetConstant extends HelperConstant {
     /*
         快递查询
     */
-    //String DELIEVER = "http://m.kuaidi100.com";
+//    String DELIEVER = "http://m.kuaidi100.com";
     String DELIEVER="http://m.ickd.cn";
     /*
         发布便民圈信息
@@ -417,4 +417,10 @@ public interface NetConstant extends HelperConstant {
      * 根据userid获取技能
      */
     String GET_SKILLS_BY_USERID = NET_HOST_PREFIX+"a=getAuthenticationInfoByUserId&";
+
+
+    /**
+     * 上传录音
+     */
+    String UPLOAD_RECORD = NET_HOST_PREFIX +"a=uploadRecord&";
 }

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,6 +20,7 @@ import cn.xcom.helper.activity.ChatActivity;
 import cn.xcom.helper.activity.DetailAuthenticatinActivity;
 import cn.xcom.helper.bean.AuthenticationList;
 import cn.xcom.helper.constant.NetConstant;
+import cn.xcom.helper.record.SoundView;
 import cn.xcom.helper.utils.MyImageLoader;
 
 /**
@@ -74,6 +76,18 @@ public class AuthenticationListAdapter extends RecyclerView.Adapter<Authenticati
                 context.startActivity(intent);
             }
         });
+        int soundTime = 0;
+        if (!TextUtils.isEmpty(a.getSoundtime())) {
+            soundTime = Integer.valueOf(a.getSoundtime());
+        }
+        if (TextUtils.isEmpty(a.getSound())) {
+            holder.soundView.setVisibility(View.GONE);
+        } else {
+            holder.soundView.setVisibility(View.VISIBLE);
+            holder.soundView.init(NetConstant.NET_DISPLAY_IMG + a.getSound(), soundTime);
+        }
+
+
     }
 
     @Override
@@ -92,6 +106,7 @@ public class AuthenticationListAdapter extends RecyclerView.Adapter<Authenticati
         TextView tvAddress;
         TextView tvType;
         TextView tvCount;
+        SoundView soundView;
 
         public ViewHolder(View view) {
             super(view);
@@ -104,6 +119,7 @@ public class AuthenticationListAdapter extends RecyclerView.Adapter<Authenticati
             tvAddress = (TextView) view.findViewById(R.id.tv_address);
             tvType = (TextView) view.findViewById(R.id.tv_type);
             tvCount = (TextView) view.findViewById(R.id.tv_count);
+            soundView = (SoundView) view.findViewById(R.id.sound_view);
         }
 
     }

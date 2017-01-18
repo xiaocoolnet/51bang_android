@@ -1,5 +1,6 @@
 package cn.xcom.helper.activity;
 
+import android.Manifest;
 import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -10,7 +11,10 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Gravity;
@@ -33,6 +37,8 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.internal.http.multipart.FilePart;
+import com.android.internal.http.multipart.Part;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.baidu.mapapi.model.LatLng;
@@ -52,6 +58,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -70,6 +78,9 @@ import cn.xcom.helper.bean.TaskType;
 import cn.xcom.helper.bean.UserInfo;
 import cn.xcom.helper.constant.NetConstant;
 import cn.xcom.helper.net.HelperAsyncHttpClient;
+import cn.xcom.helper.record.AudioPlayer;
+import cn.xcom.helper.record.RecordActivity;
+import cn.xcom.helper.record.SoundView;
 import cn.xcom.helper.utils.GalleryFinalUtil;
 import cn.xcom.helper.utils.LogUtils;
 import cn.xcom.helper.utils.PushImage;
@@ -78,6 +89,7 @@ import cn.xcom.helper.utils.SingleVolleyRequest;
 import cn.xcom.helper.utils.StringJoint;
 import cn.xcom.helper.utils.StringPostRequest;
 import cn.xcom.helper.utils.ToastUtil;
+import cn.xcom.helper.utils.VolleyRequest;
 import cn.xcom.helper.view.NoScrollGridView;
 import cn.xcom.helper.view.WheelView;
 import cz.msebera.android.httpclient.Header;
@@ -88,10 +100,11 @@ import cz.msebera.android.httpclient.Header;
  */
 public class HelpMeActivity extends BaseActivity implements View.OnClickListener, OnGetGeoCoderResultListener {
     private String TAG = "HelpMeActivity";
+    private static final int SOUND_CODE = 111;
     private Context mContext;
     private RelativeLayout rl_back;
     private NoScrollGridView gv_skill;
-    private KProgressHUD hud,submit_hub;
+    private KProgressHUD hud, submit_hub;
     private ArrayList<SkillTagInfo> skillTagInfos;
     private HelpMeSkillAdapter mHelpMeSkillAdapter;
     private EditText et_content, et_phone, et_site_location, et_service_location, et_wages, et_validity_period;
@@ -124,6 +137,9 @@ public class HelpMeActivity extends BaseActivity implements View.OnClickListener
     private int type = 1;
     private String description;
 
+    private SoundView soundView;
+    private String soundPath;
+    private String soundName;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -153,7 +169,7 @@ public class HelpMeActivity extends BaseActivity implements View.OnClickListener
     private void getData() {
         lat = getIntent().getDoubleExtra("lat", 0);
         lon = getIntent().getDoubleExtra("lon", 0);
-        if(lat == 0||lon == 0){
+        if (lat == 0 || lon == 0) {
             lon = HelperApplication.getInstance().mLocLon;
             lat = HelperApplication.getInstance().mLocLat;
         }
@@ -231,6 +247,8 @@ public class HelpMeActivity extends BaseActivity implements View.OnClickListener
         });
 
         getSkill();
+
+        soundView = (SoundView) findViewById(R.id.sound_view);
     }
 
     @Override
@@ -240,7 +258,7 @@ public class HelpMeActivity extends BaseActivity implements View.OnClickListener
         Log.e("count", String.valueOf(selectList.size()));
         for (int i = 0; i < skillTagInfos.size(); i++) {
             skillTagInfos.get(i).setChecked(check(skillTagInfos.get(i).getSkill_id()));
-            if(skillTagInfos.get(i).isChecked()){
+            if (skillTagInfos.get(i).isChecked()) {
                 description = skillTagInfos.get(i).getSkill_name();
             }
         }
@@ -271,7 +289,7 @@ public class HelpMeActivity extends BaseActivity implements View.OnClickListener
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                 super.onSuccess(statusCode, headers, response);
                 LogUtils.e(TAG, "--statusCode->" + statusCode + "==>" + response.toString());
-                if(hud!=null){
+                if (hud != null) {
                     hud.dismiss();
                 }
                 if (response != null) {
@@ -300,7 +318,7 @@ public class HelpMeActivity extends BaseActivity implements View.OnClickListener
             public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
                 super.onFailure(statusCode, headers, responseString, throwable);
                 LogUtils.e(TAG, "--statusCode->" + statusCode + "==>" + responseString);
-                if(hud!=null){
+                if (hud != null) {
                     hud.dismiss();
                 }
             }
@@ -341,7 +359,7 @@ public class HelpMeActivity extends BaseActivity implements View.OnClickListener
                         et_validity_period.setText(time);
                         begintime = dataOne(time + ":00");
                     }
-                },startStr, "2020-12-31 23:59");
+                }, startStr, "2020-12-31 23:59");
                 timeSelector.show();
                 break;
             case R.id.bt_help_me_submit:
@@ -353,6 +371,13 @@ public class HelpMeActivity extends BaseActivity implements View.OnClickListener
                 break;
             //语音
             case R.id.rl_voice:
+                if (ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO)
+                        != PackageManager.PERMISSION_GRANTED) {
+                    //申请WRITE_EXTERNAL_STORAGE权限
+                    ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.RECORD_AUDIO}, 1);
+                } else {
+                    startActivityForResult(new Intent(this, RecordActivity.class), SOUND_CODE);
+                }
                 break;
         }
 
@@ -385,6 +410,15 @@ public class HelpMeActivity extends BaseActivity implements View.OnClickListener
                         //et_service_location.setText(mServiceName);
                     }
                     break;
+                case SOUND_CODE: {
+                    if(!TextUtils.isEmpty(soundPath)){
+                        soundView.delete();
+                    }
+                    soundPath = data.getStringExtra("path");
+                    int time = data.getIntExtra("time", 0);
+                    soundView.setVisibility(View.VISIBLE);
+                    soundView.init(soundPath, time);
+                }
             }
         }
         super.onActivityResult(requestCode, resultCode, data);
@@ -459,6 +493,9 @@ public class HelpMeActivity extends BaseActivity implements View.OnClickListener
     protected void onDestroy() {
         super.onDestroy();
         HelperApplication.getInstance().getTaskTypes().clear();
+        if(AudioPlayer.isPlaying){
+            AudioPlayer.getInstance().stopPlay();
+        }
     }
 
     /**
@@ -489,10 +526,59 @@ public class HelpMeActivity extends BaseActivity implements View.OnClickListener
                 .setStyle(KProgressHUD.Style.SPIN_INDETERMINATE)
                 .setCancellable(true);
         submit_hub.show();
-        if(mPhotoList.size()==0){
+
+        if (!TextUtils.isEmpty(soundPath)) {
+            uploadSound();
+        } else {
+            uploadImgs();
+        }
+
+    }
+
+    /**
+     * 上传声音
+     */
+    private void uploadSound() {
+        String url = NetConstant.UPLOAD_RECORD;
+        File f = new File(soundPath);
+        List<Part> list = new ArrayList<>();
+        try {
+            FilePart filePart = new FilePart("upfile", f);
+            list.add(filePart);
+            VolleyRequest request = new VolleyRequest(url, list.toArray(new Part[list.size()]), new Response.Listener<String>() {
+                @Override
+                public void onResponse(String s) {
+                    Log.d("uplaod_sound", s);
+                    try {
+                        JSONObject j = new JSONObject(s);
+                        if (j.getString("status").equals("success")) {
+                            soundName = j.getString("data");
+                        }
+                        uploadImgs();
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError volleyError) {
+                    submit_hub.dismiss();
+                    Toast.makeText(mContext, "上传录音失败", Toast.LENGTH_SHORT).show();
+                }
+            });
+            SingleVolleyRequest.getInstance(mContext).addToRequestQueue(request);
+
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void uploadImgs() {
+        if (mPhotoList.size() == 0) {
             //传入1表示没有图片
             submitTask(1);
-        }else{
+        } else {
             //先上传图片再发布
             new PushImageUtil().setPushIamge(getApplication(), mPhotoList, nameList, new PushImage() {
                 @Override
@@ -509,8 +595,10 @@ public class HelpMeActivity extends BaseActivity implements View.OnClickListener
         }
     }
 
+
     /**
      * 上传任务
+     *
      * @param i 1表示没有图片，2表示有图片
      */
     private void submitTask(int i) {
@@ -518,7 +606,7 @@ public class HelpMeActivity extends BaseActivity implements View.OnClickListener
         StringPostRequest request = new StringPostRequest(url, new Response.Listener<String>() {
             @Override
             public void onResponse(String s) {
-                if(submit_hub!=null){
+                if (submit_hub != null) {
                     submit_hub.dismiss();
                 }
                 if (s != null) {
@@ -529,12 +617,12 @@ public class HelpMeActivity extends BaseActivity implements View.OnClickListener
                             String data = object.getString("data");
                             HelperApplication.getInstance().getTaskTypes().clear();
                             Log.d("发布任务", data);
-                           // Toast.makeText(getApplication(), "发布成功", Toast.LENGTH_SHORT).show();
+                            // Toast.makeText(getApplication(), "发布成功", Toast.LENGTH_SHORT).show();
                             Intent intent = new Intent(mContext, PaymentActivity.class);
                             intent.putExtra("price", et_wages.getText().toString());
                             intent.putExtra("tradeNo", data);
-                            intent.putExtra("body","任务费用");
-                            intent.putExtra("type","1");
+                            intent.putExtra("body", "任务费用");
+                            intent.putExtra("type", "1");
                             startActivity(intent);
                             finish();
                         } else {
@@ -549,7 +637,7 @@ public class HelpMeActivity extends BaseActivity implements View.OnClickListener
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError volleyError) {
-                if(submit_hub!=null){
+                if (submit_hub != null) {
                     submit_hub.dismiss();
                 }
                 HelperApplication.getInstance().getTaskTypes().clear();
@@ -557,9 +645,16 @@ public class HelpMeActivity extends BaseActivity implements View.OnClickListener
             }
         });
         //用户选择图片后上传图片字符串
-        if(i==2){
+        if (i == 2) {
             String s = StringJoint.arrayJointchar(nameList, ",");
             request.putValue("picurl", s);
+        }
+        if (!TextUtils.isEmpty(soundPath)) {
+            request.putValue("sound", soundName);
+            request.putValue("soundtime", soundView.getSoundTime() + "");
+        } else {
+            request.putValue("sound", soundName);
+            request.putValue("soundtime", soundView.getSoundTime() + "");
         }
         request.putValue("userid", userInfo.getUserId());
         request.putValue("title", et_content.getText().toString());
@@ -704,23 +799,23 @@ public class HelpMeActivity extends BaseActivity implements View.OnClickListener
                     .show();
             return;
         }
-        String address = result.getAddressDetail().city + result.getAddressDetail().district ;
+        String address = result.getAddressDetail().city + result.getAddressDetail().district;
         try {
-            if(type == 1){
-                if(result.getPoiList()!=null){
-                    et_service_location.setText(address+ result.getPoiList().get(0).name);
-                    et_site_location.setText(address+ result.getPoiList().get(0).name);
-                }else{
-                    et_service_location.setText(address+ result.getAddressDetail().street);
-                    et_site_location.setText(address+ result.getAddressDetail().street);
+            if (type == 1) {
+                if (result.getPoiList() != null) {
+                    et_service_location.setText(address + result.getPoiList().get(0).name);
+                    et_site_location.setText(address + result.getPoiList().get(0).name);
+                } else {
+                    et_service_location.setText(address + result.getAddressDetail().street);
+                    et_site_location.setText(address + result.getAddressDetail().street);
                 }
-            }else if(type == 2){
-                et_site_location.setText(address+mSiteName);
-            }else if(type == 3){
-                et_service_location.setText(address+mServiceName);
+            } else if (type == 2) {
+                et_site_location.setText(address + mSiteName);
+            } else if (type == 3) {
+                et_service_location.setText(address + mServiceName);
             }
-        }catch (NullPointerException e){
-            if(type == 1){
+        } catch (NullPointerException e) {
+            if (type == 1) {
                 et_service_location.setText(HelperApplication.getInstance().mCurrentAddress);
                 et_site_location.setText(HelperApplication.getInstance().mCurrentAddress);
                 mSiteLat = HelperApplication.getInstance().mCurrentLocLat;
@@ -798,11 +893,8 @@ public class HelpMeActivity extends BaseActivity implements View.OnClickListener
      */
     @Override
     public void onRequestPermissionsResult(int permsRequestCode, String[] permissions, int[] grantResults) {
-
         switch (permsRequestCode) {
-
             case 200:
-
                 boolean cameraAccepted = grantResults[0] == PackageManager.PERMISSION_GRANTED;
                 if (cameraAccepted) {
                     //授权成功之后，调用系统相机进行拍照操作等
@@ -811,9 +903,15 @@ public class HelpMeActivity extends BaseActivity implements View.OnClickListener
                     //用户授权拒绝之后，友情提示一下就可以了
                     ToastUtil.showShort(this, "已拒绝进入相机，如想开启请到设置中开启！");
                 }
-
                 break;
-
+            case 1: {
+                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    // Permission Granted
+                    startActivityForResult(new Intent(this, RecordActivity.class), SOUND_CODE);
+                } else {
+                    // Permission Denied
+                }
+            }
         }
 
     }

@@ -15,6 +15,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -27,25 +28,30 @@ import cn.xcom.helper.R;
  */
 
 public class SoundView extends RelativeLayout {
-    public static final int COUNT_CODE =111;
+    public static final int COUNT_CODE = 111;
+    public static final int COMPLETE_CODE = 222;
     private boolean isShowDelete;
+    private String filePath;
+    private boolean thisViewIsPlaying;//当前控件是否在播放
     private View view;
     private TextView countNumTv;
     private ImageView deleteBtn, animationImg;
-    private String filePath;
-    private AnimationDrawable animationDrawable;
-    private boolean isPlaying;
-    private MediaPlayer mediaPlayer;
+    private AnimationDrawable animationDrawable;//播放动画
+    private boolean isLocal;//是否为本地资源
+    private int soundTime;//音频总长度
     private int countNum;
     private Timer timer;
     private TimerTask timerTask;
-    private Handler handler = new Handler(Looper.myLooper()){
+    private Handler handler = new Handler(Looper.myLooper()) {
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
-            switch (msg.what){
+            switch (msg.what) {
                 case COUNT_CODE:
-                    countNumTv.setText(countNum+"");
+                    countNumTv.setText(countNum + "s");
+                    break;
+                case COMPLETE_CODE:
+                    countNumTv.setText(soundTime + "s");
                     break;
             }
         }
@@ -59,8 +65,10 @@ public class SoundView extends RelativeLayout {
     public SoundView(Context context, AttributeSet attrs) {
         super(context, attrs);
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.SoundView);
+
         isShowDelete = a.getBoolean(R.styleable.SoundView_show_delete, false);
         initView(context);
+        a.recycle();
     }
 
     private void initView(Context context) {
@@ -68,82 +76,88 @@ public class SoundView extends RelativeLayout {
         deleteBtn = (ImageView) view.findViewById(R.id.delete_img);
         animationImg = (ImageView) view.findViewById(R.id.animation_img);
         countNumTv = (TextView) view.findViewById(R.id.num_text);
+
         if (isShowDelete) {
             deleteBtn.setVisibility(View.VISIBLE);
         } else {
             deleteBtn.setVisibility(View.GONE);
         }
+        deleteBtn.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                delete();
+            }
+        });
+
         animationImg.setImageResource(R.drawable.animation_sound);
         animationDrawable = (AnimationDrawable) animationImg.getDrawable();
         view.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (!isPlaying) {
-                    isPlaying = true;
-                    startPlay();
-                } else {
-                    isPlaying = false;
+                if(thisViewIsPlaying){
                     stopPlay();
+                }else{
+                    startPlay();
                 }
             }
         });
 
     }
 
-    public void init(String filePath) {
+    public void init(String filePath, int soundTime) {
         this.filePath = filePath;
-        mediaPlayer = new MediaPlayer();
-        try {
-            mediaPlayer.setDataSource(filePath);
-            mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-                @Override
-                public void onCompletion(MediaPlayer mp) {
-                    animationDrawable.stop();
-//                    mediaPlayer.release();
-                }
-            });
-            mediaPlayer.prepare();
-            mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
-                @Override
-                public void onPrepared(MediaPlayer mp) {
-                    countNum = mediaPlayer.getDuration() / 100;
-                    handler.sendEmptyMessage(COUNT_CODE);
-                }
-            });
-            timer = new Timer();
-            timerTask = new TimerTask() {
-                @Override
-                public void run() {
-                    if (countNum > 0) {
-                        countNum--;
-                        countNumTv.setText(countNum);
-                    }
-                }
-            };
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        this.soundTime = soundTime;
+        countNumTv.setText(soundTime + "s");
     }
 
+
     private void startPlay() {
+        thisViewIsPlaying = true;
+        countNum = soundTime;
+        timer = new Timer(true);
+        timerTask = new TimerTask() {
+            @Override
+            public void run() {
+                if (countNum > 0) {
+                    countNum--;
+                    handler.sendEmptyMessage(COUNT_CODE);
+                } else {
+                    stopPlay();
+                }
+            }
+        };
+        AudioPlayer.getInstance().startPlay(filePath);
         animationDrawable.start();
-        try {
-            mediaPlayer.prepare();
-            mediaPlayer.start();
-            timer.schedule(timerTask, 0, 1000);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        timer.schedule(timerTask, 1000, 1000);
     }
 
     private void stopPlay() {
+        thisViewIsPlaying = false;
         animationDrawable.stop();
-        mediaPlayer.stop();
-        if(timer != null){
+        AudioPlayer.getInstance().stopPlay();
+        handler.sendEmptyMessage(COMPLETE_CODE);
+        if (timer != null) {
             timer.cancel();
         }
-        if(timerTask!=null){
+        if (timerTask != null) {
             timerTask.cancel();
         }
     }
+
+    public void delete() {
+        if (AudioPlayer.isPlaying) {
+            stopPlay();
+        }
+        view.setVisibility(View.GONE);
+        File file = new File(filePath);
+        if (file.exists()) {
+            file.delete();
+        }
+    }
+
+
+    public int getSoundTime() {
+        return soundTime;
+    }
+
 }

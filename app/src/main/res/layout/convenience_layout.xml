@@ -113,6 +113,14 @@
         android:text="饿哦们带的动 的的撒的方法"
         android:textColor="@color/colorTextSale"
         android:textSize="18sp" />
+
+    <cn.xcom.helper.record.SoundView
+        android:id="@+id/sound_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:visibility="gone"
+        />
     <!--<ImageView-->
     <!--android:id="@+id/convenience_image"-->
     <!--android:layout_width="100dp"-->

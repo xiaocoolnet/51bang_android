@@ -46,6 +46,7 @@ import cn.xcom.helper.bean.AuthenticationList;
 import cn.xcom.helper.bean.SkillTagInfo;
 import cn.xcom.helper.constant.NetConstant;
 import cn.xcom.helper.net.HelperAsyncHttpClient;
+import cn.xcom.helper.record.AudioPlayer;
 import cn.xcom.helper.utils.CommonAdapter;
 import cn.xcom.helper.utils.SingleVolleyRequest;
 import cn.xcom.helper.utils.StringPostRequest;
@@ -54,6 +55,9 @@ import cn.xcom.helper.utils.ViewHolder;
 import cn.xcom.helper.view.DividerItemDecoration;
 import cz.msebera.android.httpclient.Header;
 
+/**
+ * 认证帮
+ */
 public class AuthenticationActivity extends BaseActivity {
 
     @BindView(R.id.rl_back)
@@ -521,5 +525,11 @@ public class AuthenticationActivity extends BaseActivity {
         });
     }
 
-
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if(AudioPlayer.isPlaying){
+            AudioPlayer.getInstance().stopPlay();
+        }
+    }
 }

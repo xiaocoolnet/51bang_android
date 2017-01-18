@@ -34,6 +34,7 @@ public class Convenience implements Serializable {
     private String sound;
     private long create_time;
     private String photo;
+    private String soundtime;
     /**
      * pictureurl : avatar2016:09:19:22:54:06:2540.png
      */
@@ -144,6 +145,14 @@ public class Convenience implements Serializable {
 
     public void setComment(List<?> comment) {
         this.comment = comment;
+    }
+
+    public String getSoundtime() {
+        return soundtime;
+    }
+
+    public void setSoundtime(String soundtime) {
+        this.soundtime = soundtime;
     }
 
     public static class PicBean implements Serializable{

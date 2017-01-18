@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,6 +29,7 @@ import cn.xcom.helper.activity.ChatActivity;
 import cn.xcom.helper.bean.Convenience;
 import cn.xcom.helper.bean.UserInfo;
 import cn.xcom.helper.constant.NetConstant;
+import cn.xcom.helper.record.SoundView;
 import cn.xcom.helper.utils.MyImageLoader;
 import cn.xcom.helper.utils.NoScrollGridView;
 import cn.xcom.helper.utils.RoundImageView;
@@ -196,6 +198,17 @@ public class ConvenienceAdapter extends RecyclerView.Adapter<ConvenienceAdapter.
             });
         }
 
+        int soundTime = 0;
+        if (!TextUtils.isEmpty(convenience.getSoundtime())) {
+            soundTime = Integer.valueOf(convenience.getSoundtime());
+        }
+        if (TextUtils.isEmpty(convenience.getSound())) {
+            holder.soundView.setVisibility(View.GONE);
+        } else {
+            holder.soundView.setVisibility(View.VISIBLE);
+            holder.soundView.init(NetConstant.NET_DISPLAY_IMG + convenience.getSound(), soundTime);
+        }
+
 
     }
 
@@ -214,6 +227,7 @@ public class ConvenienceAdapter extends RecyclerView.Adapter<ConvenienceAdapter.
         private ImageView convenience_phone, convenience_message;
         private NoScrollGridView noScrollGridView;
         private ImageView iv_shanchu, iv_jubao;
+        private SoundView soundView;
 
         public ViewHolder(View itemView) {
             super(itemView);
@@ -227,7 +241,7 @@ public class ConvenienceAdapter extends RecyclerView.Adapter<ConvenienceAdapter.
             //  viewHolder.convenience_image = (ImageView) convertView.findViewById(R.id.convenience_image);
             convenience_phone = (ImageView) itemView.findViewById(R.id.convenience_phone);
             noScrollGridView = (NoScrollGridView) itemView.findViewById(R.id.gridview);
-
+            soundView = (SoundView) itemView.findViewById(R.id.sound_view);
 
         }
 
