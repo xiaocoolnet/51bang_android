@@ -69,7 +69,25 @@ public class TaskItemInfo implements Serializable {
     private String idcard;
     private List<Evaluate> evaluate;
     private ApplyUser apply;
+    private String sound;
+    private String soundtime;
 
+
+    public String getSound() {
+        return sound;
+    }
+
+    public void setSound(String sound) {
+        this.sound = sound;
+    }
+
+    public String getSoundtime() {
+        return soundtime;
+    }
+
+    public void setSoundtime(String soundtime) {
+        this.soundtime = soundtime;
+    }
 
     public ApplyUser getApply() {
         return apply;

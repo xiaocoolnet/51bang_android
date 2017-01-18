@@ -67,6 +67,25 @@ public class TaskInfo implements Serializable{
     private String typename;
     private String type_parentid;
     private String type_parentname;
+    private String sound;
+    private String soundtime;
+
+    public String getSound() {
+        return sound;
+    }
+
+    public void setSound(String sound) {
+        this.sound = sound;
+    }
+
+    public String getSoundtime() {
+        return soundtime;
+    }
+
+    public void setSoundtime(String soundtime) {
+        this.soundtime = soundtime;
+    }
+
     /**
      * id : 16
      * taskid : 112

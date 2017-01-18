@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.Window;
 import android.widget.RelativeLayout;
@@ -21,6 +22,7 @@ import cn.xcom.helper.adapter.ImgGridAdapter;
 import cn.xcom.helper.bean.TaskInfo;
 import cn.xcom.helper.bean.TaskItemInfo;
 import cn.xcom.helper.constant.NetConstant;
+import cn.xcom.helper.record.SoundView;
 import cn.xcom.helper.utils.MyImageLoader;
 import cn.xcom.helper.utils.NoScrollGridView;
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -49,11 +51,14 @@ public class TaskDetailActivity extends BaseActivity {
     TextView tvTime;
     @BindView(R.id.item_sn_gridpic)
     NoScrollGridView itemSnGridpic;
+    @BindView(R.id.sound_view)
+    SoundView soundView;
+
     private Context context;
     private TaskInfo taskInfo;
     private TaskItemInfo taskItemInfo;
     private String type;
-
+    private int time;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -71,6 +76,7 @@ public class TaskDetailActivity extends BaseActivity {
      * 为view设置数据
      */
     private void setData() {
+        time = 0;
         if (type.equals("1")) {
             tvName.setText(taskInfo.getName());
             tvTradeNo.setText(taskInfo.getOrder_num());
@@ -90,6 +96,12 @@ public class TaskDetailActivity extends BaseActivity {
                 itemSnGridpic.setAdapter(new ImgGridAdapter(images, context));
             }
             MyImageLoader.display(NetConstant.NET_DISPLAY_IMG + taskInfo.getPhoto(),ivAvatar);
+            if(!TextUtils.isEmpty(taskInfo.getSoundtime())){
+                time =Integer.valueOf(taskInfo.getSoundtime());
+            }
+            if(!TextUtils.isEmpty(taskInfo.getSound())){
+                soundView.init(NetConstant.NET_DISPLAY_IMG+taskInfo.getSound(),time);
+            }
         } else if (type.equals("2")) {
             tvName.setText(taskItemInfo.getName());
             tvTradeNo.setText(taskItemInfo.getOrder_num());
@@ -109,7 +121,14 @@ public class TaskDetailActivity extends BaseActivity {
                 itemSnGridpic.setAdapter(new ImgGridAdapter(images, context));
             }
             MyImageLoader.display(NetConstant.NET_DISPLAY_IMG + taskItemInfo.getPhoto(),ivAvatar);
+            if(!TextUtils.isEmpty(taskItemInfo.getSoundtime())){
+                time =Integer.valueOf(taskItemInfo.getSoundtime());
+            }
+            if(!TextUtils.isEmpty(taskItemInfo.getSound())){
+                soundView.init(NetConstant.NET_DISPLAY_IMG+taskItemInfo.getSound(),time);
+            }
         }
+
     }
 
     @OnClick({R.id.rl_back, R.id.rl_dianhua, R.id.rl_xiaoxi})

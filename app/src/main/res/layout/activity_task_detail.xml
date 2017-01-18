@@ -115,6 +115,20 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:padding="10dp"
+        android:background="@color/white"
+        >
+        <cn.xcom.helper.record.SoundView
+            android:id="@+id/sound_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+        </cn.xcom.helper.record.SoundView>
+
+    </RelativeLayout>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:background="@color/background_white">
         <cn.xcom.helper.utils.NoScrollGridView
             android:id="@+id/item_sn_gridpic"
