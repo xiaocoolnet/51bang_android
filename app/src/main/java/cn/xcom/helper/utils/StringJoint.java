@@ -8,14 +8,18 @@ import java.util.List;
  */
 public class StringJoint {
 
-    public static String arrayJointchar(List<String> stringArrayList,String separator){
-       String upString="";
-        for (int i = 0; i < stringArrayList.size(); i++) {
-
-            upString = stringArrayList.get(i) + separator+upString ;
+    public static String arrayJointchar(List<String> stringArrayList, String separator) {
+        StringBuilder sb = new StringBuilder();
+        if (stringArrayList != null && stringArrayList.size() > 0) {
+            for (int i = 0; i < stringArrayList.size(); i++) {
+                if (i < stringArrayList.size() - 1) {
+                    sb.append(stringArrayList.get(i) + separator);
+                } else {
+                    sb.append(stringArrayList.get(i));
+                }
+            }
         }
-        upString = upString.substring(0, upString.length() -1);
-        return  upString;
+        return sb.toString();
     }
 
 }

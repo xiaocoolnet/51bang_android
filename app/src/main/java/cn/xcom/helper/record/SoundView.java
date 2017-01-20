@@ -32,7 +32,6 @@ public class SoundView extends RelativeLayout {
     public static final int COMPLETE_CODE = 222;
     private boolean isShowDelete;
     private String filePath;
-    private boolean thisViewIsPlaying;//当前控件是否在播放
     private View view;
     private TextView countNumTv;
     private ImageView deleteBtn, animationImg;
@@ -94,7 +93,7 @@ public class SoundView extends RelativeLayout {
         view.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(thisViewIsPlaying){
+                if(AudioPlayer.isPlaying){
                     stopPlay();
                 }else{
                     startPlay();
@@ -112,7 +111,6 @@ public class SoundView extends RelativeLayout {
 
 
     private void startPlay() {
-        thisViewIsPlaying = true;
         countNum = soundTime;
         timer = new Timer(true);
         timerTask = new TimerTask() {
@@ -132,7 +130,6 @@ public class SoundView extends RelativeLayout {
     }
 
     private void stopPlay() {
-        thisViewIsPlaying = false;
         animationDrawable.stop();
         AudioPlayer.getInstance().stopPlay();
         handler.sendEmptyMessage(COMPLETE_CODE);

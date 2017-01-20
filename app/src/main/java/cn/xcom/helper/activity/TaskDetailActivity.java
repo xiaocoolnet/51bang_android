@@ -22,6 +22,7 @@ import cn.xcom.helper.adapter.ImgGridAdapter;
 import cn.xcom.helper.bean.TaskInfo;
 import cn.xcom.helper.bean.TaskItemInfo;
 import cn.xcom.helper.constant.NetConstant;
+import cn.xcom.helper.record.AudioPlayer;
 import cn.xcom.helper.record.SoundView;
 import cn.xcom.helper.utils.MyImageLoader;
 import cn.xcom.helper.utils.NoScrollGridView;
@@ -100,6 +101,7 @@ public class TaskDetailActivity extends BaseActivity {
                 time =Integer.valueOf(taskInfo.getSoundtime());
             }
             if(!TextUtils.isEmpty(taskInfo.getSound())){
+                soundView.setVisibility(View.VISIBLE);
                 soundView.init(NetConstant.NET_DISPLAY_IMG+taskInfo.getSound(),time);
             }
         } else if (type.equals("2")) {
@@ -125,6 +127,7 @@ public class TaskDetailActivity extends BaseActivity {
                 time =Integer.valueOf(taskItemInfo.getSoundtime());
             }
             if(!TextUtils.isEmpty(taskItemInfo.getSound())){
+                soundView.setVisibility(View.VISIBLE);
                 soundView.init(NetConstant.NET_DISPLAY_IMG+taskItemInfo.getSound(),time);
             }
         }
@@ -163,6 +166,14 @@ public class TaskDetailActivity extends BaseActivity {
                     context.startActivity(intent);
                 }
                 break;
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if(AudioPlayer.isPlaying){
+            AudioPlayer.getInstance().stopPlay();
         }
     }
 }

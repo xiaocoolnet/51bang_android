@@ -76,16 +76,6 @@ public class AuthenticationListAdapter extends RecyclerView.Adapter<Authenticati
                 context.startActivity(intent);
             }
         });
-        int soundTime = 0;
-        if (!TextUtils.isEmpty(a.getSoundtime())) {
-            soundTime = Integer.valueOf(a.getSoundtime());
-        }
-        if (TextUtils.isEmpty(a.getSound())) {
-            holder.soundView.setVisibility(View.GONE);
-        } else {
-            holder.soundView.setVisibility(View.VISIBLE);
-            holder.soundView.init(NetConstant.NET_DISPLAY_IMG + a.getSound(), soundTime);
-        }
 
 
     }

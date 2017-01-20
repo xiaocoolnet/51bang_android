@@ -121,9 +121,9 @@
         <cn.xcom.helper.record.SoundView
             android:id="@+id/sound_view"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
-
-        </cn.xcom.helper.record.SoundView>
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            />
 
     </RelativeLayout>
     <RelativeLayout

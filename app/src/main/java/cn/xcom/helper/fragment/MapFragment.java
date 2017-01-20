@@ -284,6 +284,11 @@ public class MapFragment extends Fragment implements View.OnClickListener, OnGet
             MapStatusUpdate mMapStatusUpdate = MapStatusUpdateFactory
                     .newMapStatus(mMapStatus);
             mBaiduMap.setMapStatus(mMapStatusUpdate);*/
+
+            if (!"".equals(HelperApplication.getInstance().mDistrict)) {
+                getWorkingState();
+                getAuthentication();
+            }
         }
     }
 
@@ -299,14 +304,15 @@ public class MapFragment extends Fragment implements View.OnClickListener, OnGet
             locate_district.setText(HelperApplication.getInstance().mDistrict);
         }
         if (!"".equals(HelperApplication.getInstance().mDistrict)) {
+            getWorkingState();
             getAuthentication();
         }
         mMapView.onResume();
         //第一次进入应用 上传位置
-        if (HelperApplication.getInstance().needUploadLocation) {
-            HelperApplication.getInstance().needUploadLocation = false;
-            getWorkingState();
-        }
+//        if (HelperApplication.getInstance().needUploadLocation) {
+//            HelperApplication.getInstance().needUploadLocation = false;
+//            getWorkingState();
+//        }
     }
 
     /**

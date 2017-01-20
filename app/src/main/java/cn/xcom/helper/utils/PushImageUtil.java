@@ -33,16 +33,8 @@ import cn.xcom.helper.constant.NetConstant;
  * Created by Administrator on 2016/8/25.
  */
 public class PushImageUtil {
-    private static final int ADD_KEY = 4;
-    private static final int ADD_IMG_KEY1 = 101;
-    private static final int ADD_IMG_KEY2 = 102;
-    private static final int ADD_IMG_KEY3 = 103;
-    private static final int ADD_IMG_KEY4 = 104;
-    private static final int ADD_IMG_KEY5 = 105;
-    private static final int ADD_IMG_KEY6 = 106;
-    private static final int ADD_IMG_KEY7 = 107;
-    private static final int ADD_IMG_KEY8 = 108;
-    private static final int ADD_IMG_KEY9 = 109;
+    private static final int SUCCESS =11;
+    private static final int ERROR = 22;
     private static Context mContext;
     private int imgNums = 0;
     private int key = 0;
@@ -58,11 +50,10 @@ public class PushImageUtil {
         mContext = context;
         this.pushIamge = pushIamge;
         if (photoWithPaths.size()>0){
-            pushImage(photoWithPaths.get(imgNums),ADD_IMG_KEY1);
+            pushImg(photoWithPaths.get(imgNums).getPhotoPath());
         }else {
             pushIamge.error();
         }
-
     }
 
     public void setPushIamge(Context context,List<PhotoInfo> p,List<String> list,PushImage pushIamge,boolean needCompress) {
@@ -74,219 +65,66 @@ public class PushImageUtil {
         @Override
         public void handleMessage(Message msg) {
             switch (msg.what) {
-                case ADD_IMG_KEY1:
-                    if (msg.obj != null) {
-                      if (JsonResult.JSONparser(mContext, String.valueOf(msg.obj))){
-                          imgNums = 1;
-//                          arrayList=JsonResult.JsonParser((String) msg.obj);
-//                          imageReturn.setData(arrayList.get(0).toString());
-                          if (imgNums < photoWithPaths.size()) {
-                              pushImage(photoWithPaths.get(imgNums),ADD_IMG_KEY2);
-                          }else {
-                              pushIamge.success(true);
-                              isOk = true;
-                          }
-                      }else {
-                          pushIamge.error();
-                          Toast.makeText(mContext, "发送失败", Toast.LENGTH_SHORT).show();
-                      }
-                    }
+                case SUCCESS:
+                    pushIamge.success(true);
                     break;
-                case ADD_IMG_KEY2:
-                    if (msg.obj != null) {
-                        if (JsonResult.JSONparser(mContext, String.valueOf(msg.obj))){
-                            imgNums = 2;
-//                            arrayList=JsonResult.JsonParser((String) msg.obj);
-//                            imageReturn.setData(arrayList.get(0).toString());
-                            if (imgNums < photoWithPaths.size()) {
-                                pushImage(photoWithPaths.get(imgNums),ADD_IMG_KEY3);
-
-                            }else {
-                                pushIamge.success(true);
-                                isOk = true;
-                            }
-                        }else {
-                            pushIamge.error();
-                            Toast.makeText(mContext, "发送失败", Toast.LENGTH_SHORT).show();
-                        }
-                    }
+                case ERROR:
+                    pushIamge.error();
                     break;
-                case ADD_IMG_KEY3:
-                    if (msg.obj != null) {
-                        if (JsonResult.JSONparser(mContext, String.valueOf(msg.obj))){
-                            imgNums = 3;
-                            if (imgNums < photoWithPaths.size()) {
-                                pushImage(photoWithPaths.get(imgNums),ADD_IMG_KEY4);
-
-                            }else {
-                                pushIamge.success(true);
-                                isOk = true;
-                            }
-                        }else {
-                            pushIamge.error();
-                            Toast.makeText(mContext, "发送失败", Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                    break;
-                case ADD_IMG_KEY4:
-                    if (msg.obj != null) {
-                        if (JsonResult.JSONparser(mContext, String.valueOf(msg.obj))){
-                            imgNums = 4;
-                            if (imgNums < photoWithPaths.size()) {
-                                pushImage(photoWithPaths.get(imgNums),ADD_IMG_KEY5);
-
-                            }else {
-                                pushIamge.success(true);
-                                isOk = true;
-                            }
-                        }else {
-                            pushIamge.error();
-                            Toast.makeText(mContext, "发送失败", Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                    break;
-                case ADD_IMG_KEY5:
-                    if (msg.obj != null) {
-                        if (JsonResult.JSONparser(mContext, String.valueOf(msg.obj))){
-                            imgNums = 5;
-                            if (imgNums < photoWithPaths.size()) {
-                                pushImage(photoWithPaths.get(imgNums),ADD_IMG_KEY6);
-
-                            }else {
-                                pushIamge.success(true);
-                                isOk = true;
-                            }
-                        }else {
-                            pushIamge.error();
-                            Toast.makeText(mContext, "发送失败", Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                    break;
-                case ADD_IMG_KEY6:
-                    if (msg.obj != null) {
-                        if (JsonResult.JSONparser(mContext, String.valueOf(msg.obj))){
-                            imgNums = 6;
-                            if (imgNums < photoWithPaths.size()) {
-                                pushImage(photoWithPaths.get(imgNums),ADD_IMG_KEY7);
-
-                            }else {
-                                pushIamge.success(true);
-                                isOk = true;
-                            }
-                        }else {
-                            pushIamge.error();
-                            Toast.makeText(mContext, "发送失败", Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                    break;
-                case ADD_IMG_KEY7:
-                    if (msg.obj != null) {
-                        if (JsonResult.JSONparser(mContext, String.valueOf(msg.obj))){
-                            imgNums = 7;
-                            if (imgNums < photoWithPaths.size()) {
-                                pushImage(photoWithPaths.get(imgNums),ADD_IMG_KEY8);
-
-                            }else {
-                                pushIamge.success(true);
-                                isOk = true;
-                            }
-                        }else {
-                            pushIamge.error();
-                            Toast.makeText(mContext, "发送失败", Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                    break;
-                case ADD_IMG_KEY8:
-                    if (msg.obj != null) {
-                        if (JsonResult.JSONparser(mContext, String.valueOf(msg.obj))){
-                            imgNums = 8;
-                            if (imgNums < photoWithPaths.size()) {
-                                pushImage(photoWithPaths.get(imgNums),ADD_IMG_KEY9);
-
-                            }else {
-                                pushIamge.success(true);
-                                isOk = true;
-                            }
-                        }else {
-                            pushIamge.error();
-                            Toast.makeText(mContext, "发送失败", Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                    break;
-                case ADD_IMG_KEY9:
-                    if (msg.obj != null) {
-                        if (JsonResult.JSONparser(mContext, String.valueOf(msg.obj))){
-                            imgNums = 9;
-                            isOk = true;
-                            pushIamge.success(true);
-
-                        }else {
-                            pushIamge.error();
-                            Toast.makeText(mContext, "发送失败", Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                    break;
-
             }
         }
     };
 
-    private void pushImage(PhotoInfo photoWithPath,int  addImgKey) {
-        pushImg(photoWithPath.getPhotoPath(), addImgKey);
-    }
 
-    public void pushImg(final String picPath,int  addImgKey){
+    public void pushImg(final String picPath){
         if(needCompress){
-            convertBitmap(convertToBitmap(picPath, 720, 1280), addImgKey);
+            convertBitmap(convertToBitmap(picPath, 720, 1280));
         }else{
-            compressImageWithRatio(picPath,addImgKey);
+            compressImageWithRatio(picPath);
         }
-
     }
-    public void updatePhoto(final File f,final int KEY){
+    public void updatePhoto(final File f){
 
-        new Thread(){
-            Message msg = Message.obtain();
+        List<Part> list=new ArrayList<Part>();
+        try {
+            list.add(new FilePart("upfile",f));
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        String url1= NetConstant.NET_UPLOAD_IMG;
+        VolleyRequest request=new VolleyRequest(url1, list.toArray(new Part[list.size()]),new Response.Listener<String>() {
             @Override
-            public void run() {
-                List<Part> list=new ArrayList<Part>();
+            public void onResponse(String s) {
                 try {
-                    list.add(new FilePart("upfile",f));
-                } catch (FileNotFoundException e) {
-                    e.printStackTrace();
-                }
-                String url1= NetConstant.NET_UPLOAD_IMG;
-                VolleyRequest request=new VolleyRequest(url1, list.toArray(new Part[list.size()]),new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String s) {
-                        try {
-                            JSONObject obj = new JSONObject(s);
-                            msg.what = KEY;
-                            msg.obj = obj;
-                            Log.d("===图片张数",imgNums+"");
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }finally {
-                            handler.sendMessage(msg);
+                    JSONObject obj = new JSONObject(s);
+                    if(obj!= null){
+                        imgNums ++;
+                        if(imgNums < photoWithPaths.size()){
+                            pushImg(photoWithPaths.get(imgNums).getPhotoPath());
+                        }else{
+                            handler.sendEmptyMessage(SUCCESS);
                         }
-                        Log.d("===  图片上传", s);
-
                     }
-                }, new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError volleyError) {
+                    Log.d("===图片张数",imgNums+"");
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                    handler.sendEmptyMessage(ERROR);
+                }
 
-                    }
-                });
-                SingleVolleyRequest.getInstance(mContext).addToRequestQueue(request);
             }
-        }.start();
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError volleyError) {
+
+            }
+        });
+        SingleVolleyRequest.getInstance(mContext).addToRequestQueue(request);
 
     }
 
 
 
-    public void convertBitmap(Bitmap bitmap,int  addImgKey){
+    public void convertBitmap(Bitmap bitmap){
         File appDir = new File(Environment.getExternalStorageDirectory(), "51helper");
         if (!appDir.exists()) {
             appDir.mkdir();
@@ -301,7 +139,7 @@ public class PushImageUtil {
             bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos);
             fos.flush();
             fos.close();
-            updatePhoto(file, addImgKey);
+            updatePhoto(file);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -309,7 +147,7 @@ public class PushImageUtil {
         }
     }
 
-    public void compressImageWithRatio(String srcPath,int addImgKey){
+    public void compressImageWithRatio(String srcPath){
         File appDir = new File(Environment.getExternalStorageDirectory(), "51helper");
         if (!appDir.exists()) {
             appDir.mkdir();
@@ -318,7 +156,7 @@ public class PushImageUtil {
         String fileName ="yyy"+ random.nextInt(10000)+System.currentTimeMillis() + ".jpg";
         arrayList.add(fileName);
         File file = new File(appDir, fileName);
-        updatePhoto(ImageCompress.compressPicture(srcPath,file),addImgKey);
+        updatePhoto(ImageCompress.compressPicture(srcPath,file));
 
     }
 

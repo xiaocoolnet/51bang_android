@@ -525,11 +525,4 @@ public class AuthenticationActivity extends BaseActivity {
         });
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        if(AudioPlayer.isPlaying){
-            AudioPlayer.getInstance().stopPlay();
-        }
-    }
 }

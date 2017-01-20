@@ -214,9 +214,8 @@ public class ConvenienceAdapter extends RecyclerView.Adapter<ConvenienceAdapter.
 
     @Override
     public int getItemCount() {
-        return list.size();
+        return list.size() > 9 ? 9 : list.size();
     }
-
 
     class ViewHolder extends RecyclerView.ViewHolder {
         private RoundImageView convenience_photo;
