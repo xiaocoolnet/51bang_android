@@ -318,5 +318,6 @@
     <!--MeFragment-->
 
     <string name="insure_warning_word">请上传包括手持身份证，身份证正面，投保凭证3张图片，谢谢合作</string>
-
+    <string name="expand">展开</string>
+    <string name="shrink">收起</string>
 </resources>

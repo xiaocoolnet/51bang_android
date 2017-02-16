@@ -84,7 +84,7 @@ public class SelectMapPoiActivity extends BaseActivity implements OnGetGeoCoderR
     private Marker marker;
     private boolean isFisrtIn = true;
     private SuggestionSearch mSuggestionSearch;
-    private int flag=0;
+    private int flag = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -176,7 +176,7 @@ public class SelectMapPoiActivity extends BaseActivity implements OnGetGeoCoderR
             @Override
             public void afterTextChanged(Editable s) {
                 String keyword = etSearch.getText().toString();
-                Log.e("keyword",keyword);
+                Log.e("keyword", keyword);
                 if (TextUtils.isEmpty(keyword)) {
                     ivSearchClear.setVisibility(View.GONE);
                     listviewSearchResult.setVisibility(View.GONE);
@@ -200,16 +200,17 @@ public class SelectMapPoiActivity extends BaseActivity implements OnGetGeoCoderR
 
     OnGetSuggestionResultListener listener = new OnGetSuggestionResultListener() {
         public void onGetSuggestionResult(SuggestionResult res) {
-            if (res == null || res.getAllSuggestions() == null) {
+            if (res == null || res.getAllSuggestions() == null
+                    || res.getAllSuggestions().size() == 0) {
                 return;
                 //未找到相关结果
             }
             suggestionInfos = res.getAllSuggestions();
             listviewSearchResult.setVisibility(View.VISIBLE);
-            suggestionInfoCommonAdapter = new CommonAdapter<SuggestionResult.SuggestionInfo>(context,suggestionInfos,R.layout.item_search_info) {
+            suggestionInfoCommonAdapter = new CommonAdapter<SuggestionResult.SuggestionInfo>(context, suggestionInfos, R.layout.item_search_info) {
                 @Override
                 public void convert(ViewHolder holder, SuggestionResult.SuggestionInfo suggestionInfo) {
-                    holder.setText(R.id.tv_name,suggestionInfo.key);
+                    holder.setText(R.id.tv_name, suggestionInfo.key);
                 }
             };
             listviewSearchResult.setAdapter(suggestionInfoCommonAdapter);
@@ -251,13 +252,13 @@ public class SelectMapPoiActivity extends BaseActivity implements OnGetGeoCoderR
                 .icon(BitmapDescriptorFactory
                         .fromResource(R.mipmap.ic_dingwei_shou)));
         try {
-            if(result.getPoiList()!=null){
+            if (result.getPoiList() != null) {
                 createMarker(result.getLocation(), result.getPoiList().get(0).name);
                 setAdapter(result);
-            }else{
-                createMarker(result.getLocation(), result.getAddressDetail().city+result.getAddressDetail().district+result.getAddressDetail().street);
+            } else {
+                createMarker(result.getLocation(), result.getAddressDetail().city + result.getAddressDetail().district + result.getAddressDetail().street);
             }
-        }catch (NullPointerException e){
+        } catch (NullPointerException e) {
 
         }
 

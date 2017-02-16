@@ -8,7 +8,6 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -22,7 +21,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import cn.xcom.helper.R;
 import cn.xcom.helper.activity.ChatActivity;
@@ -37,6 +38,7 @@ import cn.xcom.helper.utils.SingleVolleyRequest;
 import cn.xcom.helper.utils.StringPostRequest;
 import cn.xcom.helper.utils.TimeUtils;
 import cn.xcom.helper.utils.ToastUtil;
+import cn.xcom.helper.view.TextViewExpandableAnimation;
 
 /**
  * Created by Administrator on 2016/9/25 0025.
@@ -48,13 +50,16 @@ public class ConvenienceAdapter extends RecyclerView.Adapter<ConvenienceAdapter.
     private ImageView imageView;
     private ListGridview listGridview;
     private UserInfo userInfo;
-
+    private Map<Integer,Boolean> states;
 
     public ConvenienceAdapter(List<Convenience> list, Context context) {
         this.list = list;
         this.context = context;
         userInfo = new UserInfo(context);
         userInfo.readData(context);
+
+        states = new HashMap<>();
+
     }
 
 
@@ -67,11 +72,21 @@ public class ConvenienceAdapter extends RecyclerView.Adapter<ConvenienceAdapter.
     @Override
     public void onBindViewHolder(ViewHolder holder, final int position) {
         final Convenience convenience = list.get(position);
-
+        states.put(position,true);
         MyImageLoader.display(NetConstant.NET_DISPLAY_IMG + convenience.getPhoto(), holder.convenience_photo);
         holder.convenience_name.setText(convenience.getName());
         holder.convenience_time.setText(TimeUtils.getDateToString(convenience.getCreate_time() * 1000));
-        holder.convenience_content.setText(convenience.getContent());
+        holder.contentEtv.setText(convenience.getContent());
+        holder.contentEtv.setOnStateChangeListener(new TextViewExpandableAnimation.OnStateChangeListener() {
+            @Override
+            public void onStateChange(boolean isShrink) {
+                states.put(position,isShrink);
+            }
+        });
+//        holder.tvExpand.setText(mLists.get(position).getText());
+        //important! reset its state as where it left
+        holder.contentEtv.resetState(states.get(position));
+
         addList = new ArrayList<>();
         if (convenience.getPic().size() > 0) {
             for (int i = 0; i < convenience.getPic().size(); i++) {
@@ -214,26 +229,27 @@ public class ConvenienceAdapter extends RecyclerView.Adapter<ConvenienceAdapter.
 
     @Override
     public int getItemCount() {
-        return list.size() > 9 ? 9 : list.size();
+//        return list.size() > 9 ? 9 : list.size();
+        return list.size();
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {
         private RoundImageView convenience_photo;
         private TextView convenience_name;
         private TextView convenience_time;
-        private TextView convenience_content;
         private ImageView convenience_image;
         private ImageView convenience_phone, convenience_message;
         private NoScrollGridView noScrollGridView;
         private ImageView iv_shanchu, iv_jubao;
         private SoundView soundView;
+        private TextViewExpandableAnimation contentEtv;
 
         public ViewHolder(View itemView) {
             super(itemView);
             convenience_photo = (RoundImageView) itemView.findViewById(R.id.convenience_photo);
             convenience_name = (TextView) itemView.findViewById(R.id.convenience_name);
             convenience_time = (TextView) itemView.findViewById(R.id.convenience_time);
-            convenience_content = (TextView) itemView.findViewById(R.id.convenience_content);
+            contentEtv = (TextViewExpandableAnimation) itemView.findViewById(R.id.content_etv);
             convenience_message = (ImageView) itemView.findViewById(R.id.convenience_message);
             iv_shanchu = (ImageView) itemView.findViewById(R.id.iv_shanchu);
             iv_jubao = (ImageView) itemView.findViewById(R.id.iv_jubao);

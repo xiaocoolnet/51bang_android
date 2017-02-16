@@ -197,7 +197,6 @@ public class ReleaseConvenienceActivity extends BaseActivity implements View.OnC
             @Override
             public void error() {
                 Toast.makeText(getApplication(), "上传图片失败", Toast.LENGTH_SHORT).show();
-                hud.show();
             }
         });
     }

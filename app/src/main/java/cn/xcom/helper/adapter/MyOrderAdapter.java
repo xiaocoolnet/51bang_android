@@ -167,7 +167,7 @@ public class MyOrderAdapter extends RecyclerView.Adapter<MyOrderAdapter.ViewHold
                     holder.orderState.setText("待评价");
                     break;
                 case OrderHelper.SELLER_UNCOMMENT:
-                    holder.orderState.setText("待评价");
+                    holder.orderState.setText("已评价");
                     break;
                 case OrderHelper.COMPLETED:
                     holder.orderState.setText("已完成");

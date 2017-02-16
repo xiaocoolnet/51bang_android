@@ -279,14 +279,17 @@ public class BuyFragment extends Fragment implements View.OnClickListener {
     }
 
     private void getMore(String district) {
+        Log.e("zcq","getmore");
         getWorkingState();
         RequestParams params = new RequestParams();
-        params.put("city", district);
-        Log.e("city", HelperApplication.getInstance().mDistrict);
         //params.put("city","芝罘区");
+        params.put("city", district);//district
         params.put("userid", userInfo.getUserId());
         TaskInfo taskInfo = taskInfos.get(taskInfos.size() - 1);
         params.put("beginid", taskInfo.getId());
+        Log.e("city", district);//HelperApplication.getInstance().mDistrict
+        Log.e("userid", userInfo.getUserId());
+        Log.e("beginid", taskInfo.getId());
         HelperAsyncHttpClient.get(NetConstant.GETTASKLIST, params, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {

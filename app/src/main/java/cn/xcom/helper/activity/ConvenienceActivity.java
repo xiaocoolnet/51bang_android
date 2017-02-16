@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -30,6 +31,7 @@ import cn.xcom.helper.adapter.ConvenienceAdapter;
 import cn.xcom.helper.bean.Convenience;
 import cn.xcom.helper.constant.NetConstant;
 import cn.xcom.helper.record.AudioPlayer;
+import cn.xcom.helper.utils.PermissionUtil;
 import cn.xcom.helper.utils.SingleVolleyRequest;
 import cn.xcom.helper.utils.StringPostRequest;
 import cn.xcom.helper.utils.ToastUtil;
@@ -124,7 +126,12 @@ public class ConvenienceActivity extends BaseActivity implements View.OnClickLis
                 } else {
                     goAuthorized();
                 }*/
-                goPublish();
+                if (!"".equals(HelperApplication.getInstance().mDistrict) &&
+                        PermissionUtil.gPSIsOPen(this)) {
+                    goPublish();
+                }else{
+                    ToastUtil.showShort(this,"请开启定位");
+                }
                 break;
             case R.id.convenience_deliver:
                 startActivity(new Intent(ConvenienceActivity.this, DeliverActivity.class));
@@ -195,10 +202,13 @@ public class ConvenienceActivity extends BaseActivity implements View.OnClickLis
                     JSONObject jsonObject = new JSONObject(s);
                     String status = jsonObject.getString("status");
                     if (status.equals("success")) {
+
                         String data = jsonObject.getString("data");
+                        Log.e("获取便民圈", data);
                         Gson gson = new Gson();
                         List<Convenience> lists = gson.fromJson(data, new TypeToken<ArrayList<Convenience>>() {
                         }.getType());
+//                        addlist.clear();
                         addlist.addAll(lists);
                         convenienceAdapter.notifyDataSetChanged();
 
@@ -222,6 +232,9 @@ public class ConvenienceActivity extends BaseActivity implements View.OnClickLis
         request.putValue("type", "1");
         request.putValue("city", HelperApplication.getInstance().mDistrict);
         Log.e("获取便民圈", HelperApplication.getInstance().mDistrict);
+        Log.e("city", HelperApplication.getInstance().mDistrict);//HelperApplication.getInstance().mDistrict
+//        Log.e("userid", userInfo.getUserId());
+        Log.e("beginid", lastConV.getMid());
         SingleVolleyRequest.getInstance(context).addToRequestQueue(request);
 
     }
